@@ -1,0 +1,25 @@
+name: 🏗️ Build
+
+on:
+  push:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-20.04
+    env:
+      SCCACHE_GHA_ENABLED: "true"
+      RUSTC_WRAPPER: "sccache"
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Run sccache-cache
+        uses: mozilla-actions/sccache-action@v0.0.3
+        with:
+          version: "v0.7.4"
+
+      - name: Build
+        working-directory: ./service
+        run: cargo build
