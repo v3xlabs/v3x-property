@@ -7,3 +7,8 @@ dev:
 
 # dev-logs:
 #     docker compose -f compose.dev.yaml logs
+
+env:
+	set -a            
+	source .env
+	set +a

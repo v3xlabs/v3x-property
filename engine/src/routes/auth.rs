@@ -1,44 +1,7 @@
-use axum::{body::Body, response::{IntoResponse, Redirect, Response}, routing::get, Router};
-use openid::{Client, DiscoveredClient, Options};
-use reqwest::Url;
-use serde::Deserialize;
-use std::sync::Arc;
-use tokio::net::TcpListener;
+use axum::response::{IntoResponse, Redirect};
+use openid::{DiscoveredClient, Options};
 
-use crate::state::AppState;
-
-// mod routes;
-
-pub async fn serve(state: AppState) -> Result<(), axum::Error> {
-    let app = Router::new()
-        .route("/", get(root))
-        .route("/login", get(login))
-        // .route("/devices", get(routes::devices::get))
-        .with_state(Arc::new(state));
-
-    let listener = TcpListener::bind("0.0.0.0:3000").await.unwrap();
-
-    axum::serve(listener, app).await.unwrap();
-
-    Ok(())
-}
-
-async fn root() -> &'static str {
-    "Hello, World!"
-}
-
-#[derive(Deserialize)]
-struct DiscoveryResponse {
-    authorization_endpoint: String,
-    token_endpoint: String,
-    userinfo_endpoint: Option<String>,
-    jwks_uri: String,
-    issuer: String,
-    #[serde(flatten)]
-    other: std::collections::HashMap<String, serde_json::Value>,
-}
-
-async fn login() -> impl IntoResponse {
+pub async fn login() -> impl IntoResponse {
     // let discovery_url = "http://localhost:8080/realms/master/.well-known/openid-configuration";
 
     // let http_client = reqwest::Client::new();
