@@ -2,6 +2,7 @@ use tracing::info;
 
 mod router;
 mod state;
+mod permissions;
 
 #[tokio::main]
 async fn main() {

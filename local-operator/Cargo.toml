@@ -6,4 +6,8 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
+anyhow = "1.0.82"
 brother-ql-rs = "0.2.1"
+image = "0.25.1"
+printpdf = { version = "0.7.0", features = ["image"] }
+qrcode = "0.14.0"

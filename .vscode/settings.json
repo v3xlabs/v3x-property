@@ -1,0 +1,5 @@
+{
+    "vsicons.associations.folders": [
+        { "icon": "engine", "extensions": ["engine"], "format": "svg" }
+    ],
+}

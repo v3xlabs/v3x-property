@@ -1,7 +1,19 @@
+// use brother_ql_rs::printer::ThermalPrinter;
+
 use brother_ql_rs::printer::ThermalPrinter;
+
+use crate::{label::Label, template::{LabelPrintable, LabelTemplate}};
+
+pub mod label;
+pub mod template;
 
 fn main() {
     println!("Hello, world!");
+
+    let label = Label::new(1);
+    LabelTemplate::G1QR.print(&label).unwrap();
+
+    println!("Hello, worldz!");
 
     let devices = brother_ql_rs::printer::printers();
 
