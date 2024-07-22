@@ -1,0 +1,7 @@
+# runs the engine on port 3000
+version: "3.9"
+services:
+  engine:
+    image: ghcr.io/v3xlabs/v3x-property-engine:latest
+    ports:
+      - "3000:3000"

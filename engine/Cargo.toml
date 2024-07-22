@@ -1,5 +1,5 @@
 [package]
-name = "v3x-property"
+name = "v3x-property-engine"
 version = "0.1.0"
 edition = "2021"
 

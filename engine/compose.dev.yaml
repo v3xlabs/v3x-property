@@ -1,0 +1,9 @@
+# runs the engine on port 3000
+version: "3.9"
+services:
+  engine:
+    build:
+      context: .
+      dockerfile: .build/Dockerfile
+    ports:
+      - "3000:3000"
