@@ -11,6 +11,7 @@ pub async fn serve(state: AppState) -> Result<(), axum::Error> {
     let app = Router::new()
         .route("/", get(root))
         .route("/login", get(auth::login))
+        .route("/callback", get(auth::callback))
         // .route("/devices", get(routes::devices::get))
         .with_state(Arc::new(state));
 

@@ -5,6 +5,7 @@ mod database;
 mod permissions;
 mod routes;
 mod state;
+mod openid;
 
 #[tokio::main]
 async fn main() {
@@ -14,6 +15,8 @@ async fn main() {
         .text(" Inventory Tracking System.".into())
         .render();
     println!("{}", banner);
+
+    dotenvy::dotenv().ok();
 
     tracing_subscriber::fmt::init();
 

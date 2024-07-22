@@ -1,11 +1,11 @@
 use std::env;
 
-use crate::database::Database;
+use crate::{database::Database, openid::OpenIDClient};
 use openid::DiscoveredClient;
 
 pub struct AppState {
     pub database: Database,
-    pub openid: DiscoveredClient,
+    pub openid: OpenIDClient,
 }
 
 impl AppState {
