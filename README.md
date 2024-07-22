@@ -15,13 +15,18 @@ Instances do not have to be accessible from the internet, they can be local or o
 An instance consists of a deployment of the `engine` container.
 An instance keeps track of the state of all entities within it.
 
+### Authentication
+
+To avoid having to maintain "yet another authentication system", we support OpenID Connect OAuth 2.0.
+This means you can use any OpenID Connect provider, such as [Keycloak](https://www.keycloak.org/), [Okta](https://www.okta.com/), [Auth0](https://auth0.com/), etc.
+Identity therefore is dis-coupled from the engine and can be ported cross instances.
+
 ### Entity Identity
 
 An entity is a user, a group or an organization.
 Entities are referenced by their path within the INSTANCE_URL of an engine.
 
 ```url
-v3x.property/users/1234
 v3x.property/items/1234
 v3x.property/groups/1234
 v3x.property/template/1234
