@@ -1,5 +1,5 @@
 use crate::{auth::session::SessionState, models::user_data::UserData, state::AppState};
-use openid::{Options, Token};
+use openid::{Options, Prompt, Token};
 use poem::{
     handler,
     http::HeaderMap,
@@ -7,7 +7,7 @@ use poem::{
     IntoResponse,
 };
 use serde::Deserialize;
-use std::sync::Arc;
+use std::{collections::HashSet, sync::Arc};
 use uuid::Uuid;
 
 #[handler]
@@ -27,6 +27,7 @@ pub async fn login(state: Data<&Arc<AppState>>) -> impl IntoResponse {
 
     let options = Options {
         scope: Some(scope),
+        prompt: Some(HashSet::from([Prompt::SelectAccount])),
         ..Default::default()
     };
 
