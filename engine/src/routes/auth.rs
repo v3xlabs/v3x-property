@@ -116,3 +116,22 @@ pub async fn get_sessions(state: Data<&Arc<AppState>>, cookies: &CookieJar) -> i
 
     Json(sessions)
 }
+
+#[handler]
+pub async fn delete_sessions(
+    cookies: &CookieJar,
+    state: Data<&Arc<AppState>>,
+) -> impl IntoResponse {
+    let token = cookies.get("property.v3x.token").unwrap();
+    let token = Uuid::parse_str(token.value_str()).unwrap();
+
+    let session = SessionState::get_by_id(token, &state.database)
+        .await
+        .unwrap();
+
+    let sessions = SessionState::delete_by_user_id(session.user_id, &state.database)
+        .await
+        .unwrap();
+
+    Json(sessions)
+}

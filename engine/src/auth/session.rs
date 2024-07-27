@@ -52,4 +52,16 @@ impl SessionState {
 
         Ok(sessions)
     }
+
+    // Set every session to invalid
+    pub async fn delete_by_user_id(user_id: i32, database: &Database) -> Result<Vec<Self>, sqlx::Error> {
+        let sessions = sqlx::query_as::<_, SessionState>(
+            "UPDATE sessions SET valid = FALSE WHERE user_id = $1",
+        )
+        .bind(user_id)
+        .fetch_all(&database.pool)
+        .await?;
+
+        Ok(sessions)
+    }
 }

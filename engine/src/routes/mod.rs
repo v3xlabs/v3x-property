@@ -41,7 +41,7 @@ pub async fn serve(state: AppState) -> Result<(), poem::Error> {
     let app = Route::new()
         .at("/login", get(auth::login))
         .at("/me", get(auth::me))
-        .at("/sessions", get(auth::get_sessions))
+        .at("/sessions", get(auth::get_sessions).delete(auth::delete_sessions))
         .at("/callback", get(auth::callback))
         .nest("/api", api_service)
         .nest("/openapi.json", spec)
