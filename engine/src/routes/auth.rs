@@ -1,10 +1,11 @@
 use crate::state::AppState;
 use openid::{Options, Token};
-use poem::{web::{Data, Query, Redirect}, IntoResponse};
+use poem::{handler, web::{headers::Header, Data, Query, Redirect}, IntoResponse};
 use serde::Deserialize;
 use std::sync::Arc;
 
-pub async fn login(state: Data<Arc<AppState>>) -> impl IntoResponse {
+#[handler]
+pub async fn login(state: Data<&Arc<AppState>>) -> impl IntoResponse {
     // let discovery_url = "http://localhost:8080/realms/master/.well-known/openid-configuration";
 
     // let http_client = reqwest::Client::new();
@@ -40,7 +41,8 @@ pub struct MyQuery {
     pub prompt: Option<String>,
 }
 
-pub async fn callback(query: Query<MyQuery>, state: Data<Arc<AppState>>) -> impl IntoResponse {
+#[handler]
+pub async fn callback(query: Query<MyQuery>, state: Data<&Arc<AppState>>) -> impl IntoResponse {
     let mut token = state.openid.request_token(&query.code).await.unwrap();
 
     let mut token = Token::from(token);
@@ -61,9 +63,9 @@ pub async fn callback(query: Query<MyQuery>, state: Data<Arc<AppState>>) -> impl
         .await
         .unwrap();
 
-    format!("Hello {:?}", user.nickname);
-
     // TODO: return a token
 
-    serde_json::to_string(&user).unwrap()
+    let token = "hello".to_string();
+
+    Redirect::temporary("http://localhost:3000/hello").with_header("Set-Cookie", format!("property.v3x.token={}", token))
 }

@@ -1,8 +1,12 @@
+use std::{ops::Deref, str::FromStr};
+
 use async_std::stream::StreamExt;
 use openid::Userinfo;
+use serde_json::Value;
 use sqlx::{
     postgres::PgPoolOptions,
     query::{self, Query},
+    types::Json,
     Execute, Executor, PgPool,
 };
 use tracing::info;
@@ -32,21 +36,49 @@ impl Database {
         Ok(())
     }
 
-    pub async fn upsert_get_user(&self, oauth_userinfo: &Userinfo) -> Result<UserData, sqlx::Error> {
-        // Check if the user exists, return its info, otherwise create a new user, and return its info.
+    /// Check if the user exists, return its info, otherwise create a new user, and return its info.
+    pub async fn upsert_get_user(
+        &self,
+        oauth_userinfo: &Userinfo,
+    ) -> Result<UserData, sqlx::Error> {
+        let sub = oauth_userinfo.sub.as_deref().unwrap();
 
-        let sub = oauth_userinfo.sub.as_ref().unwrap().to_string();
+        info!("upsert_get_user: sub: {}", sub);
 
-        let mut userdata =
-            sqlx::query_as::<_, UserData>("SELECT * FROM users WHERE oauth_sub = ? LIMIT 1")
-                .bind(sub)
-                .fetch(&self.pool);
+        match sqlx::query_as::<_, UserData>("SELECT * FROM users WHERE oauth_sub = $1")
+            .bind(sub)
+            .fetch_one(&self.pool)
+            .await
+        {
+            Ok(x) => {
+                info!("upsert_get_user_found: {:?}", x);
+                Ok(x)
+            }
+            Err(e) => {
+                info!("upsert_get_user: not found {}", e);
 
-        let x = userdata.next().await.unwrap().unwrap();
+                let mut local_userdata = UserData {
+                    id: 0,
+                    oauth_sub: sub.to_string(),
+                    oauth_data: Json(oauth_userinfo.clone()),
+                    nickname: None,
+                };
 
-        info!("upsert_get_user: {:?}", x);
+                let insert_query = sqlx::query!(
+                    "INSERT INTO users (oauth_sub, oauth_data) VALUES ($1, $2) RETURNING id",
+                    local_userdata.oauth_sub,
+                    Json(&oauth_userinfo) as _
+                )
+                .fetch_one(&self.pool)
+                .await?;
 
-        Ok(x)
+                info!("upsert_get_user: {:?}", insert_query);
+
+                local_userdata.id = insert_query.id;
+
+                Ok(local_userdata)
+            }
+        }
     }
 
     // pub async fn insert_user(&self, user: &Userinfo) -> Result<u64, sqlx::Error> {

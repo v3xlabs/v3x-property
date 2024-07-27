@@ -1,6 +1,6 @@
 use std::sync::Arc;
 
-use poem::{get, handler, listener::TcpListener, post, web::Path, EndpointExt, Route, Server};
+use poem::{get, handler, listener::TcpListener, post, web::{Html, Path}, Endpoint, EndpointExt, Route, Server};
 use poem_openapi::{param::Query, payload::PlainText, OpenApi, OpenApiService};
 
 use crate::state::AppState;
@@ -11,6 +11,7 @@ struct Api;
 
 #[OpenApi]
 impl Api {
+    /// Testing one two three
     #[oai(path = "/hello", method = "get")]
     async fn index(&self, name: Query<Option<String>>) -> PlainText<String> {
         match name.0 {
@@ -20,15 +21,27 @@ impl Api {
     }
 }
 
+// returns the html from the index.html file
+#[handler]
+async fn ui()  -> Html<&'static str> {
+    Html(include_str!("./index.html"))
+}
+
 pub async fn serve(state: AppState) -> Result<(), poem::Error> {
     let api_service =
         OpenApiService::new(Api, "Hello World", "1.0").server("http://localhost:3000/api");
 
-    let ui = api_service.swagger_ui();
+    let spec = api_service.spec_endpoint();
 
     let state = Arc::new(state);
 
-    let app = Route::new().nest("/api", api_service).nest("/", ui).data(state);
+    let app = Route::new()
+        .at("/login", get(auth::login))
+        .at("/callback", get(auth::callback))
+        .nest("/api", api_service)
+        .nest("/openapi.json", spec)
+        .at("/", get(ui))
+        .data(state);
     // .at("/", get(root))
     //     .route("/login", get(auth::login))
     //     // OAuth Callback route

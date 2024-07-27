@@ -12,7 +12,7 @@ dotenv = "0.15.0"
 dotenvy = "0.15.7"
 openid = "0.14.0"
 poem = "3.0.4"
-poem-openapi = { version = "5.0.3", features = ["email", "email_address", "swagger-ui"] }
+poem-openapi = { version = "5.0.3", features = ["email", "email_address", "redoc", "static-files"] }
 reqwest = "0.12.5"
 serde = "1.0.204"
 serde_json = "1.0.120"
