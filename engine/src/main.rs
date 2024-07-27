@@ -6,7 +6,6 @@ mod state;
 mod models;
 mod routes;
 mod database;
-mod permissions;
 
 #[async_std::main]
 async fn main() {

@@ -62,23 +62,4 @@ impl Database {
 
         Ok(user)
     }
-
-    pub async fn create_session(&self, user_id: i32, user_agent: &str, user_ip: &str) -> Result<SessionState, sqlx::Error> {
-        let session = sqlx::query_as::<_, SessionState>("INSERT INTO sessions (user_id, user_agent, user_ip) VALUES ($1, $2, $3) RETURNING *")
-            .bind(user_id)
-            .bind(user_agent)
-            .bind(user_ip)
-            .fetch_one(&self.pool)
-            .await?;
-        Ok(session)
-    }
-
-    pub async fn get_session_by_id(&self, id: Uuid) -> Result<SessionState, sqlx::Error> {
-        let session = sqlx::query_as::<_, SessionState>("SELECT * FROM sessions WHERE id = $1 AND valid = TRUE")
-            .bind(id)
-            .fetch_one(&self.pool)
-            .await?;
-
-        Ok(session)
-    }
 }

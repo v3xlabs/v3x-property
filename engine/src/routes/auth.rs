@@ -1,4 +1,4 @@
-use crate::state::AppState;
+use crate::{auth::session::SessionState, state::AppState};
 use openid::{Options, Token};
 use poem::{
     handler,
@@ -81,15 +81,9 @@ pub async fn callback(
     let user_agent = headers.get("user-agent").unwrap().to_str().unwrap();
     let user_ip = ip.0.unwrap().to_string();
 
-    let session = state
-        .database
-        .create_session(user.id, user_agent, &user_ip)
+    let session = SessionState::new(user.id, user_agent, &user_ip, &state.database)
         .await
         .unwrap();
-
-    // let session = state.database.get_session_by_id(&user.id).await.unwrap();
-
-    // TODO: return a token
 
     let token = session.id;
 
@@ -102,7 +96,7 @@ pub async fn me(state: Data<&Arc<AppState>>, cookies: &CookieJar) -> impl IntoRe
     let token = cookies.get("property.v3x.token").unwrap();
     let token = Uuid::parse_str(token.value_str()).unwrap();
 
-    let session = state.database.get_session_by_id(token).await.unwrap();
+    let session = SessionState::get_by_id(token, &state.database).await.unwrap();
 
     let user = state
         .database
