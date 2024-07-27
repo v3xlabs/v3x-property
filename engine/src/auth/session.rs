@@ -1,14 +1,18 @@
+use std::net::IpAddr;
+
+use poem_openapi::Object;
 use serde::{Deserialize, Serialize};
 use sqlx::types::chrono;
 use uuid::Uuid;
 
 use crate::database::Database;
 
-#[derive(sqlx::FromRow, Debug, Clone, Serialize, Deserialize)]
+#[derive(sqlx::FromRow, Debug, Clone, Serialize, Deserialize, Object)]
 pub struct SessionState {
     pub id: Uuid,
     pub user_id: i32,
     pub user_agent: String,
+    pub user_ip: IpAddr,
     pub last_access: chrono::DateTime<chrono::Utc>,
     pub valid: bool,
 }
@@ -17,7 +21,7 @@ impl SessionState {
     pub async fn new(
         user_id: i32,
         user_agent: &str,
-        user_ip: &str,
+        user_ip: &IpAddr,
         database: &Database,
     ) -> Result<Self, sqlx::Error> {
         let session = sqlx::query_as::<_, SessionState>(

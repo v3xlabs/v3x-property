@@ -7,20 +7,22 @@ edition = "2021"
 
 [dependencies]
 async-std = { version = "1.12.0", features = ["attributes", "tokio1"] }
+bigdecimal = { version = "0.4.5", features = ["serde"] }
 chrono = "0.4.38"
 dotenv = "0.15.0"
 dotenvy = "0.15.7"
 openid = "0.14.0"
 poem = "3.0.4"
-poem-openapi = { version = "5.0.3", features = ["email", "email_address", "redoc", "static-files"] }
+poem-openapi = { version = "5.0.3", features = ["chrono", "uuid", "email", "email_address", "redoc", "static-files"] }
 reqwest = "0.12.5"
 serde = "1.0.204"
 serde_json = "1.0.120"
 serde_with = { version = "3.9.0", features = ["json", "chrono"] }
-sqlx = { version = "0.7.4", features = ["runtime-async-std", "tls-rustls", "postgres", "uuid", "chrono", "json"] }
+sqlx = { version = "0.7.4", features = ["runtime-async-std", "tls-rustls", "postgres", "uuid", "chrono", "json", "ipnetwork"] }
 terminal-banner = "0.4.1"
 tracing = "0.1.40"
 tracing-subscriber = "0.3.18"
+url = { version = "2.5.2", features = ["serde"] }
 
 [dependencies.uuid]
 version = "1.10.0"

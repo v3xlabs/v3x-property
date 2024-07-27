@@ -74,7 +74,7 @@ pub async fn callback(
         .unwrap();
 
     let user_agent = headers.get("user-agent").unwrap().to_str().unwrap();
-    let user_ip = ip.0.unwrap().to_string();
+    let user_ip = ip.0.unwrap();
 
     let session = SessionState::new(user.id, user_agent, &user_ip, &state.database)
         .await

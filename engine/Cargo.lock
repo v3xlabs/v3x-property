@@ -304,6 +304,20 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "8c3c1a368f70d6cf7302d78f8f7093da241fb8e8807c05cc9e51a125895a6d5b"
 
 [[package]]
+name = "bigdecimal"
+version = "0.4.5"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "51d712318a27c7150326677b321a5fa91b55f6d9034ffd67f20319e147d40cee"
+dependencies = [
+ "autocfg",
+ "libm",
+ "num-bigint",
+ "num-integer",
+ "num-traits",
+ "serde",
+]
+
+[[package]]
 name = "biscuit"
 version = "0.7.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1270,6 +1284,15 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "8f518f335dce6725a761382244631d86cf0ccb2863413590b31338feb467f9c3"
 
 [[package]]
+name = "ipnetwork"
+version = "0.20.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "bf466541e9d546596ee94f9f69590f89473455f88372423e0008fc1a7daf100e"
+dependencies = [
+ "serde",
+]
+
+[[package]]
 name = "itoa"
 version = "1.0.10"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1818,6 +1841,7 @@ checksum = "a6f4ac688d8b83fbbc8de929dee207d345600a6b3af315927e92dba26a023103"
 dependencies = [
  "base64 0.22.1",
  "bytes",
+ "chrono",
  "derive_more",
  "email_address",
  "futures-util",
@@ -1834,6 +1858,7 @@ dependencies = [
  "serde_yaml",
  "thiserror",
  "tokio",
+ "uuid",
 ]
 
 [[package]]
@@ -2549,6 +2574,7 @@ dependencies = [
  "hashlink",
  "hex",
  "indexmap 2.2.6",
+ "ipnetwork",
  "log",
  "memchr",
  "once_cell",
@@ -2673,6 +2699,7 @@ dependencies = [
  "hkdf",
  "hmac",
  "home",
+ "ipnetwork",
  "itoa",
  "log",
  "md-5",
@@ -3235,6 +3262,7 @@ name = "v3x-property-engine"
 version = "0.1.0"
 dependencies = [
  "async-std",
+ "bigdecimal",
  "chrono",
  "dotenv",
  "dotenvy",
@@ -3249,6 +3277,7 @@ dependencies = [
  "terminal-banner",
  "tracing",
  "tracing-subscriber",
+ "url",
  "uuid",
 ]
 
