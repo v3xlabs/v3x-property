@@ -1,18 +1,4 @@
-use std::{ops::Deref, str::FromStr};
-
-use async_std::stream::StreamExt;
-use openid::Userinfo;
-use serde_json::Value;
-use sqlx::{
-    postgres::PgPoolOptions,
-    query::{self, Query},
-    types::Json,
-    Execute, Executor, PgPool,
-};
-use tracing::info;
-use uuid::Uuid;
-
-use crate::{auth::session::SessionState, models::user_data::UserData};
+use sqlx::{postgres::PgPoolOptions, PgPool};
 
 #[derive(Debug)]
 pub struct Database {
@@ -35,31 +21,5 @@ impl Database {
         sqlx::migrate!().run(&self.pool).await?;
 
         Ok(())
-    }
-
-    /// Check if the user exists, return its info, otherwise create a new user, and return its info.
-    pub async fn upsert_get_user(
-        &self,
-        oauth_userinfo: &Userinfo,
-    ) -> Result<UserData, sqlx::Error> {
-        let sub = oauth_userinfo.sub.as_deref().unwrap();
-
-        info!("upsert_get_user: sub: {}", sub);
-
-        sqlx::query_as::<_, UserData>(
-            "INSERT INTO users (oauth_sub, oauth_data) VALUES ($1, $2) ON CONFLICT (oauth_sub) DO UPDATE SET oauth_data = $2 RETURNING *"
-        )
-            .bind(sub)
-            .bind(Json(oauth_userinfo))
-        .fetch_one(&self.pool).await
-    }
-
-    pub async fn get_user_from_id(&self, id: i32) -> Result<UserData, sqlx::Error> {
-        let user = sqlx::query_as::<_, UserData>("SELECT * FROM users WHERE id = $1")
-            .bind(id)
-            .fetch_one(&self.pool)
-            .await?;
-
-        Ok(user)
     }
 }

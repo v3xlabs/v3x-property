@@ -1,17 +1,13 @@
-use crate::{auth::session::SessionState, state::AppState};
+use crate::{auth::session::SessionState, models::user_data::UserData, state::AppState};
 use openid::{Options, Token};
 use poem::{
     handler,
     http::HeaderMap,
-    web::{
-        cookie::{Cookie, CookieJar},
-        Data, Json, Query, RealIp, Redirect, RemoteAddr,
-    },
+    web::{cookie::CookieJar, Data, Json, Query, RealIp, Redirect},
     IntoResponse,
 };
 use serde::Deserialize;
 use std::sync::Arc;
-use tracing::info;
 use uuid::Uuid;
 
 #[handler]
@@ -72,9 +68,7 @@ pub async fn callback(
     format!("Hello {:?}", oauth_userinfo);
 
     // Now we must verify the user information, decide wether they deserve access, and if so return a token.
-    let user = state
-        .database
-        .upsert_get_user(&oauth_userinfo)
+    let user = UserData::new(&oauth_userinfo, &state.database)
         .await
         .unwrap();
 
@@ -96,13 +90,29 @@ pub async fn me(state: Data<&Arc<AppState>>, cookies: &CookieJar) -> impl IntoRe
     let token = cookies.get("property.v3x.token").unwrap();
     let token = Uuid::parse_str(token.value_str()).unwrap();
 
-    let session = SessionState::get_by_id(token, &state.database).await.unwrap();
+    let session = SessionState::get_by_id(token, &state.database)
+        .await
+        .unwrap();
 
-    let user = state
-        .database
-        .get_user_from_id(session.user_id)
+    let user = UserData::get_by_id(session.user_id, &state.database)
         .await
         .unwrap();
 
     Json(user)
+}
+
+#[handler]
+pub async fn get_sessions(state: Data<&Arc<AppState>>, cookies: &CookieJar) -> impl IntoResponse {
+    let token = cookies.get("property.v3x.token").unwrap();
+    let token = Uuid::parse_str(token.value_str()).unwrap();
+
+    let session = SessionState::get_by_id(token, &state.database)
+        .await
+        .unwrap();
+
+    let sessions = SessionState::get_by_user_id(session.user_id, &state.database)
+        .await
+        .unwrap();
+
+    Json(sessions)
 }

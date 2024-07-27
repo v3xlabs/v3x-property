@@ -41,4 +41,15 @@ impl SessionState {
 
         Ok(session)
     }
+
+    pub async fn get_by_user_id(user_id: i32, database: &Database) -> Result<Vec<Self>, sqlx::Error> {
+        let sessions = sqlx::query_as::<_, SessionState>(
+            "SELECT * FROM sessions WHERE user_id = $1 AND valid = TRUE",
+        )
+        .bind(user_id)
+        .fetch_all(&database.pool)
+        .await?;
+
+        Ok(sessions)
+    }
 }
