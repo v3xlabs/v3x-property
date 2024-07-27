@@ -1,10 +1,18 @@
 use crate::state::AppState;
 use openid::{Options, Token};
-use poem::{handler, web::{cookie::{Cookie, CookieJar}, Data, Json, Query, Redirect}, IntoResponse};
+use poem::{
+    handler,
+    http::HeaderMap,
+    web::{
+        cookie::{Cookie, CookieJar},
+        Data, Json, Query, RealIp, Redirect, RemoteAddr,
+    },
+    IntoResponse,
+};
 use serde::Deserialize;
+use std::sync::Arc;
 use tracing::info;
 use uuid::Uuid;
-use std::sync::Arc;
 
 #[handler]
 pub async fn login(state: Data<&Arc<AppState>>) -> impl IntoResponse {
@@ -44,7 +52,12 @@ pub struct MyQuery {
 }
 
 #[handler]
-pub async fn callback(query: Query<MyQuery>, state: Data<&Arc<AppState>>) -> impl IntoResponse {
+pub async fn callback(
+    query: Query<MyQuery>,
+    state: Data<&Arc<AppState>>,
+    ip: RealIp,
+    headers: &HeaderMap,
+) -> impl IntoResponse {
     let mut token = state.openid.request_token(&query.code).await.unwrap();
 
     let mut token = Token::from(token);
@@ -65,7 +78,14 @@ pub async fn callback(query: Query<MyQuery>, state: Data<&Arc<AppState>>) -> imp
         .await
         .unwrap();
 
-    let session = state.database.create_session(user.id, "test").await.unwrap();
+    let user_agent = headers.get("user-agent").unwrap().to_str().unwrap();
+    let user_ip = ip.0.unwrap().to_string();
+
+    let session = state
+        .database
+        .create_session(user.id, user_agent, &user_ip)
+        .await
+        .unwrap();
 
     // let session = state.database.get_session_by_id(&user.id).await.unwrap();
 
@@ -73,18 +93,22 @@ pub async fn callback(query: Query<MyQuery>, state: Data<&Arc<AppState>>) -> imp
 
     let token = session.id;
 
-    Redirect::temporary("http://localhost:3000/hello").with_header("Set-Cookie", format!("property.v3x.token={}", token))
+    Redirect::temporary("http://localhost:3000/me")
+        .with_header("Set-Cookie", format!("property.v3x.token={}", token))
 }
 
 #[handler]
-pub async fn me(state: Data<&Arc<AppState>>, cookies: &CookieJar) -> impl IntoResponse  {
-
+pub async fn me(state: Data<&Arc<AppState>>, cookies: &CookieJar) -> impl IntoResponse {
     let token = cookies.get("property.v3x.token").unwrap();
     let token = Uuid::parse_str(token.value_str()).unwrap();
 
     let session = state.database.get_session_by_id(token).await.unwrap();
 
-    let user = state.database.get_user_from_id(session.user_id).await.unwrap();
+    let user = state
+        .database
+        .get_user_from_id(session.user_id)
+        .await
+        .unwrap();
 
     Json(user)
 }
