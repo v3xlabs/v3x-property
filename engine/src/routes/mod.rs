@@ -1,6 +1,6 @@
 use std::sync::Arc;
 
-use poem::{get, handler, listener::TcpListener, post, web::{Html, Path}, Endpoint, EndpointExt, Route, Server};
+use poem::{get, handler, listener::TcpListener, middleware::CookieJarManager, post, web::{Html, Path}, Endpoint, EndpointExt, Route, Server};
 use poem_openapi::{param::Query, payload::PlainText, OpenApi, OpenApiService};
 
 use crate::state::AppState;
@@ -37,10 +37,12 @@ pub async fn serve(state: AppState) -> Result<(), poem::Error> {
 
     let app = Route::new()
         .at("/login", get(auth::login))
+        .at("/me", get(auth::me))
         .at("/callback", get(auth::callback))
         .nest("/api", api_service)
         .nest("/openapi.json", spec)
         .at("/", get(ui))
+        .with(CookieJarManager::new())
         .data(state);
     // .at("/", get(root))
     //     .route("/login", get(auth::login))

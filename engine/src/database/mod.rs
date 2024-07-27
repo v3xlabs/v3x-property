@@ -10,8 +10,9 @@ use sqlx::{
     Execute, Executor, PgPool,
 };
 use tracing::info;
+use uuid::Uuid;
 
-use crate::models::user_data::UserData;
+use crate::{auth::session::SessionState, models::user_data::UserData};
 
 #[derive(Debug)]
 pub struct Database {
@@ -45,53 +46,38 @@ impl Database {
 
         info!("upsert_get_user: sub: {}", sub);
 
-        match sqlx::query_as::<_, UserData>("SELECT * FROM users WHERE oauth_sub = $1")
+        sqlx::query_as::<_, UserData>(
+            "INSERT INTO users (oauth_sub, oauth_data) VALUES ($1, $2) ON CONFLICT (oauth_sub) DO UPDATE SET oauth_data = $2 RETURNING *"
+        )
             .bind(sub)
-            .fetch_one(&self.pool)
-            .await
-        {
-            Ok(x) => {
-                info!("upsert_get_user_found: {:?}", x);
-                Ok(x)
-            }
-            Err(e) => {
-                info!("upsert_get_user: not found {}", e);
-
-                let mut local_userdata = UserData {
-                    id: 0,
-                    oauth_sub: sub.to_string(),
-                    oauth_data: Json(oauth_userinfo.clone()),
-                    nickname: None,
-                };
-
-                let insert_query = sqlx::query!(
-                    "INSERT INTO users (oauth_sub, oauth_data) VALUES ($1, $2) RETURNING id",
-                    local_userdata.oauth_sub,
-                    Json(&oauth_userinfo) as _
-                )
-                .fetch_one(&self.pool)
-                .await?;
-
-                info!("upsert_get_user: {:?}", insert_query);
-
-                local_userdata.id = insert_query.id;
-
-                Ok(local_userdata)
-            }
-        }
+            .bind(Json(oauth_userinfo))
+        .fetch_one(&self.pool).await
     }
 
-    // pub async fn insert_user(&self, user: &Userinfo) -> Result<u64, sqlx::Error> {
-    //     let x = self
-    //         .pool
-    //         .execute(
-    //             sqlx::query!(
-    //                 "INSERT INTO users (id, email, name, picture, locale, timezone) VALUES ($1, $2, $3, $4, $5, $6)",
+    pub async fn get_user_from_id(&self, id: i32) -> Result<UserData, sqlx::Error> {
+        let user = sqlx::query_as::<_, UserData>("SELECT * FROM users WHERE id = $1")
+            .bind(id)
+            .fetch_one(&self.pool)
+            .await?;
 
-    //            )
-    //         )
-    //         .await?;
+        Ok(user)
+    }
 
-    //     Ok(x.rows_affected())
-    // }
+    pub async fn create_session(&self, user_id: i32, user_agent: &str) -> Result<SessionState, sqlx::Error> {
+        let session = sqlx::query_as::<_, SessionState>("INSERT INTO sessions (user_id, user_agent) VALUES ($1, $2) RETURNING *")
+            .bind(user_id)
+            .bind(user_agent)
+            .fetch_one(&self.pool)
+            .await?;
+        Ok(session)
+    }
+
+    pub async fn get_session_by_id(&self, id: Uuid) -> Result<SessionState, sqlx::Error> {
+        let session = sqlx::query_as::<_, SessionState>("SELECT * FROM sessions WHERE id = $1 AND valid = TRUE")
+            .bind(id)
+            .fetch_one(&self.pool)
+            .await?;
+
+        Ok(session)
+    }
 }
