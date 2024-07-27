@@ -1,16 +1,10 @@
-use std::{borrow::BorrowMut, ops::Deref, sync::Arc};
-
-use axum::{
-    extract::{Query, State},
-    response::{IntoResponse, Redirect},
-};
-use openid::{Options, Token};
-use serde::Deserialize;
-use tracing::info;
-
 use crate::state::AppState;
+use openid::{Options, Token};
+use poem::{web::{Data, Query, Redirect}, IntoResponse};
+use serde::Deserialize;
+use std::sync::Arc;
 
-pub async fn login(state: State<Arc<AppState>>) -> impl IntoResponse {
+pub async fn login(state: Data<Arc<AppState>>) -> impl IntoResponse {
     // let discovery_url = "http://localhost:8080/realms/master/.well-known/openid-configuration";
 
     // let http_client = reqwest::Client::new();
@@ -21,8 +15,11 @@ pub async fn login(state: State<Arc<AppState>>) -> impl IntoResponse {
     //     .json()
     //     .await.unwrap();
 
+    // scopes, for calendar for example https://www.googleapis.com/auth/calendar.events
+    let scope = "openid email profile".to_string();
+
     let options = Options {
-        scope: Some("openid email profile".to_string()),
+        scope: Some(scope),
         ..Default::default()
     };
 
@@ -43,10 +40,8 @@ pub struct MyQuery {
     pub prompt: Option<String>,
 }
 
-pub async fn callback(query: Query<MyQuery>, state: State<Arc<AppState>>) -> impl IntoResponse {
+pub async fn callback(query: Query<MyQuery>, state: Data<Arc<AppState>>) -> impl IntoResponse {
     let mut token = state.openid.request_token(&query.code).await.unwrap();
-
-    // let mut id_token = (&token.id_token).clone().unwrap().clone();
 
     let mut token = Token::from(token);
 
@@ -55,9 +50,20 @@ pub async fn callback(query: Query<MyQuery>, state: State<Arc<AppState>>) -> imp
     state.openid.decode_token(&mut id_token).unwrap();
     state.openid.validate_token(&id_token, None, None).unwrap();
 
-    // info!("Token: {:?}", id_token);
+    let oauth_userinfo = state.openid.request_userinfo(&token).await.unwrap();
 
-    let x = state.openid.request_userinfo(&token).await.unwrap();
+    format!("Hello {:?}", oauth_userinfo);
 
-    format!("Hello {:?}", x)
+    // Now we must verify the user information, decide wether they deserve access, and if so return a token.
+    let user = state
+        .database
+        .upsert_get_user(&oauth_userinfo)
+        .await
+        .unwrap();
+
+    format!("Hello {:?}", user.nickname);
+
+    // TODO: return a token
+
+    serde_json::to_string(&user).unwrap()
 }

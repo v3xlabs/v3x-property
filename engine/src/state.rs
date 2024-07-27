@@ -1,10 +1,12 @@
 use std::env;
 
-use crate::{database::Database, openid::OpenIDClient};
+use crate::{auth::oauth::OpenIDClient, database::Database};
 use openid::DiscoveredClient;
+use reqwest::Url;
 
 pub struct AppState {
     pub database: Database,
+    // #[cfg(feature = "oauth")]
     pub openid: OpenIDClient,
 }
 
@@ -15,24 +17,36 @@ impl AppState {
 
         let database = Database::new(database_url.as_str()).await.unwrap();
 
-        let openid_client_id = env::var("OPENID_CLIENT_ID").unwrap_or("devclient".to_string());
-        let openid_client_secret = env::var("OPENID_CLIENT_SECRET").unwrap();
-        let openid_redirect =
-            env::var("OPENID_REDIRECT").unwrap_or("http://localhost:3000/callback".to_string());
-        let openid_issuer = env::var("OPENID_ISSUER")
-            .unwrap_or("http://localhost:8080/realms/master".to_string())
-            .parse()
-            .unwrap();
+        // #[cfg(feature = "oauth")]
+        let openid = {
+            let openid_client_id = env::var("OPENID_CLIENT_ID").unwrap_or("devclient".to_string());
+            let openid_client_secret = env::var("OPENID_CLIENT_SECRET").unwrap();
+            let openid_redirect = Url::parse(
+                env::var("OPENID_REDIRECT")
+                    .unwrap_or("http://localhost:3000/callback".to_string())
+                    .as_str(),
+            )
+            .unwrap()
+            .to_string();
+            let openid_issuer = env::var("OPENID_ISSUER")
+                .unwrap_or("http://localhost:8080/realms/master".to_string())
+                .parse()
+                .unwrap();
 
-        let openid = DiscoveredClient::discover(
-            openid_client_id,
-            openid_client_secret,
-            openid_redirect,
-            openid_issuer,
-        )
-        .await
-        .unwrap();
+            DiscoveredClient::discover(
+                openid_client_id,
+                openid_client_secret,
+                openid_redirect,
+                openid_issuer,
+            )
+            .await
+            .unwrap()
+        };
 
-        Self { database, openid }
+        Self {
+            database,
+            // #[cfg(feature = "oauth")]
+            openid,
+        }
     }
 }

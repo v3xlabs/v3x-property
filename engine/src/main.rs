@@ -1,13 +1,14 @@
 use terminal_banner::Banner;
 use tracing::info;
 
+mod auth;
+mod state;
+mod models;
+mod routes;
 mod database;
 mod permissions;
-mod routes;
-mod state;
-mod openid;
 
-#[tokio::main]
+#[async_std::main]
 async fn main() {
     let banner = Banner::new()
         .width(70)

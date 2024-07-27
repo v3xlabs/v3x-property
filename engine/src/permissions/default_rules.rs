@@ -46,6 +46,6 @@ mod tests {
         assert_eq!(rule.check(entity), RuleOutput::READ);
 
         let entity = PermissionedEntity::Organization("other".to_string());
-        assert_eq!(rule.check(entity), RuleOutput::NONE);
+        assert_eq!(rule.check(entity), RuleOutput::PASSTHROUGH);
     }
 }
