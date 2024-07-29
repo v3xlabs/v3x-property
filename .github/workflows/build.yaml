@@ -2,6 +2,8 @@ name: 🏗️ Build Engine
 
 on:
   push:
+    paths:
+      - 'engine/**'
 
 jobs:
   deploy:

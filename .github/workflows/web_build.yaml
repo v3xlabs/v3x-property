@@ -4,6 +4,8 @@ on:
   push:
     branches:
       - master
+    paths:
+      - 'web/**'
 
 env:
   NODE_OPTIONS: "--max_old_space_size=8192"
