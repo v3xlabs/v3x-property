@@ -1,4 +1,4 @@
-name: 🏗️ Build
+name: 🏗️ Build Engine
 
 on:
   push:
@@ -21,5 +21,5 @@ jobs:
           version: "v0.7.4"
 
       - name: Build
-        working-directory: ./service
+        working-directory: ./engine
         run: cargo build
