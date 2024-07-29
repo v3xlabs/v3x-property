@@ -23,3 +23,14 @@ Simply copy the compose.yaml file to your local machine and run:
 ```sh
 docker compose up -d
 ```
+
+### Keycloak Configuration
+
+To setup keycloak you need to create a client.
+This can easily be done by heading to the `Clients` tab in the admin console.
+
+Then you can click on `Create client` and create a basic new OpenID Connect client.
+Choose a Client ID, and press `Next`.
+Enable `Client Authentication` and specify the `Redirect URIs` to be `http://localhost:3000/callback`.
+
+Once done you can head to the `Credentials` tab to see your Client Secret, insert this in your `.env` file.

@@ -9,7 +9,7 @@ export const useHttp = <K>(url: string, token: string | null) => useSWR(token &&
         const response = await fetch("http://localhost:3000/api/properties", { headers });
         const data = await response.json() as K;
 
-        return data as any;
+        return data as K;
     } catch (error) {
         console.error(error);
         return null;

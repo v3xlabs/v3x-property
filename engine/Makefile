@@ -2,13 +2,13 @@ build:
 	# cargo build --release
 	docker buildx build -t ghcr.io/v3xlabs/v3x-property-engine:latest -f .build/Dockerfile .
 
-dev:
-	docker compose -f compose.dev.yaml up -d
-
-# dev-logs:
-#     docker compose -f compose.dev.yaml logs
-
 env:
 	set -a            
 	source .env
 	set +a
+
+dev:
+	docker compose up -d
+
+dev-down:
+	docker compose down

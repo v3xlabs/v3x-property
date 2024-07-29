@@ -19,19 +19,12 @@ impl AppState {
 
         // #[cfg(feature = "oauth")]
         let openid = {
-            let openid_client_id = env::var("OPENID_CLIENT_ID").unwrap_or("devclient".to_string());
+            let openid_client_id = env::var("OPENID_CLIENT_ID").unwrap();
             let openid_client_secret = env::var("OPENID_CLIENT_SECRET").unwrap();
-            let openid_redirect = Url::parse(
-                env::var("OPENID_REDIRECT")
-                    .unwrap_or("http://localhost:3000/callback".to_string())
-                    .as_str(),
-            )
-            .unwrap()
-            .to_string();
-            let openid_issuer = env::var("OPENID_ISSUER")
-                .unwrap_or("http://localhost:8080/realms/master".to_string())
-                .parse()
-                .unwrap();
+            let openid_redirect = Url::parse(env::var("OPENID_REDIRECT").unwrap().as_str())
+                .unwrap()
+                .to_string();
+            let openid_issuer = env::var("OPENID_ISSUER").unwrap().parse().unwrap();
 
             DiscoveredClient::discover(
                 openid_client_id,
