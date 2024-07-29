@@ -7,15 +7,19 @@
         "test": "echo \"Error: no test specified\" && exit 1",
         "dev": "vite",
         "build": "vite build",
-        "lint": "eslint -c .eslintrc.json --ext .ts ./src"
+        "lint": "eslint"
     },
     "keywords": [],
     "author": "",
     "license": "GPL-3",
     "dependencies": {
+        "@eslint/eslintrc": "^3.1.0",
+        "@eslint/js": "^9.8.0",
         "@tanstack/react-router": "^1.45.14",
         "@vitejs/plugin-react": "^4.3.1",
         "autoprefixer": "^10.4.19",
+        "eslint-plugin-unused-imports": "^4.0.1",
+        "globals": "^15.8.0",
         "postcss": "^8.4.38",
         "react": "^18.3.1",
         "react-dom": "^18.3.1",

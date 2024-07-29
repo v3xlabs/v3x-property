@@ -14,7 +14,6 @@ pub struct ActiveUser {
 
 pub enum AuthToken {
     Active(ActiveUser),
-    Error(Error),
     None,
 }
 

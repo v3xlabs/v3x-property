@@ -8,8 +8,13 @@ use poem::{
     EndpointExt, Route, Server,
 };
 use poem_openapi::{param::Query, payload::PlainText, OpenApi, OpenApiService};
+use reqwest::StatusCode;
 
-use crate::{models::{media::Media, product::Product, property::Property}, state::AppState};
+use crate::{
+    auth::{middleware::AuthToken, session::SessionState},
+    models::{media::Media, product::Product, property::Property},
+    state::AppState,
+};
 
 pub mod auth;
 
@@ -42,16 +47,22 @@ impl Api {
     }
 
     #[oai(path = "/media/:media_id", method = "get")]
-    async fn get_media(&self, state: Data<&Arc<AppState>>, media_id: Path<i32>) -> poem_openapi::payload::Json<Media> {
-        let media = Media::get_by_id(media_id.0, &state.database)
-            .await
-            .unwrap();
+    async fn get_media(
+        &self,
+        state: Data<&Arc<AppState>>,
+        media_id: Path<i32>,
+    ) -> poem_openapi::payload::Json<Media> {
+        let media = Media::get_by_id(media_id.0, &state.database).await.unwrap();
 
         poem_openapi::payload::Json(media)
     }
 
     #[oai(path = "/product/:product_id", method = "get")]
-    async fn get_product(&self, state: Data<&Arc<AppState>>, product_id: Path<i32>) -> poem_openapi::payload::Json<Product> {
+    async fn get_product(
+        &self,
+        state: Data<&Arc<AppState>>,
+        product_id: Path<i32>,
+    ) -> poem_openapi::payload::Json<Product> {
         let product = Product::get_by_id(product_id.0, &state.database)
             .await
             .unwrap();
@@ -60,12 +71,34 @@ impl Api {
     }
 
     #[oai(path = "/property/:property_id", method = "get")]
-    async fn get_property(&self, state: Data<&Arc<AppState>>, property_id: Path<i32>) -> poem_openapi::payload::Json<Property> {
+    async fn get_property(
+        &self,
+        state: Data<&Arc<AppState>>,
+        property_id: Path<i32>,
+    ) -> poem_openapi::payload::Json<Property> {
         let property = Property::get_by_id(property_id.0, &state.database)
             .await
             .unwrap();
 
         poem_openapi::payload::Json(property)
+    }
+
+    #[oai(path = "/sessions", method = "get")]
+    async fn get_sessions(
+        &self,
+        auth: AuthToken,
+        state: Data<&Arc<AppState>>,
+    ) -> poem_openapi::payload::Json<Vec<SessionState>> {
+        match auth {
+            AuthToken::Active(active_user) => {
+                let sessions = SessionState::get_by_user_id(active_user.session.user_id, &state.database)
+                    .await
+                    .unwrap();
+
+                poem_openapi::payload::Json(sessions)
+            }
+            _ => poem_openapi::payload::Json(vec![]),
+        }
     }
 }
 

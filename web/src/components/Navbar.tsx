@@ -1,5 +1,6 @@
 import { useApiMe } from "../api/me";
 import { useAuth } from "../api/auth";
+import { Link } from "@tanstack/react-router";
 
 const LOGIN_URL = "http://localhost:3000/login";
 
@@ -13,8 +14,22 @@ export const Navbar = () => {
 
     return (
         <div className="w-full bg-white border-b h-8 flex items-center justify-between">
-            <div className="font-semibold text-base pl-4 pr-4 hover:bg-black/10 border-r h-full flex items-center">
-                v3x.property
+            <div className="h-full flex space-x-2">
+                <div className="font-semibold text-base pl-4 pr-4 hover:bg-black/10 border-r h-full flex items-center">
+                    v3x.property
+                </div>
+                <div className="h-full flex items-center">
+                    {
+                        [
+                            ["/", "Home"],
+                            ["/sessions", "Sessions"],
+                        ].map(([path, name]) => (
+                            <Link key={path} to={path} className="[&.active]:font-bold hover:bg-black/10 py-1 px-2">
+                                {name}
+                            </Link>
+                        ))
+                    }
+                </div>
             </div>
             {
                 meData && <div className="h-full border-l px-2 hover:bg-black/10 relative">
