@@ -1,37 +1,44 @@
 use std::sync::Arc;
 
-use poem::{
-    http::StatusCode,
-    web::{cookie::CookieJar, Data},
-    Error, FromRequest, Request, RequestBody, Result, Route,
-};
+use poem::{web::Data, Error, FromRequest, Request, RequestBody, Result};
+use reqwest::StatusCode;
 use uuid::Uuid;
 
 use crate::state::AppState;
 
 use super::session::SessionState;
 
-pub struct AuthToken {
+pub struct ActiveUser {
     pub session: SessionState,
+}
+
+pub enum AuthToken {
+    Active(ActiveUser),
+    Error(Error),
+    None,
 }
 
 impl<'a> FromRequest<'a> for AuthToken {
     async fn from_request(req: &'a Request, body: &mut RequestBody) -> Result<Self> {
         let state = Data::<&Arc<AppState>>::from_request(req, body).await?;
 
-        let token = {
-            let token = req
-                .headers()
-                .get("Authorization")
-                .map(|x| x.to_str().unwrap().replace("Bearer ", ""))
-                .expect("No token found");
-            Uuid::parse_str(&token).unwrap()
-        };
+        // Extract token from header
+        let token = req
+            .headers()
+            .get("Authorization")
+            .and_then(|x| x.to_str().ok())
+            .and_then(|x| Uuid::parse_str(&x.replace("Bearer ", "")).ok());
 
-        let session = SessionState::get_by_id(token, &state.database)
-            .await
-            .unwrap();
+        match token {
+            Some(token) => {
+                // Check if active session exists with token
+                let session = SessionState::get_by_id(token, &state.database)
+                    .await
+                    .unwrap();
 
-        Ok(AuthToken { session })
+                Ok(AuthToken::Active(ActiveUser { session }))
+            }
+            None => Ok(AuthToken::None),
+        }
     }
 }
