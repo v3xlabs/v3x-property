@@ -1,7 +1,7 @@
-import { useHttp } from "./core";
+import { useHttp } from './core';
 
 type PropertiesResponse = {
-    id: number,
+    id: number;
 };
 
-export const useTempAll = () => useHttp<PropertiesResponse>("/api/properties");
+export const useTempAll = () => useHttp<PropertiesResponse>('/api/properties');

@@ -1,3 +1,3 @@
-import { useHttp } from "./core";
+import { useHttp } from './core';
 
-export const useSessions = () => useHttp<any>("/api/sessions");
+export const useSessions = () => useHttp<any>('/api/sessions');

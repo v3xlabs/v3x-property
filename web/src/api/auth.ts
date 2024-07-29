@@ -4,11 +4,15 @@ export const preflightAuth = async () => {
     // If query params includes `token`, set it using setAuthToken and remove it from url
     const { setAuthToken } = useAuth();
 
-    const token = new URLSearchParams(window.location.search).get("token");
+    const token = new URLSearchParams(window.location.search).get('token');
 
     if (token) {
         setAuthToken(token);
-        window.history.replaceState({}, document.title, window.location.pathname);
+        window.history.replaceState(
+            {},
+            document.title,
+            window.location.pathname
+        );
     }
 };
 
@@ -16,6 +20,7 @@ const getTokenFromLocalStorage = () => {
     if (typeof window !== 'undefined') {
         return localStorage.getItem('property.v3x.token');
     }
+
     return null;
 };
 
@@ -39,6 +44,7 @@ export const useAuth = create<{
         if (typeof window !== 'undefined') {
             localStorage.removeItem('property.v3x.token');
         }
+
         set({ token: null });
     },
 }));
