@@ -7,11 +7,18 @@ use poem::{
     IntoResponse,
 };
 use serde::Deserialize;
+use url::Url;
 use std::{collections::HashSet, sync::Arc};
+use tracing::info;
 use uuid::Uuid;
 
+#[derive(Deserialize)]
+struct LoginQuery {
+    redirect: Option<String>,
+}
+
 #[handler]
-pub async fn login(state: Data<&Arc<AppState>>) -> impl IntoResponse {
+pub async fn login(query: Query<LoginQuery>, state: Data<&Arc<AppState>>) -> impl IntoResponse {
     // let discovery_url = "http://localhost:8080/realms/master/.well-known/openid-configuration";
 
     // let http_client = reqwest::Client::new();
@@ -27,6 +34,7 @@ pub async fn login(state: Data<&Arc<AppState>>) -> impl IntoResponse {
 
     let options = Options {
         scope: Some(scope),
+        state: query.redirect.clone(),
         prompt: Some(HashSet::from([Prompt::SelectAccount])),
         ..Default::default()
     };
@@ -42,8 +50,10 @@ pub async fn login(state: Data<&Arc<AppState>>) -> impl IntoResponse {
 
 #[derive(Deserialize)]
 pub struct MyQuery {
-    pub session_state: Option<String>,
-    pub iss: Option<String>,
+    pub state: Option<String>,
+    pub scope: Option<String>,
+    pub hd: Option<String>,
+    pub authuser: Option<String>,
     pub code: String,
     pub prompt: Option<String>,
 }
@@ -82,14 +92,30 @@ pub async fn callback(
 
     let token = session.id;
 
-    Redirect::temporary("http://localhost:3000/me")
+    let mut redirect_url: Url = query.state.clone().unwrap_or("http://localhost:3000/me".to_string()).parse().unwrap();
+
+    redirect_url.set_query(Some(&format!("token={}", token)));
+
+    Redirect::temporary(redirect_url)
         .with_header("Set-Cookie", format!("property.v3x.token={}", token))
 }
 
 #[handler]
-pub async fn me(state: Data<&Arc<AppState>>, cookies: &CookieJar) -> impl IntoResponse {
-    let token = cookies.get("property.v3x.token").unwrap();
-    let token = Uuid::parse_str(token.value_str()).unwrap();
+pub async fn me(
+    state: Data<&Arc<AppState>>,
+    cookies: &CookieJar,
+    headers: &HeaderMap,
+) -> impl IntoResponse {
+    let token = {
+        let token = cookies
+            .get("property.v3x.token")
+            .map(|x| x.value_str().to_string())
+            .or(headers
+                .get("Authorization")
+                .map(|x| x.to_str().unwrap().replace("Bearer ", "")))
+            .expect("No token found");
+        Uuid::parse_str(&token).unwrap()
+    };
 
     let session = SessionState::get_by_id(token, &state.database)
         .await
@@ -130,7 +156,7 @@ pub async fn delete_sessions(
         .await
         .unwrap();
 
-    let sessions = SessionState::delete_by_user_id(session.user_id, &state.database)
+    let sessions = SessionState::invalidate_by_user_id(session.user_id, &state.database)
         .await
         .unwrap();
 

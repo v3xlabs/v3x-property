@@ -3,7 +3,7 @@ use std::sync::Arc;
 use poem::{
     get, handler,
     listener::TcpListener,
-    middleware::CookieJarManager,
+    middleware::{CookieJarManager, Cors},
     web::{Data, Html, Path},
     EndpointExt, Route, Server,
 };
@@ -95,6 +95,7 @@ pub async fn serve(state: AppState) -> Result<(), poem::Error> {
         .nest("/openapi.json", spec)
         .at("/", get(ui))
         .with(CookieJarManager::new())
+        .with(Cors::new())
         .data(state);
 
     let listener = TcpListener::bind("0.0.0.0:3000");

@@ -46,6 +46,7 @@ impl SessionState {
         Ok(session)
     }
 
+    /// Get all sessions for a user that are valid
     pub async fn get_by_user_id(user_id: i32, database: &Database) -> Result<Vec<Self>, sqlx::Error> {
         let sessions = sqlx::query_as::<_, SessionState>(
             "SELECT * FROM sessions WHERE user_id = $1 AND valid = TRUE",
@@ -57,10 +58,22 @@ impl SessionState {
         Ok(sessions)
     }
 
-    // Set every session to invalid
-    pub async fn delete_by_user_id(user_id: i32, database: &Database) -> Result<Vec<Self>, sqlx::Error> {
+    /// Set every session to invalid
+    pub async fn invalidate_by_user_id(user_id: i32, database: &Database) -> Result<Vec<Self>, sqlx::Error> {
         let sessions = sqlx::query_as::<_, SessionState>(
             "UPDATE sessions SET valid = FALSE WHERE user_id = $1",
+        )
+        .bind(user_id)
+        .fetch_all(&database.pool)
+        .await?;
+
+        Ok(sessions)
+    }
+
+    /// Invalidate all sessions for a user that are older than the given time
+    pub async fn invalidate_by_user_id_by_time(user_id: i32, database: &Database, invalidate_before: chrono::DateTime<chrono::Utc>) -> Result<Vec<Self>, sqlx::Error> {
+        let sessions = sqlx::query_as::<_, SessionState>(
+            "UPDATE sessions SET valid = FALSE WHERE user_id = $1 AND last_access < $2",
         )
         .bind(user_id)
         .fetch_all(&database.pool)
