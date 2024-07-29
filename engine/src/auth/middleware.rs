@@ -1,7 +1,6 @@
 use std::sync::Arc;
 
 use poem::{web::Data, Error, FromRequest, Request, RequestBody, Result};
-use reqwest::StatusCode;
 use uuid::Uuid;
 
 use crate::state::AppState;
