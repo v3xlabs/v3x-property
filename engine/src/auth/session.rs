@@ -35,12 +35,12 @@ impl SessionState {
         Ok(session)
     }
 
-    pub async fn get_by_id(id: Uuid, database: &Database) -> Result<Self, sqlx::Error> {
+    pub async fn get_by_id(id: Uuid, database: &Database) -> Result<Option<Self>, sqlx::Error> {
         let session = sqlx::query_as::<_, SessionState>(
             "SELECT * FROM sessions WHERE id = $1 AND valid = TRUE",
         )
         .bind(id)
-        .fetch_one(&database.pool)
+        .fetch_optional(&database.pool)
         .await?;
 
         Ok(session)

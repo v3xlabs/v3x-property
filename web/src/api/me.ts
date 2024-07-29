@@ -1,5 +1,3 @@
-import useSWR from "swr";
-import { useAuth } from "./auth";
 import { useHttp } from "./core";
 
 export type ApiMeResponse = {
@@ -30,4 +28,4 @@ export type ApiMeResponse = {
     "nickname": any
 }
 
-export const useApiMe = (token: string | null) => useHttp<ApiMeResponse>("/me", token);
+export const useApiMe = () => useHttp<ApiMeResponse>("/me");

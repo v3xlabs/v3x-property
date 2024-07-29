@@ -1,16 +1,15 @@
-import useSWR from "swr";
-import { apiMe, useApiMe } from "../api/me";
+import { useApiMe } from "../api/me";
 import { useAuth } from "../api/auth";
 
 const LOGIN_URL = "http://localhost:3000/login";
 
 export const Navbar = () => {
     const { token, clearAuthToken } = useAuth();
-    const { data: meData, isLoading: isVerifyingAuth } = useApiMe(token);
-    
+    const { data: meData, isLoading: isVerifyingAuth } = useApiMe();
+
     const login_here_url = LOGIN_URL + "?redirect=" + encodeURIComponent(window.location.href);
 
-    console.log({meData});
+    console.log({ meData });
 
     return (
         <div className="w-full bg-white border-b h-8 flex items-center justify-between">

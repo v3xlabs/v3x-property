@@ -1,6 +1,7 @@
 use std::sync::Arc;
 
 use poem::{web::Data, Error, FromRequest, Request, RequestBody, Result};
+use reqwest::StatusCode;
 use uuid::Uuid;
 
 use crate::state::AppState;
@@ -33,7 +34,11 @@ impl<'a> FromRequest<'a> for AuthToken {
                 // Check if active session exists with token
                 let session = SessionState::get_by_id(token, &state.database)
                     .await
-                    .unwrap();
+                    .unwrap()
+                    .ok_or(Error::from_string(
+                        "Session not found, token valid but no session exists",
+                        StatusCode::UNAUTHORIZED,
+                    ))?;
 
                 Ok(AuthToken::Active(ActiveUser { session }))
             }
