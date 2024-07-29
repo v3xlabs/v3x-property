@@ -10,7 +10,7 @@ export const Navbar = () => {
     
     const login_here_url = LOGIN_URL + "?redirect=" + encodeURIComponent(window.location.href);
 
-    console.log({token});
+    console.log({meData});
 
     return (
         <div className="w-full bg-white border-b h-8 flex items-center justify-between">
@@ -21,9 +21,9 @@ export const Navbar = () => {
                 meData && <div className="h-full border-l px-2 hover:bg-black/10 relative">
                     <div className="h-full p-1 flex items-center gap-2">
                         <div className="h-full aspect-square bg-black/10">
-                            <img src={meData.oauth_data.picture} className="w-full h-full object-contain" />
+                            <img src={meData?.oauth_data?.picture} className="w-full h-full object-contain" />
                         </div>
-                        <div>{meData.oauth_data.name}</div>
+                        <div>{meData.oauth_data?.name}</div>
                         <div className="absolute right-0 w-fit top-full bg-white border">
                             <div className="px-3 py-0.5">
                                 Hello

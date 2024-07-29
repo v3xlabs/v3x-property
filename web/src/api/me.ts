@@ -30,4 +30,4 @@ export type ApiMeResponse = {
     "nickname": any
 }
 
-export const useApiMe = (token: string | null) => useHttp<ApiMeResponse>("/api/me", token);
+export const useApiMe = (token: string | null) => useHttp<ApiMeResponse>("/me", token);

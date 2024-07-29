@@ -1,16 +1,18 @@
-use crate::{auth::session::SessionState, models::user_data::UserData, state::AppState};
+use crate::{
+    auth::{middleware::AuthToken, session::SessionState},
+    models::user_data::UserData,
+    state::AppState,
+};
 use openid::{Options, Prompt, Token};
 use poem::{
     handler,
     http::HeaderMap,
-    web::{cookie::CookieJar, Data, Json, Query, RealIp, Redirect},
+    web::{Data, Json, Query, RealIp, Redirect},
     IntoResponse,
 };
 use serde::Deserialize;
-use url::Url;
 use std::{collections::HashSet, sync::Arc};
-use tracing::info;
-use uuid::Uuid;
+use url::Url;
 
 #[derive(Deserialize)]
 struct LoginQuery {
@@ -92,7 +94,12 @@ pub async fn callback(
 
     let token = session.id;
 
-    let mut redirect_url: Url = query.state.clone().unwrap_or("http://localhost:3000/me".to_string()).parse().unwrap();
+    let mut redirect_url: Url = query
+        .state
+        .clone()
+        .unwrap_or("http://localhost:3000/me".to_string())
+        .parse()
+        .unwrap();
 
     redirect_url.set_query(Some(&format!("token={}", token)));
 
@@ -101,27 +108,8 @@ pub async fn callback(
 }
 
 #[handler]
-pub async fn me(
-    state: Data<&Arc<AppState>>,
-    cookies: &CookieJar,
-    headers: &HeaderMap,
-) -> impl IntoResponse {
-    let token = {
-        let token = cookies
-            .get("property.v3x.token")
-            .map(|x| x.value_str().to_string())
-            .or(headers
-                .get("Authorization")
-                .map(|x| x.to_str().unwrap().replace("Bearer ", "")))
-            .expect("No token found");
-        Uuid::parse_str(&token).unwrap()
-    };
-
-    let session = SessionState::get_by_id(token, &state.database)
-        .await
-        .unwrap();
-
-    let user = UserData::get_by_id(session.user_id, &state.database)
+pub async fn me(state: Data<&Arc<AppState>>, token: AuthToken) -> impl IntoResponse {
+    let user = UserData::get_by_id(token.session.user_id, &state.database)
         .await
         .unwrap();
 
@@ -129,15 +117,8 @@ pub async fn me(
 }
 
 #[handler]
-pub async fn get_sessions(state: Data<&Arc<AppState>>, cookies: &CookieJar) -> impl IntoResponse {
-    let token = cookies.get("property.v3x.token").unwrap();
-    let token = Uuid::parse_str(token.value_str()).unwrap();
-
-    let session = SessionState::get_by_id(token, &state.database)
-        .await
-        .unwrap();
-
-    let sessions = SessionState::get_by_user_id(session.user_id, &state.database)
+pub async fn get_sessions(state: Data<&Arc<AppState>>, token: AuthToken) -> impl IntoResponse {
+    let sessions = SessionState::get_by_user_id(token.session.user_id, &state.database)
         .await
         .unwrap();
 
@@ -145,18 +126,8 @@ pub async fn get_sessions(state: Data<&Arc<AppState>>, cookies: &CookieJar) -> i
 }
 
 #[handler]
-pub async fn delete_sessions(
-    cookies: &CookieJar,
-    state: Data<&Arc<AppState>>,
-) -> impl IntoResponse {
-    let token = cookies.get("property.v3x.token").unwrap();
-    let token = Uuid::parse_str(token.value_str()).unwrap();
-
-    let session = SessionState::get_by_id(token, &state.database)
-        .await
-        .unwrap();
-
-    let sessions = SessionState::invalidate_by_user_id(session.user_id, &state.database)
+pub async fn delete_sessions(state: Data<&Arc<AppState>>, token: AuthToken) -> impl IntoResponse {
+    let sessions = SessionState::invalidate_by_user_id(token.session.user_id, &state.database)
         .await
         .unwrap();
 
