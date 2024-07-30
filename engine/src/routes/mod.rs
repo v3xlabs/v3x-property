@@ -11,7 +11,10 @@ use poem_openapi::{param::Query, payload::PlainText, OpenApi, OpenApiService};
 use reqwest::StatusCode;
 
 use crate::{
-    auth::{middleware::AuthToken, session::SessionState},
+    auth::{
+        middleware::AuthToken,
+        session::{SafeSession, SessionState},
+    },
     models::{media::Media, product::Product, property::Property},
     state::AppState,
 };
@@ -88,12 +91,16 @@ impl Api {
         &self,
         auth: AuthToken,
         state: Data<&Arc<AppState>>,
-    ) -> poem_openapi::payload::Json<Vec<SessionState>> {
+    ) -> poem_openapi::payload::Json<Vec<SafeSession>> {
         match auth {
             AuthToken::Active(active_user) => {
-                let sessions = SessionState::get_by_user_id(active_user.session.user_id, &state.database)
-                    .await
-                    .unwrap();
+                let sessions =
+                    SessionState::get_by_user_id(active_user.session.user_id, &state.database)
+                        .await
+                        .unwrap()
+                        .into_iter()
+                        .map(|x| x.into())
+                        .collect();
 
                 poem_openapi::payload::Json(sessions)
             }

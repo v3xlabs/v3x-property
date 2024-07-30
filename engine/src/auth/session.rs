@@ -7,7 +7,17 @@ use uuid::Uuid;
 
 use crate::database::Database;
 
-#[derive(sqlx::FromRow, Debug, Clone, Serialize, Deserialize, Object)]
+#[derive(Debug, Clone, Serialize, Deserialize, Object)]
+pub struct SafeSession {
+    pub id: String,
+    pub user_id: i32,
+    pub user_agent: String,
+    pub user_ip: IpAddr,
+    pub last_access: chrono::DateTime<chrono::Utc>,
+    pub valid: bool,  
+}
+
+#[derive(sqlx::FromRow, Debug, Clone, Serialize, Deserialize)]
 pub struct SessionState {
     pub id: Uuid,
     pub user_id: i32,
@@ -80,5 +90,22 @@ impl SessionState {
         .await?;
 
         Ok(sessions)
+    }
+}
+
+impl Into<SafeSession> for SessionState {
+    fn into(self) -> SafeSession {
+        let id = self.id.to_string();
+        let id = id[0..6].to_string() + &id[30..];
+
+        SafeSession {
+            // Strip uuid to be abc...xyz
+            id,
+            user_id: self.user_id,
+            user_agent: self.user_agent,
+            user_ip: self.user_ip,
+            last_access: self.last_access,
+            valid: self.valid,
+        }
     }
 }
