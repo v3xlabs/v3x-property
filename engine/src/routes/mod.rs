@@ -1,25 +1,25 @@
 use std::sync::Arc;
 
+use me::ApiMe;
 use poem::{
-    get, handler,
+    delete, get, handler,
     listener::TcpListener,
-    middleware::{CookieJarManager, Cors},
+    middleware::Cors,
     web::{Data, Html, Path},
     EndpointExt, Route, Server,
 };
 use poem_openapi::{param::Query, payload::PlainText, OpenApi, OpenApiService};
-use reqwest::StatusCode;
+use sessions::ApiSessions;
 
 use crate::{
-    auth::{
-        middleware::AuthToken,
-        session::{SafeSession, SessionState},
-    },
+    auth::{middleware::AuthToken, session::SessionState},
     models::{media::Media, product::Product, property::Property},
     state::AppState,
 };
 
-pub mod auth;
+pub mod me;
+pub mod oauth;
+pub mod sessions;
 
 struct Api;
 
@@ -85,28 +85,6 @@ impl Api {
 
         poem_openapi::payload::Json(property)
     }
-
-    #[oai(path = "/sessions", method = "get")]
-    async fn get_sessions(
-        &self,
-        auth: AuthToken,
-        state: Data<&Arc<AppState>>,
-    ) -> poem_openapi::payload::Json<Vec<SafeSession>> {
-        match auth {
-            AuthToken::Active(active_user) => {
-                let sessions =
-                    SessionState::get_by_user_id(active_user.session.user_id, &state.database)
-                        .await
-                        .unwrap()
-                        .into_iter()
-                        .map(|x| x.into())
-                        .collect();
-
-                poem_openapi::payload::Json(sessions)
-            }
-            _ => poem_openapi::payload::Json(vec![]),
-        }
-    }
 }
 
 // returns the html from the index.html file
@@ -116,25 +94,22 @@ async fn ui() -> Html<&'static str> {
 }
 
 pub async fn serve(state: AppState) -> Result<(), poem::Error> {
-    let api_service =
-        OpenApiService::new(Api, "Hello World", "1.0").server("http://localhost:3000/api");
+    let api_service = OpenApiService::new((Api, ApiMe, ApiSessions), "Hello World", "1.0")
+        .server("http://localhost:3000/api");
 
     let spec = api_service.spec_endpoint();
 
     let state = Arc::new(state);
 
     let app = Route::new()
-        .at("/login", get(auth::login))
-        .at("/me", get(auth::me))
-        .at(
-            "/sessions",
-            get(auth::get_sessions).delete(auth::delete_sessions),
-        )
-        .at("/callback", get(auth::callback))
+        // .at("/login", get(auth::login))
+        // .at("/me", get(auth::me))
+        // .at("/sessions", delete(auth::delete_sessions))
+        // .at("/callback", get(auth::callback))
         .nest("/api", api_service)
         .nest("/openapi.json", spec)
         .at("/", get(ui))
-        .with(CookieJarManager::new())
+        // .with(CookieJarManager::new())
         .with(Cors::new())
         .data(state);
 

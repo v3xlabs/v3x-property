@@ -1830,8 +1830,7 @@ checksum = "d231b230927b5e4ad203db57bbcbee2802f6bce620b1e4a9024a07d94e2907ec"
 [[package]]
 name = "poem"
 version = "3.0.4"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "f1ba1c27f8f89e1bccdda0c680f72790545a11a8d8555819472f5839d7a8ca9d"
+source = "git+https://github.com/poem-web/poem?branch=master#9d32cecbad6f6e25a659ffe46a432a174340fbfc"
 dependencies = [
  "bytes",
  "chrono",
@@ -1851,7 +1850,7 @@ dependencies = [
  "percent-encoding",
  "pin-project-lite",
  "poem-derive",
- "quick-xml 0.36.1",
+ "quick-xml",
  "regex",
  "rfc7239",
  "serde",
@@ -1873,8 +1872,7 @@ dependencies = [
 [[package]]
 name = "poem-derive"
 version = "3.0.4"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "a62fea1692d80a000126f9b28d865012a160b80000abb53ccf152b428222c155"
+source = "git+https://github.com/poem-web/poem?branch=master#9d32cecbad6f6e25a659ffe46a432a174340fbfc"
 dependencies = [
  "proc-macro-crate",
  "proc-macro2",
@@ -1885,8 +1883,7 @@ dependencies = [
 [[package]]
 name = "poem-openapi"
 version = "5.0.3"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "a6f4ac688d8b83fbbc8de929dee207d345600a6b3af315927e92dba26a023103"
+source = "git+https://github.com/poem-web/poem?branch=master#9d32cecbad6f6e25a659ffe46a432a174340fbfc"
 dependencies = [
  "base64 0.22.1",
  "bytes",
@@ -1899,22 +1896,23 @@ dependencies = [
  "num-traits",
  "poem",
  "poem-openapi-derive",
- "quick-xml 0.32.0",
+ "quick-xml",
  "regex",
  "serde",
  "serde_json",
  "serde_urlencoded",
  "serde_yaml",
+ "sqlx",
  "thiserror",
  "tokio",
+ "url",
  "uuid",
 ]
 
 [[package]]
 name = "poem-openapi-derive"
 version = "5.0.3"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "0812a8f13ac63020d1274d80ea2229e858ed0118a2d9537744465995e0913375"
+source = "git+https://github.com/poem-web/poem?branch=master#9d32cecbad6f6e25a659ffe46a432a174340fbfc"
 dependencies = [
  "darling",
  "http",
@@ -2023,16 +2021,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "5e719e8df665df0d1c8fbfd238015744736151d4445ec0836b8e628aae103b77"
 dependencies = [
  "unicode-ident",
-]
-
-[[package]]
-name = "quick-xml"
-version = "0.32.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "1d3a6e5838b60e0e8fa7a43f22ade549a37d61f8bdbe636d0d7816191de969c2"
-dependencies = [
- "memchr",
- "serde",
 ]
 
 [[package]]
@@ -3326,6 +3314,8 @@ dependencies = [
  "color-eyre",
  "dotenv",
  "dotenvy",
+ "hex",
+ "hmac",
  "openid",
  "poem",
  "poem-openapi",
@@ -3333,6 +3323,7 @@ dependencies = [
  "serde",
  "serde_json",
  "serde_with",
+ "sha2",
  "sqlx",
  "terminal-banner",
  "tracing",
