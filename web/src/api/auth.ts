@@ -1,13 +1,15 @@
+/* eslint-disable no-undef */
 import { create } from 'zustand';
 
 export const preflightAuth = async () => {
     // If query params includes `token`, set it using setAuthToken and remove it from url
-    const { setAuthToken } = useAuth();
 
     const token = new URLSearchParams(window.location.search).get('token');
 
+    console.log('PREFLIGHT AUTH', token);
+
     if (token) {
-        setAuthToken(token);
+        useAuth.getState().setAuthToken(token);
         window.history.replaceState(
             {},
             document.title,
@@ -45,6 +47,6 @@ export const useAuth = create<{
             localStorage.removeItem('property.v3x.token');
         }
 
-        set({ token: null });
+        set({ token: undefined });
     },
 }));

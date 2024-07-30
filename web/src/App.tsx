@@ -1,6 +1,5 @@
-import React, { useEffect } from "react";
-import { Navbar } from "./components/Navbar";
-import { preflightAuth } from "./api/auth";
+import { preflightAuth } from './api/auth';
+import { Navbar } from './components/Navbar';
 
 export const App = () => {
     preflightAuth();
