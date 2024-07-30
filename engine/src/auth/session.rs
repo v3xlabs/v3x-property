@@ -36,7 +36,7 @@ impl SessionState {
         Ok(session)
     }
 
-    pub async fn get_by_id(id: &str, database: &Database) -> Result<Option<Self>, sqlx::Error> {
+    pub async fn _get_by_id(id: &str, database: &Database) -> Result<Option<Self>, sqlx::Error> {
         let session = sqlx::query_as::<_, SessionState>(
             "SELECT * FROM sessions WHERE id = $1 AND valid = TRUE",
         )
@@ -82,6 +82,23 @@ impl SessionState {
             "UPDATE sessions SET valid = FALSE WHERE user_id = $1",
         )
         .bind(user_id)
+        .fetch_all(&database.pool)
+        .await?;
+
+        Ok(sessions)
+    }
+
+    /// Set session to invalid by id
+    pub async fn invalidate_by_id(
+        id: &str,
+        user_id: i32,
+        database: &Database,
+    ) -> Result<Vec<Self>, sqlx::Error> {
+        let sessions = sqlx::query_as::<_, SessionState>(
+            "UPDATE sessions SET valid = FALSE WHERE user_id = $1 AND id = $2",
+        )
+        .bind(user_id)
+        .bind(id)
         .fetch_all(&database.pool)
         .await?;
 

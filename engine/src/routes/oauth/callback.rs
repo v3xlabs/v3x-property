@@ -1,14 +1,12 @@
 use std::sync::Arc;
 
-use hmac::{Hmac, Mac};
 use openid::Token;
 use poem::{handler, http::HeaderMap, web::{Data, Query, RealIp, Redirect}, IntoResponse};
 use serde::Deserialize;
-use sha2::Sha256;
 use url::Url;
 use uuid::Uuid;
 
-use crate::{auth::session::SessionState, models::user_data::UserEntry, state::AppState};
+use crate::{auth::{hash::hash_session, session::SessionState}, models::user_data::UserEntry, state::AppState};
 
 
 #[derive(Deserialize, Debug)]
@@ -50,11 +48,9 @@ pub async fn callback(
     let user_ip = ip.0.unwrap();
 
     let token = Uuid::new_v4().to_string();
-    let mut hash = Hmac::<Sha256>::new_from_slice(b"").unwrap();
-    hash.update(token.as_bytes());
-    let hash = hex::encode(hash.finalize().into_bytes());
+    let hash = hash_session(&token).unwrap();
 
-    let session = SessionState::new(&hash, user.id, user_agent, &user_ip, &state.database)
+    let _session = SessionState::new(&hash, user.id, user_agent, &user_ip, &state.database)
         .await
         .unwrap();
 

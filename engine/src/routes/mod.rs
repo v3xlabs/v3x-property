@@ -2,114 +2,43 @@ use std::sync::Arc;
 
 use me::ApiMe;
 use poem::{
-    delete, get, handler,
-    listener::TcpListener,
-    middleware::Cors,
-    web::{Data, Html, Path},
-    EndpointExt, Route, Server,
+    get, handler, listener::TcpListener, middleware::Cors, web::Html, EndpointExt, Route, Server,
 };
-use poem_openapi::{param::Query, payload::PlainText, OpenApi, OpenApiService};
+use poem_openapi::{OpenApi, OpenApiService};
+use root::RootApi;
 use sessions::ApiSessions;
 
-use crate::{
-    auth::{middleware::AuthToken, session::SessionState},
-    models::{media::Media, product::Product, property::Property},
-    state::AppState,
-};
+use crate::state::AppState;
 
 pub mod me;
 pub mod oauth;
+pub mod root;
 pub mod sessions;
 
-struct Api;
-
-#[OpenApi]
-impl Api {
-    /// Testing one two three
-    #[oai(path = "/hello", method = "get")]
-    async fn index(&self, name: Query<Option<String>>) -> PlainText<String> {
-        match name.0 {
-            Some(name) => PlainText(format!("Hello, {}!", name)),
-            None => PlainText("Hello, World!".to_string()),
-        }
-    }
-
-    #[oai(path = "/properties", method = "get")]
-    async fn get_properties(
-        &self,
-        state: Data<&Arc<AppState>>,
-        owner_id: Query<Option<i32>>,
-    ) -> poem_openapi::payload::Json<Vec<Property>> {
-        let owner_id = owner_id.0.unwrap_or(0);
-
-        let properties = Property::get_by_owner_id(owner_id, &state.database)
-            .await
-            .unwrap();
-
-        poem_openapi::payload::Json(properties)
-    }
-
-    #[oai(path = "/media/:media_id", method = "get")]
-    async fn get_media(
-        &self,
-        state: Data<&Arc<AppState>>,
-        media_id: Path<i32>,
-    ) -> poem_openapi::payload::Json<Media> {
-        let media = Media::get_by_id(media_id.0, &state.database).await.unwrap();
-
-        poem_openapi::payload::Json(media)
-    }
-
-    #[oai(path = "/product/:product_id", method = "get")]
-    async fn get_product(
-        &self,
-        state: Data<&Arc<AppState>>,
-        product_id: Path<i32>,
-    ) -> poem_openapi::payload::Json<Product> {
-        let product = Product::get_by_id(product_id.0, &state.database)
-            .await
-            .unwrap();
-
-        poem_openapi::payload::Json(product)
-    }
-
-    #[oai(path = "/property/:property_id", method = "get")]
-    async fn get_property(
-        &self,
-        state: Data<&Arc<AppState>>,
-        property_id: Path<i32>,
-    ) -> poem_openapi::payload::Json<Property> {
-        let property = Property::get_by_id(property_id.0, &state.database)
-            .await
-            .unwrap();
-
-        poem_openapi::payload::Json(property)
-    }
+fn get_api() -> impl OpenApi {
+    (RootApi, ApiMe, ApiSessions)
 }
 
-// returns the html from the index.html file
 #[handler]
-async fn ui() -> Html<&'static str> {
+async fn get_openapi_docs() -> Html<&'static str> {
     Html(include_str!("./index.html"))
 }
 
 pub async fn serve(state: AppState) -> Result<(), poem::Error> {
-    let api_service = OpenApiService::new((Api, ApiMe, ApiSessions), "Hello World", "1.0")
-        .server("http://localhost:3000/api");
+    let api_service =
+        OpenApiService::new(get_api(), "Hello World", "1.0").server("http://localhost:3000/api");
 
     let spec = api_service.spec_endpoint();
 
     let state = Arc::new(state);
 
     let app = Route::new()
-        // .at("/login", get(auth::login))
-        // .at("/me", get(auth::me))
-        // .at("/sessions", delete(auth::delete_sessions))
-        // .at("/callback", get(auth::callback))
+        .at("/login", get(oauth::login::login))
+        .at("/callback", get(oauth::callback::callback))
         .nest("/api", api_service)
         .nest("/openapi.json", spec)
-        .at("/", get(ui))
-        // .with(CookieJarManager::new())
+        .at("/docs", get(get_openapi_docs))
+        .at("/", get(get_openapi_docs))
         .with(Cors::new())
         .data(state);
 
@@ -118,9 +47,4 @@ pub async fn serve(state: AppState) -> Result<(), poem::Error> {
     Server::new(listener).run(app).await.unwrap();
 
     Ok(())
-}
-
-#[handler]
-async fn root() -> &'static str {
-    "Hello, World!"
 }

@@ -1,13 +1,11 @@
 use std::sync::Arc;
 
-use hmac::{Hmac, Mac};
 use poem::{web::Data, Error, FromRequest, Request, RequestBody, Result};
 use reqwest::StatusCode;
-use sha2::Sha256;
 
 use crate::state::AppState;
 
-use super::session::SessionState;
+use super::{hash::hash_session, session::SessionState};
 
 pub struct ActiveUser {
     pub session: SessionState,
@@ -32,9 +30,7 @@ impl<'a> FromRequest<'a> for AuthToken {
         match token {
             Some(token) => {
                 // Hash the token
-                let mut hash = Hmac::<Sha256>::new_from_slice(b"").unwrap();
-                hash.update(token.as_bytes());
-                let hash = hex::encode(hash.finalize().into_bytes());
+                let hash = hash_session(&token).unwrap();
 
                 // Check if active session exists with token
                 let session = SessionState::try_access(&hash, &state.database)

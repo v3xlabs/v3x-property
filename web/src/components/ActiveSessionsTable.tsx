@@ -2,11 +2,13 @@ import { clsx } from 'clsx';
 import { FC } from 'react';
 import { UAParser } from 'ua-parser-js';
 
+import { useAuth } from '../api/auth';
 import { useSessions } from '../api/sessions';
 import { getRelativeTimeString } from '../util/date';
 
 export const ActiveSessionsTable: FC = () => {
-    const { data: sessions } = useSessions();
+    const { data: sessions, mutate: updateSessions } = useSessions();
+    const { token } = useAuth();
 
     return (
         <div className="p-2 space-y-2">
@@ -18,61 +20,87 @@ export const ActiveSessionsTable: FC = () => {
             </p>
             <div className="space-y-2">
                 {sessions &&
-                    sessions.map((session) => {
-                        const user_agent = UAParser(session.user_agent);
-                        const last_accessed = new Date(session.last_access);
-                        const last_accessed_formatted =
-                            getRelativeTimeString(last_accessed);
-                        const isRecent =
-                            last_accessed.getTime() >
-                            Date.now() - 1000 * 60 * 60 * 24;
+                    sessions
+                        .sort(
+                            // sort by last access time
+                            (a, b) =>
+                                new Date(b.last_access).getTime() -
+                                new Date(a.last_access).getTime()
+                        )
+                        .map((session) => {
+                            const user_agent = UAParser(session.user_agent);
+                            const last_accessed = new Date(session.last_access);
+                            const last_accessed_formatted =
+                                getRelativeTimeString(last_accessed);
+                            const isRecent =
+                                last_accessed.getTime() >
+                                Date.now() - 1000 * 60 * 60 * 24;
 
-                        return (
-                            <div
-                                key={session.id}
-                                className="bg-blue-50 p-2 flex justify-between items-center"
-                            >
-                                <div>
-                                    <div className="font-bold">
-                                        {session.user_ip}
+                            return (
+                                <div
+                                    key={session.id}
+                                    className="bg-blue-50 p-2 flex justify-between items-center"
+                                >
+                                    <div>
+                                        <div className="font-bold">
+                                            {session.user_ip}
+                                        </div>
+                                        <div className="space-x-2">
+                                            <b>
+                                                {[
+                                                    user_agent.browser.name,
+                                                    user_agent.browser.version,
+                                                ]
+                                                    .filter(Boolean)
+                                                    .join(' ')}
+                                            </b>
+                                            <span>on</span>
+                                            <b>
+                                                {[
+                                                    user_agent.os.name,
+                                                    user_agent.cpu.architecture,
+                                                    user_agent.os.version,
+                                                ]
+                                                    .filter(Boolean)
+                                                    .join(' ')}
+                                            </b>
+                                        </div>
+                                        <div
+                                            className={clsx(
+                                                isRecent && 'text-green-500'
+                                            )}
+                                        >
+                                            {last_accessed_formatted}
+                                        </div>
+                                        <div className="text-neutral-400">
+                                            #{session.id.slice(0, 6)}
+                                        </div>
                                     </div>
-                                    <div className="space-x-2">
-                                        <b>
-                                            {[
-                                                user_agent.browser.name,
-                                                user_agent.browser.version,
-                                            ]
-                                                .filter(Boolean)
-                                                .join(' ')}
-                                        </b>
-                                        <span>on</span>
-                                        <b>
-                                            {[
-                                                user_agent.os.name,
-                                                user_agent.cpu.architecture,
-                                                user_agent.os.version,
-                                            ]
-                                                .filter(Boolean)
-                                                .join(' ')}
-                                        </b>
-                                    </div>
-                                    <div
-                                        className={clsx(
-                                            isRecent && 'text-green-500'
-                                        )}
-                                    >
-                                        {last_accessed_formatted}
-                                    </div>
-                                    <div className="text-neutral-400">
-                                        #{session.id.slice(0, 6)}
+                                    <div className="flex items-center">
+                                        <button
+                                            className="btn"
+                                            onClick={() => {
+                                                fetch(
+                                                    `http://localhost:3000/api/sessions/${session.id}`,
+                                                    {
+                                                        method: 'DELETE',
+                                                        headers: {
+                                                            Authorization: `Bearer ${token}`,
+                                                            'Content-Type':
+                                                                'application/json',
+                                                        },
+                                                    }
+                                                ).then(() => {
+                                                    updateSessions();
+                                                });
+                                            }}
+                                        >
+                                            Deauthorize
+                                        </button>
                                     </div>
                                 </div>
-                                <div className="flex items-center">
-                                    <button className="btn">Deauthorize</button>
-                                </div>
-                            </div>
-                        );
-                    })}
+                            );
+                        })}
             </div>
             <p>
                 If there is a session in here that you do not recognize, you can

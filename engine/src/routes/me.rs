@@ -1,8 +1,7 @@
 use std::sync::Arc;
 
-use poem::{handler, web::Data, Error, IntoResponse};
+use poem::web::Data;
 use poem_openapi::{payload::Json, OpenApi};
-use reqwest::StatusCode;
 
 use crate::{auth::middleware::AuthToken, models::user_data::{User, UserEntry}, state::AppState};
 
