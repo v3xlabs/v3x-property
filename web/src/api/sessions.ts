@@ -1,6 +1,6 @@
 import { useHttp } from './core';
 
-type SessionResponse = {
+export type SessionResponse = {
     id: string;
     user_id: number;
     user_agent: string;
