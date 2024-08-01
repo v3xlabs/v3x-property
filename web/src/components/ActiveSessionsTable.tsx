@@ -9,9 +9,9 @@ import { getRelativeTimeString } from '../util/date';
 import { LeafletPreview } from './LeafletPreview';
 
 const ActiveSession: FC<{ session: SessionResponse }> = ({ session }) => {
-    const { data: sessions, mutate: updateSessions } = useSessions();
+    const { mutate: updateSessions } = useSessions();
     const { token } = useAuth();
-    const { data: geoip } = useGeoIp('77.162.232.110' /* session.user_ip */);
+    const { data: geoip } = useGeoIp(session.user_ip);
     const user_agent = UAParser(session.user_agent);
     const last_accessed = new Date(session.last_access);
     const last_accessed_formatted = getRelativeTimeString(last_accessed);
@@ -28,16 +28,10 @@ const ActiveSession: FC<{ session: SessionResponse }> = ({ session }) => {
             {geoip?.latitude && (
                 <div className="h-full">
                     <div className="w-32 h-32 aspect-square bg-gray-100 rounded-lg border border-neutral-400 overflow-hidden">
-                        {/* <iframe src={mapUrl} className="w-full h-full" /> */}
                         <LeafletPreview
                             latitude={latitude}
                             longitude={longitude}
                         />
-                        {/* <img
-                        alt=""
-                        src={mapUrl}
-                        className="w-full h-full object-contain"
-                    /> */}
                     </div>
                 </div>
             )}
@@ -105,8 +99,7 @@ const ActiveSession: FC<{ session: SessionResponse }> = ({ session }) => {
 };
 
 export const ActiveSessionsTable: FC = () => {
-    const { data: sessions, mutate: updateSessions } = useSessions();
-    const { token } = useAuth();
+    const { data: sessions } = useSessions();
 
     return (
         <div className="p-2 space-y-2">
