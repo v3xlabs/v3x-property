@@ -1,9 +1,11 @@
 /* eslint-disable jsx-a11y/alt-text */
 /* eslint-disable no-undef */
+import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
 import { Link } from '@tanstack/react-router';
 
 import { useAuth } from '../api/auth';
 import { useApiMe } from '../api/me';
+import { AvatarHolder, getInitials } from './UserProfile';
 
 const LOGIN_URL = 'http://localhost:3000/login';
 
@@ -38,27 +40,52 @@ export const Navbar = () => {
                 </div>
             </div>
             {meData && (
-                <div className="h-full border-l px-2 hover:bg-black/10 relative">
-                    <div className="h-full p-1 flex items-center gap-2">
-                        <div className="h-full aspect-square bg-black/10">
-                            <img
-                                src={meData?.picture}
-                                className="w-full h-full object-contain"
-                            />
-                        </div>
-                        <div>{meData.name}</div>
-                        <div className="absolute right-0 w-fit top-full bg-white border">
-                            <div className="px-3 py-0.5">Hello</div>
-                            <button
-                                className="px-3 py-0.5 hover:bg-black/10"
-                                onClick={() => {
-                                    clearAuthToken();
-                                }}
-                            >
-                                Logout
+                <div className="h-full border-l">
+                    <DropdownMenu.Root>
+                        <DropdownMenu.Trigger asChild>
+                            <button className="h-full p-1 flex items-center gap-2 px-2 hover:bg-black/5">
+                                {/* <div className="h-full aspect-square bg-black/10 relative">
+                                    <img
+                                        src={meData?.picture}
+                                        className="w-full h-full object-contain"
+                                    />
+                                </div> */}
+                                <AvatarHolder
+                                    initials={getInitials(meData.name)}
+                                    image={meData.picture}
+                                    size="compact"
+                                />
+                                <div>{meData.name}</div>
                             </button>
-                        </div>
-                    </div>
+                        </DropdownMenu.Trigger>
+
+                        <DropdownMenu.Portal>
+                            <DropdownMenu.Content
+                                className="DropdownMenuContent"
+                                sideOffset={5}
+                            >
+                                <DropdownMenu.Item className="DropdownMenuItem">
+                                    Settings
+                                </DropdownMenu.Item>
+                                <DropdownMenu.Item asChild>
+                                    <Link
+                                        to="/sessions"
+                                        className="DropdownMenuItem"
+                                    >
+                                        Sessions
+                                    </Link>
+                                </DropdownMenu.Item>
+                                <DropdownMenu.Item
+                                    className="DropdownMenuItem"
+                                    onClick={() => {
+                                        clearAuthToken();
+                                    }}
+                                >
+                                    Logout
+                                </DropdownMenu.Item>
+                            </DropdownMenu.Content>
+                        </DropdownMenu.Portal>
+                    </DropdownMenu.Root>
                 </div>
             )}
             {!token && (

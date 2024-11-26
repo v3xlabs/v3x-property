@@ -19,7 +19,7 @@ services:
   #   #   - default
   # Database
   postgres:
-    image: postgres:16.3
+    image: postgres:17
     restart: always
     environment:
       POSTGRES_USER: postgres
