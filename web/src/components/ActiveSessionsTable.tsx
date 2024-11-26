@@ -9,7 +9,7 @@ import { getRelativeTimeString } from '../util/date';
 import { LeafletPreview } from './LeafletPreview';
 
 const ActiveSession: FC<{ session: SessionResponse }> = ({ session }) => {
-    const { mutate: updateSessions } = useSessions();
+    const { refetch: updateSessions } = useSessions();
     const { token } = useAuth();
     const { data: geoip } = useGeoIp(session.user_ip);
     const user_agent = UAParser(session.user_agent);
