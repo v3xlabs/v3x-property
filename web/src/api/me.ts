@@ -1,32 +1,26 @@
-import { useHttp } from './core';
+import { useQuery } from '@tanstack/react-query';
 
-export type ApiMeResponse = {
-    id: number;
-    oauth_sub: string;
+import { useAuth } from './auth';
+import { BASE_URL, fetcher } from './core';
+
+interface MeResponse {
+    id: string;
     name: string;
-    picture: string;
-    // oauth_data: {
-    //     sub: string;
-    //     name: string;
-    //     given_name: string;
-    //     family_name: string;
-    //     middle_name: null;
-    //     nickname: null;
-    //     preferred_username: null;
-    //     profile: null;
-    //     picture: string;
-    //     website: null;
-    //     email: string;
-    //     email_verified: boolean;
-    //     gender: null;
-    //     birthdate: null;
-    //     zoneinfo: null;
-    //     locale: null;
-    //     phone_number: null;
-    //     phone_number_verified: boolean;
-    //     address: null;
-    //     updated_at: null;
-    // };
-};
+    picture?: string;
+    // Add other fields as needed
+}
 
-export const useApiMe = () => useHttp<ApiMeResponse>('/api/me');
+export function useApiMe() {
+    const { token } = useAuth();
+
+    return useQuery({
+        queryKey: ['me', token],
+        queryFn: () =>
+            fetcher<MeResponse>(`${BASE_URL}/api/me`, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            }),
+        enabled: !!token, // Only run query if token exists
+    });
+}

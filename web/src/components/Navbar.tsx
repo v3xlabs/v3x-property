@@ -27,6 +27,7 @@ export const Navbar = () => {
                 <div className="h-full flex items-center">
                     {[
                         ['/', 'Home'],
+                        ['/create', 'Create'],
                         ['/sessions', 'Sessions'],
                     ].map(([path, name]) => (
                         <Link
@@ -39,7 +40,7 @@ export const Navbar = () => {
                     ))}
                 </div>
             </div>
-            {meData && (
+            {token && meData && (
                 <div className="h-full border-l">
                     <DropdownMenu.Root>
                         <DropdownMenu.Trigger asChild>

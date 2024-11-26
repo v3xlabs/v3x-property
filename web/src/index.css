@@ -3,7 +3,11 @@
 @tailwind utilities;
 
 .btn {
-    @apply bg-white text-neutral-800 border border-neutral-200 px-2.5 py-0.5 h-fit hover:bg-neutral-50 rounded-md focus:outline focus:outline-2 outline-offset-2 outline-blue-500;
+    @apply bg-white text-neutral-800 border border-neutral-200 px-3 py-1 h-fit hover:bg-neutral-50 rounded-md focus:outline focus:outline-2 outline-offset-2 outline-blue-500;
+}
+
+.h1 {
+	@apply text-2xl font-semibold;
 }
 
 .AvatarRoot {
@@ -276,46 +280,21 @@ a {
 	color: #8E8C99;
 }
 
-@keyframes slideUpAndFade {
-	from {
-		opacity: 0;
-		transform: translateY(2px);
-	}
-	to {
-		opacity: 1;
-		transform: translateY(0);
-	}
+.LabelRoot {
+	font-size: 15px;
+	font-weight: 500;
+	line-height: 35px;
+	color: black;
 }
 
-@keyframes slideRightAndFade {
-	from {
-		opacity: 0;
-		transform: translateX(-2px);
-	}
-	to {
-		opacity: 1;
-		transform: translateX(0);
-	}
-}
-
-@keyframes slideDownAndFade {
-	from {
-		opacity: 0;
-		transform: translateY(-2px);
-	}
-	to {
-		opacity: 1;
-		transform: translateY(0);
-	}
-}
-
-@keyframes slideLeftAndFade {
-	from {
-		opacity: 0;
-		transform: translateX(2px);
-	}
-	to {
-		opacity: 1;
-		transform: translateX(0);
-	}
+.Input {
+	width: 200px;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	padding: 0 10px;
+	height: 35px;
+	font-size: 15px;
+	line-height: 1;
+	@apply border rounded-md focus:outline focus:outline-2 outline-offset-2 outline-blue-500;
 }

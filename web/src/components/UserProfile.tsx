@@ -4,9 +4,11 @@ import { Link } from '@tanstack/react-router';
 import clsx from 'clsx';
 import { FC } from 'react';
 import { match } from 'ts-pattern';
+import { useQuery } from '@tanstack/react-query';
 
 import { ApiMeResponse, useApiMe } from '../api/me';
 import { useApiUserById } from '../api/user';
+import { fetcher } from '../api/core';
 
 type Properties = {
     user_id: string;
@@ -100,7 +102,14 @@ export const getInitials = (name?: string) => {
 const UNKNOWN_USER = 'Unknown User';
 
 export const UserProfile: FC<Properties> = ({ user_id, variant }) => {
-    const { data: user } = useApiUserById(user_id);
+    const { data: user, isLoading } = useQuery({
+        queryKey: ['user', user_id],
+        queryFn: () => fetcher<User>(`${BASE_URL}/api/users/${user_id}`),
+    });
+
+    if (isLoading) {
+        return <div>Loading...</div>;
+    }
 
     return (
         <div>

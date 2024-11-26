@@ -1,30 +1,20 @@
-import useSWR from 'swr';
+import { useQuery } from '@tanstack/react-query';
 
-type GeoIpResponse = {
-    ip_address: string;
-    latitude: number;
-    longitude: number;
-    postal_code: string;
-    continent_code: string;
-    continent_name: string;
-    country_code: string;
-    country_name: string;
-    region_code: string;
-    region_name: string;
-    province_code: string;
-    province_name: string;
-    city_name: string;
-    timezone: string;
-};
+import { BASE_URL, fetcher } from './core';
 
-export const useGeoIp = (ip: string) =>
-    useSWR(
-        'geo:' + ip,
-        async () => {
-            const response = await fetch('https://api.geoip.rs/?ip=' + ip);
-            const data = await response.json();
+interface GeoIPResponse {
+    ip: string;
+    country: string;
+    city?: string;
+    // Add other fields based on your API response
+}
 
-            return data as GeoIpResponse;
-        },
-        { errorRetryInterval: 10_000 }
-    );
+export function useGeoIp() {
+    return useQuery({
+        queryKey: ['geoip'],
+        queryFn: () => fetcher<GeoIPResponse>(`${BASE_URL}/api/geoip`),
+        // Add any specific options you need:
+        // staleTime: 5 * 60 * 1000, // Consider data fresh for 5 minutes
+        // cacheTime: 30 * 60 * 1000, // Keep data in cache for 30 minutes
+    });
+}
