@@ -6,6 +6,7 @@ import { FC } from 'react';
 import { match } from 'ts-pattern';
 
 import { ApiMeResponse, useApiMe } from '../api/me';
+import { useApiUserById } from '../api/user';
 
 type Properties = {
     user_id: string;
@@ -42,7 +43,7 @@ export const AvatarHolder: FC<{
                 )}
                 delayMs={600}
             >
-                {initials || 'JD'}
+                {initials || 'X'}
             </Avatar.Fallback>
         </Avatar.Root>
     );
@@ -96,8 +97,10 @@ export const getInitials = (name?: string) => {
         .join('');
 };
 
+const UNKNOWN_USER = 'Unknown User';
+
 export const UserProfile: FC<Properties> = ({ user_id, variant }) => {
-    const { data: user } = useApiMe(); // temporarily use current user instead of target user_id
+    const { data: user } = useApiUserById(user_id);
 
     return (
         <div>
@@ -131,7 +134,7 @@ export const UserProfile: FC<Properties> = ({ user_id, variant }) => {
                                     size="compact"
                                 />
                                 <span className="Text !leading-[0.75em]">
-                                    {user?.name}
+                                    {user?.name || UNKNOWN_USER}
                                 </span>
                             </Link>
                         </HoverCard.Trigger>
@@ -151,7 +154,7 @@ export const UserProfile: FC<Properties> = ({ user_id, variant }) => {
                                 />
                                 <div className="flex flex-col gap-1 justify-center">
                                     <div className="Text !leading-[0.75em]">
-                                        {user?.name}
+                                        {user?.name || UNKNOWN_USER}
                                     </div>
                                     <div className="Text faded !leading-[0.75em]">
                                         #{user?.id}

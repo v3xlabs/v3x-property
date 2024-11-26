@@ -7,6 +7,7 @@ use poem::{
 use poem_openapi::{OpenApi, OpenApiService};
 use root::RootApi;
 use sessions::ApiSessions;
+use users::ApiUserById;
 
 use crate::state::AppState;
 
@@ -15,9 +16,10 @@ pub mod oauth;
 pub mod properties;
 pub mod root;
 pub mod sessions;
+pub mod users;
 
 fn get_api() -> impl OpenApi {
-    (RootApi, ApiMe, ApiSessions)
+    (RootApi, ApiMe, ApiSessions, ApiUserById)
 }
 
 #[handler]
