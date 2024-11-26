@@ -14,6 +14,9 @@ import { createFileRoute } from '@tanstack/react-router'
 
 import { Route as rootRoute } from './routes/__root'
 import { Route as SessionsImport } from './routes/sessions'
+import { Route as ItemIdImport } from './routes/$itemId'
+import { Route as ItemItemIdIndexImport } from './routes/item/$itemId/index'
+import { Route as ItemItemIdEditImport } from './routes/item/$itemId/edit'
 
 // Create Virtual Routes
 
@@ -38,10 +41,25 @@ const SessionsRoute = SessionsImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
+const ItemIdRoute = ItemIdImport.update({
+  path: '/$itemId',
+  getParentRoute: () => rootRoute,
+} as any)
+
 const IndexLazyRoute = IndexLazyImport.update({
   path: '/',
   getParentRoute: () => rootRoute,
 } as any).lazy(() => import('./routes/index.lazy').then((d) => d.Route))
+
+const ItemItemIdIndexRoute = ItemItemIdIndexImport.update({
+  path: '/item/$itemId/',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const ItemItemIdEditRoute = ItemItemIdEditImport.update({
+  path: '/item/$itemId/edit',
+  getParentRoute: () => rootRoute,
+} as any)
 
 // Populate the FileRoutesByPath interface
 
@@ -52,6 +70,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexLazyImport
+      parentRoute: typeof rootRoute
+    }
+    '/$itemId': {
+      id: '/$itemId'
+      path: '/$itemId'
+      fullPath: '/$itemId'
+      preLoaderRoute: typeof ItemIdImport
       parentRoute: typeof rootRoute
     }
     '/sessions': {
@@ -75,6 +100,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CreateLazyImport
       parentRoute: typeof rootRoute
     }
+    '/item/$itemId/edit': {
+      id: '/item/$itemId/edit'
+      path: '/item/$itemId/edit'
+      fullPath: '/item/$itemId/edit'
+      preLoaderRoute: typeof ItemItemIdEditImport
+      parentRoute: typeof rootRoute
+    }
+    '/item/$itemId/': {
+      id: '/item/$itemId/'
+      path: '/item/$itemId'
+      fullPath: '/item/$itemId'
+      preLoaderRoute: typeof ItemItemIdIndexImport
+      parentRoute: typeof rootRoute
+    }
   }
 }
 
@@ -82,9 +121,12 @@ declare module '@tanstack/react-router' {
 
 export const routeTree = rootRoute.addChildren({
   IndexLazyRoute,
+  ItemIdRoute,
   SessionsRoute,
   AboutLazyRoute,
   CreateLazyRoute,
+  ItemItemIdEditRoute,
+  ItemItemIdIndexRoute,
 })
 
 /* prettier-ignore-end */
@@ -96,13 +138,19 @@ export const routeTree = rootRoute.addChildren({
       "filePath": "__root.tsx",
       "children": [
         "/",
+        "/$itemId",
         "/sessions",
         "/about",
-        "/create"
+        "/create",
+        "/item/$itemId/edit",
+        "/item/$itemId/"
       ]
     },
     "/": {
       "filePath": "index.lazy.tsx"
+    },
+    "/$itemId": {
+      "filePath": "$itemId.tsx"
     },
     "/sessions": {
       "filePath": "sessions.tsx"
@@ -112,6 +160,12 @@ export const routeTree = rootRoute.addChildren({
     },
     "/create": {
       "filePath": "create.lazy.tsx"
+    },
+    "/item/$itemId/edit": {
+      "filePath": "item/$itemId/edit.tsx"
+    },
+    "/item/$itemId/": {
+      "filePath": "item/$itemId/index.tsx"
     }
   }
 }

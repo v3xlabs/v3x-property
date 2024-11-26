@@ -5,6 +5,7 @@ mod auth;
 mod state;
 mod models;
 mod routes;
+mod ingress;
 mod database;
 
 #[async_std::main]
