@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 
 import { useAuth } from './auth';
-import { BASE_URL, fetcher } from './core';
+import { fetcher } from './core';
 
 interface MeResponse {
     id: string;
@@ -16,7 +16,7 @@ export function useApiMe() {
     return useQuery({
         queryKey: ['me', token],
         queryFn: () =>
-            fetcher<MeResponse>(`${BASE_URL}/api/me`, {
+            fetcher<MeResponse>('/api/me', {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },

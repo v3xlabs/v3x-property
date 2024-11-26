@@ -5,7 +5,7 @@ export const BASE_URL = 'http://localhost:3000';
 // Replace SWR fetcher with axios or fetch implementation
 // eslint-disable-next-line no-undef
 export async function fetcher<T>(url: string, init?: RequestInit): Promise<T> {
-    const response = await fetch(url, init);
+    const response = await fetch(BASE_URL + url, init);
 
     if (!response.ok) {
         throw new Error('Network response was not ok');
@@ -26,7 +26,7 @@ export function useHttp<T>(key: string) {
 export function useUpdateData<T>(url: string) {
     return useMutation({
         mutationFn: (data: T) =>
-            fetch(url, {
+            fetch(BASE_URL + url, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

@@ -18,7 +18,7 @@ const component = () => {
                     To create a new item you will need to give it an identifier.
                     You can choose to use a generated identifier (by clicking
                     the generate icon) or you can choose to provide your own
-                    (a-zA-Z0-9).
+                    (a-zA-Z0-9). Leading zeros will be trimmed.
                 </p>
                 <div className="flex items-center justify-end gap-2 px-6 pb-4">
                     <button className="btn w-fit flex items-center gap-2">

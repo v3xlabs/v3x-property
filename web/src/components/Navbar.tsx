@@ -89,7 +89,7 @@ export const Navbar = () => {
                     </DropdownMenu.Root>
                 </div>
             )}
-            {!token && (
+            {(!token || (token && !meData)) && (
                 <a
                     href={login_here_url}
                     className="h-full border-l px-2 py-0.5 flex items-center hover:bg-black/10"

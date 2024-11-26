@@ -102,10 +102,7 @@ export const getInitials = (name?: string) => {
 const UNKNOWN_USER = 'Unknown User';
 
 export const UserProfile: FC<Properties> = ({ user_id, variant }) => {
-    const { data: user, isLoading } = useQuery({
-        queryKey: ['user', user_id],
-        queryFn: () => fetcher<User>(`${BASE_URL}/api/users/${user_id}`),
-    });
+    const { data: user, isLoading } = useApiUserById(user_id);
 
     if (isLoading) {
         return <div>Loading...</div>;
