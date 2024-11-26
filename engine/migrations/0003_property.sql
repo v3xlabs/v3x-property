@@ -5,7 +5,6 @@ CREATE TABLE IF NOT EXISTS properties
     owner_id INT NOT NULL,
     product_id INT NOT NULL,
     name VARCHAR(255),
-    media INT[],
     created TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     modified TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
@@ -14,7 +13,6 @@ CREATE TABLE IF NOT EXISTS products
 (
     id INT PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
-    media INT[],
     tweakers_id INT[],
     ean VARCHAR(255)[],
     upc VARCHAR(255)[],
@@ -24,4 +22,4 @@ CREATE TABLE IF NOT EXISTS products
 );
 
 INSERT INTO properties (id, owner_id, product_id) VALUES (4, 1, 1) ON CONFLICT DO NOTHING;
-INSERT INTO products (id, name, media, tweakers_id, ean, sku) VALUES (1, 'Anker 737 (PowerCore 24k)', ARRAY[1], ARRAY[1855004], ARRAY['0194644098728'], ARRAY['a1289', 'A1289011']) ON CONFLICT DO NOTHING;
+INSERT INTO products (id, name, tweakers_id, ean, sku) VALUES (1, 'Anker 737 (PowerCore 24k)', ARRAY[1], ARRAY['0194644098728'], ARRAY['a1289', 'A1289011']) ON CONFLICT DO NOTHING;
