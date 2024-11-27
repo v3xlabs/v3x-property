@@ -1,6 +1,7 @@
 use std::sync::Arc;
 
 use instance::ApiInstance;
+use items::ItemsApi;
 use me::ApiMe;
 use poem::{
     get, handler, listener::TcpListener, middleware::Cors, web::Html, EndpointExt, Route, Server,
@@ -14,14 +15,15 @@ use crate::state::AppState;
 
 pub mod me;
 pub mod oauth;
-pub mod properties;
+pub mod items;
 pub mod root;
 pub mod sessions;
 pub mod users;
 pub mod instance;
+pub mod error;
 
 fn get_api() -> impl OpenApi {
-    (RootApi, ApiMe, ApiSessions, ApiUserById, ApiInstance)
+    (RootApi, ApiMe, ApiSessions, ApiUserById, ApiInstance, ItemsApi)
 }
 
 #[handler]

@@ -4,7 +4,7 @@ use poem::web::{Data};
 use poem_openapi::{payload::Json, Enum, Object, OpenApi};
 use serde::{Deserialize, Serialize};
 
-use crate::{auth::middleware::AuthToken, models::user_data::{User, UserEntry}, state::AppState};
+use crate::{auth::middleware::AuthToken, models::users::User, state::AppState};
 
 pub struct ApiInstance;
 

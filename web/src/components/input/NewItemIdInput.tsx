@@ -4,6 +4,7 @@ import { FiRefreshCcw } from 'react-icons/fi';
 
 import { isValidId } from '../../api/generate_id';
 import { BaseInput, BaseInputProperties } from './BaseInput';
+import { BASE_URL } from '../../api/core';
 
 const placeholderValues = ['000001', '123456', 'AA17C', 'ABCDEF', '000013'];
 
@@ -14,12 +15,10 @@ export const NewItemIdInput = (properties: BaseInputProperties) => {
     );
     const { mutate: generateId } = useMutation({
         mutationFn: async () => {
-            // TODO: Hook up to API Endpoint
-            // Currently just returns a random value
+            const response = await fetch(`${BASE_URL}/api/item/next`);
+            const data = await response.json();
 
-            return placeholderValues[
-                Math.floor(Math.random() * placeholderValues.length)
-            ];
+            return data.item_id;
         },
         onSuccess: (data) => {
             setValue(data);

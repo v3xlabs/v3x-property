@@ -1,14 +1,16 @@
 use std::sync::Arc;
 
-use poem::
-    web::{Data, Path}
+use poem::{
+    web::{Data, Path}, Result}
 ;
-use poem_openapi::{param::Query, payload::PlainText, OpenApi};
+use poem_openapi::{param::Query, payload::{Json, PlainText}, OpenApi};
 
 use crate::{
-    models::{media::Media, product::Product, property::Property},
+    models::{items::Item, media::Media, products::Product},
     state::AppState,
 };
+
+use super::error::HttpError;
 
 pub struct RootApi;
 
@@ -23,19 +25,19 @@ impl RootApi {
         }
     }
 
-    #[oai(path = "/properties", method = "get")]
-    async fn get_properties(
+    #[oai(path = "/items", method = "get")]
+    async fn get_items(
         &self,
         state: Data<&Arc<AppState>>,
         owner_id: Query<Option<i32>>,
-    ) -> poem_openapi::payload::Json<Vec<Property>> {
+    ) -> poem_openapi::payload::Json<Vec<Item>> {
         let owner_id = owner_id.0.unwrap_or(0);
 
-        let properties = Property::get_by_owner_id(owner_id, &state.database)
+        let items = Item::get_by_owner_id(owner_id, &state.database)
             .await
             .unwrap();
 
-        poem_openapi::payload::Json(properties)
+        poem_openapi::payload::Json(items)
     }
 
     #[oai(path = "/media/:media_id", method = "get")]
@@ -59,19 +61,22 @@ impl RootApi {
             .await
             .unwrap();
 
-        poem_openapi::payload::Json(product)
+        poem_openapi::payload::Json(product.unwrap())
     }
 
-    #[oai(path = "/property/:property_id", method = "get")]
-    async fn get_property(
+    #[oai(path = "/item/:item_id", method = "get")]
+    async fn get_item(
         &self,
         state: Data<&Arc<AppState>>,
-        property_id: Path<i32>,
-    ) -> poem_openapi::payload::Json<Property> {
-        let property = Property::get_by_id(property_id.0, &state.database)
+        item_id: Path<String>,
+    ) -> Result<Json<Item>> {
+        let item = Item::get_by_id(item_id.0, &state.database)
             .await
             .unwrap();
 
-        poem_openapi::payload::Json(property)
+        match item {
+            Some(item) => Ok(Json(item)),
+            None => Err(HttpError::NotFound.into()),
+        }
     }
 }

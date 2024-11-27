@@ -6,7 +6,7 @@ use serde::Deserialize;
 use url::Url;
 use uuid::Uuid;
 
-use crate::{auth::{hash::hash_session, session::SessionState}, models::user_data::UserEntry, state::AppState};
+use crate::{auth::hash::hash_session, models::{sessions::Session, users::UserEntry}, state::AppState};
 
 
 #[derive(Deserialize, Debug)]
@@ -40,7 +40,7 @@ pub async fn callback(
     format!("Hello {:?}", oauth_userinfo);
 
     // Now we must verify the user information, decide wether they deserve access, and if so return a token.
-    let user = UserEntry::new(&oauth_userinfo, &state.database)
+    let user = UserEntry::upsert(&oauth_userinfo, None, &state.database)
         .await
         .unwrap();
 
@@ -50,7 +50,7 @@ pub async fn callback(
     let token = Uuid::new_v4().to_string();
     let hash = hash_session(&token).unwrap();
 
-    let _session = SessionState::new(&hash, user.id, user_agent, &user_ip, &state.database)
+    let _session = Session::new(&hash, user.user_id, user_agent, &user_ip.into(), &state.database)
         .await
         .unwrap();
 

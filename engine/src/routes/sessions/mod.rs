@@ -6,8 +6,7 @@ use reqwest::{Error, StatusCode};
 use tracing::info;
 
 use crate::{
-    auth::{middleware::AuthToken, session::SessionState},
-    state::AppState,
+    auth::middleware::AuthToken, models::sessions::Session, state::AppState
 };
 
 pub mod delete;
@@ -21,10 +20,10 @@ impl ApiSessions {
         &self,
         auth: AuthToken,
         state: Data<&Arc<AppState>>,
-    ) -> poem_openapi::payload::Json<Vec<SessionState>> {
+    ) -> poem_openapi::payload::Json<Vec<Session>> {
         match auth {
             AuthToken::Active(active_user) => poem_openapi::payload::Json(
-                SessionState::get_by_user_id(active_user.session.user_id, &state.database)
+                Session::get_by_user_id(active_user.session.user_id, &state.database)
                     .await
                     .unwrap(),
             ),
@@ -38,12 +37,12 @@ impl ApiSessions {
         auth: AuthToken,
         state: Data<&Arc<AppState>>,
         session_id: Path<String>,
-    ) -> poem_openapi::payload::Json<Vec<SessionState>> {
+    ) -> poem_openapi::payload::Json<Vec<Session>> {
         match auth {
             AuthToken::Active(active_user) => {
                 info!("Deleting session {:?}", session_id.0);
 
-                let sessions = SessionState::invalidate_by_id(
+                let sessions = Session::invalidate_by_id(
                     &session_id.0,
                     active_user.session.user_id,
                     &state.database,

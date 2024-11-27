@@ -3,12 +3,12 @@ use std::sync::Arc;
 use poem::{web::Data, Error, FromRequest, Request, RequestBody, Result};
 use reqwest::StatusCode;
 
-use crate::state::AppState;
+use crate::{models::sessions::Session, state::AppState};
 
-use super::{hash::hash_session, session::SessionState};
+use super::{hash::hash_session};
 
 pub struct ActiveUser {
-    pub session: SessionState,
+    pub session: Session,
 }
 
 pub enum AuthToken {
@@ -33,7 +33,7 @@ impl<'a> FromRequest<'a> for AuthToken {
                 let hash = hash_session(&token).unwrap();
 
                 // Check if active session exists with token
-                let session = SessionState::try_access(&hash, &state.database)
+                let session = Session::try_access(&hash, &state.database)
                     .await
                     .unwrap()
                     .ok_or(Error::from_string(

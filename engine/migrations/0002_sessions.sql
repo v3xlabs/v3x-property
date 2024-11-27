@@ -1,9 +1,0 @@
-CREATE TABLE IF NOT EXISTS sessions
-(
-    id TEXT PRIMARY KEY NOT NULL,
-    user_id INT NOT NULL,
-    user_agent TEXT NOT NULL,
-    user_ip INET NOT NULL,
-    last_access TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-    valid BOOLEAN NOT NULL DEFAULT TRUE
-);
