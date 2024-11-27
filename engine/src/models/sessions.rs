@@ -1,46 +1,47 @@
-use std::net::IpAddr;
-
 use poem_openapi::Object;
 use serde::{Deserialize, Serialize};
-use sqlx::types::chrono;
+use sqlx::types::{
+    chrono,
+    ipnetwork::{IpNetwork, Ipv4Network},
+};
 
 use crate::database::Database;
 
 #[derive(sqlx::FromRow, Debug, Clone, Serialize, Deserialize, Object)]
-pub struct SessionState {
-    pub id: String,
+pub struct Session {
+    pub session_id: String,
     pub user_id: i32,
     pub user_agent: String,
-    pub user_ip: IpAddr,
-    pub last_access: chrono::DateTime<chrono::Utc>,
+    pub user_ip: String,
     pub valid: bool,
+    pub last_access: chrono::DateTime<chrono::Utc>,
+    pub created_at: Option<chrono::DateTime<chrono::Utc>>,
+    pub updated_at: Option<chrono::DateTime<chrono::Utc>>,
 }
 
-impl SessionState {
+impl Session {
     pub async fn new(
         session_id: &str,
         user_id: i32,
         user_agent: &str,
-        user_ip: &IpAddr,
+        user_ip: &IpNetwork,
         database: &Database,
     ) -> Result<Self, sqlx::Error> {
-        let session = sqlx::query_as::<_, SessionState>(
-            "INSERT INTO sessions (id, user_id, user_agent, user_ip) VALUES ($1, $2, $3, $4) RETURNING *",
+        let session = sqlx::query_as!(Session,
+            "INSERT INTO sessions (session_id, user_id, user_agent, user_ip) VALUES ($1, $2, $3, $4) RETURNING *",
+            session_id, user_id, user_agent, user_ip.to_string()
         )
-        .bind(session_id)
-        .bind(user_id)
-        .bind(user_agent)
-        .bind(user_ip)
         .fetch_one(&database.pool)
         .await?;
         Ok(session)
     }
 
     pub async fn _get_by_id(id: &str, database: &Database) -> Result<Option<Self>, sqlx::Error> {
-        let session = sqlx::query_as::<_, SessionState>(
-            "SELECT * FROM sessions WHERE id = $1 AND valid = TRUE",
+        let session = sqlx::query_as!(
+            Session,
+            "SELECT * FROM sessions WHERE session_id = $1 AND valid = TRUE",
+            id
         )
-        .bind(id)
         .fetch_optional(&database.pool)
         .await?;
 
@@ -48,10 +49,11 @@ impl SessionState {
     }
 
     pub async fn try_access(id: &str, database: &Database) -> Result<Option<Self>, sqlx::Error> {
-        let session = sqlx::query_as::<_, SessionState>(
-            "UPDATE sessions SET last_access = NOW() WHERE id = $1 AND valid = TRUE RETURNING *",
+        let session = sqlx::query_as!(
+            Session,
+            "UPDATE sessions SET last_access = NOW() WHERE session_id = $1 AND valid = TRUE RETURNING *",
+            id
         )
-        .bind(id)
         .fetch_optional(&database.pool)
         .await?;
 
@@ -63,10 +65,11 @@ impl SessionState {
         user_id: i32,
         database: &Database,
     ) -> Result<Vec<Self>, sqlx::Error> {
-        let sessions = sqlx::query_as::<_, SessionState>(
+        let sessions = sqlx::query_as!(
+            Session,
             "SELECT * FROM sessions WHERE user_id = $1 AND valid = TRUE",
+            user_id
         )
-        .bind(user_id)
         .fetch_all(&database.pool)
         .await?;
 
@@ -78,10 +81,11 @@ impl SessionState {
         user_id: i32,
         database: &Database,
     ) -> Result<Vec<Self>, sqlx::Error> {
-        let sessions = sqlx::query_as::<_, SessionState>(
-            "UPDATE sessions SET valid = FALSE WHERE user_id = $1",
+        let sessions = sqlx::query_as!(
+            Session,
+            "UPDATE sessions SET valid = FALSE WHERE user_id = $1 RETURNING *",
+            user_id
         )
-        .bind(user_id)
         .fetch_all(&database.pool)
         .await?;
 
@@ -94,11 +98,12 @@ impl SessionState {
         user_id: i32,
         database: &Database,
     ) -> Result<Vec<Self>, sqlx::Error> {
-        let sessions = sqlx::query_as::<_, SessionState>(
-            "UPDATE sessions SET valid = FALSE WHERE user_id = $1 AND id = $2",
+        let sessions = sqlx::query_as!(
+            Session,
+            "UPDATE sessions SET valid = FALSE WHERE user_id = $1 AND session_id = $2 RETURNING *",
+            user_id,
+            id
         )
-        .bind(user_id)
-        .bind(id)
         .fetch_all(&database.pool)
         .await?;
 
@@ -111,10 +116,12 @@ impl SessionState {
         database: &Database,
         _invalidate_before: chrono::DateTime<chrono::Utc>,
     ) -> Result<Vec<Self>, sqlx::Error> {
-        let sessions = sqlx::query_as::<_, SessionState>(
-            "UPDATE sessions SET valid = FALSE WHERE user_id = $1 AND last_access < $2",
+        let sessions = sqlx::query_as!(
+            Session,
+            "UPDATE sessions SET valid = FALSE WHERE user_id = $1 AND last_access < $2 RETURNING *",
+            user_id,
+            _invalidate_before
         )
-        .bind(user_id)
         .fetch_all(&database.pool)
         .await?;
 
