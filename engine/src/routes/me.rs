@@ -21,7 +21,7 @@ impl ApiMe {
                     .await
                     .unwrap();
 
-                Json(user.into())
+                Json(user.unwrap().into())
             }
             _ => {
                 // Error::from_string("Not Authenticated", StatusCode::UNAUTHORIZED).into_response(),

@@ -1,6 +1,8 @@
 use serde::{Deserialize, Serialize};
 use sqlx::prelude::*;
 
+use crate::database::Database;
+
 #[derive(sqlx::FromRow, poem_openapi::Object, Debug, Clone, Serialize, Deserialize)]
 pub struct Location {
     pub location_id: i32,

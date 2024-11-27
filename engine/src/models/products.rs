@@ -1,6 +1,8 @@
 use serde::{Deserialize, Serialize};
 use sqlx::prelude::*;
 
+use crate::database::Database;
+
 #[derive(sqlx::FromRow, poem_openapi::Object, Debug, Clone, Serialize, Deserialize)]
 pub struct Product {
     pub product_id: i32,
@@ -18,5 +20,11 @@ impl Product {
         )
         .fetch_one(&database.pool)
         .await
+    }
+
+    pub async fn get_by_id(product_id: i32, database: &Database) -> Result<Option<Product>, sqlx::Error> {
+        sqlx::query_as!(Product, "SELECT * FROM products WHERE product_id = $1", product_id)
+            .fetch_optional(&database.pool)
+            .await
     }
 }

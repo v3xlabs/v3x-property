@@ -1,6 +1,8 @@
 use serde::{Deserialize, Serialize};
 use sqlx::prelude::*;
 
+use crate::database::Database;
+
 #[derive(sqlx::FromRow, poem_openapi::Object, Debug, Clone, Serialize, Deserialize)]
 pub struct Media {
     pub media_id: i32,
@@ -21,11 +23,20 @@ impl Media {
         sqlx::query_as!(
             Media,
             "INSERT INTO media (description, url, kind) VALUES ($1, $2, $3) RETURNING *",
-            description,
+            Some(description),
             url,
             kind
         )
         .fetch_one(&database.pool)
         .await
+    }
+
+    pub async fn get_by_id(
+        media_id: i32,
+        database: &Database,
+    ) -> Result<Media, sqlx::Error> {
+        sqlx::query_as!(Media, "SELECT * FROM media WHERE media_id = $1", media_id)
+            .fetch_one(&database.pool)
+            .await
     }
 }

@@ -1,6 +1,8 @@
 use serde::{Deserialize, Serialize};
 use sqlx::prelude::*;
 
+use crate::database::Database;
+
 #[derive(sqlx::Type, poem_openapi::Enum, Debug, Clone, Serialize, Deserialize)]
 #[sqlx(type_name = "text")]
 #[sqlx(rename_all = "lowercase")]

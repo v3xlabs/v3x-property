@@ -6,7 +6,7 @@ use poem::
 use poem_openapi::{param::Query, payload::PlainText, OpenApi};
 
 use crate::{
-    models::{media::Media, product::Product, property::Property},
+    models::{items::Item, media::Media, products::Product},
     state::AppState,
 };
 
@@ -28,14 +28,14 @@ impl RootApi {
         &self,
         state: Data<&Arc<AppState>>,
         owner_id: Query<Option<i32>>,
-    ) -> poem_openapi::payload::Json<Vec<Property>> {
+    ) -> poem_openapi::payload::Json<Vec<Item>> {
         let owner_id = owner_id.0.unwrap_or(0);
 
-        let properties = Property::get_by_owner_id(owner_id, &state.database)
+        let items = Item::get_by_owner_id(owner_id, &state.database)
             .await
             .unwrap();
 
-        poem_openapi::payload::Json(properties)
+        poem_openapi::payload::Json(items)
     }
 
     #[oai(path = "/media/:media_id", method = "get")]
@@ -59,19 +59,19 @@ impl RootApi {
             .await
             .unwrap();
 
-        poem_openapi::payload::Json(product)
+        poem_openapi::payload::Json(product.unwrap())
     }
 
-    #[oai(path = "/property/:property_id", method = "get")]
-    async fn get_property(
+    #[oai(path = "/item/:item_id", method = "get")]
+    async fn get_item(
         &self,
         state: Data<&Arc<AppState>>,
-        property_id: Path<i32>,
-    ) -> poem_openapi::payload::Json<Property> {
-        let property = Property::get_by_id(property_id.0, &state.database)
+        item_id: Path<String>,
+    ) -> poem_openapi::payload::Json<Item> {
+        let item = Item::get_by_id(item_id.0, &state.database)
             .await
             .unwrap();
 
-        poem_openapi::payload::Json(property)
+        poem_openapi::payload::Json(item.unwrap())
     }
 }

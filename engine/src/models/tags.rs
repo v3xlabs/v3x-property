@@ -1,6 +1,8 @@
 use serde::{Deserialize, Serialize};
 use sqlx::prelude::*;
 
+use crate::database::Database;
+
 #[derive(sqlx::FromRow, poem_openapi::Object, Debug, Clone, Serialize, Deserialize)]
 pub struct Tag {
     pub tag_id: i32,

@@ -14,7 +14,7 @@ use crate::state::AppState;
 
 pub mod me;
 pub mod oauth;
-pub mod properties;
+pub mod items;
 pub mod root;
 pub mod sessions;
 pub mod users;

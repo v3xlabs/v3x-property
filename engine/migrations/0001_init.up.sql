@@ -68,6 +68,7 @@ CREATE TABLE media (
 CREATE TABLE items (
     item_id TEXT PRIMARY KEY, -- Unique identifier for each item
     name TEXT NOT NULL, -- Name of the item
+    owner_id INTEGER, -- Reference to the user who owns this item
     location_id INTEGER, -- Reference to the location where this item is stored
     product_id INTEGER, -- Optional reference to the associated product
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP, -- When the item was created
