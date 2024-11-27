@@ -5,11 +5,11 @@ import clsx from 'clsx';
 import { FC } from 'react';
 import { match } from 'ts-pattern';
 
-import { ApiMeResponse } from '../api/me';
-import { useApiUserById } from '../api/user';
+import { formatId, useInstanceSettings } from '../../api/instance_settings';
+import { ApiItemResponse, useApiItemById } from '../../api/item';
 
 type Properties = {
-    user_id: string;
+    item_id: string;
     variant?: 'avatar' | 'full' | 'compact';
 };
 
@@ -46,20 +46,20 @@ export const AvatarHolder: FC<{
     );
 };
 
-export const UserProfileHoverCard: FC<{
-    user?: ApiMeResponse;
-}> = ({ user }) => {
+export const ItemPreviewHoverCard: FC<{
+    item?: ApiItemResponse;
+}> = ({ item }) => {
+    const { data: instanceSettings } = useInstanceSettings();
+    const formattedItemId = formatId(item?.item_id, instanceSettings);
+
     return (
         <HoverCard.Content className="HoverCardContent border" sideOffset={5}>
             <div className="flex flex-col gap-3">
-                <AvatarHolder
-                    image={user?.picture}
-                    initials={getInitials(user?.name)}
-                />
+                <AvatarHolder image={item?.name} initials={''} />
                 <div className="flex flex-col gap-3">
                     <div>
-                        <div className="Text bold">{user?.name}</div>
-                        <div className="Text faded">#{user?.id}</div>
+                        <div className="Text bold">{item?.name}</div>
+                        <div className="Text faded">#{formattedItemId}</div>
                     </div>
                     {/* <div className="Text">
                                         Components, icons, colors, and templates
@@ -84,20 +84,12 @@ export const UserProfileHoverCard: FC<{
     );
 };
 
-export const getInitials = (name?: string) => {
-    if (!name) return '';
-
-    // Split the name into parts and get first letter of each part
-    return name
-        .split(' ')
-        .map((part) => part[0])
-        .join('');
-};
-
 const UNKNOWN_USER = 'Unknown User';
 
-export const UserProfile: FC<Properties> = ({ user_id, variant }) => {
-    const { data: user, isLoading } = useApiUserById(user_id);
+export const ItemPreview: FC<Properties> = ({ item_id, variant }) => {
+    const { data: item, isLoading } = useApiItemById(item_id);
+    const { data: instanceSettings } = useInstanceSettings();
+    const formattedItemId = formatId(item?.item_id, instanceSettings);
 
     if (isLoading) {
         return <div>Loading...</div>;
@@ -110,60 +102,60 @@ export const UserProfile: FC<Properties> = ({ user_id, variant }) => {
                     <HoverCard.Root>
                         <HoverCard.Trigger asChild>
                             <Link
-                                to="/"
+                                to={`/item/${formattedItemId}`}
                                 className="p-1 border rounded-md flex items-center gap-2 hover:bg-black/5"
                             >
                                 <AvatarHolder
-                                    image={user?.picture}
-                                    initials={getInitials(user?.name)}
+                                    image={item?.name}
+                                    initials={''}
                                 />
                             </Link>
                         </HoverCard.Trigger>
-                        <UserProfileHoverCard user={user!} />
+                        <ItemPreviewHoverCard item={item!} />
                     </HoverCard.Root>
                 ))
                 .with({ variant: 'compact' }, () => (
                     <HoverCard.Root>
                         <HoverCard.Trigger asChild>
                             <Link
-                                to="/"
+                                to={`/item/${formattedItemId}`}
                                 className="p-1.5 border cursor-pointer rounded-md flex items-center gap-2 hover:bg-black/5"
                             >
                                 <AvatarHolder
-                                    image={user?.picture}
-                                    initials={getInitials(user?.name)}
+                                    image={item?.name}
+                                    initials={''}
                                     size="compact"
                                 />
                                 <span className="Text !leading-[0.75em]">
-                                    {user?.name || UNKNOWN_USER}
+                                    {item?.name || UNKNOWN_USER}
                                 </span>
                             </Link>
                         </HoverCard.Trigger>
-                        <UserProfileHoverCard user={user!} />
+                        <ItemPreviewHoverCard item={item!} />
                     </HoverCard.Root>
                 ))
                 .otherwise(() => (
                     <HoverCard.Root>
                         <HoverCard.Trigger asChild>
                             <Link
-                                to="/"
+                                to={`/item/${formattedItemId}`}
                                 className="p-1.5 border cursor-pointer rounded-md flex items-center gap-2 hover:bg-black/5"
                             >
                                 <AvatarHolder
-                                    image={user?.picture}
-                                    initials={getInitials(user?.name)}
+                                    image={item?.name}
+                                    initials={''}
                                 />
                                 <div className="flex flex-col gap-1 justify-center">
                                     <div className="Text !leading-[0.75em]">
-                                        {user?.name || UNKNOWN_USER}
+                                        {item?.name || UNKNOWN_USER}
                                     </div>
                                     <div className="Text faded !leading-[0.75em]">
-                                        #{user?.id}
+                                        #{formattedItemId}
                                     </div>
                                 </div>
                             </Link>
                         </HoverCard.Trigger>
-                        <UserProfileHoverCard user={user!} />
+                        <ItemPreviewHoverCard item={item!} />
                     </HoverCard.Root>
                 ))}
         </div>

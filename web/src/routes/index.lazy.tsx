@@ -1,6 +1,6 @@
 import { createLazyFileRoute } from '@tanstack/react-router';
 
-import { StlPreview } from '../components/stl_preview/StlPreview';
+import { ItemPreview } from '../components/item/ItemPreview';
 import { UserProfile } from '../components/UserProfile';
 
 const component = () => {
@@ -14,6 +14,9 @@ const component = () => {
                 <UserProfile user_id="1" variant="full" />
                 <UserProfile user_id="1" variant="compact" />
                 <UserProfile user_id="1" variant="avatar" />
+            </div>
+            <div className="w-full flex items-center justify-center gap-4">
+                <ItemPreview item_id="1" />
             </div>
         </div>
     );

@@ -1,4 +1,5 @@
 use sqlx::{postgres::PgPoolOptions, PgPool};
+use tracing::info;
 
 #[derive(Debug)]
 pub struct Database {
@@ -14,11 +15,15 @@ impl Database {
 
         s.init().await?;
 
+        info!("Database initialized");
+
         Ok(s)
     }
 
     pub async fn init(&self) -> Result<(), sqlx::Error> {
-        sqlx::migrate!().run(&self.pool).await?;
+        let migrations = sqlx::migrate!();
+
+        migrations.run(&self.pool).await?;
 
         Ok(())
     }

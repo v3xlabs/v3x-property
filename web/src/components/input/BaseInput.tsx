@@ -12,6 +12,7 @@ export type BaseInputProperties = {
     suffix?: ReactNode;
     value?: string;
     onChange?: (value: string) => void;
+    errorMessage?: string;
 };
 
 export const BaseInput = ({
@@ -24,6 +25,7 @@ export const BaseInput = ({
     suffix,
     value,
     onChange,
+    errorMessage,
 }: BaseInputProperties) => {
     return (
         <>
@@ -44,6 +46,7 @@ export const BaseInput = ({
                 </div>
                 {suffix}
             </div>
+            {errorMessage && <p className="text-red-500">{errorMessage}</p>}
         </>
     );
 };

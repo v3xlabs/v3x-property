@@ -1,5 +1,43 @@
-import { createFileRoute } from '@tanstack/react-router';
+import { createFileRoute, redirect, useParams } from '@tanstack/react-router';
+
+import { formatId, getInstanceSettings } from '../../../api/instance_settings';
+import { useApiItemById } from '../../../api/item';
+import { ItemPreview } from '../../../components/item/ItemPreview';
+import { MediaGallery } from '../../../components/media/MediaGallery';
+import { UnauthorizedResourceModal } from '../../../components/Unauthorized';
+import { queryClient } from '../../../util/query';
 
 export const Route = createFileRoute('/item/$itemId/')({
-    component: () => <div>Hello /item/$itemId!</div>,
+    // if item_id is not formatId(item_id, instanceSettings), redirect to the formatted item_id
+    loader: async ({ context, params }) => {
+        const instanceSettings = await queryClient.ensureQueryData(
+            getInstanceSettings()
+        );
+        const formattedItemId = formatId(params.itemId, instanceSettings);
+
+        if (formattedItemId !== params.itemId) {
+            return redirect({ to: `/item/${formattedItemId}` });
+        }
+    },
+    component: () => {
+        const { itemId } = useParams({ from: '/item/$itemId/' });
+
+        const { data: item, error } = useApiItemById(itemId);
+
+        if (error) {
+            return <UnauthorizedResourceModal />;
+        }
+
+        return (
+            <div className="p-2 mt-8 mx-auto w-full max-w-4xl space-y-4">
+                <h1 className="h1">Item {itemId}</h1>
+                <div className="w-full gap-4 border border-t-4 shadow-sm rounded-md pt-4">
+                    <div className="p-4">
+                        <ItemPreview item_id={itemId} />
+                    </div>
+                    <MediaGallery media_ids={item?.media || []} />
+                </div>
+            </div>
+        );
+    },
 });

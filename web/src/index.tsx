@@ -1,6 +1,6 @@
 import './index.css';
 
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { QueryClientProvider } from '@tanstack/react-query';
 import { createRouter, RouterProvider } from '@tanstack/react-router';
 import React from 'react';
 import ReactDOM from 'react-dom/client';
@@ -8,6 +8,7 @@ import ReactDOM from 'react-dom/client';
 import { preflightAuth } from './api/auth';
 // Import the generated route tree
 import { routeTree } from './routeTree.gen';
+import { queryClient } from './util/query';
 
 // Create a new router instance
 const router = createRouter({ routeTree });
@@ -20,8 +21,6 @@ declare module '@tanstack/react-router' {
 }
 
 preflightAuth();
-
-const queryClient = new QueryClient();
 
 ReactDOM.createRoot(document.querySelector('#root')!).render(
     <React.StrictMode>

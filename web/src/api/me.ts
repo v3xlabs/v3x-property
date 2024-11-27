@@ -1,3 +1,4 @@
+import { useAuth } from './auth';
 import { useHttp } from './core';
 
 export type ApiMeResponse = {
@@ -30,5 +31,16 @@ export type ApiMeResponse = {
 };
 
 export function useApiMe() {
-    return useHttp<ApiMeResponse>('/api/me');
+    const { token } = useAuth();
+
+    return useHttp<ApiMeResponse>(
+        '/api/me',
+        {
+            auth: 'required',
+            skipIfUnauthed: true,
+        },
+        {
+            enabled: !!token,
+        }
+    );
 }

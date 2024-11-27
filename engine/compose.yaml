@@ -1,5 +1,4 @@
 # runs the engine on port 3000
-version: "3.9"
 services:
   # Engine
   # engine:
