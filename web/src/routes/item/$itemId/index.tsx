@@ -1,4 +1,9 @@
-import { createFileRoute, redirect, useParams } from '@tanstack/react-router';
+import {
+    createFileRoute,
+    Link,
+    redirect,
+    useParams,
+} from '@tanstack/react-router';
 
 import { formatId, getInstanceSettings } from '../../../api/instance_settings';
 import { useApiItemById } from '../../../api/item';
@@ -33,7 +38,16 @@ export const Route = createFileRoute('/item/$itemId/')({
         return (
             <div className="p-2 mt-8 mx-auto w-full max-w-4xl space-y-4">
                 <h1 className="h1">Item {itemId}</h1>
-                <div className="w-full gap-4 border border-t-4 shadow-sm rounded-md pt-4">
+                <div className="w-full space-y-4 border border-t-4 shadow-sm rounded-md pt-4">
+                    <div className="p-4 flex justify-end items-center w-full">
+                        <Link
+                            to="/item/$itemId/edit"
+                            params={{ itemId }}
+                            className="btn"
+                        >
+                            <span className="">Edit</span>
+                        </Link>
+                    </div>
                     <div className="p-4">
                         <ItemPreview item_id={itemId} />
                     </div>

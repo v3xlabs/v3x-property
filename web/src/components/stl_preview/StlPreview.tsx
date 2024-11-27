@@ -68,7 +68,7 @@ function Measurements({ geometry }: { geometry: THREE.BufferGeometry }) {
                 // Create a background plane
                 const backgroundGeometry = new THREE.PlaneGeometry(12, 6);
                 const backgroundMaterial = new THREE.MeshBasicMaterial({
-                    color: 0xffffff,
+                    color: 0xFF_FF_FF,
                     opacity: 0.5,
                     transparent: true,
                     depthTest: false,
@@ -85,9 +85,10 @@ function Measurements({ geometry }: { geometry: THREE.BufferGeometry }) {
 
                 labelGroup.add(backgroundMesh);
                 labelGroup.add(textMesh);
-                
+
                 // Add an offset to the z position to ensure it's above the floor
                 const labelOffset = new THREE.Vector3(0, 0, 0.5); // Adjust the offset as needed
+
                 labelGroup.position.copy(position).add(labelOffset);
 
                 // Set render order to ensure labels are rendered on top
@@ -177,9 +178,9 @@ function Measurements({ geometry }: { geometry: THREE.BufferGeometry }) {
     }, [geometry]);
 
     useFrame(() => {
-        labels.forEach(label => {
+        for (const label of labels) {
             label.lookAt(camera.position);
-        });
+        }
     });
 
     return (
@@ -213,28 +214,42 @@ function Model({
                 const center = new THREE.Vector3();
 
                 boundingBox.getCenter(center);
+
+                // Swap the Y and Z axes to account for the axis swap
+                const adjustedCenter = new THREE.Vector3(
+                    center.x,
+                    center.z,
+                    -center.y
+                );
+
+                // Center the geometry based on the adjusted center
                 geometry.center();
 
                 if (onLoad) {
                     const size = boundingBox.getSize(new THREE.Vector3());
                     const maxDim = Math.max(size.x, size.y, size.z);
 
-                    onLoad(maxDim, center);
+                    onLoad(maxDim, adjustedCenter);
                 }
             }
         }
     }, [geometry, onLoad]);
 
-    const width = geometry.boundingBox?.getSize(new THREE.Vector3()).x ?? 0;
-    const height = geometry.boundingBox?.getSize(new THREE.Vector3()).y ?? 0;
-    const depth = geometry.boundingBox?.getSize(new THREE.Vector3()).z ?? 0;
+    const size =
+        geometry.boundingBox?.getSize(new THREE.Vector3()) ??
+        new THREE.Vector3();
 
     return (
         <>
             <mesh
                 ref={meshReference}
                 geometry={geometry}
-                position={[width / 2, depth * 0.75 + 2, -height / 2]}
+                // Adjust the position to center the model based on the adjusted center
+                position={[
+                    size.x / 2, // Centered on the X-axis
+                    size.y / 2 + 0.1, // Slightly above the grid
+                    -size.z/2, // Centered on the Z-axis
+                ]}
                 rotation={[(Math.PI / 2) * 3, 0, 0]}
             >
                 <meshStandardMaterial
@@ -249,7 +264,7 @@ function Model({
     );
 }
 
-export const StlPreview = ({ stlUrl }: { stlUrl?: string }) => {
+export const StlPreviewWindow = ({ stlUrl }: { stlUrl?: string }) => {
     const [cameraDistance, setCameraDistance] = useState(80);
     const [modelCenter, setModelCenter] = useState<THREE.Vector3>(
         new THREE.Vector3(0, 0, 0)
