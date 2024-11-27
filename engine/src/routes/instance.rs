@@ -8,11 +8,6 @@ use crate::{auth::middleware::AuthToken, models::user_data::{User, UserEntry}, s
 
 pub struct ApiInstance;
 
-#[derive(Serialize, Deserialize, Object)]
-pub struct InstanceSettings {
-    pub id_casing_preference: IdCasingPreference,
-}
-
 #[derive(Serialize, Deserialize, Enum)]
 pub enum IdCasingPreference {
     #[oai(rename = "upper")]
@@ -23,6 +18,17 @@ pub enum IdCasingPreference {
     Lower,
 }
 
+#[derive(Serialize, Deserialize, Object)]
+pub struct InstanceSettings {
+    pub id_casing_preference: IdCasingPreference,
+}
+
+impl Default for InstanceSettings {
+    fn default() -> Self {
+        Self { id_casing_preference: IdCasingPreference::Upper }
+    }
+}
+
 #[OpenApi]
 impl ApiInstance {
     #[oai(path = "/instance/settings", method = "get")]
@@ -30,10 +36,8 @@ impl ApiInstance {
         // match token {
             // AuthToken::Active(active_user) => {
                 // TODO: check if user has permission to access this resource
-
-                Json(InstanceSettings {
-                    id_casing_preference: IdCasingPreference::Upper,
-                })
+                
+                Json(InstanceSettings::default())
             // }
             // _ => {
                 // Error::from_string("Not Authenticated", StatusCode::UNAUTHORIZED).into_response(),
