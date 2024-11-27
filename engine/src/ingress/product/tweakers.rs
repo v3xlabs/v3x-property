@@ -15,6 +15,10 @@ pub enum TweakerError {
     Request(#[from] reqwest::Error),
 }
 
+// price data
+// https://tweakers.net/ajax/price_chart/1855004/nl/?output=json
+
+
 // Fetch https://tweakers.net/pricewatch/1855004/anker-737-power-bank-powercore-24k/specificaties/
 // and parse the application/ld+json
 pub async fn get_by_tweaker_id(tweaker_id: String) -> Result<TweakerProduct, TweakerError> {
