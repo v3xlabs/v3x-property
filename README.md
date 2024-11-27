@@ -27,9 +27,9 @@ An entity is a user, a group or an organization.
 Entities are referenced by their path within the INSTANCE_URL of an engine.
 
 ```url
-v3x.property/items/1234
-v3x.property/groups/1234
-v3x.property/template/1234
+v3x.property/item/1234
+v3x.property/product/1234
+v3x.property/tag/1234
 ```
 
 entities at these urls have ld+json blobs that contain the entity's data.
