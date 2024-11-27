@@ -23,8 +23,8 @@ impl RootApi {
         }
     }
 
-    #[oai(path = "/properties", method = "get")]
-    async fn get_properties(
+    #[oai(path = "/items", method = "get")]
+    async fn get_items(
         &self,
         state: Data<&Arc<AppState>>,
         owner_id: Query<Option<i32>>,
