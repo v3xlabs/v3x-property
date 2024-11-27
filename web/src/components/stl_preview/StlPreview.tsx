@@ -248,7 +248,7 @@ function Model({
                 position={[
                     size.x / 2, // Centered on the X-axis
                     size.y / 2 + 0.1, // Slightly above the grid
-                    -size.z/2, // Centered on the Z-axis
+                    -size.z / 2, // Centered on the Z-axis
                 ]}
                 rotation={[(Math.PI / 2) * 3, 0, 0]}
             >
