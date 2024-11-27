@@ -1,5 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 
+import { BASE_URL } from './core';
+
 export type IdCasingPreference = 'upper' | 'lower';
 
 export type InstanceSettings = {
@@ -7,18 +9,24 @@ export type InstanceSettings = {
 };
 
 export const getInstanceSettings = () => {
+    // return useHttp<InstanceSettings>('/api/instance/settings', {
+    //     auth: 'include',
+    // });
     return {
         queryKey: ['instance_settings'],
         queryFn: async () => {
-            return {
-                id_casing_preference: 'upper',
-            } as InstanceSettings;
+            const response = await fetch(BASE_URL + '/api/instance/settings');
+
+            return (await response.json()) as InstanceSettings;
         },
     };
 };
 
 export const useInstanceSettings = () => {
-    return useQuery(getInstanceSettings());
+    return useQuery({
+        queryKey: ['instance_settings'],
+        queryFn: getInstanceSettings,
+    });
 };
 
 export const formatIdCasing = (

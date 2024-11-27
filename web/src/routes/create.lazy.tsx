@@ -2,16 +2,18 @@ import { createLazyFileRoute, useNavigate } from '@tanstack/react-router';
 import { useState } from 'react';
 import { FiArrowRight } from 'react-icons/fi';
 
+import { isValidId } from '../api/generate_id';
+import { formatId, useInstanceSettings } from '../api/instance_settings';
 import { useApiCreateItem } from '../api/item';
 import { NewItemIdInput } from '../components/input/NewItemIdInput';
-import { isValidId } from '../api/generate_id';
 
 const component = () => {
-    const { mutate: createItem } = useApiCreateItem();
-    const [item_id, setItemId] = useState('');
+    const { data: instanceSettings } = useInstanceSettings();
     const navigate = useNavigate();
-
+    const [item_id, setItemId] = useState('');
+    const { mutate: createItem } = useApiCreateItem();
     const isDisabled = !isValidId(item_id);
+    const formattedItemId = formatId(item_id, instanceSettings);
 
     return (
         <div className="p-2 mt-8 mx-auto w-full max-w-4xl space-y-4">
@@ -35,11 +37,11 @@ const component = () => {
                     <button
                         className="btn w-fit flex items-center gap-2"
                         onClick={async () => {
-                            await createItem(item_id);
+                            await createItem(formattedItemId);
                             // navigate to the new item
                             navigate({
                                 to: '/item/$itemId/edit',
-                                params: { itemId: item_id },
+                                params: { itemId: formattedItemId },
                             });
                         }}
                         disabled={isDisabled}
