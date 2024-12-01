@@ -1,6 +1,6 @@
 use std::sync::Arc;
 
-use poem::web::Data;
+use poem::web::{Data, Query};
 use poem_openapi::{payload::Json, Object, OpenApi};
 use serde::{Deserialize, Serialize};
 use tracing::info;
@@ -11,6 +11,11 @@ pub struct ItemsApi;
 
 #[derive(Deserialize, Debug, Serialize, Object)]
 pub struct ItemIdResponse {
+    item_id: String,
+}
+
+#[derive(Deserialize, Debug, Serialize, Object)]
+pub struct CreateItemRequest {
     item_id: String,
 }
 
@@ -26,6 +31,25 @@ impl ItemsApi {
             ),
             AuthToken::None => Json(vec![]),
         }
+    }
+
+    #[oai(path = "/item/create", method = "post")]
+    async fn create_item(
+        &self,
+        auth: AuthToken,
+        state: Data<&Arc<AppState>>,
+        request: Query<CreateItemRequest>,
+    ) -> Json<Item> {
+        Json(
+            Item {
+                item_id: request.item_id.clone(),
+                owner_id: auth.ok().map(|user| user.session.user_id),
+                ..Default::default()
+            }
+            .insert(&state.database)
+            .await
+            .unwrap(),
+        )
     }
 
     #[oai(path = "/item/next", method = "get")]
