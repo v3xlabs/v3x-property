@@ -15,6 +15,15 @@ pub enum AuthToken {
     None,
 }
 
+impl AuthToken {
+    pub fn ok(&self) -> Option<&ActiveUser> {
+        match self {
+            AuthToken::Active(user) => Some(user),
+            AuthToken::None => None,
+        }
+    }
+}
+
 impl<'a> FromRequest<'a> for AuthToken {
     async fn from_request(req: &'a Request, body: &mut RequestBody) -> Result<Self> {
         let state = Data::<&Arc<AppState>>::from_request(req, body).await?;

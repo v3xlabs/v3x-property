@@ -1,7 +1,7 @@
 import { useHttp } from './core';
 
 export type SessionResponse = {
-    id: string;
+    session_id: string;
     user_id: number;
     user_agent: string;
     user_ip: string;
@@ -9,4 +9,7 @@ export type SessionResponse = {
     // valid: boolean;
 };
 
-export const useSessions = () => useHttp<SessionResponse[]>('/api/sessions');
+export const useSessions = () =>
+    useHttp<SessionResponse[]>('/api/sessions', {
+        auth: 'required',
+    });

@@ -1,7 +1,8 @@
 use std::sync::Arc;
 
-use poem::web::{Data, Path};
+use poem::{web::{Data, Path}, Error, Result};
 use poem_openapi::{payload::Json, OpenApi};
+use reqwest::StatusCode;
 use tracing::info;
 
 use crate::{auth::middleware::AuthToken, models::sessions::Session, state::AppState};
@@ -17,15 +18,14 @@ impl ApiSessions {
         &self,
         auth: AuthToken,
         state: Data<&Arc<AppState>>,
-    ) -> poem_openapi::payload::Json<Vec<Session>> {
-        match auth {
-            AuthToken::Active(active_user) => poem_openapi::payload::Json(
-                Session::get_by_user_id(&state.database, active_user.session.user_id)
-                    .await
-                    .unwrap(),
-            ),
-            AuthToken::None => poem_openapi::payload::Json(vec![]),
-        }
+    ) -> Result<Json<Vec<Session>>> {
+        let active_user = auth.ok().ok_or(Error::from_status(StatusCode::UNAUTHORIZED))?;
+
+        Ok(Json(
+            Session::get_by_user_id(&state.database, active_user.session.user_id)
+                .await
+                .unwrap(),
+        ))
     }
 
     #[oai(path = "/sessions/:session_id", method = "delete")]

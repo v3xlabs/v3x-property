@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 
 type MediaResponse = {
-    id: number;
+    media_id: number;
     description: string;
     url: string;
 };

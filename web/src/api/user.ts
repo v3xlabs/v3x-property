@@ -1,7 +1,7 @@
 import { useHttp } from './core';
 
 export type ApiUserByIdResponse = {
-    id: number;
+    user_id: number;
     oauth_sub: string;
     name: string;
     picture: string;

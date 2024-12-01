@@ -22,7 +22,7 @@ const ActiveSession: FC<{ session: SessionResponse }> = ({ session }) => {
 
     return (
         <div
-            key={session.id}
+            key={session.session_id}
             className="bg-blue-50 p-2 flex justify-between items-center h-fit gap-2"
         >
             {geoip?.latitude && (
@@ -68,7 +68,7 @@ const ActiveSession: FC<{ session: SessionResponse }> = ({ session }) => {
                     <span>{last_accessed_formatted}</span>
                 </div>
                 <div className="text-neutral-400">
-                    #{session.id.slice(0, 6)}
+                    #{session.session_id?.slice(0, 6)}
                 </div>
             </div>
             <div className="h-full">
@@ -77,7 +77,7 @@ const ActiveSession: FC<{ session: SessionResponse }> = ({ session }) => {
                         className="btn"
                         onClick={() => {
                             fetch(
-                                `http://localhost:3000/api/sessions/${session.id}`,
+                                `http://localhost:3000/api/sessions/${session.session_id}`,
                                 {
                                     method: 'DELETE',
                                     headers: {
@@ -119,7 +119,10 @@ export const ActiveSessionsTable: FC = () => {
                                 new Date(a.last_access).getTime()
                         )
                         .map((session) => (
-                            <ActiveSession session={session} key={session.id} />
+                            <ActiveSession
+                                session={session}
+                                key={session.session_id}
+                            />
                         ))}
             </div>
             <p>

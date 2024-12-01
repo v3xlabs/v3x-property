@@ -2,13 +2,15 @@ use std::env;
 
 use openid::DiscoveredClient;
 use reqwest::Url;
+use tracing::warn;
 
-use crate::{auth::oauth::OpenIDClient, database::Database};
+use crate::{auth::oauth::OpenIDClient, database::Database, search::Search};
 
 pub struct AppState {
     pub database: Database,
     // #[cfg(feature = "oauth")]
     pub openid: OpenIDClient,
+    pub search: Option<Search>,
 }
 
 impl AppState {
@@ -37,10 +39,18 @@ impl AppState {
             .unwrap()
         };
 
+        let search = match Search::guess().await {
+            Ok(search) => Some(search),
+            Err(e) => {
+                warn!("Failed to initialize search: {}", e);
+                None
+            }
+        };
+
         Self {
             database,
-            // #[cfg(feature = "oauth")]
             openid,
+            search,
         }
     }
 }

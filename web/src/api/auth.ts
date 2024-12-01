@@ -22,8 +22,6 @@ const getTokenFromLocalStorage = () => {
     if (typeof window !== 'undefined') {
         return localStorage.getItem('property.v3x.token');
     }
-
-    return null;
 };
 
 const setTokenToLocalStorage = (token: string) => {

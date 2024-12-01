@@ -2,7 +2,7 @@ import { useAuth } from './auth';
 import { useHttp } from './core';
 
 export type ApiMeResponse = {
-    id: number;
+    user_id: number;
     oauth_sub: string;
     name: string;
     picture: string;

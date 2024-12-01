@@ -7,6 +7,7 @@ mod ingress;
 mod models;
 mod routes;
 mod state;
+mod search;
 
 #[async_std::main]
 async fn main() {

@@ -59,7 +59,7 @@ export const UserProfileHoverCard: FC<{
                 <div className="flex flex-col gap-3">
                     <div>
                         <div className="Text bold">{user?.name}</div>
-                        <div className="Text faded">#{user?.id}</div>
+                        <div className="Text faded">#{user?.user_id}</div>
                     </div>
                     {/* <div className="Text">
                                         Components, icons, colors, and templates
@@ -158,7 +158,7 @@ export const UserProfile: FC<Properties> = ({ user_id, variant }) => {
                                         {user?.name || UNKNOWN_USER}
                                     </div>
                                     <div className="Text faded !leading-[0.75em]">
-                                        #{user?.id}
+                                        #{user?.user_id}
                                     </div>
                                 </div>
                             </Link>

@@ -9,6 +9,7 @@ use poem::{
 };
 use reqwest::StatusCode;
 use serde::Deserialize;
+use tracing::info;
 use url::Url;
 use uuid::Uuid;
 
@@ -36,9 +37,7 @@ pub async fn callback(
     headers: &HeaderMap,
 ) -> Result<WithHeader<Redirect>> {
     let mut token = state.openid.request_token(&query.code).await.map_err(|_| {
-        poem::Error::from_response(
-            Redirect::temporary(state.openid.redirect_url()).into_response(),
-        )
+        poem::Error::from_response(Redirect::temporary(state.openid.redirect_url()).into_response())
     })?;
 
     let mut token = Token::from(token);
@@ -71,6 +70,8 @@ pub async fn callback(
     .await
     .unwrap();
 
+    info!("Issued session token for user {}", user.user_id);
+
     let mut redirect_url: Url = query
         .state
         .clone()
@@ -79,6 +80,7 @@ pub async fn callback(
         .unwrap();
 
     redirect_url.set_query(Some(&format!("token={}", token)));
+
 
     Ok(Redirect::temporary(redirect_url)
         .with_header("Set-Cookie", format!("property.v3x.token={}", token)))
