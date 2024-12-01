@@ -2,6 +2,7 @@
 /* eslint-disable no-undef */
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
 import { Link } from '@tanstack/react-router';
+import { FileRoutesByPath } from '@tanstack/react-router';
 
 import { useAuth } from '../api/auth';
 import { useApiMe } from '../api/me';
@@ -21,19 +22,26 @@ export const Navbar = () => {
     return (
         <div className="w-full bg-white border-b h-8 flex items-center justify-between">
             <div className="h-full flex space-x-2">
-                <div className="font-semibold text-base pl-4 pr-4 hover:bg-black/10 border-r h-full flex items-center">
+                <Link
+                    to="/"
+                    className="font-semibold cursor-pointer text-base px-4 hover:bg-black/10 border-r h-full flex items-center"
+                >
                     v3x.property
-                </div>
+                </Link>
                 <div className="h-full flex items-center">
-                    {[
-                        ['/', 'Home'],
-                        ['/create', 'Create'],
-                        ['/sessions', 'Sessions'],
-                    ].map(([path, name]) => (
+                    {(
+                        [
+                            ['/search', 'Search'],
+                            ['/items', 'Items'],
+                            ['/products', 'Products'],
+                            ['/logs', 'Logs'],
+                            ['/create', 'Create'],
+                        ] as [keyof FileRoutesByPath, string][]
+                    ).map(([path, name]) => (
                         <Link
                             key={path}
                             to={path}
-                            className="[&.active]:font-bold hover:bg-black/10 py-1 px-2"
+                            className="[&.active]:bg-black/10 hover:bg-black/5 py-1 px-2 cursor-pointer"
                         >
                             {name}
                         </Link>
@@ -65,8 +73,13 @@ export const Navbar = () => {
                                 className="DropdownMenuContent"
                                 sideOffset={5}
                             >
-                                <DropdownMenu.Item className="DropdownMenuItem">
-                                    Settings
+                                <DropdownMenu.Item asChild>
+                                    <Link
+                                        to="/settings"
+                                        className="DropdownMenuItem"
+                                    >
+                                        Settings
+                                    </Link>
                                 </DropdownMenu.Item>
                                 <DropdownMenu.Item asChild>
                                     <Link

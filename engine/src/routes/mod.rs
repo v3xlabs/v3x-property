@@ -13,7 +13,6 @@ use users::ApiUserById;
 
 use crate::state::AppState;
 
-pub mod error;
 pub mod instance;
 pub mod items;
 pub mod me;

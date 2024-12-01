@@ -1,6 +1,7 @@
-use crate::database::Database;
 use serde::{Deserialize, Serialize};
 use sqlx::query_as;
+
+use crate::database::Database;
 
 #[derive(sqlx::FromRow, poem_openapi::Object, Debug, Clone, Serialize, Deserialize)]
 pub struct ItemField {

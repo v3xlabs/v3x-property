@@ -1,21 +1,16 @@
 use std::sync::Arc;
 
-use poem::{
-    web::{Data, Path},
-    Result,
-};
+use poem::{web::{Data, Path}, Result};
 use poem_openapi::{
     param::Query,
     payload::{Json, PlainText},
     OpenApi,
 };
+use reqwest::StatusCode;
 
 use crate::{
-    models::{item::Item, media::Media, products::Product},
-    state::AppState,
+    models::{item::Item, media::Media, products::Product}, state::AppState
 };
-
-use super::error::HttpError;
 
 pub struct RootApi;
 
@@ -79,7 +74,7 @@ impl RootApi {
 
         match item {
             Some(item) => Ok(Json(item)),
-            None => Err(HttpError::NotFound.into()),
+            None => Err(StatusCode::NOT_FOUND.into()),
         }
     }
 }

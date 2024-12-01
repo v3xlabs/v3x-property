@@ -23,10 +23,7 @@ export const getInstanceSettings = () => {
 };
 
 export const useInstanceSettings = () => {
-    return useQuery({
-        queryKey: ['instance_settings'],
-        queryFn: getInstanceSettings,
-    });
+    return useQuery(getInstanceSettings());
 };
 
 export const formatIdCasing = (

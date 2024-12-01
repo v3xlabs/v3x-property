@@ -23,6 +23,11 @@ import { Route as ItemItemIdEditImport } from './routes/item/$itemId/edit'
 const CreateLazyImport = createFileRoute('/create')()
 const AboutLazyImport = createFileRoute('/about')()
 const IndexLazyImport = createFileRoute('/')()
+const SettingsIndexLazyImport = createFileRoute('/settings/')()
+const SearchIndexLazyImport = createFileRoute('/search/')()
+const ProductsIndexLazyImport = createFileRoute('/products/')()
+const LogsIndexLazyImport = createFileRoute('/logs/')()
+const ItemsIndexLazyImport = createFileRoute('/items/')()
 
 // Create/Update Routes
 
@@ -50,6 +55,35 @@ const IndexLazyRoute = IndexLazyImport.update({
   path: '/',
   getParentRoute: () => rootRoute,
 } as any).lazy(() => import('./routes/index.lazy').then((d) => d.Route))
+
+const SettingsIndexLazyRoute = SettingsIndexLazyImport.update({
+  path: '/settings/',
+  getParentRoute: () => rootRoute,
+} as any).lazy(() =>
+  import('./routes/settings/index.lazy').then((d) => d.Route),
+)
+
+const SearchIndexLazyRoute = SearchIndexLazyImport.update({
+  path: '/search/',
+  getParentRoute: () => rootRoute,
+} as any).lazy(() => import('./routes/search/index.lazy').then((d) => d.Route))
+
+const ProductsIndexLazyRoute = ProductsIndexLazyImport.update({
+  path: '/products/',
+  getParentRoute: () => rootRoute,
+} as any).lazy(() =>
+  import('./routes/products/index.lazy').then((d) => d.Route),
+)
+
+const LogsIndexLazyRoute = LogsIndexLazyImport.update({
+  path: '/logs/',
+  getParentRoute: () => rootRoute,
+} as any).lazy(() => import('./routes/logs/index.lazy').then((d) => d.Route))
+
+const ItemsIndexLazyRoute = ItemsIndexLazyImport.update({
+  path: '/items/',
+  getParentRoute: () => rootRoute,
+} as any).lazy(() => import('./routes/items/index.lazy').then((d) => d.Route))
 
 const ItemItemIdIndexRoute = ItemItemIdIndexImport.update({
   path: '/item/$itemId/',
@@ -100,6 +134,41 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CreateLazyImport
       parentRoute: typeof rootRoute
     }
+    '/items/': {
+      id: '/items/'
+      path: '/items'
+      fullPath: '/items'
+      preLoaderRoute: typeof ItemsIndexLazyImport
+      parentRoute: typeof rootRoute
+    }
+    '/logs/': {
+      id: '/logs/'
+      path: '/logs'
+      fullPath: '/logs'
+      preLoaderRoute: typeof LogsIndexLazyImport
+      parentRoute: typeof rootRoute
+    }
+    '/products/': {
+      id: '/products/'
+      path: '/products'
+      fullPath: '/products'
+      preLoaderRoute: typeof ProductsIndexLazyImport
+      parentRoute: typeof rootRoute
+    }
+    '/search/': {
+      id: '/search/'
+      path: '/search'
+      fullPath: '/search'
+      preLoaderRoute: typeof SearchIndexLazyImport
+      parentRoute: typeof rootRoute
+    }
+    '/settings/': {
+      id: '/settings/'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof SettingsIndexLazyImport
+      parentRoute: typeof rootRoute
+    }
     '/item/$itemId/edit': {
       id: '/item/$itemId/edit'
       path: '/item/$itemId/edit'
@@ -125,6 +194,11 @@ export const routeTree = rootRoute.addChildren({
   SessionsRoute,
   AboutLazyRoute,
   CreateLazyRoute,
+  ItemsIndexLazyRoute,
+  LogsIndexLazyRoute,
+  ProductsIndexLazyRoute,
+  SearchIndexLazyRoute,
+  SettingsIndexLazyRoute,
   ItemItemIdEditRoute,
   ItemItemIdIndexRoute,
 })
@@ -142,6 +216,11 @@ export const routeTree = rootRoute.addChildren({
         "/sessions",
         "/about",
         "/create",
+        "/items/",
+        "/logs/",
+        "/products/",
+        "/search/",
+        "/settings/",
         "/item/$itemId/edit",
         "/item/$itemId/"
       ]
@@ -160,6 +239,21 @@ export const routeTree = rootRoute.addChildren({
     },
     "/create": {
       "filePath": "create.lazy.tsx"
+    },
+    "/items/": {
+      "filePath": "items/index.lazy.tsx"
+    },
+    "/logs/": {
+      "filePath": "logs/index.lazy.tsx"
+    },
+    "/products/": {
+      "filePath": "products/index.lazy.tsx"
+    },
+    "/search/": {
+      "filePath": "search/index.lazy.tsx"
+    },
+    "/settings/": {
+      "filePath": "settings/index.lazy.tsx"
     },
     "/item/$itemId/edit": {
       "filePath": "item/$itemId/edit.tsx"

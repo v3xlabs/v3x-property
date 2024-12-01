@@ -13,6 +13,9 @@ CREATE TABLE users (
 -- Insert a system user
 INSERT INTO users (user_id, oauth_sub, oauth_data, nickname) VALUES (1, '$$SYSTEM$$', '{}', 'System');
 
+-- Set the sequence for user_id to start at 2
+SELECT setval(pg_get_serial_sequence('users', 'user_id'), 2, false);
+
 -- Create Sessions table
 CREATE TABLE sessions (
     session_id TEXT PRIMARY KEY, -- Unique session identifier

@@ -1,11 +1,13 @@
-use crate::{auth::middleware::AuthToken, models::sessions::Session, state::AppState};
+use std::sync::Arc;
+
 use poem::{
     handler,
     web::{Data, Json},
     Error, IntoResponse,
 };
 use reqwest::StatusCode;
-use std::sync::Arc;
+
+use crate::{auth::middleware::AuthToken, models::sessions::Session, state::AppState};
 
 #[handler]
 pub async fn delete_sessions(state: Data<&Arc<AppState>>, token: AuthToken) -> impl IntoResponse {

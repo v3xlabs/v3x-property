@@ -1,4 +1,4 @@
-import { QueryObserverOptions, QueryOptions, useMutation, useQuery } from '@tanstack/react-query';
+import { DefinedUseQueryResult, QueryObserverOptions, QueryOptions, useMutation, useQuery, UseQueryResult } from '@tanstack/react-query';
 
 import { useAuth } from './auth';
 
@@ -17,13 +17,13 @@ export function useHttp<T>(
     key: string,
     options?: HttpOptions,
     queryOptions?: Partial<QueryObserverOptions>
-) {
+): DefinedUseQueryResult<T, Error> {
     const { token, clearAuthToken } = useAuth();
     const { auth = 'ignore', skipIfUnauthed = false } = options || {};
 
     return useQuery({
         queryKey: [key],
-        enabled: true,
+        enabled: auth !== 'required' || !!token,
         queryFn: async () => {
             const headers = new Headers();
 

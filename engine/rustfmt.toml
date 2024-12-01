@@ -1,2 +1,5 @@
 reorder_imports = true
-# group_imports = "StdExternalCrate"
+group_imports = "StdExternalCrate"
+blank_lines_upper_bound = 2
+edition = "2021"
+error_on_unformatted = true

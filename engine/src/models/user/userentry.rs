@@ -1,8 +1,9 @@
-use crate::database::Database;
 use chrono::{DateTime, Utc};
 use openid::Userinfo;
 use serde::{Deserialize, Serialize};
 use sqlx::{query, query_as, types::Json, FromRow};
+
+use crate::database::Database;
 
 /// A user object that is stored in the database
 #[derive(FromRow, Debug, Clone, Serialize, Deserialize)]
@@ -44,8 +45,7 @@ impl UserEntry {
     ) -> Result<Option<UserEntry>, sqlx::Error> {
         query_as!(
             UserEntry,
-            r#"SELECT user_id, oauth_sub, oauth_data::text::json as "oauth_data!: Json<Userinfo>", 
-            nickname, created_at, updated_at FROM users WHERE oauth_sub = $1"#,
+            "SELECT user_id, oauth_sub, oauth_data::text::json as \"oauth_data!: Json<Userinfo>\", nickname, created_at, updated_at FROM users WHERE oauth_sub = $1",
             oauth_sub
         )
         .fetch_optional(&database.pool)
@@ -58,8 +58,7 @@ impl UserEntry {
     ) -> Result<Option<UserEntry>, sqlx::Error> {
         query_as!(
             UserEntry,
-            r#"SELECT user_id, oauth_sub, oauth_data::text::json as "oauth_data!: Json<Userinfo>", 
-            nickname, created_at, updated_at FROM users WHERE user_id = $1"#,
+            "SELECT user_id, oauth_sub, oauth_data::text::json as \"oauth_data!: Json<Userinfo>\", nickname, created_at, updated_at FROM users WHERE user_id = $1",
             user_id
         )
         .fetch_optional(&database.pool)

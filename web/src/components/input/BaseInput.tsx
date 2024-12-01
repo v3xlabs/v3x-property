@@ -3,7 +3,7 @@ import clsx from 'clsx';
 import { ReactNode } from 'react';
 
 export type BaseInputProperties = {
-    label: string;
+    label?: string;
     placeholder?: string;
     defaultValue?: string;
     id?: string;
@@ -13,6 +13,7 @@ export type BaseInputProperties = {
     value?: string;
     onChange?: (value: string) => void;
     errorMessage?: string;
+    width?: 'full' | 'fit';
 };
 
 export const BaseInput = ({
@@ -26,20 +27,32 @@ export const BaseInput = ({
     value,
     onChange,
     errorMessage,
+    width = 'fit',
 }: BaseInputProperties) => {
     return (
         <>
-            <Label.Root className="LabelRoot w-fit" htmlFor={id}>
-                {label}
-            </Label.Root>
-            <div className="flex items-stretch justify-start gap-2 h-fit w-fit">
-                <div>
+            {label && (
+                <Label.Root className="LabelRoot w-fit" htmlFor={id}>
+                    {label}
+                </Label.Root>
+            )}
+            <div
+                className={clsx(
+                    'flex items-stretch justify-start gap-2',
+                    width === 'full' && 'w-full'
+                )}
+            >
+                <div className="grow">
                     <input
                         type={type || 'text'}
                         id={id}
                         defaultValue={defaultValue}
                         placeholder={placeholder}
-                        className={clsx(className, 'Input')}
+                        className={clsx(
+                            className,
+                            'input',
+                            width === 'full' && 'w-full'
+                        )}
                         onChange={(event) => onChange?.(event.target.value)}
                         value={value}
                     />

@@ -4,9 +4,10 @@ use openid::Token;
 use poem::{
     handler,
     http::HeaderMap,
-    web::{Data, Query, RealIp, Redirect},
-    IntoResponse,
+    web::{Data, Query, RealIp, Redirect, WithHeader},
+    IntoResponse, Result,
 };
+use reqwest::StatusCode;
 use serde::Deserialize;
 use url::Url;
 use uuid::Uuid;
@@ -33,8 +34,12 @@ pub async fn callback(
     state: Data<&Arc<AppState>>,
     ip: RealIp,
     headers: &HeaderMap,
-) -> impl IntoResponse {
-    let mut token = state.openid.request_token(&query.code).await.unwrap();
+) -> Result<WithHeader<Redirect>> {
+    let mut token = state.openid.request_token(&query.code).await.map_err(|_| {
+        poem::Error::from_response(
+            Redirect::temporary(state.openid.redirect_url()).into_response(),
+        )
+    })?;
 
     let mut token = Token::from(token);
 
@@ -44,8 +49,6 @@ pub async fn callback(
     state.openid.validate_token(&id_token, None, None).unwrap();
 
     let oauth_userinfo = state.openid.request_userinfo(&token).await.unwrap();
-
-    format!("Hello {:?}", oauth_userinfo);
 
     // Now we must verify the user information, decide wether they deserve access, and if so return a token.
     let user = UserEntry::upsert(&oauth_userinfo, None, &state.database)
@@ -77,6 +80,6 @@ pub async fn callback(
 
     redirect_url.set_query(Some(&format!("token={}", token)));
 
-    Redirect::temporary(redirect_url)
-        .with_header("Set-Cookie", format!("property.v3x.token={}", token))
+    Ok(Redirect::temporary(redirect_url)
+        .with_header("Set-Cookie", format!("property.v3x.token={}", token)))
 }

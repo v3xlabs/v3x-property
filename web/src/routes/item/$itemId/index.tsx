@@ -10,6 +10,7 @@ import { useApiItemById } from '../../../api/item';
 import { ItemPreview } from '../../../components/item/ItemPreview';
 import { MediaGallery } from '../../../components/media/MediaGallery';
 import { UnauthorizedResourceModal } from '../../../components/Unauthorized';
+import { SCPage } from '../../../layouts/SimpleCenterPage';
 import { queryClient } from '../../../util/query';
 
 export const Route = createFileRoute('/item/$itemId/')({
@@ -36,8 +37,7 @@ export const Route = createFileRoute('/item/$itemId/')({
         }
 
         return (
-            <div className="p-2 mt-8 mx-auto w-full max-w-4xl space-y-4">
-                <h1 className="h1">Item {itemId}</h1>
+            <SCPage title={`Item ${itemId}`}>
                 <div className="w-full space-y-4 border border-t-4 shadow-sm rounded-md pt-4">
                     <div className="p-4 flex justify-end items-center w-full">
                         <Link
@@ -53,7 +53,7 @@ export const Route = createFileRoute('/item/$itemId/')({
                     </div>
                     <MediaGallery media_ids={item?.media || []} />
                 </div>
-            </div>
+            </SCPage>
         );
     },
 });

@@ -3,9 +3,8 @@ use std::sync::Arc;
 use poem::{web::Data, Error, FromRequest, Request, RequestBody, Result};
 use reqwest::StatusCode;
 
-use crate::{models::sessions::Session, state::AppState};
-
 use super::hash::hash_session;
+use crate::{models::sessions::Session, state::AppState};
 
 pub struct ActiveUser {
     pub session: Session,

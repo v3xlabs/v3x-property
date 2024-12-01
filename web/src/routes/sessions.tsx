@@ -3,12 +3,13 @@ import { FC } from 'react';
 
 import { useAuth } from '../api/auth';
 import { ActiveSessionsTable } from '../components/ActiveSessionsTable';
+import { SCPage } from '../layouts/SimpleCenterPage';
 
 const component: FC = () => {
     return (
-        <div className="mx-auto w-full max-w-xl p-2">
+        <SCPage title="Active Sessions">
             <ActiveSessionsTable />
-        </div>
+        </SCPage>
     );
 };
 

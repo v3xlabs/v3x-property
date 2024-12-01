@@ -1,8 +1,9 @@
-use crate::database::Database;
 use chrono::{DateTime, Utc};
 use poem_openapi::Object;
 use serde::{Deserialize, Serialize};
 use sqlx::{query_as, FromRow};
+
+use crate::database::Database;
 
 #[derive(FromRow, Object, Debug, Clone, Serialize, Deserialize)]
 pub struct Product {

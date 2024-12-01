@@ -6,19 +6,20 @@ import { isValidId } from '../api/generate_id';
 import { formatId, useInstanceSettings } from '../api/instance_settings';
 import { useApiCreateItem } from '../api/item';
 import { NewItemIdInput } from '../components/input/NewItemIdInput';
+import { SCPage } from '../layouts/SimpleCenterPage';
 
 const component = () => {
     const { data: instanceSettings } = useInstanceSettings();
     const navigate = useNavigate();
     const [item_id, setItemId] = useState('');
     const { mutate: createItem } = useApiCreateItem();
+
     const isDisabled = !isValidId(item_id);
     const formattedItemId = formatId(item_id, instanceSettings);
 
     return (
-        <div className="p-2 mt-8 mx-auto w-full max-w-4xl space-y-4">
-            <h1 className="h1">Create new Item</h1>
-            <div className="w-full gap-4 border border-t-4 shadow-sm rounded-md pt-4">
+        <SCPage title="Create new Item" width="4xl">
+            <div className="card">
                 <div className="flex flex-col gap-2 px-6">
                     <NewItemIdInput
                         label="Item Identifier"
@@ -37,6 +38,8 @@ const component = () => {
                     <button
                         className="btn w-fit flex items-center gap-2"
                         onClick={async () => {
+                            if (!formattedItemId) return;
+
                             await createItem(formattedItemId);
                             // navigate to the new item
                             navigate({
@@ -51,7 +54,7 @@ const component = () => {
                     </button>
                 </div>
             </div>
-        </div>
+        </SCPage>
     );
 };
 

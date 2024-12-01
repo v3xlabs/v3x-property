@@ -1,8 +1,9 @@
 use std::env;
 
-use crate::{auth::oauth::OpenIDClient, database::Database};
 use openid::DiscoveredClient;
 use reqwest::Url;
+
+use crate::{auth::oauth::OpenIDClient, database::Database};
 
 pub struct AppState {
     pub database: Database,
