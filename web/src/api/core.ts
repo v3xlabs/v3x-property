@@ -5,8 +5,33 @@ import {
 } from '@tanstack/react-query';
 
 import { useAuth } from './auth';
+import { paths } from './schema.gen';
 
 export const BASE_URL = 'http://localhost:3000';
+
+type Request<
+    TPath extends keyof paths,
+    TMethod extends keyof paths[TPath]
+> = paths[TPath][TMethod] extends {
+    responses: Record<
+        number,
+        {
+            content: Record<string, any>;
+        }
+    >;
+}
+    ? paths[TPath][TMethod]
+    : never;
+
+export type ResponseType<
+    TPath extends keyof paths,
+    TMethod extends keyof paths[TPath] = 'get',
+    TStatus extends keyof Request<TPath, TMethod>['responses'] = 200
+> = Request<TPath, TMethod>['responses'][TStatus] extends {
+    content: Record<string, infer R>;
+}
+    ? R
+    : never;
 
 export type HttpOptions = {
     // Whether to include the token in the request
