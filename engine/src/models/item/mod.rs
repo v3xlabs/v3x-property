@@ -3,10 +3,11 @@ use serde::{Deserialize, Serialize};
 use sqlx::{query, query_as};
 use tracing::info;
 
-use crate::database::Database;
+use crate::{database::Database, search::Search};
 
 pub mod field;
 pub mod media;
+pub mod search;
 
 #[derive(sqlx::FromRow, poem_openapi::Object, Debug, Clone, Serialize, Deserialize)]
 pub struct Item {
@@ -93,6 +94,17 @@ impl Item {
                 return Ok(id_str);
             }
             id += 1;
+        }
+    }
+
+    /// Shorthand for triggering a search index update.
+    pub async fn index_search(&self, search: &Option<Search>, db: &Database) -> Result<Self, ()> {
+        match search {
+            Some(search) => {
+                search.index_item(db, &self.into_search(db).await.unwrap()).await;
+                Ok(self.to_owned())
+            }
+            None => Ok(self.to_owned()),
         }
     }
 }

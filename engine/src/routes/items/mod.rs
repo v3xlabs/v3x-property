@@ -52,6 +52,9 @@ impl ItemsApi {
             }
             .insert(&state.database)
             .await
+            .unwrap()
+            .index_search(&state.search, &state.database)
+            .await
             .unwrap(),
         )
     }
