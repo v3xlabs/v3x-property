@@ -21,7 +21,7 @@ export const SCPage: FC<SCPageProperties> = ({
                 width === '4xl' && 'max-w-4xl'
             )}
         >
-            <h1 className="h1">{title}</h1>
+            <h1 className="h1 pl-4">{title}</h1>
             {children}
         </div>
     );

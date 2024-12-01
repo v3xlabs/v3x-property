@@ -7,9 +7,9 @@ import {
 
 import { formatId, getInstanceSettings } from '../../../api/instance_settings';
 import { useApiItemById } from '../../../api/item';
-import { ItemPreview } from '../../../components/item/ItemPreview';
 import { MediaGallery } from '../../../components/media/MediaGallery';
 import { UnauthorizedResourceModal } from '../../../components/Unauthorized';
+import { UserProfile } from '../../../components/UserProfile';
 import { SCPage } from '../../../layouts/SimpleCenterPage';
 import { queryClient } from '../../../util/query';
 
@@ -37,7 +37,7 @@ export const Route = createFileRoute('/item/$itemId/')({
         }
 
         return (
-            <SCPage title={`Item ${itemId}`}>
+            <SCPage title={(item && item.name) || `Item ${itemId}`}>
                 <div className="w-full space-y-4 border border-t-4 shadow-sm rounded-md pt-4">
                     <div className="p-4 flex justify-end items-center w-full">
                         <Link
@@ -48,10 +48,20 @@ export const Route = createFileRoute('/item/$itemId/')({
                             <span className="">Edit</span>
                         </Link>
                     </div>
-                    <div className="p-4">
-                        <ItemPreview item_id={itemId} />
-                    </div>
                     <MediaGallery media_ids={item?.media || []} />
+                    <div className="p-4">
+                        {item?.owner_id && (
+                            <div>
+                                <h3>Owner</h3>
+                                <UserProfile
+                                    user_id={item.owner_id.toString()}
+                                />
+                            </div>
+                        )}
+                    </div>
+                    <div>
+                        <p>{item?.product_id}</p>
+                    </div>
                 </div>
             </SCPage>
         );

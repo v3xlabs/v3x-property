@@ -1,6 +1,7 @@
 import { useMutation, useQuery, UseQueryOptions } from '@tanstack/react-query';
 
 import { BASE_URL, getHttp } from './core';
+import { useAuth } from './auth';
 
 export type ApiItemResponse = {
     item_id: string;
@@ -32,6 +33,10 @@ export const useApiCreateItem = () => {
         mutationFn: async (item_id: string) =>
             fetch(BASE_URL + '/api/item/create?item_id=' + item_id, {
                 method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: 'Bearer ' + useAuth.getState().token,
+                },
             }).then((response) => response.ok),
     });
 };
