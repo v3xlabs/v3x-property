@@ -1,9 +1,7 @@
 use poem_openapi::Object;
 use serde::{Deserialize, Serialize};
-use sqlx::types::{
-    chrono,
-    ipnetwork::{IpNetwork, Ipv4Network},
-};
+use sqlx::types::ipnetwork::IpNetwork;
+use chrono::{DateTime, Utc};
 
 use crate::database::Database;
 
@@ -14,9 +12,9 @@ pub struct Session {
     pub user_agent: String,
     pub user_ip: String,
     pub valid: bool,
-    pub last_access: chrono::DateTime<chrono::Utc>,
-    pub created_at: Option<chrono::DateTime<chrono::Utc>>,
-    pub updated_at: Option<chrono::DateTime<chrono::Utc>>,
+    pub last_access: DateTime<Utc>,
+    pub created_at: Option<DateTime<Utc>>,
+    pub updated_at: Option<DateTime<Utc>>,
 }
 
 impl Session {

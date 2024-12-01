@@ -54,3 +54,25 @@ An example of a tracked item could be:
     "modified": "2023-06-01T00:00:00Z"
 }
 ```
+
+## Developing Locally
+
+This project consists of two parts:
+
+- `engine`: A Rust application that runs the core logic and API.
+- `web`: A Vite React (TS) application that runs the web interface.
+
+To get started locally you need to have `docker` and `docker-compose` installed.
+
+```
+# Start Engine
+cd engine
+docker compose up -d   # start the database
+cargo sqlx migrate run # only required for development
+cargo run              # start the engine
+
+# Start Web
+cd web
+pnpm install
+pnpm dev
+```

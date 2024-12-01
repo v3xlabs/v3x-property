@@ -6,7 +6,7 @@ use serde::{Deserialize, Serialize};
 use tracing::info;
 
 use crate::{
-    auth::middleware::AuthToken, models::items::Item, state::AppState
+    auth::middleware::AuthToken, models::item::Item, state::AppState
 };
 
 pub struct ItemsApi;

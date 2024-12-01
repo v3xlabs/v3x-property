@@ -1,6 +1,6 @@
-pub mod field_definitions;
-pub mod items;
-pub mod locations;
+pub mod field;
+pub mod item;
+pub mod location;
 pub mod media;
 pub mod products;
 pub mod sessions;

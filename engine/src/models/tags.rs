@@ -1,14 +1,15 @@
 use serde::{Deserialize, Serialize};
-use sqlx::prelude::*;
-
+use sqlx::FromRow;
+use chrono::{DateTime, Utc};
+use poem_openapi::Object;
 use crate::database::Database;
 
-#[derive(sqlx::FromRow, poem_openapi::Object, Debug, Clone, Serialize, Deserialize)]
+#[derive(FromRow, Object, Debug, Clone, Serialize, Deserialize)]
 pub struct Tag {
     pub tag_id: i32,
     pub name: String,
-    pub created_at: Option<chrono::DateTime<chrono::Utc>>,
-    pub updated_at: Option<chrono::DateTime<chrono::Utc>>,
+    pub created_at: Option<DateTime<Utc>>,
+    pub updated_at: Option<DateTime<Utc>>,
 }
 
 impl Tag {

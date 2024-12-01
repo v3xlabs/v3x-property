@@ -1,24 +1,20 @@
 use openid::Userinfo;
 use serde::{Deserialize, Serialize};
-use serde_json::Value;
 use sqlx::{types::Json, FromRow};
 use url::Url;
-
+use chrono::{DateTime, Utc};
+use poem_openapi::Object;
 use crate::database::Database;
 
-#[derive(Deserialize, Serialize, Clone, Debug)]
-struct Person {
-    name: String,
-}
-
-#[derive(sqlx::FromRow, Debug, Clone, Serialize, Deserialize)]
+/// A user object that is stored in the database
+#[derive(FromRow, Debug, Clone, Serialize, Deserialize)]
 pub struct UserEntry {
     pub user_id: i32,
     pub oauth_sub: String,
     pub oauth_data: Json<Userinfo>,
     pub nickname: Option<String>,
-    pub created_at: Option<chrono::DateTime<chrono::Utc>>,
-    pub updated_at: Option<chrono::DateTime<chrono::Utc>>,
+    pub created_at: Option<DateTime<Utc>>,
+    pub updated_at: Option<DateTime<Utc>>,
 }
 
 impl UserEntry {
@@ -73,7 +69,10 @@ impl UserEntry {
     }
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize, poem_openapi::Object)]
+/// A user object that is returned to the client
+/// This is a subset of the `UserEntry` struct
+/// Use `UserEntry` to query the database for a user
+#[derive(Debug, Clone, Serialize, Deserialize, Object)]
 pub struct User {
     pub id: i32,
     pub oauth_sub: String,

@@ -6,7 +6,7 @@ use poem::{
 use poem_openapi::{param::Query, payload::{Json, PlainText}, OpenApi};
 
 use crate::{
-    models::{items::Item, media::Media, products::Product},
+    models::{item::Item, media::Media, products::Product},
     state::AppState,
 };
 
