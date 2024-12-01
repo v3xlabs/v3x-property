@@ -1,6 +1,7 @@
 use serde::{Deserialize, Serialize};
-use sqlx::prelude::*;
+use sqlx::{query, query_as};
 use tracing::info;
+use chrono::{DateTime, Utc};
 
 use crate::database::Database;
 
@@ -14,8 +15,8 @@ pub struct Item {
     pub product_id: Option<i32>,
     pub owner_id: Option<i32>,
     pub location_id: Option<i32>,
-    pub created_at: Option<chrono::DateTime<chrono::Utc>>,
-    pub updated_at: Option<chrono::DateTime<chrono::Utc>>,
+    pub created_at: Option<DateTime<Utc>>,
+    pub updated_at: Option<DateTime<Utc>>,
 }
 
 impl Default for Item {
@@ -41,7 +42,7 @@ impl Item {
         product_id: Option<i32>,
         database: &Database,
     ) -> Result<Item, sqlx::Error> {
-        sqlx::query_as!(
+        query_as!(
             Item,
             "INSERT INTO items (item_id, name, owner_id, location_id, product_id) VALUES ($1, $2, $3, $4, $5) RETURNING *",
             item_id,
@@ -58,13 +59,13 @@ impl Item {
         owner_id: i32,
         database: &Database,
     ) -> Result<Vec<Item>, sqlx::Error> {
-        sqlx::query_as!(Item, "SELECT * FROM items WHERE owner_id = $1", owner_id)
+        query_as!(Item, "SELECT * FROM items WHERE owner_id = $1", owner_id)
             .fetch_all(&database.pool)
             .await
     }
 
     pub async fn get_by_id(item_id: String, database: &Database) -> Result<Option<Item>, sqlx::Error> {
-        sqlx::query_as!(Item, "SELECT * FROM items WHERE item_id = $1", item_id)
+        query_as!(Item, "SELECT * FROM items WHERE item_id = $1", item_id)
             .fetch_optional(&database.pool)
             .await
     }
@@ -78,7 +79,7 @@ impl Item {
         loop {
             let id_str = id.to_string();
             info!("Checking if id {} is taken", id_str);
-            if sqlx::query("SELECT 1 FROM items WHERE item_id = $1")
+            if query("SELECT 1 FROM items WHERE item_id = $1")
                 .bind(id_str.clone())
                 .fetch_optional(&database.pool)
                 .await

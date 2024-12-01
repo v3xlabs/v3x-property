@@ -6,3 +6,4 @@ pub mod products;
 pub mod sessions;
 pub mod tags;
 pub mod users;
+pub mod log;

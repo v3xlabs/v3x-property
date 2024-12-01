@@ -1,5 +1,6 @@
 use crate::database::Database;
 use serde::{Deserialize, Serialize};
+use sqlx::query_as;
 
 #[derive(sqlx::FromRow, poem_openapi::Object, Debug, Clone, Serialize, Deserialize)]
 pub struct ItemMedia {
@@ -13,7 +14,7 @@ impl ItemMedia {
         media_id: i32,
         database: &Database,
     ) -> Result<ItemMedia, sqlx::Error> {
-        sqlx::query_as!(
+        query_as!(
             ItemMedia,
             "INSERT INTO item_media (item_id, media_id) VALUES ($1, $2) RETURNING *",
             item_id,

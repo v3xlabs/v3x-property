@@ -1,6 +1,7 @@
 
 use crate::database::Database;
 use serde::{Deserialize, Serialize};
+use sqlx::query_as;
 
 #[derive(sqlx::FromRow, poem_openapi::Object, Debug, Clone, Serialize, Deserialize)]
 pub struct ItemField {
@@ -18,7 +19,7 @@ impl ItemField {
         value: serde_json::Value,
         database: &Database,
     ) -> Result<ItemField, sqlx::Error> {
-        sqlx::query_as!(
+        query_as!(
             ItemField,
             "INSERT INTO item_fields (item_id, definition_id, value) VALUES ($1, $2, $3) RETURNING *",
             item_id,

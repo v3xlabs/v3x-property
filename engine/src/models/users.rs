@@ -1,6 +1,6 @@
 use openid::Userinfo;
 use serde::{Deserialize, Serialize};
-use sqlx::{types::Json, FromRow};
+use sqlx::{query, query_as, types::Json, FromRow};
 use url::Url;
 use chrono::{DateTime, Utc};
 use poem_openapi::Object;
@@ -31,7 +31,7 @@ impl UserEntry {
         let oauth_data_json: Json<Userinfo> = Json(oauth_userinfo.clone());
 
         // upsert into users table and select the result
-        sqlx::query("INSERT INTO users (oauth_sub, oauth_data, nickname) VALUES ($1, $2, $3) ON CONFLICT (oauth_sub) DO UPDATE SET oauth_data = $2, nickname = $3 RETURNING user_id, oauth_sub, oauth_data, nickname, created_at, updated_at")
+        query("INSERT INTO users (oauth_sub, oauth_data, nickname) VALUES ($1, $2, $3) ON CONFLICT (oauth_sub) DO UPDATE SET oauth_data = $2, nickname = $3 RETURNING user_id, oauth_sub, oauth_data, nickname, created_at, updated_at")
             .bind(oauth_sub)
             .bind(oauth_data_json)
             .bind(nickname)
@@ -44,7 +44,7 @@ impl UserEntry {
         oauth_sub: String,
         database: &Database,
     ) -> Result<Option<UserEntry>, sqlx::Error> {
-        sqlx::query_as!(
+        query_as!(
             UserEntry,
             r#"SELECT user_id, oauth_sub, oauth_data::text::json as "oauth_data!: Json<Userinfo>", 
             nickname, created_at, updated_at FROM users WHERE oauth_sub = $1"#,
@@ -58,7 +58,7 @@ impl UserEntry {
         user_id: i32,
         database: &Database,
     ) -> Result<Option<UserEntry>, sqlx::Error> {
-        sqlx::query_as!(
+        query_as!(
             UserEntry,
             r#"SELECT user_id, oauth_sub, oauth_data::text::json as "oauth_data!: Json<Userinfo>", 
             nickname, created_at, updated_at FROM users WHERE user_id = $1"#,

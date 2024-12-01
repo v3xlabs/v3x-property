@@ -1,5 +1,5 @@
 use serde::{Deserialize, Serialize};
-use sqlx::FromRow;
+use sqlx::{query_as, FromRow};
 use chrono::{DateTime, Utc};
 use poem_openapi::Object;
 use crate::database::Database;
@@ -14,7 +14,7 @@ pub struct Tag {
 
 impl Tag {
     pub async fn create(name: String, database: &Database) -> Result<Tag, sqlx::Error> {
-        sqlx::query_as!(Tag, "INSERT INTO tags (name) VALUES ($1) RETURNING *", name)
+        query_as!(Tag, "INSERT INTO tags (name) VALUES ($1) RETURNING *", name)
             .fetch_one(&database.pool)
             .await
     }

@@ -1,7 +1,7 @@
 use serde::{Deserialize, Serialize};
 use chrono::{DateTime, Utc};
 use poem_openapi::Object;
-use sqlx::FromRow;
+use sqlx::{query_as, FromRow};
 
 use crate::database::Database;
 
@@ -15,7 +15,7 @@ pub struct Location {
 
 impl Location {
     pub async fn create(name: String, database: &Database) -> Result<Location, sqlx::Error> {
-        sqlx::query_as!(
+        query_as!(
             Location,
             "INSERT INTO locations (name) VALUES ($1) RETURNING *",
             name

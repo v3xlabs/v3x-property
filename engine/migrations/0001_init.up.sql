@@ -11,7 +11,7 @@ CREATE TABLE users (
 );
 
 -- Insert a system user
-INSERT INTO users (user_id, oauth_sub, oauth_data, nickname) VALUES (0, '$$SYSTEM$$', '{}', 'System');
+INSERT INTO users (user_id, oauth_sub, oauth_data, nickname) VALUES (1, '$$SYSTEM$$', '{}', 'System');
 
 -- Create Sessions table
 CREATE TABLE sessions (

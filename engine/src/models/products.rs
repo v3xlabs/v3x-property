@@ -1,5 +1,5 @@
 use serde::{Deserialize, Serialize};
-use sqlx::FromRow;
+use sqlx::{query_as, FromRow};
 use poem_openapi::Object;
 use chrono::{DateTime, Utc};
 use crate::database::Database;
@@ -14,7 +14,7 @@ pub struct Product {
 
 impl Product {
     pub async fn create(name: String, database: &Database) -> Result<Product, sqlx::Error> {
-        sqlx::query_as!(
+        query_as!(
             Product,
             "INSERT INTO products (name) VALUES ($1) RETURNING *",
             name
@@ -24,7 +24,7 @@ impl Product {
     }
 
     pub async fn get_by_id(product_id: i32, database: &Database) -> Result<Option<Product>, sqlx::Error> {
-        sqlx::query_as!(Product, "SELECT * FROM products WHERE product_id = $1", product_id)
+        query_as!(Product, "SELECT * FROM products WHERE product_id = $1", product_id)
             .fetch_optional(&database.pool)
             .await
     }

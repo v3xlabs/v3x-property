@@ -2,7 +2,7 @@ use crate::database::Database;
 use crate::models::field::kind::FieldKind;
 use serde::{Deserialize, Serialize};
 use poem_openapi::Object;
-use sqlx::FromRow;
+use sqlx::{query_as, FromRow};
 
 #[derive(FromRow, Object, Debug, Clone, Serialize, Deserialize)]
 pub struct FieldDefinition {
@@ -19,7 +19,7 @@ impl FieldDefinition {
         name: String,
         database: &Database,
     ) -> Result<FieldDefinition, sqlx::Error> {
-        sqlx::query_as!(
+        query_as!(
             FieldDefinition,
             "INSERT INTO field_definitions (kind, name) VALUES ($1, $2) RETURNING *",
             kind.to_string(),

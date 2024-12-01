@@ -1,5 +1,5 @@
 use serde::{Deserialize, Serialize};
-use sqlx::FromRow;
+use sqlx::{query_as, FromRow};
 use poem_openapi::Object;
 use chrono::{DateTime, Utc};
 use crate::database::Database;
@@ -21,7 +21,7 @@ impl Media {
         kind: String,
         database: &Database,
     ) -> Result<Media, sqlx::Error> {
-        sqlx::query_as!(
+        query_as!(
             Media,
             "INSERT INTO media (description, url, kind) VALUES ($1, $2, $3) RETURNING *",
             Some(description),
@@ -36,7 +36,7 @@ impl Media {
         media_id: i32,
         database: &Database,
     ) -> Result<Media, sqlx::Error> {
-        sqlx::query_as!(Media, "SELECT * FROM media WHERE media_id = $1", media_id)
+        query_as!(Media, "SELECT * FROM media WHERE media_id = $1", media_id)
             .fetch_one(&database.pool)
             .await
     }

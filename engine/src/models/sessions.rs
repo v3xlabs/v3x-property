@@ -1,6 +1,6 @@
 use poem_openapi::Object;
 use serde::{Deserialize, Serialize};
-use sqlx::types::ipnetwork::IpNetwork;
+use sqlx::{query_as, types::ipnetwork::IpNetwork};
 use chrono::{DateTime, Utc};
 
 use crate::database::Database;
@@ -25,7 +25,7 @@ impl Session {
         user_ip: &IpNetwork,
         database: &Database,
     ) -> Result<Self, sqlx::Error> {
-        let session = sqlx::query_as!(Session,
+        let session = query_as!(Session,
             "INSERT INTO sessions (session_id, user_id, user_agent, user_ip) VALUES ($1, $2, $3, $4) RETURNING *",
             session_id, user_id, user_agent, user_ip.to_string()
         )
@@ -35,7 +35,7 @@ impl Session {
     }
 
     pub async fn _get_by_id(id: &str, database: &Database) -> Result<Option<Self>, sqlx::Error> {
-        let session = sqlx::query_as!(
+        let session = query_as!(
             Session,
             "SELECT * FROM sessions WHERE session_id = $1 AND valid = TRUE",
             id
@@ -47,7 +47,7 @@ impl Session {
     }
 
     pub async fn try_access(id: &str, database: &Database) -> Result<Option<Self>, sqlx::Error> {
-        let session = sqlx::query_as!(
+        let session = query_as!(
             Session,
             "UPDATE sessions SET last_access = NOW() WHERE session_id = $1 AND valid = TRUE RETURNING *",
             id
@@ -63,7 +63,7 @@ impl Session {
         user_id: i32,
         database: &Database,
     ) -> Result<Vec<Self>, sqlx::Error> {
-        let sessions = sqlx::query_as!(
+        let sessions = query_as!(
             Session,
             "SELECT * FROM sessions WHERE user_id = $1 AND valid = TRUE",
             user_id
@@ -79,7 +79,7 @@ impl Session {
         user_id: i32,
         database: &Database,
     ) -> Result<Vec<Self>, sqlx::Error> {
-        let sessions = sqlx::query_as!(
+        let sessions = query_as!(
             Session,
             "UPDATE sessions SET valid = FALSE WHERE user_id = $1 RETURNING *",
             user_id
@@ -96,7 +96,7 @@ impl Session {
         user_id: i32,
         database: &Database,
     ) -> Result<Vec<Self>, sqlx::Error> {
-        let sessions = sqlx::query_as!(
+        let sessions = query_as!(
             Session,
             "UPDATE sessions SET valid = FALSE WHERE user_id = $1 AND session_id = $2 RETURNING *",
             user_id,
@@ -114,7 +114,7 @@ impl Session {
         database: &Database,
         _invalidate_before: chrono::DateTime<chrono::Utc>,
     ) -> Result<Vec<Self>, sqlx::Error> {
-        let sessions = sqlx::query_as!(
+        let sessions = query_as!(
             Session,
             "UPDATE sessions SET valid = FALSE WHERE user_id = $1 AND last_access < $2 RETURNING *",
             user_id,

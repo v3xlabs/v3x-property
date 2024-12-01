@@ -2,7 +2,6 @@ use std::sync::Arc;
 
 use poem::web::{Data, Path};
 use poem_openapi::{payload::Json, OpenApi};
-use reqwest::{Error, StatusCode};
 use tracing::info;
 
 use crate::{
