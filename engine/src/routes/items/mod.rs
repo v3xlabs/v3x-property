@@ -1,7 +1,8 @@
 use std::sync::Arc;
 
-use poem::web::{Data, Query};
+use poem::{web::{Data, Path, Query}, Result};
 use poem_openapi::{payload::Json, Object, OpenApi};
+use reqwest::StatusCode;
 use serde::{Deserialize, Serialize};
 use tracing::info;
 
@@ -22,14 +23,17 @@ pub struct CreateItemRequest {
 #[OpenApi]
 impl ItemsApi {
     #[oai(path = "/item/:item_id", method = "get")]
-    async fn get_item(&self, auth: AuthToken, state: Data<&Arc<AppState>>) -> Json<Vec<Item>> {
-        match auth {
-            AuthToken::Active(active_user) => Json(
-                Item::get_by_owner_id(active_user.session.user_id, &state.database)
-                    .await
-                    .unwrap(),
-            ),
-            AuthToken::None => Json(vec![]),
+    async fn get_item(
+        &self,
+        state: Data<&Arc<AppState>>,
+        auth: AuthToken,
+        item_id: Path<String>,
+    ) -> Result<Json<Item>> {
+        let item = Item::get_by_id(&state.database, item_id.0).await.unwrap();
+
+        match item {
+            Some(item) => Ok(Json(item)),
+            None => Err(StatusCode::NOT_FOUND.into()),
         }
     }
 

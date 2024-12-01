@@ -62,17 +62,17 @@ impl RootApi {
         poem_openapi::payload::Json(product.unwrap())
     }
 
-    #[oai(path = "/item/:item_id", method = "get")]
-    async fn get_item(
-        &self,
-        state: Data<&Arc<AppState>>,
-        item_id: Path<String>,
-    ) -> Result<Json<Item>> {
-        let item = Item::get_by_id(&state.database, item_id.0).await.unwrap();
+    // #[oai(path = "/item/:item_id", method = "get")]
+    // async fn get_item(
+    //     &self,
+    //     state: Data<&Arc<AppState>>,
+    //     item_id: Path<String>,
+    // ) -> Result<Json<Item>> {
+    //     let item = Item::get_by_id(&state.database, item_id.0).await.unwrap();
 
-        match item {
-            Some(item) => Ok(Json(item)),
-            None => Err(StatusCode::NOT_FOUND.into()),
-        }
-    }
+    //     match item {
+    //         Some(item) => Ok(Json(item)),
+    //         None => Err(StatusCode::NOT_FOUND.into()),
+    //     }
+    // }
 }
