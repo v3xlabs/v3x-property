@@ -19,72 +19,66 @@ pub struct Session {
 
 impl Session {
     pub async fn new(
+        db: &Database,
         session_id: &str,
         user_id: i32,
         user_agent: &str,
         user_ip: &IpNetwork,
-        database: &Database,
     ) -> Result<Self, sqlx::Error> {
         let session = query_as!(Session,
             "INSERT INTO sessions (session_id, user_id, user_agent, user_ip) VALUES ($1, $2, $3, $4) RETURNING *",
             session_id, user_id, user_agent, user_ip.to_string()
         )
-        .fetch_one(&database.pool)
+        .fetch_one(&db.pool)
         .await?;
         Ok(session)
     }
 
-    pub async fn _get_by_id(id: &str, database: &Database) -> Result<Option<Self>, sqlx::Error> {
+    pub async fn _get_by_id(db: &Database, id: &str) -> Result<Option<Self>, sqlx::Error> {
         let session = query_as!(
             Session,
             "SELECT * FROM sessions WHERE session_id = $1 AND valid = TRUE",
             id
         )
-        .fetch_optional(&database.pool)
+        .fetch_optional(&db.pool)
         .await?;
 
         Ok(session)
     }
 
-    pub async fn try_access(id: &str, database: &Database) -> Result<Option<Self>, sqlx::Error> {
+    pub async fn try_access(db: &Database, id: &str) -> Result<Option<Self>, sqlx::Error> {
         let session = query_as!(
             Session,
             "UPDATE sessions SET last_access = NOW() WHERE session_id = $1 AND valid = TRUE RETURNING *",
             id
         )
-        .fetch_optional(&database.pool)
+        .fetch_optional(&db.pool)
         .await?;
 
         Ok(session)
     }
 
     /// Get all sessions for a user that are valid
-    pub async fn get_by_user_id(
-        user_id: i32,
-        database: &Database,
-    ) -> Result<Vec<Self>, sqlx::Error> {
+    pub async fn get_by_user_id(db: &Database, user_id: i32) -> Result<Vec<Self>, sqlx::Error> {
         let sessions = query_as!(
             Session,
             "SELECT * FROM sessions WHERE user_id = $1 AND valid = TRUE",
             user_id
         )
-        .fetch_all(&database.pool)
+        .fetch_all(&db.pool)
         .await?;
 
         Ok(sessions)
     }
 
     /// Set every session to invalid
-    pub async fn invalidate_by_user_id(
-        user_id: i32,
-        database: &Database,
-    ) -> Result<Vec<Self>, sqlx::Error> {
+    pub async fn invalidate_by_user_id(db: &Database, user_id: i32) -> Result<Vec<Self>, sqlx::Error> {
         let sessions = query_as!(
             Session,
             "UPDATE sessions SET valid = FALSE WHERE user_id = $1 RETURNING *",
             user_id
         )
-        .fetch_all(&database.pool)
+        .fetch_all(&db.pool)
         .await?;
 
         Ok(sessions)
@@ -92,35 +86,35 @@ impl Session {
 
     /// Set session to invalid by id
     pub async fn invalidate_by_id(
-        id: &str,
+        db: &Database,
         user_id: i32,
-        database: &Database,
+        session_id: &str,
     ) -> Result<Vec<Self>, sqlx::Error> {
         let sessions = query_as!(
             Session,
             "UPDATE sessions SET valid = FALSE WHERE user_id = $1 AND session_id = $2 RETURNING *",
             user_id,
-            id
+            session_id
         )
-        .fetch_all(&database.pool)
+        .fetch_all(&db.pool)
         .await?;
 
         Ok(sessions)
     }
 
     /// Invalidate all sessions for a user that are older than the given time
-    pub async fn _invalidate_by_user_id_by_time(
+    pub async fn invalidate_by_user_id_by_time(
+        db: &Database,
         user_id: i32,
-        database: &Database,
-        _invalidate_before: chrono::DateTime<chrono::Utc>,
+        invalidate_before: DateTime<Utc>,
     ) -> Result<Vec<Self>, sqlx::Error> {
         let sessions = query_as!(
             Session,
             "UPDATE sessions SET valid = FALSE WHERE user_id = $1 AND last_access < $2 RETURNING *",
             user_id,
-            _invalidate_before
+            invalidate_before
         )
-        .fetch_all(&database.pool)
+        .fetch_all(&db.pool)
         .await?;
 
         Ok(sessions)

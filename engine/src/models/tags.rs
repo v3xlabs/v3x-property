@@ -14,9 +14,9 @@ pub struct Tag {
 }
 
 impl Tag {
-    pub async fn create(name: String, database: &Database) -> Result<Tag, sqlx::Error> {
+    pub async fn new(db: &Database, name: String) -> Result<Tag, sqlx::Error> {
         query_as!(Tag, "INSERT INTO tags (name) VALUES ($1) RETURNING *", name)
-            .fetch_one(&database.pool)
+            .fetch_one(&db.pool)
             .await
     }
 }

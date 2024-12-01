@@ -14,7 +14,7 @@ pub async fn delete_sessions(state: Data<&Arc<AppState>>, token: AuthToken) -> i
     match token {
         AuthToken::Active(active_user) => {
             let sessions =
-                Session::invalidate_by_user_id(active_user.session.user_id, &state.database)
+                Session::invalidate_by_user_id(&state.database, active_user.session.user_id)
                     .await
                     .unwrap();
 

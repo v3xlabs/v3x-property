@@ -14,26 +14,23 @@ pub struct Product {
 }
 
 impl Product {
-    pub async fn create(name: String, database: &Database) -> Result<Product, sqlx::Error> {
+    pub async fn new(db: &Database, name: String) -> Result<Product, sqlx::Error> {
         query_as!(
             Product,
             "INSERT INTO products (name) VALUES ($1) RETURNING *",
             name
         )
-        .fetch_one(&database.pool)
+        .fetch_one(&db.pool)
         .await
     }
 
-    pub async fn get_by_id(
-        product_id: i32,
-        database: &Database,
-    ) -> Result<Option<Product>, sqlx::Error> {
+    pub async fn get_by_id(db: &Database, product_id: i32) -> Result<Option<Product>, sqlx::Error> {
         query_as!(
             Product,
             "SELECT * FROM products WHERE product_id = $1",
             product_id
         )
-        .fetch_optional(&database.pool)
+        .fetch_optional(&db.pool)
         .await
     }
 }

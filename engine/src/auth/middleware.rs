@@ -32,7 +32,7 @@ impl<'a> FromRequest<'a> for AuthToken {
                 let hash = hash_session(&token).unwrap();
 
                 // Check if active session exists with token
-                let session = Session::try_access(&hash, &state.database)
+                let session = Session::try_access(&state.database, &hash)
                     .await
                     .unwrap()
                     .ok_or(Error::from_string(

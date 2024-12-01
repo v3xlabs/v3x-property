@@ -16,11 +16,11 @@ pub struct Media {
 }
 
 impl Media {
-    pub async fn create(
+    pub async fn new(
+        db: &Database,
         description: String,
         url: String,
         kind: String,
-        database: &Database,
     ) -> Result<Media, sqlx::Error> {
         query_as!(
             Media,
@@ -29,13 +29,13 @@ impl Media {
             url,
             kind
         )
-        .fetch_one(&database.pool)
+        .fetch_one(&db.pool)
         .await
     }
 
-    pub async fn get_by_id(media_id: i32, database: &Database) -> Result<Media, sqlx::Error> {
+    pub async fn get_by_id(db: &Database, media_id: i32) -> Result<Media, sqlx::Error> {
         query_as!(Media, "SELECT * FROM media WHERE media_id = $1", media_id)
-            .fetch_one(&database.pool)
+            .fetch_one(&db.pool)
             .await
     }
 }

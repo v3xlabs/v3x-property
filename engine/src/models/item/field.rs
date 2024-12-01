@@ -13,11 +13,11 @@ pub struct ItemField {
 }
 
 impl ItemField {
-    pub async fn create(
+    pub async fn new(
+        db: &Database,
         item_id: String,
         definition_id: String,
         value: serde_json::Value,
-        database: &Database,
     ) -> Result<ItemField, sqlx::Error> {
         query_as!(
             ItemField,
@@ -26,7 +26,7 @@ impl ItemField {
             definition_id,
             value
         )
-        .fetch_one(&database.pool)
+        .fetch_one(&db.pool)
         .await
     }
 }

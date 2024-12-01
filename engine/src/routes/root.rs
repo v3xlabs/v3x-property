@@ -46,7 +46,7 @@ impl RootApi {
         state: Data<&Arc<AppState>>,
         media_id: Path<i32>,
     ) -> poem_openapi::payload::Json<Media> {
-        let media = Media::get_by_id(media_id.0, &state.database).await.unwrap();
+        let media = Media::get_by_id(&state.database, media_id.0).await.unwrap();
 
         poem_openapi::payload::Json(media)
     }
@@ -57,9 +57,7 @@ impl RootApi {
         state: Data<&Arc<AppState>>,
         product_id: Path<i32>,
     ) -> poem_openapi::payload::Json<Product> {
-        let product = Product::get_by_id(product_id.0, &state.database)
-            .await
-            .unwrap();
+        let product = Product::get_by_id(&state.database, product_id.0).await.unwrap();
 
         poem_openapi::payload::Json(product.unwrap())
     }
@@ -70,7 +68,7 @@ impl RootApi {
         state: Data<&Arc<AppState>>,
         item_id: Path<String>,
     ) -> Result<Json<Item>> {
-        let item = Item::get_by_id(item_id.0, &state.database).await.unwrap();
+        let item = Item::get_by_id(&state.database, item_id.0).await.unwrap();
 
         match item {
             Some(item) => Ok(Json(item)),

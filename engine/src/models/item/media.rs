@@ -10,10 +10,10 @@ pub struct ItemMedia {
 }
 
 impl ItemMedia {
-    pub async fn create(
+    pub async fn new(
+        db: &Database,
         item_id: String,
         media_id: i32,
-        database: &Database,
     ) -> Result<ItemMedia, sqlx::Error> {
         query_as!(
             ItemMedia,
@@ -21,7 +21,7 @@ impl ItemMedia {
             item_id,
             media_id
         )
-        .fetch_one(&database.pool)
+        .fetch_one(&db.pool)
         .await
     }
 }

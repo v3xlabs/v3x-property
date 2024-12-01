@@ -7,3 +7,4 @@ pub mod products;
 pub mod sessions;
 pub mod tags;
 pub mod user;
+pub mod search;

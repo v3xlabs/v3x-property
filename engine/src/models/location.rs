@@ -14,13 +14,13 @@ pub struct Location {
 }
 
 impl Location {
-    pub async fn create(name: String, database: &Database) -> Result<Location, sqlx::Error> {
+    pub async fn new(db: &Database, name: String) -> Result<Location, sqlx::Error> {
         query_as!(
             Location,
             "INSERT INTO locations (name) VALUES ($1) RETURNING *",
             name
         )
-        .fetch_one(&database.pool)
+        .fetch_one(&db.pool)
         .await
     }
 }

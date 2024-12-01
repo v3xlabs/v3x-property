@@ -16,10 +16,10 @@ pub struct FieldDefinition {
 }
 
 impl FieldDefinition {
-    pub async fn create(
+    pub async fn new(
+        db: &Database,
         kind: FieldKind,
         name: String,
-        database: &Database,
     ) -> Result<FieldDefinition, sqlx::Error> {
         query_as!(
             FieldDefinition,
@@ -27,7 +27,7 @@ impl FieldDefinition {
             kind.to_string(),
             name
         )
-        .fetch_one(&database.pool)
+        .fetch_one(&db.pool)
         .await
     }
 }

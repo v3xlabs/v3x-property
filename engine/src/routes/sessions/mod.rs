@@ -20,7 +20,7 @@ impl ApiSessions {
     ) -> poem_openapi::payload::Json<Vec<Session>> {
         match auth {
             AuthToken::Active(active_user) => poem_openapi::payload::Json(
-                Session::get_by_user_id(active_user.session.user_id, &state.database)
+                Session::get_by_user_id(&state.database, active_user.session.user_id)
                     .await
                     .unwrap(),
             ),
@@ -40,9 +40,9 @@ impl ApiSessions {
                 info!("Deleting session {:?}", session_id.0);
 
                 let sessions = Session::invalidate_by_id(
-                    &session_id.0,
-                    active_user.session.user_id,
                     &state.database,
+                    active_user.session.user_id,
+                    &session_id.0,
                 )
                 .await
                 .unwrap();

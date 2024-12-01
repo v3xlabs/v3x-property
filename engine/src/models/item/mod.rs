@@ -34,13 +34,13 @@ impl Default for Item {
 }
 
 impl Item {
-    pub async fn create(
+    pub async fn new(
+        db: &Database,
         item_id: String,
         name: Option<String>,
         owner_id: Option<i32>,
         location_id: Option<i32>,
         product_id: Option<i32>,
-        database: &Database,
     ) -> Result<Item, sqlx::Error> {
         query_as!(
             Item,
@@ -51,7 +51,7 @@ impl Item {
             location_id,
             product_id
         )
-        .fetch_one(&database.pool)
+        .fetch_one(&db.pool)
         .await
     }
 
@@ -65,11 +65,11 @@ impl Item {
     }
 
     pub async fn get_by_id(
+        db: &Database,
         item_id: String,
-        database: &Database,
     ) -> Result<Option<Item>, sqlx::Error> {
         query_as!(Item, "SELECT * FROM items WHERE item_id = $1", item_id)
-            .fetch_optional(&database.pool)
+            .fetch_optional(&db.pool)
             .await
     }
 
@@ -77,14 +77,14 @@ impl Item {
     /// Start generation at 0, and check if the id is already taken.
     /// If it is, increment until we find an unused id.
     /// TODO: Implement resuming from the last id.
-    pub async fn next_id(database: &Database) -> Result<String, sqlx::Error> {
+    pub async fn next_id(db: &Database) -> Result<String, sqlx::Error> {
         let mut id = 1;
         loop {
             let id_str = id.to_string();
             info!("Checking if id {} is taken", id_str);
             if query("SELECT 1 FROM items WHERE item_id = $1")
                 .bind(id_str.clone())
-                .fetch_optional(&database.pool)
+                .fetch_optional(&db.pool)
                 .await
                 .unwrap()
                 .is_none()

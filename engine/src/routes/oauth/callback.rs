@@ -62,11 +62,11 @@ pub async fn callback(
     let hash = hash_session(&token).unwrap();
 
     let _session = Session::new(
+        &state.database,
         &hash,
         user.user_id,
         user_agent,
         &user_ip.into(),
-        &state.database,
     )
     .await
     .unwrap();
