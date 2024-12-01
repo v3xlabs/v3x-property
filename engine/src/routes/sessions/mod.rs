@@ -4,9 +4,7 @@ use poem::web::{Data, Path};
 use poem_openapi::{payload::Json, OpenApi};
 use tracing::info;
 
-use crate::{
-    auth::middleware::AuthToken, models::sessions::Session, state::AppState
-};
+use crate::{auth::middleware::AuthToken, models::sessions::Session, state::AppState};
 
 pub mod delete;
 

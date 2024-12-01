@@ -13,17 +13,24 @@ use users::ApiUserById;
 
 use crate::state::AppState;
 
+pub mod error;
+pub mod instance;
+pub mod items;
 pub mod me;
 pub mod oauth;
-pub mod items;
 pub mod root;
 pub mod sessions;
 pub mod users;
-pub mod instance;
-pub mod error;
 
 fn get_api() -> impl OpenApi {
-    (RootApi, ApiMe, ApiSessions, ApiUserById, ApiInstance, ItemsApi)
+    (
+        RootApi,
+        ApiMe,
+        ApiSessions,
+        ApiUserById,
+        ApiInstance,
+        ItemsApi,
+    )
 }
 
 #[handler]

@@ -1,6 +1,6 @@
+use poem_openapi::Enum;
 use serde::{Deserialize, Serialize};
 use sqlx::Type;
-use poem_openapi::Enum;
 
 #[derive(Type, Enum, Debug, Clone, Serialize, Deserialize)]
 #[sqlx(type_name = "text")]

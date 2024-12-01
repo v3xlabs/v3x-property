@@ -1,10 +1,8 @@
+use crate::database::Database;
+use chrono::{DateTime, Utc};
 use openid::Userinfo;
 use serde::{Deserialize, Serialize};
 use sqlx::{query, query_as, types::Json, FromRow};
-use url::Url;
-use chrono::{DateTime, Utc};
-use poem_openapi::Object;
-use crate::database::Database;
 
 /// A user object that is stored in the database
 #[derive(FromRow, Debug, Clone, Serialize, Deserialize)]
@@ -67,30 +65,4 @@ impl UserEntry {
         .fetch_optional(&database.pool)
         .await
     }
-}
-
-/// A user object that is returned to the client
-/// This is a subset of the `UserEntry` struct
-/// Use `UserEntry` to query the database for a user
-#[derive(Debug, Clone, Serialize, Deserialize, Object)]
-pub struct User {
-    pub id: i32,
-    pub oauth_sub: String,
-    pub name: String,
-    pub picture: Option<Url>,
-}
-
-impl From<UserEntry> for User {
-    fn from(user: UserEntry) -> Self {
-        Self {
-            id: user.user_id,
-            oauth_sub: user.oauth_sub,
-            name: user
-                .nickname
-                .or(user.oauth_data.nickname.clone())
-                .or(user.oauth_data.name.clone())
-                .unwrap_or("Unknown".to_string()),
-            picture: user.oauth_data.picture.clone(),
-        }
-}
 }

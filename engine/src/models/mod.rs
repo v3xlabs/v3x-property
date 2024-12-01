@@ -1,9 +1,9 @@
 pub mod field;
 pub mod item;
 pub mod location;
+pub mod log;
 pub mod media;
 pub mod products;
 pub mod sessions;
 pub mod tags;
-pub mod users;
-pub mod log;
+pub mod user;

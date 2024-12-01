@@ -1,7 +1,7 @@
 use crate::database::Database;
 use crate::models::field::kind::FieldKind;
-use serde::{Deserialize, Serialize};
 use poem_openapi::Object;
+use serde::{Deserialize, Serialize};
 use sqlx::{query_as, FromRow};
 
 #[derive(FromRow, Object, Debug, Clone, Serialize, Deserialize)]

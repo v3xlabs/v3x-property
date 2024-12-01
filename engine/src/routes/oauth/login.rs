@@ -1,11 +1,14 @@
 use std::{collections::HashSet, sync::Arc};
 
 use openid::{Options, Prompt};
-use poem::{handler, web::{Data, Query, Redirect}, IntoResponse};
+use poem::{
+    handler,
+    web::{Data, Query, Redirect},
+    IntoResponse,
+};
 use serde::Deserialize;
 
 use crate::state::AppState;
-
 
 #[derive(Deserialize)]
 struct LoginQuery {

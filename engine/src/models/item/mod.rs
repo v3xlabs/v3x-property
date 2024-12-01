@@ -1,7 +1,7 @@
+use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 use sqlx::{query, query_as};
 use tracing::info;
-use chrono::{DateTime, Utc};
 
 use crate::database::Database;
 
@@ -64,7 +64,10 @@ impl Item {
             .await
     }
 
-    pub async fn get_by_id(item_id: String, database: &Database) -> Result<Option<Item>, sqlx::Error> {
+    pub async fn get_by_id(
+        item_id: String,
+        database: &Database,
+    ) -> Result<Option<Item>, sqlx::Error> {
         query_as!(Item, "SELECT * FROM items WHERE item_id = $1", item_id)
             .fetch_optional(&database.pool)
             .await
@@ -83,7 +86,8 @@ impl Item {
                 .bind(id_str.clone())
                 .fetch_optional(&database.pool)
                 .await
-                .unwrap().is_none()
+                .unwrap()
+                .is_none()
             {
                 return Ok(id_str);
             }

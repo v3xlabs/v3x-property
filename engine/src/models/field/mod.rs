@@ -1,2 +1,2 @@
-pub mod kind;
 pub mod definition;
+pub mod kind;

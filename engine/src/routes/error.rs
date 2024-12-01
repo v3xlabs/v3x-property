@@ -8,7 +8,7 @@ pub enum HttpError {
     NotFound,
 }
 
-impl ResponseError for HttpError{
+impl ResponseError for HttpError {
     fn status(&self) -> StatusCode {
         match self {
             HttpError::NotFound => StatusCode::NOT_FOUND,
@@ -16,8 +16,8 @@ impl ResponseError for HttpError{
     }
 
     fn as_response(&self) -> Response
-        where
-            Self: std::error::Error + Send + Sync + 'static,
+    where
+        Self: std::error::Error + Send + Sync + 'static,
     {
         self.status().into_response()
     }

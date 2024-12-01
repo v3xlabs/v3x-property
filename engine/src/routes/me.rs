@@ -5,7 +5,7 @@ use poem_openapi::{payload::Json, OpenApi};
 
 use crate::{
     auth::middleware::AuthToken,
-    models::users::{User, UserEntry},
+    models::user::{user::User, userentry::UserEntry},
     state::AppState,
 };
 

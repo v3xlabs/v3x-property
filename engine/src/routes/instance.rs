@@ -1,6 +1,6 @@
 use std::sync::Arc;
 
-use poem::web::{Data};
+use poem::web::Data;
 use poem_openapi::{payload::Json, Enum, Object, OpenApi};
 use serde::{Deserialize, Serialize};
 
@@ -25,24 +25,30 @@ pub struct InstanceSettings {
 
 impl Default for InstanceSettings {
     fn default() -> Self {
-        Self { id_casing_preference: IdCasingPreference::Upper }
+        Self {
+            id_casing_preference: IdCasingPreference::Upper,
+        }
     }
 }
 
 #[OpenApi]
 impl ApiInstance {
     #[oai(path = "/instance/settings", method = "get")]
-    pub async fn settings(&self, state: Data<&Arc<AppState>>, token: AuthToken) -> Json<InstanceSettings> {
+    pub async fn settings(
+        &self,
+        state: Data<&Arc<AppState>>,
+        token: AuthToken,
+    ) -> Json<InstanceSettings> {
         // match token {
-            // AuthToken::Active(active_user) => {
-                // TODO: check if user has permission to access this resource
-                
-                Json(InstanceSettings::default())
-            // }
-            // _ => {
-                // Error::from_string("Not Authenticated", StatusCode::UNAUTHORIZED).into_response(),
-                // panic!()
-            // }
+        // AuthToken::Active(active_user) => {
+        // TODO: check if user has permission to access this resource
+
+        Json(InstanceSettings::default())
+        // }
+        // _ => {
+        // Error::from_string("Not Authenticated", StatusCode::UNAUTHORIZED).into_response(),
+        // panic!()
+        // }
         // }
     }
 }

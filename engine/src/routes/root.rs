@@ -1,9 +1,14 @@
 use std::sync::Arc;
 
 use poem::{
-    web::{Data, Path}, Result}
-;
-use poem_openapi::{param::Query, payload::{Json, PlainText}, OpenApi};
+    web::{Data, Path},
+    Result,
+};
+use poem_openapi::{
+    param::Query,
+    payload::{Json, PlainText},
+    OpenApi,
+};
 
 use crate::{
     models::{item::Item, media::Media, products::Product},
@@ -70,9 +75,7 @@ impl RootApi {
         state: Data<&Arc<AppState>>,
         item_id: Path<String>,
     ) -> Result<Json<Item>> {
-        let item = Item::get_by_id(item_id.0, &state.database)
-            .await
-            .unwrap();
+        let item = Item::get_by_id(item_id.0, &state.database).await.unwrap();
 
         match item {
             Some(item) => Ok(Json(item)),

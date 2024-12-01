@@ -1,6 +1,6 @@
-use serde::{Deserialize, Serialize};
 use chrono::{DateTime, Utc};
 use poem_openapi::Object;
+use serde::{Deserialize, Serialize};
 use sqlx::{query_as, FromRow};
 
 use crate::database::Database;

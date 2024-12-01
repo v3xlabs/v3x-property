@@ -1,8 +1,8 @@
+use crate::database::Database;
+use chrono::{DateTime, Utc};
+use poem_openapi::Object;
 use serde::{Deserialize, Serialize};
 use sqlx::{query_as, FromRow};
-use poem_openapi::Object;
-use chrono::{DateTime, Utc};
-use crate::database::Database;
 
 #[derive(FromRow, Object, Debug, Clone, Serialize, Deserialize)]
 pub struct Media {
@@ -32,10 +32,7 @@ impl Media {
         .await
     }
 
-    pub async fn get_by_id(
-        media_id: i32,
-        database: &Database,
-    ) -> Result<Media, sqlx::Error> {
+    pub async fn get_by_id(media_id: i32, database: &Database) -> Result<Media, sqlx::Error> {
         query_as!(Media, "SELECT * FROM media WHERE media_id = $1", media_id)
             .fetch_one(&database.pool)
             .await

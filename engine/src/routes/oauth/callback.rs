@@ -1,13 +1,21 @@
 use std::sync::Arc;
 
 use openid::Token;
-use poem::{handler, http::HeaderMap, web::{Data, Query, RealIp, Redirect}, IntoResponse};
+use poem::{
+    handler,
+    http::HeaderMap,
+    web::{Data, Query, RealIp, Redirect},
+    IntoResponse,
+};
 use serde::Deserialize;
 use url::Url;
 use uuid::Uuid;
 
-use crate::{auth::hash::hash_session, models::{sessions::Session, users::UserEntry}, state::AppState};
-
+use crate::{
+    auth::hash::hash_session,
+    models::{sessions::Session, user::userentry::UserEntry},
+    state::AppState,
+};
 
 #[derive(Deserialize, Debug)]
 pub struct CallbackQuery {
@@ -50,9 +58,15 @@ pub async fn callback(
     let token = Uuid::new_v4().to_string();
     let hash = hash_session(&token).unwrap();
 
-    let _session = Session::new(&hash, user.user_id, user_agent, &user_ip.into(), &state.database)
-        .await
-        .unwrap();
+    let _session = Session::new(
+        &hash,
+        user.user_id,
+        user_agent,
+        &user_ip.into(),
+        &state.database,
+    )
+    .await
+    .unwrap();
 
     let mut redirect_url: Url = query
         .state

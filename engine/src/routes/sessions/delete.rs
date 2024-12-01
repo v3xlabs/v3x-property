@@ -1,8 +1,4 @@
-use crate::{
-    auth::middleware::AuthToken,
-    models::sessions::Session,
-    state::AppState,
-};
+use crate::{auth::middleware::AuthToken, models::sessions::Session, state::AppState};
 use poem::{
     handler,
     web::{Data, Json},

@@ -5,9 +5,7 @@ use poem_openapi::{payload::Json, Object, OpenApi};
 use serde::{Deserialize, Serialize};
 use tracing::info;
 
-use crate::{
-    auth::middleware::AuthToken, models::item::Item, state::AppState
-};
+use crate::{auth::middleware::AuthToken, models::item::Item, state::AppState};
 
 pub struct ItemsApi;
 
@@ -19,11 +17,7 @@ pub struct ItemIdResponse {
 #[OpenApi]
 impl ItemsApi {
     #[oai(path = "/item/:item_id", method = "get")]
-    async fn get_item(
-        &self,
-        auth: AuthToken,
-        state: Data<&Arc<AppState>>,
-    ) -> Json<Vec<Item>> {
+    async fn get_item(&self, auth: AuthToken, state: Data<&Arc<AppState>>) -> Json<Vec<Item>> {
         match auth {
             AuthToken::Active(active_user) => Json(
                 Item::get_by_owner_id(active_user.session.user_id, &state.database)
@@ -35,10 +29,7 @@ impl ItemsApi {
     }
 
     #[oai(path = "/item/next", method = "get")]
-    async fn next_item_id(
-        &self,
-        state: Data<&Arc<AppState>>,
-    ) -> Json<ItemIdResponse> {
+    async fn next_item_id(&self, state: Data<&Arc<AppState>>) -> Json<ItemIdResponse> {
         info!("Getting next item id");
 
         Json(ItemIdResponse {

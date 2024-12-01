@@ -1,4 +1,3 @@
-
 use crate::database::Database;
 use serde::{Deserialize, Serialize};
 use sqlx::query_as;

@@ -18,19 +18,22 @@ pub enum TweakerError {
 // price data
 // https://tweakers.net/ajax/price_chart/1855004/nl/?output=json
 
-
 // Fetch https://tweakers.net/pricewatch/1855004/anker-737-power-bank-powercore-24k/specificaties/
 // and parse the application/ld+json
 pub async fn get_by_tweaker_id(tweaker_id: String) -> Result<TweakerProduct, TweakerError> {
-
-    let response = reqwest::get(format!("https://tweakers.net/pricewatch/{}/specificaties/", tweaker_id)).await.unwrap();
+    let response = reqwest::get(format!(
+        "https://tweakers.net/pricewatch/{}/specificaties/",
+        tweaker_id
+    ))
+    .await
+    .unwrap();
     let body = response.text().await.unwrap();
 
     // println!("{}", body);
     // // regex match for <script type="application/ld+json"> ... </script>
     // let re = regex::Regex::new(r#"<script type="application/ld\+json">\s*?(.*?)\s*?</script>"#).unwrap();
     // let captures = re.captures(&body).unwrap();
-    
+
     // for capture in captures.iter() {
     //     println!("{}", capture.unwrap().as_str());
     // }

@@ -5,7 +5,7 @@ use reqwest::StatusCode;
 
 use crate::{models::sessions::Session, state::AppState};
 
-use super::{hash::hash_session};
+use super::hash::hash_session;
 
 pub struct ActiveUser {
     pub session: Session,

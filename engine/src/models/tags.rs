@@ -1,8 +1,8 @@
-use serde::{Deserialize, Serialize};
-use sqlx::{query_as, FromRow};
+use crate::database::Database;
 use chrono::{DateTime, Utc};
 use poem_openapi::Object;
-use crate::database::Database;
+use serde::{Deserialize, Serialize};
+use sqlx::{query_as, FromRow};
 
 #[derive(FromRow, Object, Debug, Clone, Serialize, Deserialize)]
 pub struct Tag {

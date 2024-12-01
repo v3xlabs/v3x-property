@@ -2,11 +2,11 @@ use terminal_banner::Banner;
 use tracing::info;
 
 mod auth;
-mod state;
+mod database;
+mod ingress;
 mod models;
 mod routes;
-mod ingress;
-mod database;
+mod state;
 
 #[async_std::main]
 async fn main() {
