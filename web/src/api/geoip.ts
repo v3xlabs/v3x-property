@@ -1,6 +1,6 @@
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, UseQueryOptions } from '@tanstack/react-query';
 
-const BASE_URL = 'http://localhost:3000';
+import { getHttp } from './core';
 
 type GeoIpResponse = {
     ip_address: string;
@@ -19,14 +19,13 @@ type GeoIpResponse = {
     timezone: string;
 };
 
-export function useGeoIp(ip: string) {
-    return useQuery({
-        queryKey: ['geoip'],
-        queryFn: async () => {
-            const response = await fetch('https://api.geoip.rs/?ip=' + ip);
-            const data = await response.json();
+export const getGeoIp = (ip: string): UseQueryOptions<GeoIpResponse> => ({
+    queryKey: ['geoip', ip],
+    queryFn: getHttp('/api/geoip', {
+        auth: 'include',
+    }),
+});
 
-            return data as GeoIpResponse;
-        },
-    });
+export function useGeoIp(ip: string) {
+    return useQuery(getGeoIp(ip));
 }

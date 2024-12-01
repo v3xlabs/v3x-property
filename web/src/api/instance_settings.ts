@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 
-import { BASE_URL, getHttp } from './core';
+import { getHttp } from './core';
 
 export type IdCasingPreference = 'upper' | 'lower';
 
@@ -11,7 +11,7 @@ export type InstanceSettings = {
 export const getInstanceSettings = () => {
     return {
         queryKey: ['instance_settings'],
-        queryFn: getHttp('/api/instance/settings', '/api/instance/settings', {
+        queryFn: getHttp('/api/instance/settings', {
             auth: 'include',
         }),
     };
