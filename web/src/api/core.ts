@@ -18,7 +18,7 @@ export type HttpOptions = {
 };
 
 export const getHttp =
-    <T>(key: string, url: string, options?: HttpOptions) =>
+    <T>(url: string, options?: HttpOptions) =>
     async () => {
         const { token, clearAuthToken } = useAuth.getState();
         const { auth = 'ignore' } = options || {};
@@ -28,7 +28,7 @@ export const getHttp =
         if (auth === 'include' || auth === 'required') {
             if (!token && auth === 'required') {
                 throw new Error(
-                    'No token available but endpoint requires it, key: ' + key
+                    'No token available but endpoint requires it, url: ' + url
                 );
             }
 
@@ -36,7 +36,7 @@ export const getHttp =
         }
 
         try {
-            const response = await fetch(BASE_URL + key, { headers });
+            const response = await fetch(BASE_URL + url, { headers });
 
             if (response.status === 401) {
                 console.log('Token expired, clearing token');
@@ -63,7 +63,7 @@ export function useHttp<T>(
     return useQuery({
         queryKey: [key],
         enabled: auth !== 'required' || !!token,
-        queryFn: getHttp(key, key, options),
+        queryFn: getHttp(key, options),
         ...queryOptions,
     }) as DefinedUseQueryResult<T, Error>;
 }

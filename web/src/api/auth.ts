@@ -1,6 +1,8 @@
 /* eslint-disable no-undef */
 import { create } from 'zustand';
 
+const AUTH_TOKEN_KEY = 'property.v3x.token';
+
 export const preflightAuth = async () => {
     // If query params includes `token`, set it using setAuthToken and remove it from url
 
@@ -20,29 +22,29 @@ export const preflightAuth = async () => {
 
 const getTokenFromLocalStorage = () => {
     if (typeof window !== 'undefined') {
-        return localStorage.getItem('property.v3x.token');
+        return localStorage.getItem(AUTH_TOKEN_KEY);
     }
 };
 
 const setTokenToLocalStorage = (token: string) => {
     if (typeof window !== 'undefined') {
-        localStorage.setItem('property.v3x.token', token);
+        localStorage.setItem(AUTH_TOKEN_KEY, token);
     }
 };
 
 export const useAuth = create<{
-    token: string | null;
-    setAuthToken: (token: string) => void;
+    token: string | undefined;
+    setAuthToken: (_token: string) => void;
     clearAuthToken: () => void;
 }>((set) => ({
-    token: getTokenFromLocalStorage(),
+    token: getTokenFromLocalStorage() || undefined,
     setAuthToken: (token: string) => {
         setTokenToLocalStorage(token);
         set({ token: token });
     },
     clearAuthToken: () => {
         if (typeof window !== 'undefined') {
-            localStorage.removeItem('property.v3x.token');
+            localStorage.removeItem(AUTH_TOKEN_KEY);
         }
 
         set({ token: undefined });
