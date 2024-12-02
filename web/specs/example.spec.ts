@@ -7,30 +7,6 @@ test('has title', async ({ page }) => {
     await expect(page).toHaveTitle(/v3x.property/);
 });
 
-test('has login button', async ({ page }) => {
-    await page.goto('http://localhost:5173/items');
-
-    // Click the get started link.
-    await page.getByRole('link', { name: 'Login' }).click();
-
-    // Expects page to have a heading with the name of Installation.
-    await expect(
-        page.getByRole('heading', { name: 'Sign in to your account' })
-    ).toBeVisible();
-
-    await page.getByLabel('Username or email').fill('user');
-    await page.getByRole('textbox', { name: 'password' }).fill('wachtwoord');
-    await page.getByRole('button', { name: 'Sign In' }).click();
-
-    await page.waitForLoadState('domcontentloaded');
-
-    await expect(page.getByTestId('user-dropdown-trigger')).toBeVisible();
-
-    await expect(page.getByTestId('user-dropdown-name')).toContainText(
-        'John Doe'
-    );
-});
-
 test('create an item', async ({ page }) => {
     await page.goto('http://localhost:5173');
 
@@ -50,6 +26,22 @@ test('create an item', async ({ page }) => {
 
     h1 = await page.locator('h1');
     await expect(h1).toHaveText(`Edit Item ${newItemIdInput}`);
+});
+
+test('search item', async ({ page }) => {
+    await page.goto('http://localhost:5173/search');
+
+    await page.getByTestId('search-navlink').click();
+
+    await page.getByTestId('search-input').fill('A New Item');
+
+    await page.getByTestId('search-button').click();
+
+    await expect(page.getByTestId('search-results')).toBeVisible();
+
+    await page.getByTestId('item-preview-full').click();
+
+    await expect(page.locator('h1')).toHaveText('A New Item');
 });
 
 test('delete item', async ({ page }) => {

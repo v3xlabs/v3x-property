@@ -11,14 +11,9 @@ export const preflightAuth = async () => {
     console.log('PREFLIGHT AUTH', token);
 
     if (token) {
-        // useAuth.getState().setAuthToken(token);
-        // window.history.replaceState(
-        //     {},
-        //     document.title,
-        //     window.location.pathname
-        // );
-        // window.location.reload();
-        useAuth.setState({ token });
+        useAuth.getState().setAuthToken(token);
+        setTokenToLocalStorage(token);
+
         window.history.replaceState(
             {},
             document.title,
@@ -33,7 +28,7 @@ const getTokenFromLocalStorage = () => {
     }
 };
 
-const setTokenToLocalStorage = (token: string) => {
+export const setTokenToLocalStorage = (token: string) => {
     if (typeof window !== 'undefined') {
         localStorage.setItem(AUTH_TOKEN_KEY, token);
     }

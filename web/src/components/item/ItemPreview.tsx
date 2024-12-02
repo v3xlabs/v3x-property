@@ -107,6 +107,7 @@ export const ItemPreview: FC<Properties> = ({ item_id, variant }) => {
                             <Link
                                 to={`/item/${formattedItemId}`}
                                 className="p-1 border rounded-md flex items-center gap-2 hover:bg-black/5"
+                                data-testid="item-preview-avatar"
                             >
                                 <AvatarHolder
                                     image={item?.name}
@@ -123,6 +124,7 @@ export const ItemPreview: FC<Properties> = ({ item_id, variant }) => {
                             <Link
                                 to={`/item/${formattedItemId}`}
                                 className="p-1.5 border cursor-pointer rounded-md flex items-center gap-2 hover:bg-black/5"
+                                data-testid="item-preview-compact"
                             >
                                 <AvatarHolder
                                     image={item?.name}
@@ -143,6 +145,7 @@ export const ItemPreview: FC<Properties> = ({ item_id, variant }) => {
                             <Link
                                 to={`/item/${formattedItemId}`}
                                 className="p-1.5 border cursor-pointer rounded-md flex items-center gap-2 hover:bg-black/5"
+                                data-testid="item-preview-full"
                             >
                                 <AvatarHolder
                                     image={item?.name}

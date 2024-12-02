@@ -16,12 +16,15 @@ export const SearchInput = () => {
                     className="h-full"
                     width="full"
                     value={query}
+                    data-testid="search-input"
                     onChange={(event) => setQuery(event)}
                 />
-                <button className="btn">Search</button>
+                <button className="btn" data-testid="search-button">
+                    Search
+                </button>
             </div>
             {searchResults && (
-                <div className="w-full space-y-2">
+                <div className="w-full space-y-2" data-testid="search-results">
                     {searchResults.map((result) => (
                         <div key={result.item_id}>
                             <ItemPreviewSearch item={result} />

@@ -80,7 +80,6 @@ pub async fn callback(
 
     redirect_url.set_query(Some(&format!("token={}", token)));
 
-
     Ok(Redirect::temporary(redirect_url)
-        .with_header("Set-Cookie", format!("property.v3x.token={}", token)))
+        .with_header("Set-Cookie", format!("property.v3x.token={}; Secure; HttpOnly", token)))
 }
