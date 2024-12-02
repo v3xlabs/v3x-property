@@ -14,6 +14,7 @@ export type BaseInputProperties = {
     onChange?: (value: string) => void;
     errorMessage?: string;
     width?: 'full' | 'fit';
+    disabled?: boolean;
 } & HTMLAttributes<HTMLInputElement>;
 
 export const BaseInput = ({
@@ -28,6 +29,7 @@ export const BaseInput = ({
     onChange,
     errorMessage,
     width = 'fit',
+    disabled,
     ...rest
 }: BaseInputProperties) => {
     return (
@@ -57,6 +59,7 @@ export const BaseInput = ({
                         onChange={(event) => onChange?.(event.target.value)}
                         value={value}
                         {...rest}
+                        disabled={disabled}
                     />
                 </div>
                 {suffix}

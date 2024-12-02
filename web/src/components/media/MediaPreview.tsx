@@ -5,7 +5,10 @@ import { useMedia } from '@/api/media';
 import { ErrorBoundary } from '@/components/ErrorBoundary';
 import { StlPreviewWindow } from '@/components/stl_preview/StlPreview';
 
-export const MediaPreview: FC<{ media_id: number }> = ({ media_id }) => {
+export const MediaPreview: FC<{ media_id: number; edit?: boolean }> = ({
+    media_id,
+    edit,
+}) => {
     const { data: media } = useMedia(media_id);
 
     const fileType = media?.url.split('.').pop();
