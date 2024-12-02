@@ -11,6 +11,11 @@
 	@apply disabled:bg-red-300 disabled:text-red-500 disabled:border-red-300 disabled:hover:bg-red-300 disabled:hover:border-red-300 disabled:cursor-not-allowed;
 }
 
+.btn-primary {
+	@apply bg-blue-500 text-white hover:bg-blue-600 border-blue-400 hover:border-blue-500;
+	@apply disabled:bg-blue-300 disabled:text-blue-500 disabled:border-blue-300 disabled:hover:bg-blue-300 disabled:hover:border-blue-300 disabled:cursor-not-allowed;
+}
+
 .card {
 	@apply border border-solid border-neutral-200 rounded-md;
 	/* @apply w-full gap-4 border border-t-4 shadow-sm rounded-md pt-4; */

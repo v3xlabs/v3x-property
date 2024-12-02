@@ -37,18 +37,22 @@ export const Route = createFileRoute('/item/$itemId/')({
         }
 
         return (
-            <SCPage title={(item && item.name) || `Item ${itemId}`}>
-                <div className="w-full space-y-4 border border-t-4 shadow-sm rounded-md pt-4">
-                    <div className="p-4 flex justify-end items-center w-full">
-                        <Link
-                            to="/item/$itemId/edit"
-                            params={{ itemId }}
-                            className="btn"
-                        >
-                            <span className="">Edit</span>
-                        </Link>
+            <SCPage
+                title={(item && item.name) || `Item ${itemId}`}
+                suffix={
+                    <Link
+                        to="/item/$itemId/edit"
+                        params={{ itemId }}
+                        className="btn"
+                    >
+                        Edit
+                    </Link>
+                }
+            >
+                <div className="card pt-4">
+                    <div className="px-4">
+                        <MediaGallery media_ids={item?.media || []} />
                     </div>
-                    <MediaGallery media_ids={item?.media || []} />
                     <div className="p-4">
                         {item?.owner_id && (
                             <div>

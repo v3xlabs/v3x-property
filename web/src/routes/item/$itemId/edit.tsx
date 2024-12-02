@@ -71,7 +71,7 @@ export const Route = createFileRoute('/item/$itemId/edit')({
                         />
                         <div className="px-2 pt-4">
                             <BaseInput
-                                label="Name"
+                                label="Item Id"
                                 value={item?.item_id}
                                 disabled
                             />
@@ -92,7 +92,14 @@ export const Route = createFileRoute('/item/$itemId/edit')({
                         <Link
                             to="/item/$itemId"
                             params={{ itemId }}
-                            className="btn"
+                            className="btn btn-secondary"
+                        >
+                            Cancel
+                        </Link>
+                        <Link
+                            to="/item/$itemId"
+                            params={{ itemId }}
+                            className="btn btn-primary"
                         >
                             Save
                         </Link>

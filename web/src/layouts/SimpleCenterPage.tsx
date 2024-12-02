@@ -1,15 +1,17 @@
 import clsx from 'clsx';
-import { FC, PropsWithChildren } from 'react';
+import { FC, PropsWithChildren, ReactNode } from 'react';
 
 export type SCPageProperties = PropsWithChildren<{
     title: string;
     width?: 'xl' | '2xl' | '3xl' | '4xl';
+    suffix?: ReactNode;
 }>;
 
 export const SCPage: FC<SCPageProperties> = ({
     children,
     title,
     width = '4xl',
+    suffix,
 }) => {
     return (
         <div
@@ -21,7 +23,10 @@ export const SCPage: FC<SCPageProperties> = ({
                 width === '4xl' && 'max-w-4xl'
             )}
         >
-            <h1 className="h1 pl-4">{title}</h1>
+            <div className="flex items-end justify-between">
+                <h1 className="h1 pl-4">{title}</h1>
+                {suffix}
+            </div>
             {children}
         </div>
     );
