@@ -62,14 +62,16 @@ export const Route = createFileRoute('/item/$itemId/edit')({
             <SCPage title={`Edit Item ${itemId}`}>
                 <div className="card">
                     <p>Hello /item/$itemId/edit!</p>
-                    <Link
-                        to="/item/$itemId"
-                        params={{ itemId }}
-                        className="btn"
-                    >
-                        Save
-                    </Link>
-                    <DeleteItemModal itemId={itemId} />
+                    <div className="flex gap-2 justify-end">
+                        <Link
+                            to="/item/$itemId"
+                            params={{ itemId }}
+                            className="btn"
+                        >
+                            Save
+                        </Link>
+                        <DeleteItemModal itemId={itemId} />
+                    </div>
                 </div>
             </SCPage>
         );
