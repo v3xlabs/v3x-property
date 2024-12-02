@@ -41,7 +41,7 @@ impl Search {
         let x = self
             .client
             .index("items")
-            .add_documents(&[item], None)
+            .add_documents(&[item], Some("item_id"))
             .await
             .unwrap();
 
