@@ -87,6 +87,7 @@ const component = () => {
                                 <button
                                     className="btn w-fit flex items-center gap-2"
                                     type="submit"
+                                    data-testid="create-button"
                                     disabled={!canSubmit}
                                 >
                                     Configure

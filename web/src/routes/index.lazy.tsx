@@ -1,7 +1,6 @@
 import { createLazyFileRoute } from '@tanstack/react-router';
 
 import { ItemPreview } from '@/components/item/ItemPreview';
-import { SearchTaskTable } from '@/components/search_tasks/SearchTaskTable';
 import { UserProfile } from '@/components/UserProfile';
 import { SCPage } from '@/layouts/SimpleCenterPage';
 
@@ -11,7 +10,6 @@ const component = () => {
             <div className="card">
                 <div className="w-full flex items-center justify-center gap-4">
                     {/* <StlPreview stlUrl="/test.stl" /> */}
-                    <SearchTaskTable />
                 </div>
             </div>
             <div className="card">

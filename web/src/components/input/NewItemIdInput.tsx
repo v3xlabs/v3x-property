@@ -49,12 +49,14 @@ export const NewItemIdInput = (properties: BaseInputProperties) => {
                 setValue(value);
                 properties.onChange?.(value);
             }}
+            data-testid="new-item-id-input"
             suffix={
                 <>
                     <div className="h-auto">
                         <button
                             className="!h-full btn"
                             onClick={() => generateId()}
+                            data-testid="generate-id-button"
                         >
                             <FiRefreshCcw />
                         </button>

@@ -1,6 +1,6 @@
 import * as Label from '@radix-ui/react-label';
 import clsx from 'clsx';
-import { ReactNode } from 'react';
+import { HTMLAttributes, ReactNode } from 'react';
 
 export type BaseInputProperties = {
     label?: string;
@@ -14,7 +14,7 @@ export type BaseInputProperties = {
     onChange?: (value: string) => void;
     errorMessage?: string;
     width?: 'full' | 'fit';
-};
+} & HTMLAttributes<HTMLInputElement>;
 
 export const BaseInput = ({
     label,
@@ -28,6 +28,7 @@ export const BaseInput = ({
     onChange,
     errorMessage,
     width = 'fit',
+    ...rest
 }: BaseInputProperties) => {
     return (
         <>
@@ -55,6 +56,7 @@ export const BaseInput = ({
                         )}
                         onChange={(event) => onChange?.(event.target.value)}
                         value={value}
+                        {...rest}
                     />
                 </div>
                 {suffix}
