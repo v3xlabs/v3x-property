@@ -61,8 +61,8 @@ impl Item {
     }
 
     pub async fn get_by_owner_id(
-        owner_id: i32,
         database: &Database,
+        owner_id: i32
     ) -> Result<Vec<Item>, sqlx::Error> {
         query_as!(Item, "SELECT * FROM items WHERE owner_id = $1", owner_id)
             .fetch_all(&database.pool)

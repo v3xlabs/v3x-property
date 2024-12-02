@@ -1,15 +1,17 @@
 use std::sync::Arc;
 
-use poem::{web::{Data, Path}, Result};
+use poem::{
+    web::{Data, Path},
+};
 use poem_openapi::{
     param::Query,
     payload::{Json, PlainText},
     OpenApi,
 };
-use reqwest::StatusCode;
 
 use crate::{
-    models::{item::Item, media::Media, products::Product}, state::AppState
+    models::{item::Item, media::Media, products::Product},
+    state::AppState,
 };
 
 pub struct RootApi;
@@ -23,21 +25,6 @@ impl RootApi {
             Some(name) => PlainText(format!("Hello, {}!", name)),
             None => PlainText("Hello, World!".to_string()),
         }
-    }
-
-    #[oai(path = "/items", method = "get")]
-    async fn get_items(
-        &self,
-        state: Data<&Arc<AppState>>,
-        owner_id: Query<Option<i32>>,
-    ) -> poem_openapi::payload::Json<Vec<Item>> {
-        let owner_id = owner_id.0.unwrap_or(0);
-
-        let items = Item::get_by_owner_id(owner_id, &state.database)
-            .await
-            .unwrap();
-
-        poem_openapi::payload::Json(items)
     }
 
     #[oai(path = "/media/:media_id", method = "get")]
@@ -57,7 +44,9 @@ impl RootApi {
         state: Data<&Arc<AppState>>,
         product_id: Path<i32>,
     ) -> poem_openapi::payload::Json<Product> {
-        let product = Product::get_by_id(&state.database, product_id.0).await.unwrap();
+        let product = Product::get_by_id(&state.database, product_id.0)
+            .await
+            .unwrap();
 
         poem_openapi::payload::Json(product.unwrap())
     }

@@ -7,7 +7,6 @@ use poem::{
     web::{Data, Query, RealIp, Redirect, WithHeader},
     IntoResponse, Result,
 };
-use reqwest::StatusCode;
 use serde::Deserialize;
 use tracing::info;
 use url::Url;

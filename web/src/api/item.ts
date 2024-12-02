@@ -1,7 +1,7 @@
 import { useMutation, useQuery, UseQueryOptions } from '@tanstack/react-query';
 
-import { BASE_URL, getHttp } from './core';
 import { useAuth } from './auth';
+import { BASE_URL, getHttp } from './core';
 
 export type ApiItemResponse = {
     item_id: string;
@@ -24,6 +24,17 @@ export const getApiItemById = (
 
 export const useApiItemById = (item_id: string) => {
     return useQuery(getApiItemById(item_id));
+};
+
+export const getApiOwnedItems = (): UseQueryOptions<ApiItemResponse[]> => ({
+    queryKey: ['item', 'owned'],
+    queryFn: getHttp('/api/item/owned', {
+        auth: 'include',
+    }),
+});
+
+export const useApiOwnedItems = () => {
+    return useQuery(getApiOwnedItems());
 };
 
 // Create item

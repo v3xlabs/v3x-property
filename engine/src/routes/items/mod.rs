@@ -37,6 +37,22 @@ impl ItemsApi {
         }
     }
 
+    #[oai(path = "/item/owned", method = "get")]
+    async fn get_owned_items(
+        &self,
+        auth: AuthToken,
+        state: Data<&Arc<AppState>>,
+    ) -> Result<Json<Vec<Item>>> {
+        match auth.ok() {
+            Some(user) => Ok(Json(
+                Item::get_by_owner_id(&state.database, user.session.user_id)
+                    .await
+                    .unwrap(),
+            )),
+            None => Err(StatusCode::UNAUTHORIZED.into()),
+        }
+    }
+
     #[oai(path = "/item/create", method = "post")]
     async fn create_item(
         &self,

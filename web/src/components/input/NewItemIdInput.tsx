@@ -2,9 +2,8 @@ import { useMutation } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
 import { FiRefreshCcw } from 'react-icons/fi';
 
-import { isValidId } from '../../api/generate_id';
-import { BaseInput, BaseInputProperties } from './BaseInput';
 import { BASE_URL } from '../../api/core';
+import { BaseInput, BaseInputProperties } from './BaseInput';
 
 const placeholderValues = ['000001', '123456', 'AA17C', 'ABCDEF', '000013'];
 
@@ -40,8 +39,6 @@ export const NewItemIdInput = (properties: BaseInputProperties) => {
         return () => clearInterval(interval);
     }, [value]);
 
-    const isValid = isValidId(value);
-
     return (
         <BaseInput
             {...properties}
@@ -51,11 +48,6 @@ export const NewItemIdInput = (properties: BaseInputProperties) => {
                 setValue(value);
                 properties.onChange?.(value);
             }}
-            errorMessage={
-                !isValid
-                    ? 'Identifier must be alphanumeric (a-z0-9)'
-                    : undefined
-            }
             suffix={
                 <>
                     <div className="h-auto">

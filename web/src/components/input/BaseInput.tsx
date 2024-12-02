@@ -42,7 +42,7 @@ export const BaseInput = ({
                     width === 'full' && 'w-full'
                 )}
             >
-                <div className="grow">
+                <div className={width === 'full' ? 'grow' : ''}>
                     <input
                         type={type || 'text'}
                         id={id}

@@ -1,13 +1,13 @@
 use std::fmt::Display;
 
 use chrono::{DateTime, Utc};
-use meilisearch_sdk::{errors::MeilisearchError, tasks::Task};
+use meilisearch_sdk::tasks::Task;
 use poem_openapi::{Enum, Object};
 use serde::{Deserialize, Serialize};
-use sqlx::{prelude::FromRow, query_as, types::Json};
+use sqlx::{prelude::FromRow, query_as};
 use tracing::info;
 
-use crate::{database::Database, search::Search};
+use crate::database::Database;
 
 #[derive(Debug, Serialize, Deserialize, sqlx::Type, Enum)]
 pub enum SearchTaskStatus {
@@ -90,9 +90,12 @@ impl SearchTask {
     }
 
     pub async fn find_all(db: &Database) -> Result<Vec<Self>, sqlx::Error> {
-        query_as!(SearchTask, "SELECT * FROM search_tasks ORDER BY updated_at DESC")
-            .fetch_all(&db.pool)
-            .await
+        query_as!(
+            SearchTask,
+            "SELECT * FROM search_tasks ORDER BY updated_at DESC"
+        )
+        .fetch_all(&db.pool)
+        .await
     }
 
     pub async fn refresh(
@@ -108,7 +111,10 @@ impl SearchTask {
             Task::Failed { .. } => Some(task.unwrap_failure().to_string()),
         };
 
-        info!("Refreshing task {} with status {}", external_task_id, status);
+        info!(
+            "Refreshing task {} with status {}",
+            external_task_id, status
+        );
 
         query_as!(
             SearchTask,
