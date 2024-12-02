@@ -33,14 +33,24 @@ const TaskTableEntry = ({
     });
 
     return (
-        <li key={task.task_id} className="flex items-center gap-2">
-            <div>{task.task_id}</div>
-            <div>{task.external_task_id}</div>
-            <div>{task.status}</div>
-            <div>{Date.parse(task.updated_at)}</div>
-            <button className="btn" onClick={() => mutate()}>
-                Refresh
-            </button>
+        <li key={task.task_id} className="w-full">
+            <div className="flex items-center gap-2 w-full justify-between">
+                <div>#{task.task_id}</div>
+                <div>meili/{task.external_task_id}</div>
+                <div>status: {task.status}</div>
+                <div>updated: {Date.parse(task.updated_at)}</div>
+                <button className="btn" onClick={() => mutate()}>
+                    Refresh
+                </button>
+            </div>
+            {task.details && (
+                <>
+                    <div>Details</div>
+                    <pre className="w-full whitespace-pre-wrap p-4 bg-gray-100 rounded-md">
+                        <code>{task.details}</code>
+                    </pre>
+                </>
+            )}
         </li>
     );
 };

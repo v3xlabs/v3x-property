@@ -1,10 +1,11 @@
 use std::fmt::Display;
 
 use chrono::{DateTime, Utc};
-use meilisearch_sdk::tasks::Task;
+use meilisearch_sdk::{errors::MeilisearchError, tasks::Task};
 use poem_openapi::{Enum, Object};
 use serde::{Deserialize, Serialize};
-use sqlx::{prelude::FromRow, query_as};
+use sqlx::{prelude::FromRow, query_as, types::Json};
+use tracing::info;
 
 use crate::{database::Database, search::Search};
 
@@ -36,8 +37,8 @@ impl From<String> for SearchTaskStatus {
     }
 }
 
-impl From<Task> for SearchTaskStatus {
-    fn from(task: Task) -> Self {
+impl From<&Task> for SearchTaskStatus {
+    fn from(task: &Task) -> Self {
         match task {
             Task::Enqueued { .. } => SearchTaskStatus::Enqueued,
             Task::Processing { .. } => SearchTaskStatus::Processing,
@@ -54,6 +55,8 @@ pub struct SearchTask {
     pub task_id: i32,
     pub external_task_id: i64,
     pub status: SearchTaskStatus,
+    /// TODO: Make this a JSONB column
+    pub details: Option<String>,
     pub updated_at: DateTime<Utc>,
 }
 
@@ -70,7 +73,7 @@ impl SearchTask {
             SearchTask,
             "INSERT INTO search_tasks (external_task_id, status) VALUES ($1, $2) RETURNING *",
             external_task_id,
-            status,
+            status
         )
         .fetch_one(&db.pool)
         .await
@@ -95,13 +98,24 @@ impl SearchTask {
     pub async fn refresh(
         db: &Database,
         external_task_id: i64,
-        status: SearchTaskStatus,
+        task: Task,
     ) -> Result<Self, sqlx::Error> {
+        let status = SearchTaskStatus::from(&task).to_string();
+        let details = match &task {
+            Task::Enqueued { .. } => None,
+            Task::Processing { .. } => None,
+            Task::Succeeded { .. } => None,
+            Task::Failed { .. } => Some(task.unwrap_failure().to_string()),
+        };
+
+        info!("Refreshing task {} with status {}", external_task_id, status);
+
         query_as!(
             SearchTask,
-            "UPDATE search_tasks SET status = $1 WHERE external_task_id = $2 RETURNING *",
-            status.to_string(),
-            external_task_id
+            "UPDATE search_tasks SET status = $1, details = $2 WHERE external_task_id = $3 RETURNING *",
+            status,
+            details,
+            external_task_id,
         )
         .fetch_one(&db.pool)
         .await

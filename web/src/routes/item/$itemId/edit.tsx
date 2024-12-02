@@ -1,4 +1,4 @@
-import { createFileRoute, useParams } from '@tanstack/react-router';
+import { createFileRoute, Link, useParams } from '@tanstack/react-router';
 
 import { SCPage } from '../../../layouts/SimpleCenterPage';
 
@@ -8,7 +8,16 @@ export const Route = createFileRoute('/item/$itemId/edit')({
 
         return (
             <SCPage title={`Edit Item ${itemId}`}>
-                Hello /item/$itemId/edit!
+                <div className="card">
+                    <p>Hello /item/$itemId/edit!</p>
+                    <Link
+                        to="/item/$itemId"
+                        params={{ itemId }}
+                        className="btn"
+                    >
+                        Save
+                    </Link>
+                </div>
             </SCPage>
         );
     },

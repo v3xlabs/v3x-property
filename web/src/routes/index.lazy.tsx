@@ -16,6 +16,7 @@ const component = () => {
             </div>
             <div className="card">
                 <div className="w-full flex items-center justify-center gap-4">
+                    <UserProfile user_id="1" variant="full" />
                     <UserProfile user_id="2" variant="full" />
                     <UserProfile user_id="2" variant="compact" />
                     <UserProfile user_id="2" variant="avatar" />

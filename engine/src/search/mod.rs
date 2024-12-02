@@ -2,7 +2,7 @@ use std::env;
 
 use bigdecimal::ToPrimitive;
 use meilisearch_sdk::{client::Client, tasks::Task};
-use tracing::info;
+use tracing::{info, warn};
 
 use crate::{
     database::Database,
@@ -65,7 +65,7 @@ impl Search {
             .await
             .unwrap();
 
-        SearchTask::refresh(db, task_external_id, x.into()).await
+        SearchTask::refresh(db, task_external_id, x).await
     }
 }
 

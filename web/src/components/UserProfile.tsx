@@ -5,7 +5,7 @@ import clsx from 'clsx';
 import { FC } from 'react';
 import { match } from 'ts-pattern';
 
-import { ApiMeResponse } from '../api/me';
+import { ApiMeResponse, useApiMe } from '../api/me';
 import { useApiUserById } from '../api/user';
 
 type Properties = {
@@ -98,6 +98,7 @@ const UNKNOWN_USER = 'Unknown User';
 
 export const UserProfile: FC<Properties> = ({ user_id, variant }) => {
     const { data: user, isLoading } = useApiUserById(user_id);
+    const { data: me } = useApiMe();
 
     if (isLoading) {
         return <div>Loading...</div>;
@@ -158,7 +159,9 @@ export const UserProfile: FC<Properties> = ({ user_id, variant }) => {
                                         {user?.name || UNKNOWN_USER}
                                     </div>
                                     <div className="Text faded !leading-[0.75em]">
-                                        #{user?.user_id}
+                                        {me?.user_id === user?.user_id
+                                            ? 'You'
+                                            : `#${user?.user_id}`}
                                     </div>
                                 </div>
                             </Link>

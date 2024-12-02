@@ -6,6 +6,7 @@ export type SearchTask = {
     task_id: number;
     external_task_id: number;
     status: SearchTaskStatus;
+    details: string | null;
     updated_at: string;
 };
 

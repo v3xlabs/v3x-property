@@ -9,7 +9,7 @@ use super::userentry::UserEntry;
 /// Use `UserEntry` to query the database for a user
 #[derive(Debug, Clone, Serialize, Deserialize, Object)]
 pub struct User {
-    pub id: i32,
+    pub user_id: i32,
     pub oauth_sub: String,
     pub name: String,
     pub picture: Option<Url>,
@@ -18,7 +18,7 @@ pub struct User {
 impl From<UserEntry> for User {
     fn from(user: UserEntry) -> Self {
         Self {
-            id: user.user_id,
+            user_id: user.user_id,
             oauth_sub: user.oauth_sub,
             name: user
                 .nickname
