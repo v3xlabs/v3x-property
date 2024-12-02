@@ -21,12 +21,15 @@ export const AvatarHolder: FC<{
 }> = ({ image, initials, alt, size }) => {
     return (
         <Avatar.Root
-            className={clsx('AvatarRoot', size === 'compact' && '!size-6')}
+            className={clsx(
+                'inline-flex items-center justify-center align-middle overflow-hidden select-none w-11 h-11 rounded-full bg-gray-300',
+                size === 'compact' && '!size-6'
+            )}
         >
             {image && (
                 <Avatar.Image
                     className={clsx(
-                        'AvatarImage',
+                        'w-full h-full object-cover',
                         size === 'compact' && '!size-6'
                     )}
                     src={image}
@@ -35,7 +38,7 @@ export const AvatarHolder: FC<{
             )}
             <Avatar.Fallback
                 className={clsx(
-                    'AvatarFallback',
+                    'w-full h-full flex items-center justify-center bg-gray-200 text-pink-500 text-base leading-none font-medium',
                     size === 'compact' && '!text-[0.6em]'
                 )}
                 delayMs={600}
