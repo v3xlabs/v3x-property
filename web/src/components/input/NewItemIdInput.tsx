@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { FiRefreshCcw } from 'react-icons/fi';
 
 import { BASE_URL } from '@/api/core';
+import { Button } from '@/components/ui/Button';
 
 import { BaseInput, BaseInputProperties } from './BaseInput';
 
@@ -53,13 +54,14 @@ export const NewItemIdInput = (properties: BaseInputProperties) => {
             suffix={
                 <>
                     <div className="h-auto">
-                        <button
-                            className="!h-full btn"
+                        <Button
+                            size="icon"
                             onClick={() => generateId()}
                             data-testid="generate-id-button"
+                            type="button"
                         >
                             <FiRefreshCcw />
-                        </button>
+                        </Button>
                     </div>
                 </>
             }

@@ -6,6 +6,7 @@ import { isValidId } from '@/api/generate_id';
 import { formatId, useInstanceSettings } from '@/api/instance_settings';
 import { useApiCreateItem } from '@/api/item';
 import { NewItemIdInput } from '@/components/input/NewItemIdInput';
+import { Button } from '@/components/ui/Button';
 import { SCPage } from '@/layouts/SimpleCenterPage';
 
 const component = () => {
@@ -84,15 +85,14 @@ const component = () => {
                                 state.isSubmitting,
                             ]}
                             children={([canSubmit, isSubmitting]) => (
-                                <button
-                                    className="btn w-fit flex items-center gap-2"
+                                <Button
                                     type="submit"
                                     data-testid="create-button"
                                     disabled={!canSubmit}
                                 >
                                     Configure
                                     <FiArrowRight />
-                                </button>
+                                </Button>
                             )}
                         />
                     </div>

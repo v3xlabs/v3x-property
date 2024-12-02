@@ -21,6 +21,7 @@ import { Route as ItemItemIdEditImport } from './routes/item/$itemId/edit'
 
 // Create Virtual Routes
 
+const DebugLazyImport = createFileRoute('/debug')()
 const CreateLazyImport = createFileRoute('/create')()
 const AboutLazyImport = createFileRoute('/about')()
 const IndexLazyImport = createFileRoute('/')()
@@ -31,6 +32,11 @@ const LogsIndexLazyImport = createFileRoute('/logs/')()
 const ItemsIndexLazyImport = createFileRoute('/items/')()
 
 // Create/Update Routes
+
+const DebugLazyRoute = DebugLazyImport.update({
+  path: '/debug',
+  getParentRoute: () => rootRoute,
+} as any).lazy(() => import('./routes/debug.lazy').then((d) => d.Route))
 
 const CreateLazyRoute = CreateLazyImport.update({
   path: '/create',
@@ -140,6 +146,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CreateLazyImport
       parentRoute: typeof rootRoute
     }
+    '/debug': {
+      id: '/debug'
+      path: '/debug'
+      fullPath: '/debug'
+      preLoaderRoute: typeof DebugLazyImport
+      parentRoute: typeof rootRoute
+    }
     '/user/$userId': {
       id: '/user/$userId'
       path: '/user/$userId'
@@ -207,6 +220,7 @@ export const routeTree = rootRoute.addChildren({
   SessionsRoute,
   AboutLazyRoute,
   CreateLazyRoute,
+  DebugLazyRoute,
   UserUserIdRoute,
   ItemsIndexLazyRoute,
   LogsIndexLazyRoute,
@@ -230,6 +244,7 @@ export const routeTree = rootRoute.addChildren({
         "/sessions",
         "/about",
         "/create",
+        "/debug",
         "/user/$userId",
         "/items/",
         "/logs/",
@@ -254,6 +269,9 @@ export const routeTree = rootRoute.addChildren({
     },
     "/create": {
       "filePath": "create.lazy.tsx"
+    },
+    "/debug": {
+      "filePath": "debug.lazy.tsx"
     },
     "/user/$userId": {
       "filePath": "user/$userId.tsx"

@@ -1,4 +1,9 @@
-import { useMutation, useQuery, UseQueryOptions } from '@tanstack/react-query';
+import {
+    useMutation,
+    UseMutationOptions,
+    useQuery,
+    UseQueryOptions,
+} from '@tanstack/react-query';
 
 import { useAuth } from './auth';
 import { BASE_URL, getHttp } from './core';
@@ -54,14 +59,29 @@ export const useApiCreateItem = () => {
 
 // Delete item
 // This endpoint deletes the item from the database and the search index.
-export const useApiDeleteItem = () => {
+export const useApiDeleteItem = (
+    options?: UseMutationOptions<boolean, Error, string>
+) => {
+    const { clearAuthToken } = useAuth();
+
     return useMutation({
-        mutationFn: async (item_id: string) =>
-            fetch(BASE_URL + '/api/item/' + item_id, {
+        mutationFn: async (item_id: string) => {
+            const response = await fetch(BASE_URL + '/api/item/' + item_id, {
                 method: 'DELETE',
                 headers: {
                     Authorization: 'Bearer ' + useAuth.getState().token,
                 },
-            }).then((response) => response.ok),
+            });
+
+            if (response.status === 401) {
+                console.log('Token expired, clearing token');
+                clearAuthToken();
+
+                throw new Error('Token expired');
+            }
+
+            return response.ok;
+        },
+        ...options,
     });
 };
