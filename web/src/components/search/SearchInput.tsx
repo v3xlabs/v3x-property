@@ -1,12 +1,34 @@
+import { useState } from 'react';
+
+import { useSearch } from '@/api/search';
 import { BaseInput } from '@/components/input/BaseInput';
 
+import { ItemPreviewSearch } from '../item/ItemPreviewSearch';
+
 export const SearchInput = () => {
+    const [query, setQuery] = useState('');
+    const { data: searchResults } = useSearch(query);
+
     return (
-        <div className="w-full">
+        <div className="w-full space-y-2">
             <div className="w-full flex gap-4 justify-stretch">
-                <BaseInput className="h-full" width="full" />
+                <BaseInput
+                    className="h-full"
+                    width="full"
+                    value={query}
+                    onChange={(event) => setQuery(event)}
+                />
                 <button className="btn">Search</button>
             </div>
+            {searchResults && (
+                <div className="w-full space-y-2">
+                    {searchResults.map((result) => (
+                        <div key={result.item_id}>
+                            <ItemPreviewSearch item={result} />
+                        </div>
+                    ))}
+                </div>
+            )}
         </div>
     );
 };

@@ -8,7 +8,7 @@ use poem::{
 };
 use poem_openapi::{OpenApi, OpenApiService};
 use root::RootApi;
-use search::tasks::ApiSearchTask;
+use search::{tasks::ApiSearchTask, ApiSearch};
 use sessions::ApiSessions;
 use users::ApiUserById;
 
@@ -31,6 +31,7 @@ fn get_api() -> impl OpenApi {
         ApiUserById,
         ApiInstance,
         ItemsApi,
+        ApiSearch,
         ApiSearchTask,
     )
 }

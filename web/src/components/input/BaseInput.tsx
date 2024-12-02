@@ -15,7 +15,7 @@ export type BaseInputProperties = {
     errorMessage?: string;
     width?: 'full' | 'fit';
     disabled?: boolean;
-} & HTMLAttributes<HTMLInputElement>;
+} & Omit<HTMLAttributes<HTMLInputElement>, 'onChange'>;
 
 export const BaseInput = ({
     label,

@@ -1,10 +1,11 @@
 use chrono::{DateTime, Utc};
+use poem_openapi::Object;
 use serde::{Deserialize, Serialize};
 
 use super::{field::ItemField, Item};
 use crate::database::Database;
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, Object)]
 pub struct SearchableItem {
     pub item_id: String,
     pub name: String,
@@ -38,7 +39,7 @@ impl Item {
     }
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, Object)]
 pub struct SearchableItemField {
     pub definition_id: String,
     pub value: serde_json::Value,
