@@ -51,3 +51,17 @@ export const useApiCreateItem = () => {
             }).then((response) => response.ok),
     });
 };
+
+// Delete item
+// This endpoint deletes the item from the database and the search index.
+export const useApiDeleteItem = () => {
+    return useMutation({
+        mutationFn: async (item_id: string) =>
+            fetch(BASE_URL + '/api/item/' + item_id, {
+                method: 'DELETE',
+                headers: {
+                    Authorization: 'Bearer ' + useAuth.getState().token,
+                },
+            }).then((response) => response.ok),
+    });
+};

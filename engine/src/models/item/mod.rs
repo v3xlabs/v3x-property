@@ -107,4 +107,25 @@ impl Item {
             None => Ok(self.to_owned()),
         }
     }
+
+    pub async fn remove_search(&self, search: &Option<Search>, db: &Database) -> Result<Self, ()> {
+        match search {
+            Some(search) => {
+                search.client.index("items").delete_document(&self.item_id).await;
+                Ok(self.to_owned())
+            }
+            None => Ok(self.to_owned()),
+        }
+    }
+
+    pub async fn delete(&self, search: &Option<Search>, db: &Database) -> Result<(), sqlx::Error> {
+        self.remove_search(search, db).await;
+
+        query("DELETE FROM items WHERE item_id = $1")
+            .bind(&self.item_id)
+            .execute(&db.pool)
+            .await;
+
+        Ok(())
+    }
 }

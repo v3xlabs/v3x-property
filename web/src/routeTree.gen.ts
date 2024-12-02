@@ -15,6 +15,7 @@ import { createFileRoute } from '@tanstack/react-router'
 import { Route as rootRoute } from './routes/__root'
 import { Route as SessionsImport } from './routes/sessions'
 import { Route as ItemIdImport } from './routes/$itemId'
+import { Route as UserUserIdImport } from './routes/user/$userId'
 import { Route as ItemItemIdIndexImport } from './routes/item/$itemId/index'
 import { Route as ItemItemIdEditImport } from './routes/item/$itemId/edit'
 
@@ -85,6 +86,11 @@ const ItemsIndexLazyRoute = ItemsIndexLazyImport.update({
   getParentRoute: () => rootRoute,
 } as any).lazy(() => import('./routes/items/index.lazy').then((d) => d.Route))
 
+const UserUserIdRoute = UserUserIdImport.update({
+  path: '/user/$userId',
+  getParentRoute: () => rootRoute,
+} as any)
+
 const ItemItemIdIndexRoute = ItemItemIdIndexImport.update({
   path: '/item/$itemId/',
   getParentRoute: () => rootRoute,
@@ -132,6 +138,13 @@ declare module '@tanstack/react-router' {
       path: '/create'
       fullPath: '/create'
       preLoaderRoute: typeof CreateLazyImport
+      parentRoute: typeof rootRoute
+    }
+    '/user/$userId': {
+      id: '/user/$userId'
+      path: '/user/$userId'
+      fullPath: '/user/$userId'
+      preLoaderRoute: typeof UserUserIdImport
       parentRoute: typeof rootRoute
     }
     '/items/': {
@@ -194,6 +207,7 @@ export const routeTree = rootRoute.addChildren({
   SessionsRoute,
   AboutLazyRoute,
   CreateLazyRoute,
+  UserUserIdRoute,
   ItemsIndexLazyRoute,
   LogsIndexLazyRoute,
   ProductsIndexLazyRoute,
@@ -216,6 +230,7 @@ export const routeTree = rootRoute.addChildren({
         "/sessions",
         "/about",
         "/create",
+        "/user/$userId",
         "/items/",
         "/logs/",
         "/products/",
@@ -239,6 +254,9 @@ export const routeTree = rootRoute.addChildren({
     },
     "/create": {
       "filePath": "create.lazy.tsx"
+    },
+    "/user/$userId": {
+      "filePath": "user/$userId.tsx"
     },
     "/items/": {
       "filePath": "items/index.lazy.tsx"

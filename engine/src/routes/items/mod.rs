@@ -37,6 +37,20 @@ impl ItemsApi {
         }
     }
 
+    #[oai(path = "/item/:item_id", method = "delete")]
+    async fn delete_item(
+        &self,
+        auth: AuthToken,
+        state: Data<&Arc<AppState>>,
+        item_id: Path<String>,
+    ) -> Result<()> {
+        let item = Item::get_by_id(&state.database, item_id.0).await.unwrap().unwrap();
+
+        item.delete(&state.search, &state.database).await.unwrap();
+
+        Ok(())
+    }
+
     #[oai(path = "/item/owned", method = "get")]
     async fn get_owned_items(
         &self,

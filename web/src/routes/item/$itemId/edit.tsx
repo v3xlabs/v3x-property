@@ -1,10 +1,13 @@
 import { createFileRoute, Link, useParams } from '@tanstack/react-router';
 
+import { useApiDeleteItem } from '../../../api/item';
 import { SCPage } from '../../../layouts/SimpleCenterPage';
 
 export const Route = createFileRoute('/item/$itemId/edit')({
     component: () => {
         const { itemId } = useParams({ from: '/item/$itemId/edit' });
+
+        const { mutate: deleteItem } = useApiDeleteItem();
 
         return (
             <SCPage title={`Edit Item ${itemId}`}>
@@ -17,6 +20,14 @@ export const Route = createFileRoute('/item/$itemId/edit')({
                     >
                         Save
                     </Link>
+                    <button
+                        className="btn btn-delete"
+                        onClick={() => {
+                            deleteItem(itemId);
+                        }}
+                    >
+                        Delete
+                    </button>
                 </div>
             </SCPage>
         );

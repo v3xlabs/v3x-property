@@ -111,7 +111,8 @@ export const UserProfile: FC<Properties> = ({ user_id, variant }) => {
                     <HoverCard.Root>
                         <HoverCard.Trigger asChild>
                             <Link
-                                to="/"
+                                to="/user/$userId"
+                                params={{ userId: user_id }}
                                 className="p-1 border rounded-md flex items-center gap-2 hover:bg-black/5"
                             >
                                 <AvatarHolder
@@ -127,7 +128,8 @@ export const UserProfile: FC<Properties> = ({ user_id, variant }) => {
                     <HoverCard.Root>
                         <HoverCard.Trigger asChild>
                             <Link
-                                to="/"
+                                to="/user/$userId"
+                                params={{ userId: user_id }}
                                 className="p-1.5 border cursor-pointer rounded-md flex items-center gap-2 hover:bg-black/5"
                             >
                                 <AvatarHolder
@@ -147,7 +149,8 @@ export const UserProfile: FC<Properties> = ({ user_id, variant }) => {
                     <HoverCard.Root>
                         <HoverCard.Trigger asChild>
                             <Link
-                                to="/"
+                                to="/user/$userId"
+                                params={{ userId: user_id }}
                                 className="p-1.5 border cursor-pointer rounded-md flex items-center gap-2 hover:bg-black/5"
                             >
                                 <AvatarHolder
