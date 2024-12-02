@@ -32,16 +32,17 @@ export const Navbar = () => {
                 <div className="h-full flex items-center">
                     {(
                         [
-                            ['/search', 'Search'],
-                            ['/items', 'Items'],
-                            ['/products', 'Products'],
-                            ['/logs', 'Logs'],
-                            ['/create', 'Create'],
-                        ] as [keyof FileRoutesByPath, string][]
-                    ).map(([path, name]) => (
+                            ['/search', 'Search', 'search-navlink'],
+                            ['/items', 'Items', 'items-navlink'],
+                            ['/products', 'Products', 'products-navlink'],
+                            ['/logs', 'Logs', 'logs-navlink'],
+                            ['/create', 'Create', 'create-navlink'],
+                        ] as [keyof FileRoutesByPath, string, string][]
+                    ).map(([path, name, slug]) => (
                         <Link
                             key={path}
                             to={path}
+                            data-testid={slug}
                             className="[&.active]:bg-black/10 hover:bg-black/5 py-1 px-2 cursor-pointer"
                         >
                             {name}
