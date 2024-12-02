@@ -14,8 +14,7 @@ services:
   #   depends_on:
   #     - postgres
   #     - keycloak
-  #   # networks:
-  #   #   - default
+
   # Database
   postgres:
     image: postgres:17
@@ -26,12 +25,15 @@ services:
       POSTGRES_DB: property
     ports:
       - "5432:5432"
-    # networks:
-    #   - default
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
   # Keycloak
   keycloak:
-    image: keycloak/keycloak:25.0
-    restart: always
+    image: quay.io/keycloak/keycloak:26.0
     environment:
       KC_DB: postgres
       KC_DB_URL: jdbc:postgresql://postgres:5432/postgres
@@ -48,23 +50,25 @@ services:
       KC_HEALTH_ENABLED: true
       KEYCLOAK_ADMIN: admin
       KEYCLOAK_ADMIN_PASSWORD: admin
-      # KEYCLOAK_IMPORT: /tmp/realm.json
-    command: start-dev
-    depends_on:
-      - postgres
+    command:
+      - start-dev
+      - --import-realm
+    volumes:
+      - ./.build/realm-export.json:/opt/keycloak/data/import/realm-export.json
     ports:
       - "8080:8080"
-    # networks:
-    #   - default
-    # volumes:
-      # - ./realm.json:/tmp/realm.json
+    depends_on:
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health/ready"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
   meilisearch:
     image: getmeili/meilisearch:v1.11
     environment:
       MEILI_MASTER_KEY: master
     ports:
       - "7700:7700"
-
-# networks:
-#   default:
-#     driver: bridge

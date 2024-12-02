@@ -54,7 +54,10 @@ export const Navbar = () => {
                 <div className="h-full border-l">
                     <DropdownMenu.Root>
                         <DropdownMenu.Trigger asChild>
-                            <button className="h-full p-1 flex items-center gap-2 px-2 hover:bg-black/5">
+                            <button
+                                className="h-full p-1 flex items-center gap-2 px-2 hover:bg-black/5"
+                                data-testid="user-dropdown-trigger"
+                            >
                                 {/* <div className="h-full aspect-square bg-black/10 relative">
                                     <img
                                         src={meData?.picture}
@@ -66,7 +69,9 @@ export const Navbar = () => {
                                     image={meData.picture}
                                     size="compact"
                                 />
-                                <div>{meData.name}</div>
+                                <div data-testid="user-dropdown-name">
+                                    {meData.name}
+                                </div>
                             </button>
                         </DropdownMenu.Trigger>
 

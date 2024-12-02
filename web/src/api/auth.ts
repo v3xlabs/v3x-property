@@ -11,7 +11,14 @@ export const preflightAuth = async () => {
     console.log('PREFLIGHT AUTH', token);
 
     if (token) {
-        useAuth.getState().setAuthToken(token);
+        // useAuth.getState().setAuthToken(token);
+        // window.history.replaceState(
+        //     {},
+        //     document.title,
+        //     window.location.pathname
+        // );
+        // window.location.reload();
+        useAuth.setState({ token });
         window.history.replaceState(
             {},
             document.title,

@@ -8,13 +8,27 @@ test('has title', async ({ page }) => {
 });
 
 test('has login button', async ({ page }) => {
-    await page.goto('http://localhost:5173');
+    await page.goto('http://localhost:5173/items');
 
     // Click the get started link.
     await page.getByRole('link', { name: 'Login' }).click();
 
     // Expects page to have a heading with the name of Installation.
-    await expect(page.getByText('Sign in', { exact: true })).toBeVisible();
+    await expect(
+        page.getByRole('heading', { name: 'Sign in to your account' })
+    ).toBeVisible();
+
+    await page.getByLabel('Username or email').fill('user');
+    await page.getByRole('textbox', { name: 'password' }).fill('wachtwoord');
+    await page.getByRole('button', { name: 'Sign In' }).click();
+
+    await page.waitForLoadState('domcontentloaded');
+
+    await expect(page.getByTestId('user-dropdown-trigger')).toBeVisible();
+
+    await expect(page.getByTestId('user-dropdown-name')).toContainText(
+        'John Doe'
+    );
 });
 
 test('create an item', async ({ page }) => {
