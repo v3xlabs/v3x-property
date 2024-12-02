@@ -1,6 +1,6 @@
 import { Link } from '@tanstack/react-router';
 
-import { useApiOwnedItems } from '../api/item';
+import { useApiOwnedItems } from '@/api/item';
 
 export const AllOwnedItems = () => {
     const { data } = useApiOwnedItems();

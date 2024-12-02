@@ -1,9 +1,9 @@
 import { FC, Suspense, useState } from 'react';
 import { match } from 'ts-pattern';
 
-import { useMedia } from '../../api/media';
-import { ErrorBoundary } from '../ErrorBoundary';
-import { StlPreviewWindow } from '../stl_preview/StlPreview';
+import { useMedia } from '@/api/media';
+import { ErrorBoundary } from '@/components/ErrorBoundary';
+import { StlPreviewWindow } from '@/components/stl_preview/StlPreview';
 
 export const MediaPreview: FC<{ media_id: number }> = ({ media_id }) => {
     const { data: media } = useMedia(media_id);

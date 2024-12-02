@@ -7,8 +7,8 @@ import {
 } from '@tanstack/react-router';
 import { FC } from 'react';
 
-import { useApiDeleteItem } from '../../../api/item';
-import { SCPage } from '../../../layouts/SimpleCenterPage';
+import { useApiDeleteItem } from '@/api/item';
+import { SCPage } from '@/layouts/SimpleCenterPage';
 
 export const DeleteItemModal: FC<{ itemId: string }> = ({ itemId }) => {
     const { mutate: deleteItem } = useApiDeleteItem();

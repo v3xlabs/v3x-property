@@ -2,11 +2,11 @@ import { useForm } from '@tanstack/react-form';
 import { createLazyFileRoute, useNavigate } from '@tanstack/react-router';
 import { FiArrowRight } from 'react-icons/fi';
 
-import { isValidId } from '../api/generate_id';
-import { formatId, useInstanceSettings } from '../api/instance_settings';
-import { useApiCreateItem } from '../api/item';
-import { NewItemIdInput } from '../components/input/NewItemIdInput';
-import { SCPage } from '../layouts/SimpleCenterPage';
+import { isValidId } from '@/api/generate_id';
+import { formatId, useInstanceSettings } from '@/api/instance_settings';
+import { useApiCreateItem } from '@/api/item';
+import { NewItemIdInput } from '@/components/input/NewItemIdInput';
+import { SCPage } from '@/layouts/SimpleCenterPage';
 
 const component = () => {
     const { data: instanceSettings } = useInstanceSettings();

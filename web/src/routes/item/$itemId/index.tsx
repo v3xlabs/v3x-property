@@ -5,13 +5,13 @@ import {
     useParams,
 } from '@tanstack/react-router';
 
-import { formatId, getInstanceSettings } from '../../../api/instance_settings';
-import { useApiItemById } from '../../../api/item';
-import { MediaGallery } from '../../../components/media/MediaGallery';
-import { UnauthorizedResourceModal } from '../../../components/Unauthorized';
-import { UserProfile } from '../../../components/UserProfile';
-import { SCPage } from '../../../layouts/SimpleCenterPage';
-import { queryClient } from '../../../util/query';
+import { formatId, getInstanceSettings } from '@/api/instance_settings';
+import { useApiItemById } from '@/api/item';
+import { MediaGallery } from '@/components/media/MediaGallery';
+import { UnauthorizedResourceModal } from '@/components/Unauthorized';
+import { UserProfile } from '@/components/UserProfile';
+import { SCPage } from '@/layouts/SimpleCenterPage';
+import { queryClient } from '@/util/query';
 
 export const Route = createFileRoute('/item/$itemId/')({
     // if item_id is not formatId(item_id, instanceSettings), redirect to the formatted item_id

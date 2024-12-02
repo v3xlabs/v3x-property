@@ -5,8 +5,8 @@ import clsx from 'clsx';
 import { FC } from 'react';
 import { match } from 'ts-pattern';
 
-import { formatId, useInstanceSettings } from '../../api/instance_settings';
-import { ApiItemResponse, useApiItemById } from '../../api/item';
+import { formatId, useInstanceSettings } from '@/api/instance_settings';
+import { ApiItemResponse, useApiItemById } from '@/api/item';
 
 type Properties = {
     item_id: string;

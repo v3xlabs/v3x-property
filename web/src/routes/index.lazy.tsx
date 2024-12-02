@@ -1,9 +1,9 @@
 import { createLazyFileRoute } from '@tanstack/react-router';
 
-import { ItemPreview } from '../components/item/ItemPreview';
-import { SearchTaskTable } from '../components/search_tasks/SearchTaskTable';
-import { UserProfile } from '../components/UserProfile';
-import { SCPage } from '../layouts/SimpleCenterPage';
+import { ItemPreview } from '@/components/item/ItemPreview';
+import { SearchTaskTable } from '@/components/search_tasks/SearchTaskTable';
+import { UserProfile } from '@/components/UserProfile';
+import { SCPage } from '@/layouts/SimpleCenterPage';
 
 const component = () => {
     return (

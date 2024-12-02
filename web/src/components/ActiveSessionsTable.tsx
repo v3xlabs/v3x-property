@@ -2,10 +2,11 @@ import { clsx } from 'clsx';
 import { FC } from 'react';
 import { UAParser } from 'ua-parser-js';
 
-import { useAuth } from '../api/auth';
-import { useGeoIp } from '../api/geoip';
-import { SessionResponse, useSessions } from '../api/sessions';
-import { getRelativeTimeString } from '../util/date';
+import { useAuth } from '@/api/auth';
+import { useGeoIp } from '@/api/geoip';
+import { SessionResponse, useSessions } from '@/api/sessions';
+import { getRelativeTimeString } from '@/util/date';
+
 import { LeafletPreview } from './LeafletPreview';
 
 const ActiveSession: FC<{ session: SessionResponse }> = ({ session }) => {

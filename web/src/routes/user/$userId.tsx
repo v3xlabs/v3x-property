@@ -1,7 +1,7 @@
 import { createFileRoute, useParams } from '@tanstack/react-router';
 
-import { useApiUserById } from '../../api/user';
-import { SCPage } from '../../layouts/SimpleCenterPage';
+import { useApiUserById } from '@/api/user';
+import { SCPage } from '@/layouts/SimpleCenterPage';
 
 export const Route = createFileRoute('/user/$userId')({
     component: () => {

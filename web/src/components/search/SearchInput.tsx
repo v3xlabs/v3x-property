@@ -1,4 +1,4 @@
-import { BaseInput } from '../input/BaseInput';
+import { BaseInput } from '@/components/input/BaseInput';
 
 export const SearchInput = () => {
     return (

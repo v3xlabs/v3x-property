@@ -2,7 +2,8 @@ import { useMutation } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
 import { FiRefreshCcw } from 'react-icons/fi';
 
-import { BASE_URL } from '../../api/core';
+import { BASE_URL } from '@/api/core';
+
 import { BaseInput, BaseInputProperties } from './BaseInput';
 
 const placeholderValues = ['000001', '123456', 'AA17C', 'ABCDEF', '000013'];

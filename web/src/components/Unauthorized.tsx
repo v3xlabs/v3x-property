@@ -1,4 +1,4 @@
-import { SCPage } from '../layouts/SimpleCenterPage';
+import { SCPage } from '@/layouts/SimpleCenterPage';
 
 export const UnauthorizedResourceModal = () => {
     return (

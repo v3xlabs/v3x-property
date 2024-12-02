@@ -1,7 +1,7 @@
 import { createLazyFileRoute, Link } from '@tanstack/react-router';
 
-import { SearchInput } from '../../components/search/SearchInput';
-import { SCPage } from '../../layouts/SimpleCenterPage';
+import { SearchInput } from '@/components/search/SearchInput';
+import { SCPage } from '@/layouts/SimpleCenterPage';
 
 export const Route = createLazyFileRoute('/search/')({
     component: () => (

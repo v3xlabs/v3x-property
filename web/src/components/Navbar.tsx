@@ -4,8 +4,9 @@ import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
 import { Link } from '@tanstack/react-router';
 import { FileRoutesByPath } from '@tanstack/react-router';
 
-import { useAuth } from '../api/auth';
-import { useApiMe } from '../api/me';
+import { useAuth } from '@/api/auth';
+import { useApiMe } from '@/api/me';
+
 import { AvatarHolder, getInitials } from './UserProfile';
 
 const LOGIN_URL = 'http://localhost:3000/login';

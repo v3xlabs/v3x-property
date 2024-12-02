@@ -1,9 +1,9 @@
 import { createFileRoute } from '@tanstack/react-router';
 import { FC } from 'react';
 
-import { useAuth } from '../api/auth';
-import { ActiveSessionsTable } from '../components/ActiveSessionsTable';
-import { SCPage } from '../layouts/SimpleCenterPage';
+import { useAuth } from '@/api/auth';
+import { ActiveSessionsTable } from '@/components/ActiveSessionsTable';
+import { SCPage } from '@/layouts/SimpleCenterPage';
 
 const component: FC = () => {
     return (

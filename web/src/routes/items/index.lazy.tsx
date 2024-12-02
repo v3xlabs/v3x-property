@@ -1,7 +1,7 @@
 import { createLazyFileRoute } from '@tanstack/react-router';
 
-import { AllOwnedItems } from '../../components/owned_elements';
-import { SCPage } from '../../layouts/SimpleCenterPage';
+import { AllOwnedItems } from '@/components/owned_elements';
+import { SCPage } from '@/layouts/SimpleCenterPage';
 
 export const Route = createLazyFileRoute('/items/')({
     component: () => (

@@ -5,9 +5,9 @@ import en from 'javascript-time-ago/locale/en';
 import { useEffect } from 'react';
 import { FiLoader } from 'react-icons/fi';
 
-import { useAuth } from '../../api/auth';
-import { BASE_URL } from '../../api/core';
-import { SearchTask, useTasks } from '../../api/searchtasks';
+import { useAuth } from '@/api/auth';
+import { BASE_URL } from '@/api/core';
+import { SearchTask, useTasks } from '@/api/searchtasks';
 
 TimeAgo.addDefaultLocale(en);
 const timeAgo = new TimeAgo('en-US');
