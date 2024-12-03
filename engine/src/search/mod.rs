@@ -150,7 +150,7 @@ impl Search {
 
         let x = self
             .client
-            .get_task(TempVal { x: task_id_ref })
+            .get_task(task_id_ref.clone())
             .await
             .unwrap();
 
@@ -158,13 +158,3 @@ impl Search {
     }
 }
 
-// TODO: figure out why this is needed
-pub struct TempVal {
-    pub x: u32,
-}
-
-impl AsRef<u32> for TempVal {
-    fn as_ref(&self) -> &u32 {
-        &self.x
-    }
-}

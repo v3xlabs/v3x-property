@@ -16,6 +16,7 @@ dotenvy = "0.15.7"
 hex = "0.4.3"
 hmac = "0.12.1"
 meilisearch-sdk = "0.27.1"
+minio = "0.1.0"
 ollama-rs = "0.2.1"
 openid = "0.14.0"
 poem = { version = "3.0.4", git = "https://github.com/poem-web/poem", branch = "master" }

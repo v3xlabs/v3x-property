@@ -4,6 +4,8 @@ import { FC, Suspense, useEffect, useState } from 'react';
 import { FiEdit, FiLoader } from 'react-icons/fi';
 import { match } from 'ts-pattern';
 
+import { useAuth } from '@/api/auth';
+import { BASE_URL } from '@/api/core';
 import { useMedia } from '@/api/media';
 import { ErrorBoundary } from '@/components/ErrorBoundary';
 import { StlPreviewWindow } from '@/components/stl_preview/StlPreview';
@@ -19,6 +21,7 @@ export const MediaPreview: FC<{
     const { data: media } = useMedia(media_id);
 
     const fileType = kind ?? media?.url.split('.').pop();
+    const { token } = useAuth();
 
     const {
         mutate: uploadMedia,
@@ -27,14 +30,33 @@ export const MediaPreview: FC<{
         isSuccess,
     } = useMutation({
         mutationFn: async () => {
+            if (!url) return;
+
             // artificial 5 second delay
-            await new Promise((resolve) =>
-                setTimeout(resolve, 2000 + Math.random() * 3000)
+            const formData = new FormData();
+
+            const responsereq = await fetch(url);
+            const blob = await responsereq.blob();
+
+            formData.append('file', blob);
+
+            const response = await fetch(
+                BASE_URL +
+                    '/api/media?name=test&kind=' +
+                    encodeURIComponent(fileType ?? ''),
+                {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                }
             );
-            const media_id = 1;
+
+            const media = (await response.json()) as { media_id: number };
 
             // update media_id
-            update_media_id?.(media_id);
+            update_media_id?.(media.media_id);
         },
     });
 
