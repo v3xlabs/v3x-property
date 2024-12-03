@@ -8,6 +8,7 @@ import {
 import { formatId, getInstanceSettings } from '@/api/instance_settings';
 import { useApiItemById } from '@/api/item';
 import { MediaGallery } from '@/components/media/MediaGallery';
+import { Button } from '@/components/ui/Button';
 import { UnauthorizedResourceModal } from '@/components/Unauthorized';
 import { UserProfile } from '@/components/UserProfile';
 import { SCPage } from '@/layouts/SimpleCenterPage';
@@ -40,13 +41,11 @@ export const Route = createFileRoute('/item/$itemId/')({
             <SCPage
                 title={(item && item.name) || `Item ${itemId}`}
                 suffix={
-                    <Link
-                        to="/item/$itemId/edit"
-                        params={{ itemId }}
-                        className="btn"
-                    >
-                        Edit
-                    </Link>
+                    <Button asChild>
+                        <Link to="/item/$itemId/edit" params={{ itemId }}>
+                            Edit
+                        </Link>
+                    </Button>
                 }
             >
                 <div className="card pt-4">

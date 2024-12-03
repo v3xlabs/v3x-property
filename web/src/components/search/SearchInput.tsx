@@ -4,6 +4,7 @@ import { useSearch } from '@/api/search';
 import { BaseInput } from '@/components/input/BaseInput';
 
 import { ItemPreviewSearch } from '../item/ItemPreviewSearch';
+import { Button } from '../ui/Button';
 
 export const SearchInput = () => {
     const [query, setQuery] = useState('');
@@ -19,9 +20,7 @@ export const SearchInput = () => {
                     data-testid="search-input"
                     onChange={(event) => setQuery(event)}
                 />
-                <button className="btn" data-testid="search-button">
-                    Search
-                </button>
+                <Button data-testid="search-button">Search</Button>
             </div>
             {searchResults && (
                 <div className="w-full space-y-2" data-testid="search-results">

@@ -2,6 +2,8 @@ import { Link } from '@tanstack/react-router';
 
 import { useApiOwnedItems } from '@/api/item';
 
+import { Button } from './ui/Button';
+
 export const AllOwnedItems = () => {
     const { data } = useApiOwnedItems();
 
@@ -15,13 +17,14 @@ export const AllOwnedItems = () => {
                     <div>{item.item_id}</div>
                     <div>{item.name}</div>
                     <div>
-                        <Link
-                            to="/item/$itemId"
-                            params={{ itemId: item.item_id }}
-                            className="btn"
-                        >
-                            View
-                        </Link>
+                        <Button asChild>
+                            <Link
+                                to="/item/$itemId"
+                                params={{ itemId: item.item_id }}
+                            >
+                                View
+                            </Link>
+                        </Button>
                     </div>
                 </div>
             ))}

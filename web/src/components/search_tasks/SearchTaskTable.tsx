@@ -9,6 +9,8 @@ import { useAuth } from '@/api/auth';
 import { BASE_URL } from '@/api/core';
 import { SearchTask, useTasks } from '@/api/searchtasks';
 
+import { Button } from '../ui/Button';
+
 TimeAgo.addDefaultLocale(en);
 const timeAgo = new TimeAgo('en-US');
 
@@ -68,9 +70,7 @@ const TaskTableEntry = ({
                 <div className="text-sm text-gray-500">
                     last updated {timeAgo.format(Date.parse(task.updated_at))}
                 </div>
-                <button className="btn" onClick={() => mutate()}>
-                    Refresh
-                </button>
+                <Button onClick={() => mutate()}>Refresh</Button>
             </td>
             {/* {task.details && (
                 <>

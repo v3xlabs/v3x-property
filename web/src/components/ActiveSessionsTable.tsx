@@ -8,6 +8,7 @@ import { SessionResponse, useSessions } from '@/api/sessions';
 import { getRelativeTimeString } from '@/util/date';
 
 import { LeafletPreview } from './LeafletPreview';
+import { Button } from './ui/Button';
 
 const ActiveSession: FC<{ session: SessionResponse }> = ({ session }) => {
     const { refetch: updateSessions } = useSessions();
@@ -74,8 +75,8 @@ const ActiveSession: FC<{ session: SessionResponse }> = ({ session }) => {
             </div>
             <div className="h-full">
                 <div className="h-full">
-                    <button
-                        className="btn"
+                    <Button
+                        variant="default"
                         onClick={() => {
                             fetch(
                                 `http://localhost:3000/api/sessions/${session.session_id}`,
@@ -92,7 +93,7 @@ const ActiveSession: FC<{ session: SessionResponse }> = ({ session }) => {
                         }}
                     >
                         Deauthorize
-                    </button>
+                    </Button>
                 </div>
             </div>
         </div>
@@ -131,7 +132,7 @@ export const ActiveSessionsTable: FC = () => {
                 deauthorize it.
             </p>
             <hr />
-            <button className="btn">Log out everywhere</button>
+            <Button>Log out everywhere</Button>
         </div>
     );
 };
