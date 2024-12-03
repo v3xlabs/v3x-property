@@ -38,24 +38,45 @@ impl Search {
             if let Some(intelligence) = intelligence {
                 let x = intelligence
                     .ollama
-                    .pull_model("all-minilm".to_string(), false)
+                    .pull_model("nomic-embed-text".to_string(), false)
                     .await
                     .unwrap();
 
                 info!("Model pulled: {:?}", x);
 
+                let client = reqwest::Client::new();
+
+                let response = client
+                    .patch(format!("{}/experimental-features/", url))
+                    .json(&json!({
+                        "vectorStore": true
+                    }))
+                    .header(
+                        "Authorization",
+                        format!("Bearer {}", &master_key.clone().unwrap_or("".to_string())),
+                    )
+                    .send()
+                    .await?;
+
+                info!("Vector store enabled: {:?}", response.text().await.unwrap());
+
                 // TODO: check if embeddings are already enabled on meilisearch
                 // you have to manually enable vectorStore (experimental feature)
-                let response = reqwest::Client::new()
+                let response = client
                     .patch(format!("{}/indexes/items/settings", url))
                     .json(&json!({
                         "embedders": {
                             "ollama": {
                                 "source": "ollama",
-                                "url": format!("{}/api/embeddings", intelligence.ollama.url()),
-                                "model": "all-minilm",
+                                "url": intelligence
+                                    .ollama
+                                    .url()
+                                    .join("/api/embeddings")
+                                    .unwrap()
+                                    .to_string(),
+                                "model": "nomic-embed-text",
                                 "documentTemplate": "{{doc.name}}",
-                                "dimensions": 384
+                                "dimensions": 768
                             }
                         }
                     }))
@@ -66,7 +87,7 @@ impl Search {
                     .send()
                     .await?;
 
-                info!("Embeddings enabled: {:?}", response);
+                info!("Embeddings enabled: {:?}", response.text().await.unwrap());
             }
         }
 
