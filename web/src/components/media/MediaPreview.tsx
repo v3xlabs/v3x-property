@@ -1,8 +1,10 @@
+/* eslint-disable jsx-a11y/media-has-caption */
 import { useMutation } from '@tanstack/react-query';
 import clsx from 'clsx';
 import { FC, Suspense, useEffect, useState } from 'react';
 import { FiEdit, FiLoader } from 'react-icons/fi';
 import { match } from 'ts-pattern';
+import { useDebouncedCallback } from 'use-debounce';
 
 import { useAuth } from '@/api/auth';
 import { BASE_URL } from '@/api/core';
@@ -15,9 +17,10 @@ import { Button } from '../ui/Button';
 export const MediaPreview: FC<{
     media_id?: number;
     url?: string;
+    name?: string;
     kind?: string;
     update_media_id?: (_media_id: number) => void;
-}> = ({ media_id, url, kind, update_media_id }) => {
+}> = ({ media_id, url, name, kind, update_media_id }) => {
     const { data: media } = useMedia(media_id);
 
     const fileType = kind ?? media?.url.split('.').pop();
@@ -42,7 +45,9 @@ export const MediaPreview: FC<{
 
             const response = await fetch(
                 BASE_URL +
-                    '/api/media?name=test&kind=' +
+                    '/api/media?name=' +
+                    encodeURIComponent(name ?? '') +
+                    '&kind=' +
                     encodeURIComponent(fileType ?? ''),
                 {
                     method: 'POST',
@@ -59,10 +64,11 @@ export const MediaPreview: FC<{
             update_media_id?.(media.media_id);
         },
     });
+    const debounced = useDebouncedCallback(uploadMedia, 200);
 
     useEffect(() => {
         if (!media_id && url && isIdle) {
-            uploadMedia();
+            debounced();
         }
     }, []);
 
@@ -85,8 +91,12 @@ export const MediaPreview: FC<{
                     'image/svg+xml',
                     'jpeg',
                     'image/jpeg',
+                    'image/gif',
                     () => <ImagePreview media_id={media_id} url={url} />
                 )
+                .with('mp4', 'video/mp4', () => (
+                    <VideoPreview media_id={media_id} url={url} />
+                ))
                 .with('stl', 'model/stl', () => (
                     <StlPreview media_id={media_id} url={url} />
                 ))
@@ -109,6 +119,19 @@ export const MediaPreview: FC<{
                     </Button>
                 </div>
             )}
+        </div>
+    );
+};
+
+export const VideoPreview: FC<{ media_id?: number; url?: string }> = ({
+    media_id,
+    url,
+}) => {
+    const { data: media } = useMedia(media_id);
+
+    return (
+        <div>
+            <video src={url ?? media?.url} className="w-full h-full" controls />
         </div>
     );
 };

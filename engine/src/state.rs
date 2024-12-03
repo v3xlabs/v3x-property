@@ -4,12 +4,13 @@ use openid::DiscoveredClient;
 use reqwest::Url;
 use tracing::warn;
 
-use crate::{auth::oauth::OpenIDClient, database::Database, intelligence::Intelligence, search::Search};
+use crate::{auth::oauth::OpenIDClient, database::Database, modules::{intelligence::Intelligence, search::Search, storage::Storage}};
 
 pub struct AppState {
     pub database: Database,
     // #[cfg(feature = "oauth")]
     pub openid: OpenIDClient,
+    pub storage: Storage,
     pub intelligence: Option<Intelligence>,
     pub search: Option<Search>,
 }
@@ -40,6 +41,8 @@ impl AppState {
             .unwrap()
         };
 
+        let storage = Storage::guess().await;
+
         let intelligence = match Intelligence::guess().await {
             Ok(intelligence) => Some(intelligence),
             Err(e) => {
@@ -59,6 +62,7 @@ impl AppState {
         Self {
             database,
             openid,
+            storage,
             intelligence,
             search,
         }

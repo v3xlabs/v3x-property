@@ -2,7 +2,6 @@ use std::sync::Arc;
 
 use poem::{web::Data, Error, FromRequest, Request, RequestBody, Result};
 use reqwest::StatusCode;
-use tracing::info;
 
 use super::hash::hash_session;
 use crate::{models::sessions::Session, state::AppState};
@@ -30,9 +29,7 @@ impl<'a> FromRequest<'a> for AuthToken {
         let state = Data::<&Arc<AppState>>::from_request(req, body).await?;
 
         // extract cookies from request
-        let cookies = req.headers().get("Cookie").and_then(|x| x.to_str().ok());
-
-        info!("Cookies: {:?}", cookies);
+        let _cookies = req.headers().get("Cookie").and_then(|x| x.to_str().ok());
 
         // Extract token from header
         let token = req

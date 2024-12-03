@@ -52,6 +52,7 @@
     "troika-three-text": "^0.52.2",
     "ts-pattern": "^5.5.0",
     "ua-parser-js": "^1.0.38",
+    "use-debounce": "^10.0.4",
     "vite": "^5.2.10",
     "zustand": "^4.5.4"
   },

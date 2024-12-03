@@ -18,6 +18,8 @@ test('create an item', async ({ page }) => {
 
     await page.getByTestId('generate-id-button').click();
 
+    await page.waitForTimeout(500);
+
     const newItemIdInput = await page
         .getByTestId('new-item-id-input')
         .inputValue();
@@ -26,6 +28,13 @@ test('create an item', async ({ page }) => {
 
     h1 = await page.locator('h1');
     await expect(h1).toHaveText(`Edit Item ${newItemIdInput}`);
+
+    await page.getByRole('textbox', { name: 'Name' }).fill('My new thing');
+
+    await page.getByRole('button', { name: 'Save' }).click();
+
+    h1 = await page.locator('h1');
+    await expect(h1).toHaveText('My new thing');
 });
 
 test('search item', async ({ page }) => {
@@ -33,7 +42,7 @@ test('search item', async ({ page }) => {
 
     await page.getByTestId('search-navlink').click();
 
-    await page.getByTestId('search-input').fill('A New Item');
+    await page.getByTestId('search-input').fill('My new thing');
 
     await page.getByTestId('search-button').click();
 
@@ -41,7 +50,7 @@ test('search item', async ({ page }) => {
 
     await page.getByTestId('item-preview-full').click();
 
-    await expect(page.locator('h1')).toHaveText('A New Item');
+    await expect(page.locator('h1')).toHaveText('My new thing');
 });
 
 test('delete item', async ({ page }) => {

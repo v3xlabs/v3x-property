@@ -1,7 +1,5 @@
 use std::sync::Arc;
 
-use aws_config::{BehaviorVersion, Region};
-use aws_sdk_s3::config::{Credentials, ProvideCredentials, SharedCredentialsProvider};
 use poem::{
     web::{Data, Multipart, Path, Query},
     Result,
@@ -9,7 +7,6 @@ use poem::{
 use poem_openapi::{payload::Json, Object, OpenApi};
 use reqwest::StatusCode;
 use serde::{Deserialize, Serialize};
-use tracing::info;
 
 use crate::{auth::middleware::AuthToken, models::media::Media, state::AppState};
 
@@ -22,8 +19,8 @@ pub struct MediaIdResponse {
 
 #[derive(Deserialize, Debug, Serialize, Object)]
 pub struct CreateMediaRequest {
-    name: Option<String>,
-    kind: Option<String>,
+    name: String,
+    kind: String,
 }
 
 #[OpenApi]
@@ -89,60 +86,16 @@ impl MediaApi {
 
         // upload using minio
 
-        let config = aws_config::defaults(BehaviorVersion::latest())
-            .endpoint_url("http://localhost:9000")
-            .region(Region::new("us-east-1"))
-            .credentials_provider(Credentials::new(
-                "minioadmin",
-                "minioadmin",
-                None,
-                None,
-                "static",
-            ))
-            .load()
-            .await;
-
-        let client = aws_sdk_s3::Client::new(&config);
-        let bucket_name = "test";
-
-
-        let buckets = client.list_buckets().send().await.unwrap();
-
-        // if bucket does not exist, create it
-        if !buckets.buckets().iter().any(|x| x.name().unwrap() == bucket_name) {
-            client.create_bucket()
-                .bucket(bucket_name)
-                .send()
-                .await
-                .unwrap();
-        }
-    
-        let clientz = client
-            .put_object()
-            .bucket(bucket_name)
-            .key(format!(
-                "{}.{}",
-                request.0.name.as_ref().unwrap(),
-                request.0.kind.as_ref().unwrap()
-            ))
-            .body(tempfile.into())
-            .send()
+        let url = state
+            .storage
+            .upload(&request.name, &request.kind, tempfile.into())
             .await
             .unwrap();
 
-        info!("Clientz: {:?}", clientz);
-
-        let url = "".to_string();
-
         Json(
-            Media::new(
-                &state.database,
-                request.0.name.unwrap(),
-                url,
-                request.0.kind.unwrap(),
-            )
-            .await
-            .unwrap(),
+            Media::new(&state.database, request.0.name, url, request.0.kind)
+                .await
+                .unwrap(),
         )
     }
 }

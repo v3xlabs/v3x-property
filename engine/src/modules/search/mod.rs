@@ -1,12 +1,12 @@
 use std::env;
 
-use meilisearch_sdk::{client::Client, settings::Settings, tasks::{EnqueuedTask, Task}};
+use meilisearch_sdk::client::Client;
 use serde_json::json;
 use tracing::info;
 
 use crate::{
     database::Database,
-    intelligence::Intelligence,
+    modules::intelligence::Intelligence,
     models::{
         item::{search::SearchableItem, Item},
         search::SearchTask,

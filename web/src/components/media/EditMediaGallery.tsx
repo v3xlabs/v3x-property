@@ -65,6 +65,7 @@ export const EditMediaGallery: FC<{
                                 <MediaPreview
                                     media_id={item.media_id}
                                     url={item.blob}
+                                    name={item.name}
                                     kind={item.kind}
                                     update_media_id={(media_id) => {
                                         console.log(
