@@ -6,6 +6,7 @@ import {
     useParams,
 } from '@tanstack/react-router';
 import { FC } from 'react';
+import { toast } from 'sonner';
 
 import { useApiDeleteItem, useApiEditItem, useApiItemById } from '@/api/item';
 import { BaseInput } from '@/components/input/BaseInput';
@@ -65,8 +66,9 @@ export const DeleteItemModal: FC<{ itemId: string }> = ({ itemId }) => {
 export const Route = createFileRoute('/item/$itemId/edit')({
     component: () => {
         const { itemId } = useParams({ from: '/item/$itemId/edit' });
-        const { data: item } = useApiItemById(itemId);
+        const { data: item, isLoading } = useApiItemById(itemId);
         const editItem = useApiEditItem();
+        const navigate = useNavigate();
 
         const { Field, Subscribe, handleSubmit } = useForm<EditItemForm>({
             defaultValues: {
@@ -79,14 +81,47 @@ export const Route = createFileRoute('/item/$itemId/edit')({
             },
             onSubmit: ({ value }) => {
                 console.log('FORM SUBMIT', value);
-                editItem.mutate({
-                    item_id: itemId,
-                    data: {
-                        name: value.name,
-                    },
+                const toastId = `item-edit-${itemId}`;
+
+                toast.loading('Saving item...', {
+                    id: toastId,
                 });
+
+                editItem.mutate(
+                    {
+                        item_id: itemId,
+                        data: {
+                            name: value.name,
+                        },
+                    },
+                    {
+                        onSuccess(data, variables, context) {
+                            toast.success('Item saved', {
+                                id: toastId,
+                            });
+                            navigate({
+                                to: '/item/$itemId',
+                                params: { itemId },
+                            });
+                        },
+                        onError(error, variables, context) {
+                            toast.error('Failed to save item', {
+                                description: error.message,
+                                id: toastId,
+                            });
+                        },
+                    }
+                );
             },
         });
+
+        if (isLoading) {
+            return (
+                <SCPage title={`Edit Item ${itemId}`}>
+                    <h2>Loading...</h2>
+                </SCPage>
+            );
+        }
 
         return (
             <SCPage title={`Edit Item ${itemId}`}>

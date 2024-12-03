@@ -148,27 +148,59 @@ impl Item {
         db: &Database,
         data: ItemUpdatePayload,
         item_id: &str,
-    ) -> Result<(), sqlx::Error> {
-        let existing = Item::get_by_id(db, item_id).await.unwrap().unwrap();
+    ) -> Result<Item, sqlx::Error> {
+        let mut tx = db.pool.begin().await?;
 
-        if existing.name != data.name.clone().unwrap_or("".to_string()) {
-            let res = query!(
+        if let Some(name) = data.name {
+            query!(
                 "UPDATE items SET name = $1 WHERE item_id = $2",
-                data.name.clone().unwrap_or("".to_string()),
+                name,
                 item_id
             )
-            .execute(&db.pool)
-            .await;
+            .execute(&mut *tx)
+            .await?;
         }
 
+        if let Some(owner_id) = data.owner_id {
+            query!(
+                "UPDATE items SET owner_id = $1 WHERE item_id = $2",
+                owner_id,
+                item_id
+            )
+            .execute(&mut *tx)
+            .await?;
+        }
+
+        if let Some(location_id) = data.location_id {
+            query!(
+                "UPDATE items SET location_id = $1 WHERE item_id = $2",
+                location_id,
+                item_id
+            )
+            .execute(&mut *tx)
+            .await?;
+        }
+
+        if let Some(product_id) = data.product_id {
+            query!(
+                "UPDATE items SET product_id = $1 WHERE item_id = $2",
+                product_id,
+                item_id
+            )
+            .execute(&mut *tx)
+            .await?;
+        }
+
+        tx.commit().await?;
+
+        let item = Item::get_by_id(db, item_id).await.unwrap().unwrap();
 
         if let Some(search) = search {
-            let existing = Item::get_by_id(db, item_id).await.unwrap().unwrap();
-            let search_item = existing.into_search(db).await.unwrap();
+            let search_item = item.into_search(db).await.unwrap();
             search.index_item(db, &search_item).await;
         }
 
-        Ok(())
+        Ok(item)
     }
 }
 

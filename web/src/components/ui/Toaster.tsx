@@ -19,7 +19,6 @@ const Toaster = ({ ...properties }: ToasterProperties) => {
             className="toaster group"
             toastOptions={{
                 unstyled: true,
-                duration: 15_000,
                 classNames: {
                     // toast: 'group toast group-[.toaster]:bg-background group-[.toaster]:text-foreground group-[.toaster]:border-border',
                     // description: 'group-[.toast]:text-muted-foreground',

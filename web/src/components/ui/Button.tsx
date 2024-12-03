@@ -9,6 +9,7 @@ const [buttonVariants, buttonVariantsConfig] = cvax(
     [
         // Layout
         'inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md font-medium',
+        'cursor-pointer',
 
         // State
         'ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0',
@@ -18,7 +19,7 @@ const [buttonVariants, buttonVariantsConfig] = cvax(
         variants: {
             variant: {
                 default:
-                    'bg-background text-foreground border border-solid border-border hover:bg-popover',
+                    'bg-background text-foreground border border-solid border-border hover:bg-muted',
                 primary: [
                     'text-background border',
                     'bg-blue-400 hover:bg-blue-400/80 border-transparent',
