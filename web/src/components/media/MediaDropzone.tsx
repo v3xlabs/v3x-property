@@ -1,15 +1,15 @@
+import { FC } from 'react';
 import { useDropzone } from 'react-dropzone';
 
-export const MediaDropzone = () => {
+export const MediaDropzone: FC<{
+    onDrop: (acceptedFiles: File[]) => void;
+}> = ({ onDrop }) => {
     const { getRootProps, getInputProps, isDragActive, acceptedFiles } =
         useDropzone({
             onDrop: (acceptedFiles) => {
-                console.log(acceptedFiles);
+                onDrop(acceptedFiles);
             },
         });
-
-    // Figure out the filetypes of the accepted files
-    const coolData = acceptedFiles.map((file) => file.type);
 
     return (
         <div
@@ -26,16 +26,6 @@ export const MediaDropzone = () => {
                     Drag and drop files here
                 </p>
             )}
-            {/* {JSON.stringify(acceptedFiles)} */}
-            {/* {JSON.stringify(coolData)} */}
-            {acceptedFiles.map((file) => {
-                return (
-                    <div key={file.name}>
-                        {file.name}
-                        <img src={URL.createObjectURL(file)} alt={file.name} />
-                    </div>
-                );
-            })}
         </div>
     );
 };

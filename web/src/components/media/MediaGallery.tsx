@@ -1,10 +1,10 @@
 import { FC } from 'react';
 
-import { Button } from '../ui/Button';
-import { MediaDropzone } from './MediaDropzone';
 import { MediaPreview } from './MediaPreview';
 
-export const MediaGallery: FC<{ media_ids: number[] }> = ({ media_ids }) => {
+export const MediaGallery: FC<{
+    media_ids: number[];
+}> = ({ media_ids }) => {
     return (
         <div className="card flex items-stretch">
             {media_ids.length > 0 ? (

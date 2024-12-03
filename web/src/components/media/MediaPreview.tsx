@@ -1,34 +1,100 @@
-import { FC, Suspense, useState } from 'react';
+import { useMutation } from '@tanstack/react-query';
+import clsx from 'clsx';
+import { FC, Suspense, useEffect, useState } from 'react';
+import { FiEdit, FiLoader } from 'react-icons/fi';
 import { match } from 'ts-pattern';
 
 import { useMedia } from '@/api/media';
 import { ErrorBoundary } from '@/components/ErrorBoundary';
 import { StlPreviewWindow } from '@/components/stl_preview/StlPreview';
 
-export const MediaPreview: FC<{ media_id: number; edit?: boolean }> = ({
-    media_id,
-    edit,
-}) => {
+import { Button } from '../ui/Button';
+
+export const MediaPreview: FC<{
+    media_id?: number;
+    url?: string;
+    kind?: string;
+    update_media_id?: (_media_id: number) => void;
+}> = ({ media_id, url, kind, update_media_id }) => {
     const { data: media } = useMedia(media_id);
 
-    const fileType = media?.url.split('.').pop();
+    const fileType = kind ?? media?.url.split('.').pop();
+
+    const {
+        mutate: uploadMedia,
+        isIdle,
+        isPending,
+        isSuccess,
+    } = useMutation({
+        mutationFn: async () => {
+            // artificial 5 second delay
+            await new Promise((resolve) =>
+                setTimeout(resolve, 2000 + Math.random() * 3000)
+            );
+            const media_id = 1;
+
+            // update media_id
+            update_media_id?.(media_id);
+        },
+    });
+
+    useEffect(() => {
+        if (!media_id && url && isIdle) {
+            uploadMedia();
+        }
+    }, []);
 
     return (
-        <div className="aspect-video bg-neutral-100 max-w-md w-full border border-neutral-200 rounded-md">
+        <div
+            className={clsx(
+                'relative aspect-video bg-neutral-100 max-w-md w-full rounded-md',
+                isPending && 'border-blue-400 border-2',
+                isIdle && 'border-neutral-200 border',
+                isSuccess && 'border-green-400 border-2'
+            )}
+        >
             {match(fileType)
-                .with('webp', () => <ImagePreview media_id={media_id} />)
-                .with('stl', () => <StlPreview media_id={media_id} />)
+                .with(
+                    'webp',
+                    'image/webp',
+                    'png',
+                    'image/png',
+                    'svg',
+                    'image/svg+xml',
+                    'jpeg',
+                    'image/jpeg',
+                    () => <ImagePreview media_id={media_id} url={url} />
+                )
+                .with('stl', 'model/stl', () => (
+                    <StlPreview media_id={media_id} url={url} />
+                ))
                 .otherwise(() => (
                     <div className="p-3 border-orange-500 border-2 rounded-md bg-orange-100 h-full">
                         <span>Unknown file type</span>
                         <span>{fileType}</span>
                     </div>
                 ))}
+            {isPending && (
+                <div className="flex items-center gap-2 justify-center w-full border-t-2 border-t-inherit mt-1">
+                    Uploading... <FiLoader className="animate-spin" />
+                </div>
+            )}
+            {media_id && (
+                <div className="flex justify-between items-center p-2 border-t-inherit border-t">
+                    <div className="pl-4">{media?.description}</div>
+                    <Button className="">
+                        <FiEdit />
+                    </Button>
+                </div>
+            )}
         </div>
     );
 };
 
-export const ImagePreview: FC<{ media_id: number }> = ({ media_id }) => {
+export const ImagePreview: FC<{ media_id?: number; url?: string }> = ({
+    media_id,
+    url,
+}) => {
     const { data: media } = useMedia(media_id);
     const [imageNotFound, setImageNotFound] = useState(false);
 
@@ -38,11 +104,11 @@ export const ImagePreview: FC<{ media_id: number }> = ({ media_id }) => {
                 <div className="p-3 border-red-500 border-2 rounded-md bg-red-100 h-full">
                     <p className="font-bold">Image Preview Error</p>
                     <p>Image not found</p>
-                    <code>{media?.url}</code>
+                    <code>{url ?? media?.url}</code>
                 </div>
             ) : (
                 <img
-                    src={media?.url}
+                    src={url ?? media?.url}
                     alt={media?.description}
                     className="w-full h-full object-contain"
                     onError={() => setImageNotFound(true)}
@@ -52,13 +118,16 @@ export const ImagePreview: FC<{ media_id: number }> = ({ media_id }) => {
     );
 };
 
-export const StlPreview: FC<{ media_id: number }> = ({ media_id }) => {
+export const StlPreview: FC<{ media_id?: number; url?: string }> = ({
+    media_id,
+    url,
+}) => {
     const { data: media } = useMedia(media_id);
 
     return (
         <ErrorBoundary>
             <Suspense fallback={<div>Loading...</div>}>
-                <StlPreviewWindow stlUrl={media?.url} />
+                <StlPreviewWindow stlUrl={url ?? media?.url} />
             </Suspense>
         </ErrorBoundary>
     );

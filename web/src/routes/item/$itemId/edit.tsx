@@ -76,16 +76,36 @@ export const Route = createFileRoute('/item/$itemId/edit')({
                         media_id,
                     })) ?? [],
             },
+            onSubmit: (values) => {
+                console.log('FORM SUBMIT', values);
+            },
         });
 
         return (
             <SCPage title={`Edit Item ${itemId}`}>
-                <form className="card space-y-4" onSubmit={handleSubmit}>
+                <form
+                    className="card space-y-4"
+                    onSubmit={(event) => {
+                        event.preventDefault();
+                        event.stopPropagation();
+                        handleSubmit();
+                    }}
+                >
                     <div className="flex flex-col">
                         <Field
                             name="media"
+                            validators={{
+                                onChange: ({ value }) => {
+                                    return value.every((m) => m.media_id)
+                                        ? undefined
+                                        : 'Not all items have finished uploading';
+                                },
+                            }}
                             children={({ handleChange, state: { value } }) => (
-                                <EditMediaGallery media={value} />
+                                <EditMediaGallery
+                                    media={value}
+                                    onChange={handleChange}
+                                />
                             )}
                         />
                         <div className="px-2 pt-4 space-y-2">
@@ -116,6 +136,7 @@ export const Route = createFileRoute('/item/$itemId/edit')({
                                 }) => (
                                     <BaseInput
                                         label="Name"
+                                        name="name"
                                         value={name}
                                         onChange={handleChange}
                                         onBlur={handleBlur}

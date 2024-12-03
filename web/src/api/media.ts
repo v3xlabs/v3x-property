@@ -6,12 +6,16 @@ type MediaResponse = {
     url: string;
 };
 
-export const useMedia = (id: number) =>
+export const useMedia = (media_id: number | undefined) =>
     // useHttp<MediaResponse>('/api/media/' + id);
     {
         return useQuery({
-            queryKey: ['media', id],
+            queryKey: ['media', media_id],
             queryFn: () => {
+                if (!media_id) {
+                    return;
+                }
+
                 return {
                     1: {
                         id: 1,
@@ -28,7 +32,7 @@ export const useMedia = (id: number) =>
                         description: 'test3',
                         url: '/test2.stl',
                     },
-                }[id];
+                }[media_id];
             },
         });
     };
