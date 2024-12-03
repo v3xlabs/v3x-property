@@ -102,7 +102,7 @@ const DebugVariants = <
     }
 
     return (
-        <div className="space-y-4">
+        <div className="space-y-8 card">
             <ComponentTitle>{displayName}</ComponentTitle>
             {/* <div className="flex flex-wrap gap-4"> */}
             {Object.entries(combinations).map(([variant, combos], index) => {
@@ -112,13 +112,13 @@ const DebugVariants = <
                             {variant}
                         </VariantTitle>
                         <div
-                            className="flex gap-2 items-center p-4 card"
+                            className="flex gap-2 items-center p-4 justify-around"
                             key={`container-${variant}-${index}`}
                         >
                             {combos.map((combo, index) => (
                                 <div
                                     key={`button-${variant}-${index}`}
-                                    className="w-full"
+                                    className="w-full flex items-center justify-center"
                                 >
                                     {children({
                                         variant,
@@ -127,6 +127,7 @@ const DebugVariants = <
                                 </div>
                             ))}
                         </div>
+                        <hr />
                     </div>
                 );
             })}
@@ -138,17 +139,16 @@ const DebugVariants = <
 const ComponentTitle = ({ children }: { children: ReactNode }) => {
     return (
         <>
-            <h2 className="text-2xl font-semibold border-b">{children}</h2>
+            <h2 className="text-2xl font-semibold pb-4">{children}</h2>
         </>
     );
 };
 
 const VariantTitle = ({ children }: { children: ReactNode }) => {
     return (
-        <div>
-            <h3 className="text-lg font-semibold">{children}</h3>
-            <hr />
-        </div>
+        <>
+            <h3 className="text-base font-semibold py-1 pt-4">{children}</h3>
+        </>
     );
 };
 
@@ -185,7 +185,7 @@ const CustomComponentSection = <
     }
 
     return (
-        <div className="space-y-4">
+        <div className="space-y-4 card">
             <ComponentTitle>{displayName}</ComponentTitle>
             {typeof children === 'function' ? children(stateObject) : children}
         </div>
