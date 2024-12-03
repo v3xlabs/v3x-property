@@ -2,6 +2,7 @@ import { createLazyFileRoute } from '@tanstack/react-router';
 import { cva, VariantProps } from 'class-variance-authority';
 import { ReactNode, useState } from 'react';
 import { FaGear } from 'react-icons/fa6';
+import { toast } from 'sonner';
 
 import {
     AlertDialog,
@@ -112,13 +113,13 @@ const DebugVariants = <
                             {variant}
                         </VariantTitle>
                         <div
-                            className="flex gap-2 items-center p-4 justify-around"
+                            className="flex flex-wrap gap-2 items-center p-4 justify-around"
                             key={`container-${variant}-${index}`}
                         >
                             {combos.map((combo, index) => (
                                 <div
                                     key={`button-${variant}-${index}`}
-                                    className="w-full flex items-center justify-center"
+                                    className="contents"
                                 >
                                     {children({
                                         variant,
@@ -201,15 +202,24 @@ const component = () => {
                 variants={buttonVariants}
             >
                 {(properties) => (
-                    <Button {...properties}>
-                        {properties.size === 'icon' ? (
-                            <FaGear />
-                        ) : (
-                            <>
-                                {properties.variant} {properties.size}
-                            </>
-                        )}
-                    </Button>
+                    <>
+                        <Button {...properties}>
+                            {properties.size === 'icon' ? (
+                                <FaGear />
+                            ) : (
+                                <>
+                                    {properties.variant} {properties.size}
+                                </>
+                            )}
+                        </Button>
+                        <Button {...properties} disabled>
+                            {properties.size === 'icon' ? (
+                                <FaGear />
+                            ) : (
+                                <>Disabled</>
+                            )}
+                        </Button>
+                    </>
                 )}
             </DebugVariants>
 
@@ -350,6 +360,112 @@ const component = () => {
                         </Dropdown.Root>
                     </>
                 )}
+            </CustomComponentSection>
+
+            <CustomComponentSection displayName="Toasts">
+                <div className="flex gap-2 flex-wrap">
+                    {/* default, info, success, warning, error, action, cancel, promise, loading, custom */}
+                    <Button onClick={() => toast('Normal Toast')}>Toast</Button>
+
+                    <Button
+                        variant="primary"
+                        onClick={() => toast.info('Info Toast')}
+                    >
+                        Info
+                    </Button>
+
+                    <Button
+                        variant="success"
+                        onClick={() =>
+                            toast.success('Your media has been uploaded!', {
+                                duration: 15_000,
+                            })
+                        }
+                    >
+                        Success Toast
+                    </Button>
+
+                    <Button
+                        variant="warning"
+                        onClick={() => toast.warning('Warning Toast')}
+                    >
+                        Warning
+                    </Button>
+
+                    <Button
+                        variant="destructive"
+                        onClick={() =>
+                            toast.error(
+                                'It appears your piano fell down the skyrise'
+                            )
+                        }
+                    >
+                        Error Toast
+                    </Button>
+                    <Button
+                        onClick={() =>
+                            toast('My action toast', {
+                                action: {
+                                    label: 'Action',
+                                    onClick: () => toast('Action clicked!'),
+                                },
+                                cancel: {
+                                    label: 'Cancel',
+                                    onClick: () => toast('Cancel clicked!'),
+                                },
+                            })
+                        }
+                    >
+                        Action Toast
+                    </Button>
+                    <Button
+                        onClick={() =>
+                            toast('My action toast', {
+                                action: (
+                                    <Button
+                                        variant="destructive"
+                                        onClick={() => {
+                                            toast.success(
+                                                'Your genius plan has been executed'
+                                            );
+                                        }}
+                                    >
+                                        Destroy them all
+                                    </Button>
+                                ),
+                            })
+                        }
+                    >
+                        Custom Action Toast
+                    </Button>
+
+                    <Button
+                        onClick={() =>
+                            toast.promise(
+                                new Promise((resolve, reject) => {
+                                    setTimeout(() => {
+                                        if (Math.random() > 0.5) {
+                                            resolve('Viva la vida!');
+                                        } else {
+                                            reject('No revolution for you!');
+                                        }
+                                    }, 1000);
+                                }),
+                                {
+                                    loading: 'Loading...',
+                                    success: (data) => {
+                                        return `'${data}' toast has been added`;
+                                    },
+                                    error: (data) => {
+                                        return `'${data}' failed`;
+                                    },
+                                }
+                            )
+                        }
+                    >
+                        Promise Toast
+                    </Button>
+                </div>
             </CustomComponentSection>
         </SCPage>
     );

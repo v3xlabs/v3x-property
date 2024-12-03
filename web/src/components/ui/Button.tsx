@@ -18,10 +18,10 @@ const [buttonVariants, buttonVariantsConfig] = cvax(
         variants: {
             variant: {
                 default:
-                    'bg-white text-neutral-800 border border-solid border-neutral-200 hover:bg-neutral-50',
+                    'bg-background text-foreground border border-solid border-border hover:bg-popover',
                 primary: [
-                    'text-white border',
-                    'bg-blue-500 hover:bg-blue-600 border-blue-400 hover:border-blue-500',
+                    'text-background border',
+                    'bg-blue-400 hover:bg-blue-400/80 border-transparent',
                     'disabled:bg-blue-300 disabled:text-blue-500 disabled:border-blue-300 disabled:hover:bg-blue-300 disabled:hover:border-blue-300 disabled:cursor-not-allowed',
                 ],
                 secondary: [
@@ -34,17 +34,17 @@ const [buttonVariants, buttonVariantsConfig] = cvax(
                 ],
                 link: 'text-blue-500 hover:underline border-transparent bg-transparent',
                 success: [
-                    'bg-green-500 text-white hover:bg-green-600 border border-green-400 hover:border-green-500',
-                    'disabled:bg-green-300 disabled:text-green-500 disabled:border-green-300 disabled:hover:bg-green-300 disabled:hover:border-green-300 disabled:cursor-not-allowed',
+                    'bg-green-400 text-foreground hover:bg-green-400/80 border-transparent',
+                    'disabled:bg-green-300 disabled:text-green-500 disabled:border-transparent disabled:hover:bg-green-300 disabled:hover:border-transparent disabled:cursor-not-allowed',
                 ],
                 warning: [
-                    'bg-yellow-500 text-white hover:bg-yellow-600 border border-yellow-400 hover:border-yellow-500',
-                    'disabled:bg-yellow-300 disabled:text-yellow-500 disabled:border-yellow-300 disabled:hover:bg-yellow-300 disabled:hover:border-yellow-300 disabled:cursor-not-allowed',
+                    'bg-yellow-400 text-foreground hover:bg-yellow-400/80 border-transparent',
+                    'disabled:bg-yellow-300 disabled:text-yellow-500 disabled:border-transparent disabled:hover:bg-yellow-300 disabled:hover:border-transparent disabled:cursor-not-allowed',
                 ],
                 destructive: [
-                    'text-white border',
-                    'bg-red-500 hover:bg-red-600 border-red-400 hover:border-red-500',
-                    'disabled:bg-red-300 disabled:text-red-500 disabled:border-red-300 disabled:hover:bg-red-300 disabled:hover:border-red-300 disabled:cursor-not-allowed',
+                    'text-foreground border',
+                    'bg-red-400 hover:bg-red-400/80 border-transparent',
+                    'disabled:bg-red-300 disabled:text-red-500 disabled:border-transparent disabled:hover:bg-red-300 disabled:hover:border-transparent disabled:cursor-not-allowed',
                 ],
             },
             size: {
