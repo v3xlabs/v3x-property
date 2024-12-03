@@ -1,3 +1,4 @@
+/* eslint-disable sonarjs/no-duplicate-string */
 import {
     useMutation,
     UseMutationOptions,
@@ -7,6 +8,7 @@ import {
 
 import { useAuth } from './auth';
 import { BASE_URL, getHttp } from './core';
+import { paths } from './schema.gen';
 
 export type ApiItemResponse = {
     item_id: string;
@@ -83,5 +85,29 @@ export const useApiDeleteItem = (
             return response.ok;
         },
         ...options,
+    });
+};
+
+// Edit item
+export const useApiEditItem = () => {
+    return useMutation({
+        mutationFn: async ({
+            item_id,
+            data,
+        }: {
+            item_id: string;
+            data: paths['/item/{item_id}']['patch']['requestBody']['content']['application/json; charset=utf-8'];
+        }) => {
+            const response = await fetch(BASE_URL + '/api/item/' + item_id, {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: 'Bearer ' + useAuth.getState().token,
+                },
+                body: JSON.stringify(data),
+            });
+
+            return response.ok;
+        },
     });
 };

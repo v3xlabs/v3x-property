@@ -1,12 +1,19 @@
 use std::sync::Arc;
 
-use poem::{web::{Data, Path, Query}, Result};
+use poem::{
+    web::{Data, Path, Query},
+    Result,
+};
 use poem_openapi::{payload::Json, Object, OpenApi};
 use reqwest::StatusCode;
 use serde::{Deserialize, Serialize};
 use tracing::info;
 
-use crate::{auth::middleware::AuthToken, models::item::Item, state::AppState};
+use crate::{
+    auth::middleware::AuthToken,
+    models::item::{Item, ItemUpdatePayload},
+    state::AppState,
+};
 
 pub struct ItemsApi;
 
@@ -29,7 +36,7 @@ impl ItemsApi {
         auth: AuthToken,
         item_id: Path<String>,
     ) -> Result<Json<Item>> {
-        let item = Item::get_by_id(&state.database, item_id.0).await.unwrap();
+        let item = Item::get_by_id(&state.database, &item_id.0).await.unwrap();
 
         match item {
             Some(item) => Ok(Json(item)),
@@ -44,10 +51,25 @@ impl ItemsApi {
         state: Data<&Arc<AppState>>,
         item_id: Path<String>,
     ) -> Result<()> {
-        let item = Item::get_by_id(&state.database, item_id.0).await.unwrap().unwrap();
+        let item = Item::get_by_id(&state.database, &item_id.0)
+            .await
+            .unwrap()
+            .unwrap();
 
         item.delete(&state.search, &state.database).await.unwrap();
 
+        Ok(())
+    }
+
+    #[oai(path = "/item/:item_id", method = "patch")]
+    async fn edit_item(
+        &self,
+        auth: AuthToken,
+        state: Data<&Arc<AppState>>,
+        item_id: Path<String>,
+        data: Json<ItemUpdatePayload>,
+    ) -> Result<()> {
+        Item::edit_by_id(&state.search, &state.database, data.0, &item_id.0).await;
         Ok(())
     }
 

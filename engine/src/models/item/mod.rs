@@ -1,4 +1,5 @@
 use chrono::{DateTime, Utc};
+use poem::web::Json;
 use serde::{Deserialize, Serialize};
 use sqlx::{query, query_as};
 use tracing::info;
@@ -51,7 +52,8 @@ impl Item {
             product_id,
             ..Default::default()
         }
-        .insert(db).await
+        .insert(db)
+        .await
     }
 
     pub async fn insert(&self, db: &Database) -> Result<Item, sqlx::Error> {
@@ -68,14 +70,14 @@ impl Item {
 
     pub async fn get_by_owner_id(
         database: &Database,
-        owner_id: i32
+        owner_id: i32,
     ) -> Result<Vec<Item>, sqlx::Error> {
         query_as!(Item, "SELECT * FROM items WHERE owner_id = $1", owner_id)
             .fetch_all(&database.pool)
             .await
     }
 
-    pub async fn get_by_id(db: &Database, item_id: String) -> Result<Option<Item>, sqlx::Error> {
+    pub async fn get_by_id(db: &Database, item_id: &str) -> Result<Option<Item>, sqlx::Error> {
         query_as!(Item, "SELECT * FROM items WHERE item_id = $1", item_id)
             .fetch_optional(&db.pool)
             .await
@@ -107,7 +109,9 @@ impl Item {
     pub async fn index_search(&self, search: &Option<Search>, db: &Database) -> Result<Self, ()> {
         match search {
             Some(search) => {
-                search.index_item(db, &self.into_search(db).await.unwrap()).await;
+                search
+                    .index_item(db, &self.into_search(db).await.unwrap())
+                    .await;
                 Ok(self.to_owned())
             }
             None => Ok(self.to_owned()),
@@ -117,7 +121,11 @@ impl Item {
     pub async fn remove_search(&self, search: &Option<Search>, db: &Database) -> Result<Self, ()> {
         match search {
             Some(search) => {
-                search.client.index("items").delete_document(&self.item_id).await;
+                search
+                    .client
+                    .index("items")
+                    .delete_document(&self.item_id)
+                    .await;
                 Ok(self.to_owned())
             }
             None => Ok(self.to_owned()),
@@ -134,4 +142,40 @@ impl Item {
 
         Ok(())
     }
+
+    pub async fn edit_by_id(
+        search: &Option<Search>,
+        db: &Database,
+        data: ItemUpdatePayload,
+        item_id: &str,
+    ) -> Result<(), sqlx::Error> {
+        let existing = Item::get_by_id(db, item_id).await.unwrap().unwrap();
+
+        if existing.name != data.name.clone().unwrap_or("".to_string()) {
+            let res = query!(
+                "UPDATE items SET name = $1 WHERE item_id = $2",
+                data.name.clone().unwrap_or("".to_string()),
+                item_id
+            )
+            .execute(&db.pool)
+            .await;
+        }
+
+
+        if let Some(search) = search {
+            let existing = Item::get_by_id(db, item_id).await.unwrap().unwrap();
+            let search_item = existing.into_search(db).await.unwrap();
+            search.index_item(db, &search_item).await;
+        }
+
+        Ok(())
+    }
+}
+
+#[derive(poem_openapi::Object, Debug, Clone, Serialize, Deserialize)]
+pub struct ItemUpdatePayload {
+    pub name: Option<String>,
+    pub owner_id: Option<i32>,
+    pub location_id: Option<i32>,
+    pub product_id: Option<i32>,
 }

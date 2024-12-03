@@ -7,7 +7,7 @@ import {
 } from '@tanstack/react-router';
 import { FC } from 'react';
 
-import { useApiDeleteItem, useApiItemById } from '@/api/item';
+import { useApiDeleteItem, useApiEditItem, useApiItemById } from '@/api/item';
 import { BaseInput } from '@/components/input/BaseInput';
 import { EditMediaGallery } from '@/components/media/EditMediaGallery';
 import { EditItemForm } from '@/components/media/upload/t';
@@ -66,6 +66,7 @@ export const Route = createFileRoute('/item/$itemId/edit')({
     component: () => {
         const { itemId } = useParams({ from: '/item/$itemId/edit' });
         const { data: item } = useApiItemById(itemId);
+        const editItem = useApiEditItem();
 
         const { Field, Subscribe, handleSubmit } = useForm<EditItemForm>({
             defaultValues: {
@@ -76,8 +77,14 @@ export const Route = createFileRoute('/item/$itemId/edit')({
                         media_id,
                     })) ?? [],
             },
-            onSubmit: (values) => {
-                console.log('FORM SUBMIT', values);
+            onSubmit: ({ value }) => {
+                console.log('FORM SUBMIT', value);
+                editItem.mutate({
+                    item_id: itemId,
+                    data: {
+                        name: value.name,
+                    },
+                });
             },
         });
 
