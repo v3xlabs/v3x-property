@@ -9,10 +9,10 @@ use crate::{auth::middleware::AuthToken, models::sessions::Session, state::AppSt
 
 pub mod delete;
 
-pub struct ApiSessions;
+pub struct SessionsApi;
 
 #[OpenApi]
-impl ApiSessions {
+impl SessionsApi {
     #[oai(path = "/sessions", method = "get")]
     async fn get_sessions(
         &self,

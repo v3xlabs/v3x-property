@@ -13,18 +13,31 @@ pub struct SearchableItem {
     pub owner_id: Option<i32>,
     pub location_id: Option<i32>,
     // TODO: add more location info
-    pub fields: Vec<SearchableItemField>,
+    pub fields: Option<Vec<SearchableItemField>>,
     pub created_at: Option<DateTime<Utc>>,
     pub updated_at: Option<DateTime<Utc>>,
+
+    #[serde(rename = "_vectors")]
+    pub vectors: Option<SearchableItemVectors>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, Object)]
+pub struct SearchableItemVectors {
+    pub ollama: SearchableItemVectorsOllama,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, Object)]
+pub struct SearchableItemVectorsOllama {
+    pub regenerate: bool,
 }
 
 impl Item {
     pub async fn into_search(&self, db: &Database) -> Result<SearchableItem, sqlx::Error> {
-        let fields = ItemField::get_by_item_id(db, &self.item_id)
-            .await?
-            .iter()
-            .map(|field| field.into())
-            .collect();
+        let fields = Some(ItemField::get_by_item_id(db, &self.item_id)
+        .await?
+        .iter()
+        .map(|field| field.into())
+        .collect());
 
         Ok(SearchableItem {
             item_id: self.item_id.clone(),
@@ -35,6 +48,9 @@ impl Item {
             fields,
             created_at: self.created_at,
             updated_at: self.updated_at,
+            vectors: Some(SearchableItemVectors {
+                ollama: SearchableItemVectorsOllama { regenerate: true },
+            }),
         })
     }
 }

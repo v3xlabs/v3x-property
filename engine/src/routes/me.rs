@@ -9,10 +9,10 @@ use crate::{
     state::AppState,
 };
 
-pub struct ApiMe;
+pub struct MeApi;
 
 #[OpenApi]
-impl ApiMe {
+impl MeApi {
     #[oai(path = "/me", method = "get")]
     pub async fn me(&self, state: Data<&Arc<AppState>>, token: AuthToken) -> Json<User> {
         match token {

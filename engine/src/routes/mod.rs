@@ -1,16 +1,16 @@
 use std::sync::Arc;
 
-use instance::ApiInstance;
+use instance::InstanceApi;
 use items::ItemsApi;
-use me::ApiMe;
+use me::MeApi;
+use media::MediaApi;
 use poem::{
     get, handler, listener::TcpListener, middleware::Cors, web::Html, EndpointExt, Route, Server,
 };
 use poem_openapi::{OpenApi, OpenApiService};
-use root::RootApi;
-use search::{tasks::ApiSearchTask, ApiSearch};
-use sessions::ApiSessions;
-use users::ApiUserById;
+use search::{tasks::ApiSearchTask, SearchApi};
+use sessions::SessionsApi;
+use users::UserApi;
 
 use crate::state::AppState;
 
@@ -18,21 +18,21 @@ pub mod instance;
 pub mod items;
 pub mod me;
 pub mod oauth;
-pub mod root;
 pub mod search;
 pub mod sessions;
 pub mod users;
+pub mod media;
 
 fn get_api() -> impl OpenApi {
     (
-        RootApi,
-        ApiMe,
-        ApiSessions,
-        ApiUserById,
-        ApiInstance,
+        MeApi,
+        SessionsApi,
+        UserApi,
+        InstanceApi,
         ItemsApi,
-        ApiSearch,
+        SearchApi,
         ApiSearchTask,
+        MediaApi
     )
 }
 

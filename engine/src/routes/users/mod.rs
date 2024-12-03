@@ -8,10 +8,10 @@ use crate::{
     state::AppState,
 };
 
-pub struct ApiUserById;
+pub struct UserApi;
 
 #[OpenApi]
-impl ApiUserById {
+impl UserApi {
     #[oai(path = "/user/:id", method = "get")]
     pub async fn user(&self, state: Data<&Arc<AppState>>, id: Path<i32>) -> Json<User> {
         let user = UserEntry::find_by_user_id(id.0, &state.database)

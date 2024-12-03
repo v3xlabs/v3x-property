@@ -8,6 +8,7 @@ mod models;
 mod routes;
 mod state;
 mod search;
+mod intelligence;
 
 #[async_std::main]
 async fn main() {

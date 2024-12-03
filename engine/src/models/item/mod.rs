@@ -60,6 +60,12 @@ impl Item {
             .await
     }
 
+    pub async fn get_all(db: &Database) -> Result<Vec<Item>, sqlx::Error> {
+        query_as!(Item, "SELECT * FROM items")
+            .fetch_all(&db.pool)
+            .await
+    }
+
     pub async fn get_by_owner_id(
         database: &Database,
         owner_id: i32

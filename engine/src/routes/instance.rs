@@ -6,7 +6,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::{auth::middleware::AuthToken, state::AppState};
 
-pub struct ApiInstance;
+pub struct InstanceApi;
 
 #[derive(Serialize, Deserialize, Enum)]
 pub enum IdCasingPreference {
@@ -32,7 +32,7 @@ impl Default for InstanceSettings {
 }
 
 #[OpenApi]
-impl ApiInstance {
+impl InstanceApi {
     #[oai(path = "/instance/settings", method = "get")]
     pub async fn settings(
         &self,

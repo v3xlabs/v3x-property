@@ -4,12 +4,13 @@ use openid::DiscoveredClient;
 use reqwest::Url;
 use tracing::warn;
 
-use crate::{auth::oauth::OpenIDClient, database::Database, search::Search};
+use crate::{auth::oauth::OpenIDClient, database::Database, intelligence::Intelligence, search::Search};
 
 pub struct AppState {
     pub database: Database,
     // #[cfg(feature = "oauth")]
     pub openid: OpenIDClient,
+    pub intelligence: Option<Intelligence>,
     pub search: Option<Search>,
 }
 
@@ -39,7 +40,15 @@ impl AppState {
             .unwrap()
         };
 
-        let search = match Search::guess().await {
+        let intelligence = match Intelligence::guess().await {
+            Ok(intelligence) => Some(intelligence),
+            Err(e) => {
+                warn!("Failed to initialize intelligence: {}", e);
+                None
+            }
+        };
+
+        let search = match Search::guess(&intelligence).await {
             Ok(search) => Some(search),
             Err(e) => {
                 warn!("Failed to initialize search: {}", e);
@@ -50,6 +59,7 @@ impl AppState {
         Self {
             database,
             openid,
+            intelligence,
             search,
         }
     }
