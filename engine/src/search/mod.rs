@@ -1,6 +1,6 @@
 use std::env;
 
-use meilisearch_sdk::{client::Client, settings::Settings};
+use meilisearch_sdk::{client::Client, settings::Settings, tasks::{EnqueuedTask, Task}};
 use serde_json::json;
 use tracing::info;
 
@@ -146,11 +146,11 @@ impl Search {
         db: &Database,
         task_external_id: i64,
     ) -> Result<SearchTask, sqlx::Error> {
-        let task_id_ref: u32 = task_external_id as u32;
+        let task = task_external_id as u32;
 
         let x = self
             .client
-            .get_task(task_id_ref.clone())
+            .get_task(TempVal { x: task })
             .await
             .unwrap();
 
@@ -158,3 +158,12 @@ impl Search {
     }
 }
 
+pub struct TempVal {
+    pub x: u32,
+}
+
+impl AsRef<u32> for TempVal {
+    fn as_ref(&self) -> &u32 {
+        &self.x
+    }
+}

@@ -1,8 +1,7 @@
 use std::sync::Arc;
 
-use minio::s3::{
-    args::{CreateMultipartUploadArgs, MakeBucketArgs, UploadObjectArgs}, client::ClientBuilder, creds::StaticProvider, http::BaseUrl,
-};
+use aws_config::{BehaviorVersion, Region};
+use aws_sdk_s3::config::{Credentials, ProvideCredentials, SharedCredentialsProvider};
 use poem::{
     web::{Data, Multipart, Path, Query},
     Result,
@@ -13,7 +12,6 @@ use serde::{Deserialize, Serialize};
 use tracing::info;
 
 use crate::{auth::middleware::AuthToken, models::media::Media, state::AppState};
-use minio::s3::builders::ObjectContent;
 
 pub struct MediaApi;
 
@@ -85,32 +83,54 @@ impl MediaApi {
         mut upload: Multipart,
     ) -> Json<Media> {
         let file = upload.next_field().await.unwrap().unwrap();
-        let tempfile = file.tempfile().await.unwrap();
+        let tempfile = file.bytes().await.unwrap();
 
-        info!("File: {:?}", tempfile);
+        // info!("File: {:?}", tempfile);
 
         // upload using minio
 
-        let base_url: BaseUrl = "http://localhost:9000".parse().unwrap();
-        let static_provider = StaticProvider::new("minioadmin", "minioadmin", None);
-        let client = ClientBuilder::new(base_url)
-            .provider(static_provider)
-            .build()
-            .unwrap();
+        let config = aws_config::defaults(BehaviorVersion::latest())
+            .endpoint_url("http://localhost:9000")
+            .region(Region::new("us-east-1"))
+            .credentials_provider(Credentials::new(
+                "minioadmin",
+                "minioadmin",
+                None,
+                None,
+                "static",
+            ))
+            .load()
+            .await;
 
+        let client = aws_sdk_s3::Client::new(&config);
         let bucket_name = "test";
 
-        if !client.bucket_exists(bucket_name).await.unwrap() {
-            client
-                .make_bucket(&MakeBucketArgs {
-                    bucket: bucket_name,
-                    ..Default::default()
-                })
+
+        let buckets = client.list_buckets().send().await.unwrap();
+
+        // if bucket does not exist, create it
+        if !buckets.buckets().iter().any(|x| x.name().unwrap() == bucket_name) {
+            client.create_bucket()
+                .bucket(bucket_name)
+                .send()
                 .await
                 .unwrap();
         }
+    
+        let clientz = client
+            .put_object()
+            .bucket(bucket_name)
+            .key(format!(
+                "{}.{}",
+                request.0.name.as_ref().unwrap(),
+                request.0.kind.as_ref().unwrap()
+            ))
+            .body(tempfile.into())
+            .send()
+            .await
+            .unwrap();
 
-        let content = ObjectContent::from_file(tempfile).unwrap();
+        info!("Clientz: {:?}", clientz);
 
         let url = "".to_string();
 

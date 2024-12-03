@@ -75,6 +75,7 @@ services:
 
   minio:
     image: minio/minio:latest
+    command: server --console-address ":9001" /mnt/data
     ports:
       - "9000:9000"
       - "9001:9001"

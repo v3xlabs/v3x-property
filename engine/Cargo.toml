@@ -8,6 +8,8 @@ edition = "2021"
 [dependencies]
 anyhow = "1.0.93"
 async-std = { version = "1.12.0", features = ["attributes", "tokio1"] }
+aws-config = "1.5.10"
+aws-sdk-s3 = "1.64.0"
 bigdecimal = { version = "0.4.5", features = ["serde"] }
 chrono = "0.4.38"
 color-eyre = "0.6.3"
@@ -15,8 +17,7 @@ dotenv = "0.15.0"
 dotenvy = "0.15.7"
 hex = "0.4.3"
 hmac = "0.12.1"
-meilisearch-sdk = "0.27.1"
-minio = "0.1.0"
+meilisearch-sdk = "0.26.1"
 ollama-rs = "0.2.1"
 openid = "0.14.0"
 poem = { version = "3.0.4", git = "https://github.com/poem-web/poem", branch = "master" }
