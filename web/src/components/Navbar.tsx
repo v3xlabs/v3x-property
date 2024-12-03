@@ -1,11 +1,11 @@
 /* eslint-disable jsx-a11y/alt-text */
 /* eslint-disable no-undef */
-import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
 import { Link } from '@tanstack/react-router';
 import { FileRoutesByPath } from '@tanstack/react-router';
 
 import { useAuth } from '@/api/auth';
 import { useApiMe } from '@/api/me';
+import * as DropdownMenu from '@/components/ui/Dropdown';
 
 import { AvatarHolder, getInitials } from './UserProfile';
 
@@ -75,37 +75,23 @@ export const Navbar = () => {
                             </button>
                         </DropdownMenu.Trigger>
 
-                        <DropdownMenu.Portal>
-                            <DropdownMenu.Content
-                                className="DropdownMenuContent"
-                                sideOffset={5}
+                        <DropdownMenu.Content sideOffset={5}>
+                            <DropdownMenu.Item asChild>
+                                <Link to="/sessions">Sessions</Link>
+                            </DropdownMenu.Item>
+                            <DropdownMenu.Item asChild>
+                                <Link to="/settings">Settings</Link>
+                            </DropdownMenu.Item>
+
+                            <DropdownMenu.Separator />
+                            <DropdownMenu.Item
+                                onClick={() => {
+                                    clearAuthToken();
+                                }}
                             >
-                                <DropdownMenu.Item asChild>
-                                    <Link
-                                        to="/settings"
-                                        className="DropdownMenuItem"
-                                    >
-                                        Settings
-                                    </Link>
-                                </DropdownMenu.Item>
-                                <DropdownMenu.Item asChild>
-                                    <Link
-                                        to="/sessions"
-                                        className="DropdownMenuItem"
-                                    >
-                                        Sessions
-                                    </Link>
-                                </DropdownMenu.Item>
-                                <DropdownMenu.Item
-                                    className="DropdownMenuItem"
-                                    onClick={() => {
-                                        clearAuthToken();
-                                    }}
-                                >
-                                    Logout
-                                </DropdownMenu.Item>
-                            </DropdownMenu.Content>
-                        </DropdownMenu.Portal>
+                                Logout
+                            </DropdownMenu.Item>
+                        </DropdownMenu.Content>
                     </DropdownMenu.Root>
                 </div>
             )}

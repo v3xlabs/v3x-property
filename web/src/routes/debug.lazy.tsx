@@ -1,6 +1,6 @@
 import { createLazyFileRoute } from '@tanstack/react-router';
 import { cva, VariantProps } from 'class-variance-authority';
-import { ReactNode } from 'react';
+import { ReactNode, useState } from 'react';
 import { FaGear } from 'react-icons/fa6';
 
 import {
@@ -19,6 +19,7 @@ import {
     buttonVariants,
     buttonVariantsConfig,
 } from '@/components/ui/Button';
+import * as Dropdown from '@/components/ui/Dropdown';
 import { Input } from '@/components/ui/Input';
 import { Label } from '@/components/ui/Label';
 import { SCPage } from '@/layouts/SimpleCenterPage';
@@ -104,13 +105,21 @@ const DebugVariants = <
         <div className="space-y-4">
             <ComponentTitle>{displayName}</ComponentTitle>
             {/* <div className="flex flex-wrap gap-4"> */}
-            {Object.entries(combinations).map(([variant, combos]) => {
+            {Object.entries(combinations).map(([variant, combos], index) => {
                 return (
-                    <>
-                        <VariantTitle>{variant}</VariantTitle>
-                        <div className="flex gap-2 items-center p-4 card">
-                            {combos.map((combo) => (
-                                <div key={variant} className="w-full">
+                    <div key={`${variant}-${index}`} className="contents">
+                        <VariantTitle key={`title-${variant}-${index}`}>
+                            {variant}
+                        </VariantTitle>
+                        <div
+                            className="flex gap-2 items-center p-4 card"
+                            key={`container-${variant}-${index}`}
+                        >
+                            {combos.map((combo, index) => (
+                                <div
+                                    key={`button-${variant}-${index}`}
+                                    className="w-full"
+                                >
                                     {children({
                                         variant,
                                         ...(combo as any),
@@ -118,7 +127,7 @@ const DebugVariants = <
                                 </div>
                             ))}
                         </div>
-                    </>
+                    </div>
                 );
             })}
         </div>
@@ -143,24 +152,49 @@ const VariantTitle = ({ children }: { children: ReactNode }) => {
     );
 };
 
-const CustomComponentSection = ({
+const CustomComponentSection = <
+    TStates extends Record<string, any> | undefined
+>({
     displayName,
     children,
+    states,
 }: {
     displayName: string;
-    children: ReactNode;
+    states?: TStates;
+    children: TStates extends undefined
+        ? ReactNode
+        : (
+              _properties: {
+                  [K in keyof TStates]: TStates[K];
+              } & {
+                  [SetK in keyof TStates &
+                      string as `set${Capitalize<SetK>}`]: (
+                      _value: TStates[SetK]
+                  ) => void;
+              }
+          ) => ReactNode;
 }) => {
+    const stateObject: Record<string, any> = {};
+
+    for (const [key, defaultValue] of Object.entries(states ?? {})) {
+        const [state, setState] = useState(defaultValue);
+
+        stateObject[key] = state;
+        stateObject[`set${key.charAt(0).toUpperCase() + key.slice(1)}`] =
+            setState;
+    }
+
     return (
         <div className="space-y-4">
             <ComponentTitle>{displayName}</ComponentTitle>
-            {children}
+            {typeof children === 'function' ? children(stateObject) : children}
         </div>
     );
 };
 
 const component = () => {
     return (
-        <SCPage title="Debug" width="4xl">
+        <SCPage title="Debug" width="4xl" className="pb-32">
             <DebugVariants
                 displayName="Button"
                 config={buttonVariantsConfig.variants!}
@@ -225,6 +259,97 @@ const component = () => {
                         </AlertDialogFooter>
                     </AlertDialogContent>
                 </AlertDialog>
+            </CustomComponentSection>
+
+            <CustomComponentSection
+                displayName="Dropdown"
+                states={{
+                    showStatusBar: false,
+                    showActivityBar: false,
+                    showPanel: false,
+                    position: 'bottom',
+                }}
+            >
+                {(properties) => (
+                    <>
+                        <VariantTitle>Default</VariantTitle>
+                        <Dropdown.Root>
+                            <Dropdown.Trigger asChild>
+                                <Button variant="default">Open</Button>
+                            </Dropdown.Trigger>
+                            <Dropdown.Content>
+                                <Dropdown.Label>My Account</Dropdown.Label>
+                                <Dropdown.Separator />
+                                <Dropdown.Item>Profile</Dropdown.Item>
+                                <Dropdown.Item>Billing</Dropdown.Item>
+                                <Dropdown.Item>Team</Dropdown.Item>
+                                <Dropdown.Item>Subscription</Dropdown.Item>
+                            </Dropdown.Content>
+                        </Dropdown.Root>
+
+                        <VariantTitle>With Checkboxes</VariantTitle>
+                        <Dropdown.Root>
+                            <Dropdown.Trigger asChild>
+                                <Button variant="default">Open</Button>
+                            </Dropdown.Trigger>
+                            <Dropdown.Content className="w-56">
+                                <Dropdown.Label>Appearance</Dropdown.Label>
+                                <Dropdown.Separator />
+                                <Dropdown.CheckboxItem
+                                    checked={properties.showStatusBar}
+                                    onCheckedChange={(value) =>
+                                        properties.setShowStatusBar(value)
+                                    }
+                                >
+                                    Status Bar
+                                </Dropdown.CheckboxItem>
+                                <Dropdown.CheckboxItem
+                                    checked={properties.showActivityBar}
+                                    onCheckedChange={(value) =>
+                                        properties.setShowActivityBar(value)
+                                    }
+                                >
+                                    Activity Bar
+                                </Dropdown.CheckboxItem>
+                                <Dropdown.CheckboxItem
+                                    checked={properties.showPanel}
+                                    onCheckedChange={(value) =>
+                                        properties.setShowPanel(value)
+                                    }
+                                >
+                                    Panel
+                                </Dropdown.CheckboxItem>
+                            </Dropdown.Content>
+                        </Dropdown.Root>
+
+                        <VariantTitle>With Radio Group</VariantTitle>
+                        <Dropdown.Root>
+                            <Dropdown.Trigger asChild>
+                                <Button variant="default">Open</Button>
+                            </Dropdown.Trigger>
+                            <Dropdown.Content className="w-56">
+                                <Dropdown.Label>Panel Position</Dropdown.Label>
+                                <Dropdown.Separator />
+                                <Dropdown.RadioGroup
+                                    value={properties.position}
+                                    onValueChange={(value) =>
+                                        properties.setPosition(value)
+                                    }
+                                >
+                                    <Dropdown.RadioItem value="top">
+                                        Top
+                                    </Dropdown.RadioItem>
+                                    <Dropdown.RadioItem value="bottom">
+                                        Bottom
+                                    </Dropdown.RadioItem>
+                                    <Dropdown.RadioItem value="right">
+                                        Right
+                                    </Dropdown.RadioItem>
+                                </Dropdown.RadioGroup>
+                            </Dropdown.Content>
+                        </Dropdown.Root>
+                    </>
+                )}
             </CustomComponentSection>
         </SCPage>
     );
