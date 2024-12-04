@@ -1,7 +1,9 @@
 import { useForm } from '@tanstack/react-form';
+import { useSuspenseQuery } from '@tanstack/react-query';
 import {
     createFileRoute,
     Link,
+    redirect,
     useNavigate,
     useParams,
 } from '@tanstack/react-router';
@@ -9,10 +11,14 @@ import { FC } from 'react';
 import { toast } from 'sonner';
 
 import {
+    formatId,
+    instanceSettingsQueryOptions,
+} from '@/api/instance_settings';
+import {
+    itemByIdQueryOptions,
+    itemMediaQueryOptions,
     useApiDeleteItem,
     useApiEditItem,
-    useApiItemById,
-    useApiItemMedia,
 } from '@/api/item';
 import { BaseInput } from '@/components/input/BaseInput';
 import { EditMediaGallery } from '@/components/media/EditMediaGallery';
@@ -20,6 +26,7 @@ import { EditItemForm } from '@/components/media/upload/t';
 import * as AlertDialog from '@/components/ui/AlertDialog';
 import { Button } from '@/components/ui/Button';
 import { SCPage } from '@/layouts/SimpleCenterPage';
+import { queryClient } from '@/util/query';
 
 export const DeleteItemModal: FC<{ itemId: string }> = ({ itemId }) => {
     const deleteItem = useApiDeleteItem({
@@ -69,19 +76,40 @@ export const DeleteItemModal: FC<{ itemId: string }> = ({ itemId }) => {
 };
 
 export const Route = createFileRoute('/item/$itemId/edit')({
+    // if item_id is not formatId(item_id, instanceSettings), redirect to the formatted item_id
+    loader: async ({ params }) => {
+        // Ensure instance settings are loaded
+        const instanceSettings = await queryClient.ensureQueryData(
+            instanceSettingsQueryOptions
+        );
+
+        const formattedItemId = formatId(params.itemId, instanceSettings);
+
+        // Redirect if the item_id is not formatted
+        if (formattedItemId !== params.itemId) {
+            console.log('redirecting to', formattedItemId);
+
+            return redirect({ to: `/item/${formattedItemId}` });
+        }
+
+        // Preload item and media
+        return Promise.all([
+            queryClient.ensureQueryData(itemByIdQueryOptions(params.itemId)),
+            queryClient.ensureQueryData(itemMediaQueryOptions(params.itemId)),
+        ]);
+    },
     component: () => {
         const { itemId } = useParams({ from: '/item/$itemId/edit' });
-        const { data: item, isLoading } = useApiItemById(itemId);
-        const { data: media, isLoading: isLoadingMedia } =
-            useApiItemMedia(itemId);
+        const { data: item } = useSuspenseQuery(itemByIdQueryOptions(itemId));
+        const { data: media } = useSuspenseQuery(itemMediaQueryOptions(itemId));
         const editItem = useApiEditItem();
         const navigate = useNavigate();
 
         const { Field, Subscribe, handleSubmit } = useForm<EditItemForm>({
             defaultValues: {
-                name: item?.name ?? '',
+                name: item.name ?? '',
                 media:
-                    (media ?? item?.media)?.map((media_id) => ({
+                    media?.map((media_id) => ({
                         status: 'existing-media',
                         media_id,
                     })) ?? [],
@@ -128,14 +156,6 @@ export const Route = createFileRoute('/item/$itemId/edit')({
             },
         });
 
-        if (isLoading || isLoadingMedia) {
-            return (
-                <SCPage title={`Edit Item ${itemId}`}>
-                    <h2>Loading...</h2>
-                </SCPage>
-            );
-        }
-
         return (
             <SCPage title={`Edit Item ${itemId}`}>
                 <form
@@ -166,7 +186,7 @@ export const Route = createFileRoute('/item/$itemId/edit')({
                         <div className="px-2 pt-4 space-y-2">
                             <BaseInput
                                 label="Item Id"
-                                value={item?.item_id}
+                                value={item.item_id}
                                 disabled
                             />
                             <Field
