@@ -1,4 +1,5 @@
 /* eslint-disable sonarjs/no-identical-functions */
+import clsx from 'clsx';
 import { FC, Reducer, useCallback, useEffect, useReducer } from 'react';
 
 import { Button } from '../ui/Button';
@@ -80,7 +81,12 @@ export const EditMediaGallery: FC<{
     return (
         <div className="card flex-col md:flex-row flex items-stretch gap-2">
             <div className="grow">
-                <ul className="grid grid-cols-2 gap-2">
+                <ul
+                    className={clsx(
+                        'grid gap-2 auto-rows-fr',
+                        state.length > 0 && 'grid-cols-2'
+                    )}
+                >
                     {state.map((item, index) => (
                         <li key={index}>
                             {item.status === 'new-media' ? (
@@ -123,11 +129,11 @@ export const EditMediaGallery: FC<{
                             )}
                         </li>
                     ))}
+                    <li className="flex flex-col gap-2 w-full">
+                        <MediaDropzone onDrop={onDrop} />
+                        <Button type="button">Add Existing</Button>
+                    </li>
                 </ul>
-            </div>
-            <div className="flex flex-col gap-2 md:w-1/3">
-                <MediaDropzone onDrop={onDrop} />
-                <Button type="button">Add Existing</Button>
             </div>
         </div>
     );
