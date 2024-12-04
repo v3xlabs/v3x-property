@@ -74,3 +74,5 @@ jobs:
             BINARY_NAME=v3x-property-engine
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
+          cache-from: type=gha
+          cache-to: type=gha
