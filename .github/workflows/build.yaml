@@ -8,7 +8,7 @@ on:
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAME: v3xlabs/v3x-property/engine
+  IMAGE_NAME: v3xlabs/v3x-property-engine
 
 jobs:
   deploy:
@@ -75,17 +75,14 @@ jobs:
         working-directory: ./engine
         run: docker compose -f ./compose.yaml down
 
-      # - name: Build
-      #   working-directory: ./engine
-      #   run: cargo build --release
       - name: Extract metadata (tags, labels) for Docker
         id: meta
-        uses: docker/metadata-action@9ec57ed1fcdbf14dcef7dfbe97b2010124a938b7
+        uses: docker/metadata-action@v5
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
 
       - name: Build docker image using github actions
-        uses: docker/build-push-action@f2a1d5e99d037542a71f64918e516c093c6f3fc4
+        uses: docker/build-push-action@v6
         id: push
         with:
           context: ./engine
