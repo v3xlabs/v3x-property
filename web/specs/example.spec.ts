@@ -1,65 +1,77 @@
-import { expect, test } from '@playwright/test';
+import { expect, Page, test } from '@playwright/test';
+
+import { DEFAULT_ITEM_NAME, WEB_URL } from './constants';
 
 test('has title', async ({ page }) => {
-    await page.goto('http://localhost:5173');
+    await page.goto(WEB_URL);
 
     // Expect a title "to contain" a substring.
     await expect(page).toHaveTitle(/v3x.property/);
 });
 
-test('create an item', async ({ page }) => {
-    await page.goto('http://localhost:5173');
+test.describe.serial('item flows', () => {
+    let page: Page;
 
-    await page.getByTestId('create-navlink').click();
+    test.beforeAll(async ({ browser }) => {
+        page = await browser.newPage();
+    });
 
-    let h1 = await page.locator('h1');
+    test('create an item', async () => {
+        await page.goto(WEB_URL);
 
-    await expect(h1).toHaveText('Create new Item');
+        await page.getByTestId('create-navlink').click();
 
-    await page.getByTestId('generate-id-button').click();
+        let h1 = await page.locator('h1');
 
-    await page.waitForTimeout(500);
+        await expect(h1).toHaveText('Create new Item');
 
-    const newItemIdInput = await page
-        .getByTestId('new-item-id-input')
-        .inputValue();
+        await page.getByTestId('generate-id-button').click();
 
-    await page.getByTestId('create-button').click();
+        await page.waitForTimeout(500);
 
-    h1 = await page.locator('h1');
-    await expect(h1).toHaveText(`Edit Item ${newItemIdInput}`);
+        const newItemIdInput = await page
+            .getByTestId('new-item-id-input')
+            .inputValue();
 
-    await page.getByRole('textbox', { name: 'Name' }).fill('My new thing');
+        await page.getByTestId('create-button').click();
 
-    await page.getByRole('button', { name: 'Save' }).click();
+        h1 = await page.locator('h1');
+        await expect(h1).toHaveText(`Edit Item ${newItemIdInput}`);
 
-    h1 = await page.locator('h1');
-    await expect(h1).toHaveText('My new thing');
-});
+        await page
+            .getByRole('textbox', { name: 'Name' })
+            .fill(DEFAULT_ITEM_NAME);
 
-test('search item', async ({ page }) => {
-    await page.goto('http://localhost:5173/search');
+        await page.getByRole('button', { name: 'Save' }).click();
 
-    await page.getByTestId('search-navlink').click();
+        h1 = await page.locator('h1');
+        await expect(h1).toHaveText(DEFAULT_ITEM_NAME);
+    });
 
-    await page.getByTestId('search-input').fill('My new thing');
+    test('search item', async () => {
+        await page.goto(WEB_URL + '/search');
 
-    await page.getByTestId('search-button').click();
+        await page.getByTestId('search-navlink').click();
 
-    await expect(page.getByTestId('search-results')).toBeVisible();
+        await page.getByTestId('search-input').fill(DEFAULT_ITEM_NAME);
 
-    await page.getByTestId('item-preview-full').click();
+        await page.getByTestId('search-button').click();
 
-    await expect(page.locator('h1')).toHaveText('My new thing');
-});
+        await expect(page.getByTestId('search-results')).toBeVisible();
 
-test('delete item', async ({ page }) => {
-    await page.goto('http://localhost:5173');
+        await page.getByTestId('item-preview-full').first().click();
 
-    await page.getByTestId('items-navlink').click();
+        await expect(page.locator('h1')).toHaveText(DEFAULT_ITEM_NAME);
+    });
 
-    await page.getByRole('link', { name: 'View' }).first().click();
-    await page.getByRole('link', { name: 'Edit' }).click();
-    await page.getByRole('button', { name: 'Delete Item' }).click();
-    await page.getByRole('button', { name: 'Yes, delete item' }).click();
+    test('delete item', async () => {
+        await page.goto(WEB_URL);
+
+        await page.getByTestId('items-navlink').click();
+
+        await page.getByRole('link', { name: 'View' }).first().click();
+        await page.getByRole('link', { name: 'Edit' }).click();
+        await page.getByRole('button', { name: 'Delete Item' }).click();
+        await page.getByRole('button', { name: 'Yes, delete item' }).click();
+    });
 });
