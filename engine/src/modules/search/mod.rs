@@ -6,11 +6,11 @@ use tracing::info;
 
 use crate::{
     database::Database,
-    modules::intelligence::Intelligence,
     models::{
         item::{search::SearchableItem, Item},
         search::SearchTask,
     },
+    modules::intelligence::Intelligence,
 };
 
 pub struct Search {
@@ -144,17 +144,19 @@ impl Search {
     pub async fn refresh_task(
         &self,
         db: &Database,
-        task_external_id: i64,
+        task_id: i32,
     ) -> Result<SearchTask, sqlx::Error> {
-        let task = task_external_id as u32;
+        let internal_task = SearchTask::find_by_id(db, task_id).await.unwrap();
 
-        let x = self
+        let task = self
             .client
-            .get_task(TempVal { x: task })
+            .get_task(TempVal {
+                x: internal_task.external_task_id as u32,
+            })
             .await
             .unwrap();
 
-        SearchTask::refresh(db, task_external_id, x).await
+        SearchTask::refresh(db, task_id, internal_task.external_task_id, task).await
     }
 }
 

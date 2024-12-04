@@ -13,6 +13,9 @@ pub struct SessionsApi;
 
 #[OpenApi]
 impl SessionsApi {
+    /// /sessions
+    /// 
+    /// Get all sessions for the current user
     #[oai(path = "/sessions", method = "get")]
     async fn get_sessions(
         &self,
@@ -28,6 +31,9 @@ impl SessionsApi {
         ))
     }
 
+    /// /sessions/:session_id
+    /// 
+    /// Delete a Session by `session_id`
     #[oai(path = "/sessions/:session_id", method = "delete")]
     async fn delete_session(
         &self,

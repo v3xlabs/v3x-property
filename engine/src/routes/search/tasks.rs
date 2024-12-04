@@ -8,10 +8,13 @@ use tracing::info;
 
 use crate::{models::search::SearchTask, state::AppState};
 
-pub struct ApiSearchTask;
+pub struct SearchTaskApi;
 
 #[OpenApi]
-impl ApiSearchTask {
+impl SearchTaskApi {
+    /// /search/tasks
+    /// 
+    /// Get all Search Tasks
     #[oai(path = "/search/tasks", method = "get")]
     pub async fn search_tasks(&self, state: Data<&Arc<AppState>>) -> Json<Vec<SearchTask>> {
         let tasks = SearchTask::find_all(&state.database).await.unwrap();
@@ -19,18 +22,21 @@ impl ApiSearchTask {
         Json(tasks)
     }
 
-    #[oai(path = "/search/tasks/:external_task_id", method = "put")]
+    /// /search/tasks/:task_id
+    /// 
+    /// Refresh a Search Task by `task_id`
+    #[oai(path = "/search/tasks/:task_id", method = "put")]
     pub async fn refresh_task(
         &self,
         state: Data<&Arc<AppState>>,
-        external_task_id: Path<i64>,
+        task_id: Path<i32>,
     ) -> Result<Json<SearchTask>> {
-        info!("Refreshing task {}", external_task_id.0);
+        info!("Refreshing task {}", task_id.0);
 
         match state.search.as_ref() {
             Some(search) => Ok(Json(
                 search
-                    .refresh_task(&state.database, external_task_id.0)
+                    .refresh_task(&state.database, task_id.0)
                     .await
                     .unwrap(),
             )),

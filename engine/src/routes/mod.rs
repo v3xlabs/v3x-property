@@ -8,7 +8,7 @@ use poem::{
     get, handler, listener::TcpListener, middleware::Cors, web::Html, EndpointExt, Route, Server,
 };
 use poem_openapi::{OpenApi, OpenApiService};
-use search::{tasks::ApiSearchTask, SearchApi};
+use search::{tasks::SearchTaskApi, SearchApi};
 use sessions::SessionsApi;
 use users::UserApi;
 
@@ -25,14 +25,14 @@ pub mod media;
 
 fn get_api() -> impl OpenApi {
     (
-        MeApi,
-        SessionsApi,
-        UserApi,
-        InstanceApi,
         ItemsApi,
+        MediaApi,
         SearchApi,
-        ApiSearchTask,
-        MediaApi
+        SearchTaskApi,
+        MeApi,
+        UserApi,
+        SessionsApi,
+        InstanceApi,
     )
 }
 

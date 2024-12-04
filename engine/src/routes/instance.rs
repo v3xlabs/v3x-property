@@ -33,6 +33,9 @@ impl Default for InstanceSettings {
 
 #[OpenApi]
 impl InstanceApi {
+    /// /instance/settings
+    /// 
+    /// Get the instance settings
     #[oai(path = "/instance/settings", method = "get")]
     pub async fn settings(
         &self,

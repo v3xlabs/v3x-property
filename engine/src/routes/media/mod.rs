@@ -25,40 +25,9 @@ pub struct CreateMediaRequest {
 
 #[OpenApi]
 impl MediaApi {
-    #[oai(path = "/media/:media_id", method = "get")]
-    async fn get_media(
-        &self,
-        state: Data<&Arc<AppState>>,
-        auth: AuthToken,
-        media_id: Path<i32>,
-    ) -> Result<Json<Media>> {
-        Media::get_by_id(&state.database, media_id.0)
-            .await
-            .or(Err(poem::Error::from_status(
-                StatusCode::INTERNAL_SERVER_ERROR,
-            )))?
-            .ok_or(poem::Error::from_status(StatusCode::NOT_FOUND))
-            .map(|x| Json(x))
-    }
-
-    #[oai(path = "/media/:media_id", method = "delete")]
-    async fn delete_media(
-        &self,
-        auth: AuthToken,
-        state: Data<&Arc<AppState>>,
-        media_id: Path<i32>,
-    ) -> Result<()> {
-        Media::get_by_id(&state.database, media_id.0)
-            .await
-            .unwrap()
-            .unwrap()
-            .delete(&state.database)
-            .await
-            .unwrap();
-
-        Ok(())
-    }
-
+    /// /media
+    /// 
+    /// Get all media
     #[oai(path = "/media", method = "get")]
     async fn get_all_media(
         &self,
@@ -71,6 +40,24 @@ impl MediaApi {
         }
     }
 
+    /// /media/unassigned
+    /// 
+    /// Get all unassigned media
+    #[oai(path = "/media/unassigned", method = "get")]
+    async fn get_unassigned_media(
+        &self,
+        auth: AuthToken,
+        state: Data<&Arc<AppState>>,
+    ) -> Result<Json<Vec<Media>>> {
+        match auth.ok() {
+            Some(user) => Ok(Json(Media::get_unassigned(&state.database).await.unwrap())),
+            None => Err(StatusCode::UNAUTHORIZED.into()),
+        }
+    }
+
+    /// /media
+    /// 
+    /// Create a new Media
     #[oai(path = "/media", method = "post")]
     async fn create_media(
         &self,
@@ -97,5 +84,45 @@ impl MediaApi {
                 .await
                 .unwrap(),
         )
+    }
+
+    /// /media/:media_id
+    /// 
+    /// Delete a Media by `media_id`
+    #[oai(path = "/media/:media_id", method = "delete")]
+    async fn delete_media(
+        &self,
+        auth: AuthToken,
+        state: Data<&Arc<AppState>>,
+        media_id: Path<i32>,
+    ) -> Result<()> {
+        Media::get_by_id(&state.database, media_id.0)
+            .await
+            .unwrap()
+            .unwrap()
+            .delete(&state.database)
+            .await
+            .unwrap();
+
+        Ok(())
+    }
+    
+    /// /media/:media_id
+    /// 
+    /// Get a Media by `media_id`
+    #[oai(path = "/media/:media_id", method = "get")]
+    async fn get_media(
+        &self,
+        state: Data<&Arc<AppState>>,
+        auth: AuthToken,
+        media_id: Path<i32>,
+    ) -> Result<Json<Media>> {
+        Media::get_by_id(&state.database, media_id.0)
+            .await
+            .or(Err(poem::Error::from_status(
+                StatusCode::INTERNAL_SERVER_ERROR,
+            )))?
+            .ok_or(poem::Error::from_status(StatusCode::NOT_FOUND))
+            .map(|x| Json(x))
     }
 }

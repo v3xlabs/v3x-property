@@ -28,6 +28,9 @@ pub struct SearchQueryParams {
 
 #[OpenApi]
 impl SearchApi {
+    /// /search
+    /// 
+    /// Search for Items
     #[oai(path = "/search", method = "get")]
     pub async fn search(
         &self,
@@ -50,9 +53,13 @@ impl SearchApi {
         Json(results)
     }
 
-    #[oai(path = "/search/index", method = "post")]
-    pub async fn index_all_items(&self, state: Data<&Arc<AppState>>) -> Result<()> {
-        info!("Indexing all items");
+    /// /search/reindex
+    /// 
+    /// Reindex all Items
+    #[oai(path = "/search/reindex", method = "post")]
+    pub async fn reindex_all_items(&self, state: Data<&Arc<AppState>>) -> Result<()> {
+        info!("Reindexing all items");
+
         state
             .search
             .as_ref()

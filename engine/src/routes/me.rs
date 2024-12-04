@@ -13,6 +13,9 @@ pub struct MeApi;
 
 #[OpenApi]
 impl MeApi {
+    /// /me
+    /// 
+    /// Get the current user
     #[oai(path = "/me", method = "get")]
     pub async fn me(&self, state: Data<&Arc<AppState>>, token: AuthToken) -> Json<User> {
         match token {

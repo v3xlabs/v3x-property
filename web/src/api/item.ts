@@ -62,7 +62,7 @@ export const useApiItemMedia = (item_id: string) => {
 export const useApiCreateItem = () => {
     return useMutation({
         mutationFn: async (item_id: string) =>
-            fetch(BASE_URL + '/api/item/create?item_id=' + item_id, {
+            fetch(BASE_URL + '/api/item?item_id=' + item_id, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

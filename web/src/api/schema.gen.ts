@@ -278,7 +278,7 @@ export type paths = {
         patch?: never;
         trace?: never;
     };
-    "/item/create": {
+    "/item": {
         parameters: {
             query?: never;
             header?: never;

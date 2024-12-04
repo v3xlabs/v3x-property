@@ -100,6 +100,7 @@ impl SearchTask {
 
     pub async fn refresh(
         db: &Database,
+        task_id: i32,
         external_task_id: i64,
         task: Task,
     ) -> Result<Self, sqlx::Error> {
@@ -118,10 +119,10 @@ impl SearchTask {
 
         query_as!(
             SearchTask,
-            "UPDATE search_tasks SET status = $1, details = $2 WHERE external_task_id = $3 RETURNING *",
+            "UPDATE search_tasks SET status = $1, details = $2 WHERE task_id = $3 RETURNING *",
             status,
             details,
-            external_task_id,
+            task_id,
         )
         .fetch_one(&db.pool)
         .await

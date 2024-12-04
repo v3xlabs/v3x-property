@@ -45,6 +45,15 @@ impl Media {
             .await
     }
 
+    pub async fn get_unassigned(db: &Database) -> Result<Vec<Media>, sqlx::Error> {
+        // Find all media that dont have a MediaItem to link them to an item
+        // This is useful for finding media that is not yet assigned to an item
+        // and can be used for creating new items
+        query_as!(Media, "SELECT * FROM media WHERE media_id NOT IN (SELECT media_id FROM item_media)")
+            .fetch_all(&db.pool)
+            .await
+    }
+
     pub async fn delete(self, db: &Database) -> Result<(), sqlx::Error> {
         query!("DELETE FROM media WHERE media_id = $1", self.media_id)
             .execute(&db.pool)

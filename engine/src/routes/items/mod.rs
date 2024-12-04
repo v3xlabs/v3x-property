@@ -58,50 +58,9 @@ pub struct ItemUpdateMediaPayload {
 
 #[OpenApi]
 impl ItemsApi {
-    #[oai(path = "/item/:item_id", method = "get")]
-    async fn get_item(
-        &self,
-        state: Data<&Arc<AppState>>,
-        auth: AuthToken,
-        item_id: Path<String>,
-    ) -> Result<Json<Item>> {
-        let item = Item::get_by_id(&state.database, &item_id.0).await.unwrap();
-
-        match item {
-            Some(item) => Ok(Json(item)),
-            None => Err(StatusCode::NOT_FOUND.into()),
-        }
-    }
-
-    #[oai(path = "/item/:item_id", method = "delete")]
-    async fn delete_item(
-        &self,
-        auth: AuthToken,
-        state: Data<&Arc<AppState>>,
-        item_id: Path<String>,
-    ) -> Result<()> {
-        let item = Item::get_by_id(&state.database, &item_id.0)
-            .await
-            .unwrap()
-            .unwrap();
-
-        item.delete(&state.search, &state.database).await.unwrap();
-
-        Ok(())
-    }
-
-    #[oai(path = "/item/:item_id", method = "patch")]
-    async fn edit_item(
-        &self,
-        auth: AuthToken,
-        state: Data<&Arc<AppState>>,
-        item_id: Path<String>,
-        data: Json<ItemUpdatePayload>,
-    ) -> Result<()> {
-        Item::edit_by_id(&state.search, &state.database, data.0, &item_id.0).await;
-        Ok(())
-    }
-
+    /// /item/owned
+    /// 
+    /// Get all items owned by the current user
     #[oai(path = "/item/owned", method = "get")]
     async fn get_owned_items(
         &self,
@@ -118,7 +77,10 @@ impl ItemsApi {
         }
     }
 
-    #[oai(path = "/item/create", method = "post")]
+    /// /item
+    /// 
+    /// Create an Item
+    #[oai(path = "/item", method = "post")]
     async fn create_item(
         &self,
         auth: AuthToken,
@@ -140,6 +102,9 @@ impl ItemsApi {
         )
     }
 
+    /// /item/next
+    /// 
+    /// Suggest next Item Id
     #[oai(path = "/item/next", method = "get")]
     async fn next_item_id(&self, state: Data<&Arc<AppState>>) -> Json<ItemIdResponse> {
         info!("Getting next item id");
@@ -149,7 +114,63 @@ impl ItemsApi {
         })
     }
 
+    /// /item/:item_id
+    /// 
+    /// Delete an Item by `item_id`
+    #[oai(path = "/item/:item_id", method = "delete")]
+    async fn delete_item(
+        &self,
+        auth: AuthToken,
+        state: Data<&Arc<AppState>>,
+        item_id: Path<String>,
+    ) -> Result<()> {
+        let item = Item::get_by_id(&state.database, &item_id.0)
+            .await
+            .unwrap()
+            .unwrap();
 
+        item.delete(&state.search, &state.database).await.unwrap();
+
+        Ok(())
+    }
+
+    /// /item/:item_id
+    /// 
+    /// Get an Item by `item_id`
+    #[oai(path = "/item/:item_id", method = "get")]
+    async fn get_item(
+        &self,
+        state: Data<&Arc<AppState>>,
+        auth: AuthToken,
+        item_id: Path<String>,
+    ) -> Result<Json<Item>> {
+        let item = Item::get_by_id(&state.database, &item_id.0).await.unwrap();
+
+        match item {
+            Some(item) => Ok(Json(item)),
+            None => Err(StatusCode::NOT_FOUND.into()),
+        }
+    }
+
+    /// /item/:item_id
+    /// 
+    /// Edit an Item by `item_id`
+    /// This updates the `name`, `owner_id`, `location_id`, `product_id`, and `media` (linking `"new-media"`, and removing `"removed-media"`)
+    #[oai(path = "/item/:item_id", method = "patch")]
+    async fn edit_item(
+        &self,
+        auth: AuthToken,
+        state: Data<&Arc<AppState>>,
+        item_id: Path<String>,
+        data: Json<ItemUpdatePayload>,
+    ) -> Result<()> {
+        Item::edit_by_id(&state.search, &state.database, data.0, &item_id.0).await;
+        Ok(())
+    }
+
+    /// /item/:item_id/media
+    /// 
+    /// Get all media for an Item by `item_id`
     #[oai(path = "/item/:item_id/media", method = "get")]
     async fn get_item_media(
         &self,

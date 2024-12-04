@@ -12,9 +12,12 @@ pub struct UserApi;
 
 #[OpenApi]
 impl UserApi {
-    #[oai(path = "/user/:id", method = "get")]
-    pub async fn user(&self, state: Data<&Arc<AppState>>, id: Path<i32>) -> Json<User> {
-        let user = UserEntry::find_by_user_id(id.0, &state.database)
+    /// /user/:user_id
+    /// 
+    /// Get a User by `user_id`
+    #[oai(path = "/user/:user_id", method = "get")]
+    pub async fn user(&self, state: Data<&Arc<AppState>>, user_id: Path<i32>) -> Json<User> {
+        let user = UserEntry::find_by_user_id(user_id.0, &state.database)
             .await
             .unwrap();
 
