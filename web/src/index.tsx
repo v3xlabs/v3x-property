@@ -10,8 +10,13 @@ import { preflightAuth } from '@/api/auth';
 import { routeTree } from '@/routeTree.gen';
 import { queryClient } from '@/util/query';
 
+import { defaultPendingComponent } from './components/Router';
+
 // Create a new router instance
-const router = createRouter({ routeTree });
+const router = createRouter({
+    routeTree,
+    defaultPendingComponent,
+});
 
 // Register the router instance for type safety
 declare module '@tanstack/react-router' {
