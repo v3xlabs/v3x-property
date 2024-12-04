@@ -1,6 +1,6 @@
 export type AttachedMedia =
     | {
-          status: 'existing-media' | 'removed';
+          status: 'existing-media' | 'removed-media';
           media_id: number;
       }
     | {

@@ -346,6 +346,40 @@ export type paths = {
         patch?: never;
         trace?: never;
     };
+    "/item/{item_id}/media": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json; charset=utf-8": number[];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/search": {
         parameters: {
             query?: never;
@@ -557,7 +591,25 @@ export type paths = {
             };
         };
         put?: never;
-        post?: never;
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json; charset=utf-8": components["schemas"]["Media"];
+                    };
+                };
+            };
+        };
         delete?: never;
         options?: never;
         head?: never;
@@ -590,6 +642,13 @@ export type components = {
         ItemIdResponse: {
             item_id: string;
         };
+        ItemUpdateMediaPayload: {
+            status: components["schemas"]["ItemUpdateMediaStatus"];
+            /** Format: int32 */
+            media_id: number;
+        };
+        /** @enum {string} */
+        ItemUpdateMediaStatus: "new-media" | "removed-media" | "existing-media";
         ItemUpdatePayload: {
             name?: string;
             /** Format: int32 */
@@ -598,6 +657,7 @@ export type components = {
             location_id?: number;
             /** Format: int32 */
             product_id?: number;
+            media?: components["schemas"]["ItemUpdateMediaPayload"][];
         };
         Media: {
             /** Format: int32 */

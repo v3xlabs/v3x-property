@@ -11,7 +11,7 @@ use tracing::info;
 
 use crate::{
     auth::middleware::AuthToken,
-    models::item::{Item, ItemUpdatePayload},
+    models::item::{media::ItemMedia, Item},
     state::AppState,
 };
 
@@ -25,6 +25,35 @@ pub struct ItemIdResponse {
 #[derive(Deserialize, Debug, Serialize, Object)]
 pub struct CreateItemRequest {
     item_id: String,
+}
+
+
+#[derive(poem_openapi::Object, Debug, Clone, Serialize, Deserialize)]
+pub struct ItemUpdatePayload {
+    pub name: Option<String>,
+    pub owner_id: Option<i32>,
+    pub location_id: Option<i32>,
+    pub product_id: Option<i32>,
+    pub media: Option<Vec<ItemUpdateMediaPayload>>,
+}
+
+#[derive(poem_openapi::Enum, Debug, Clone, Serialize, Deserialize, PartialEq)]
+pub enum ItemUpdateMediaStatus {
+    #[serde(rename = "new-media")]
+    #[oai(rename = "new-media")]
+    NewMedia,
+    #[serde(rename = "removed-media")]
+    #[oai(rename = "removed-media")]
+    RemovedMedia,
+    #[serde(rename = "existing-media")]
+    #[oai(rename = "existing-media")]
+    ExistingMedia,
+}
+
+#[derive(poem_openapi::Object, Debug, Clone, Serialize, Deserialize)]
+pub struct ItemUpdateMediaPayload {
+    pub status: ItemUpdateMediaStatus,
+    pub media_id: i32,
 }
 
 #[OpenApi]
@@ -118,5 +147,20 @@ impl ItemsApi {
         Json(ItemIdResponse {
             item_id: Item::next_id(&state.database).await.unwrap(),
         })
+    }
+
+
+    #[oai(path = "/item/:item_id/media", method = "get")]
+    async fn get_item_media(
+        &self,
+        state: Data<&Arc<AppState>>,
+        auth: AuthToken,
+        item_id: Path<String>,
+    ) -> Result<Json<Vec<i32>>> {
+        let media = ItemMedia::get_by_item_id(&state.database, &item_id.0)
+            .await
+            .unwrap();
+
+        Ok(Json(media.iter().map(|m| m.media_id).collect()))
     }
 }

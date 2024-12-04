@@ -1,9 +1,10 @@
 use chrono::{DateTime, Utc};
+use media::ItemMedia;
 use serde::{Deserialize, Serialize};
 use sqlx::{query, query_as};
 use tracing::info;
 
-use crate::{database::Database, modules::search::Search};
+use crate::{database::Database, modules::search::Search, routes::items::{ItemUpdateMediaStatus, ItemUpdatePayload}};
 
 pub mod field;
 pub mod media;
@@ -190,23 +191,31 @@ impl Item {
             .await?;
         }
 
+        if let Some(media) = data.media {
+            for media in media {
+                match media.status {
+                    ItemUpdateMediaStatus::ExistingMedia => {
+                        // nothing needed here
+                    },
+                    ItemUpdateMediaStatus::NewMedia => {
+                        ItemMedia::new(db, item_id, media.media_id).await.unwrap();
+                    }
+                    ItemUpdateMediaStatus::RemovedMedia => {
+                        ItemMedia::delete(db, item_id, media.media_id).await.unwrap();
+                    }
+                }
+            }
+        }
+
         tx.commit().await?;
 
         let item = Item::get_by_id(db, item_id).await.unwrap().unwrap();
 
         if let Some(search) = search {
             let search_item = item.into_search(db).await.unwrap();
-            search.index_item(db, &search_item).await;
+            search.index_item(db, &search_item).await.unwrap();
         }
 
         Ok(item)
     }
-}
-
-#[derive(poem_openapi::Object, Debug, Clone, Serialize, Deserialize)]
-pub struct ItemUpdatePayload {
-    pub name: Option<String>,
-    pub owner_id: Option<i32>,
-    pub location_id: Option<i32>,
-    pub product_id: Option<i32>,
 }

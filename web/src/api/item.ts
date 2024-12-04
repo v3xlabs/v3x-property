@@ -44,6 +44,19 @@ export const useApiOwnedItems = () => {
     return useQuery(getApiOwnedItems());
 };
 
+export const getApiItemMedia = (
+    item_id: string
+): UseQueryOptions<number[]> => ({
+    queryKey: ['item', item_id, 'media'],
+    queryFn: getHttp('/api/item/' + item_id + '/media', {
+        auth: 'include',
+    }),
+});
+
+export const useApiItemMedia = (item_id: string) => {
+    return useQuery(getApiItemMedia(item_id));
+};
+
 // Create item
 // This endpoint provisions the desired item_id with a placeholder item
 export const useApiCreateItem = () => {

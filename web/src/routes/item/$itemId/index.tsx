@@ -6,7 +6,7 @@ import {
 } from '@tanstack/react-router';
 
 import { formatId, getInstanceSettings } from '@/api/instance_settings';
-import { useApiItemById } from '@/api/item';
+import { useApiItemById, useApiItemMedia } from '@/api/item';
 import { MediaGallery } from '@/components/media/MediaGallery';
 import { Button } from '@/components/ui/Button';
 import { UnauthorizedResourceModal } from '@/components/Unauthorized';
@@ -32,6 +32,7 @@ export const Route = createFileRoute('/item/$itemId/')({
         const { itemId } = useParams({ from: '/item/$itemId/' });
 
         const { data: item, error } = useApiItemById(itemId);
+        const { data: media, error: mediaError } = useApiItemMedia(itemId);
 
         if (error) {
             return <UnauthorizedResourceModal />;
@@ -50,7 +51,9 @@ export const Route = createFileRoute('/item/$itemId/')({
             >
                 <div className="card pt-4">
                     <div className="px-4">
-                        <MediaGallery media_ids={item?.media || []} />
+                        <MediaGallery
+                            media_ids={media ?? (item?.media || [])}
+                        />
                     </div>
                     <div className="p-4">
                         {item?.owner_id && (

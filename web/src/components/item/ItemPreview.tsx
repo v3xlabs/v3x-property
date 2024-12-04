@@ -6,7 +6,8 @@ import { FC } from 'react';
 import { match } from 'ts-pattern';
 
 import { formatId, useInstanceSettings } from '@/api/instance_settings';
-import { ApiItemResponse, useApiItemById } from '@/api/item';
+import { ApiItemResponse, useApiItemById, useApiItemMedia } from '@/api/item';
+import { useMedia } from '@/api/media';
 
 type Properties = {
     item_id: string;
@@ -91,8 +92,20 @@ const UNKNOWN_USER = 'Unknown User';
 
 export const ItemPreview: FC<Properties> = ({ item_id, variant }) => {
     const { data: item, isLoading } = useApiItemById(item_id);
+    const { data: media } = useApiItemMedia(item_id);
+    const { data: mediaData } = useMedia(media?.[0]);
     const { data: instanceSettings } = useInstanceSettings();
     const formattedItemId = formatId(item?.item_id, instanceSettings);
+
+    const mediaUrl = (() => {
+        const link = mediaData?.url;
+
+        if (link?.includes(':')) {
+            return link;
+        }
+
+        return 'http://localhost:9000/property/' + link;
+    })();
 
     if (isLoading) {
         return <div>Loading...</div>;
@@ -109,10 +122,7 @@ export const ItemPreview: FC<Properties> = ({ item_id, variant }) => {
                                 className="p-1 border rounded-md flex items-center gap-2 hover:bg-black/5"
                                 data-testid="item-preview-avatar"
                             >
-                                <AvatarHolder
-                                    image={item?.name}
-                                    initials={''}
-                                />
+                                <AvatarHolder image={mediaUrl} initials={''} />
                             </Link>
                         </HoverCard.Trigger>
                         <ItemPreviewHoverCard item={item!} />
@@ -127,7 +137,7 @@ export const ItemPreview: FC<Properties> = ({ item_id, variant }) => {
                                 data-testid="item-preview-compact"
                             >
                                 <AvatarHolder
-                                    image={item?.name}
+                                    image={mediaUrl}
                                     initials={''}
                                     size="compact"
                                 />
@@ -147,10 +157,7 @@ export const ItemPreview: FC<Properties> = ({ item_id, variant }) => {
                                 className="p-1.5 border cursor-pointer rounded-md flex items-center gap-2 hover:bg-black/5"
                                 data-testid="item-preview-full"
                             >
-                                <AvatarHolder
-                                    image={item?.name}
-                                    initials={''}
-                                />
+                                <AvatarHolder image={mediaUrl} initials={''} />
                                 <div className="flex flex-col gap-1 justify-center">
                                     <div className="Text !leading-[0.75em]">
                                         {item?.name || UNKNOWN_USER}

@@ -2,7 +2,7 @@
 import { useMutation } from '@tanstack/react-query';
 import clsx from 'clsx';
 import { FC, Suspense, useEffect, useState } from 'react';
-import { FiEdit, FiLoader } from 'react-icons/fi';
+import { FiEdit, FiLoader, FiTrash } from 'react-icons/fi';
 import { match } from 'ts-pattern';
 import { useDebouncedCallback } from 'use-debounce';
 
@@ -19,12 +19,24 @@ export const MediaPreview: FC<{
     url?: string;
     name?: string;
     kind?: string;
+    status?: string;
     update_media_id?: (_media_id: number) => void;
-}> = ({ media_id, url, name, kind, update_media_id }) => {
+    delete_media?: (_media_id: number) => void;
+}> = ({ media_id, url, name, kind, status, update_media_id, delete_media }) => {
     const { data: media } = useMedia(media_id);
 
     const fileType = kind ?? media?.url.split('.').pop();
     const { token } = useAuth();
+
+    const mediaUrl = (() => {
+        const link = url ?? media?.url;
+
+        if (link?.includes(':')) {
+            return link;
+        }
+
+        return 'http://localhost:9000/property/' + link;
+    })();
 
     const {
         mutate: uploadMedia,
@@ -33,12 +45,12 @@ export const MediaPreview: FC<{
         isSuccess,
     } = useMutation({
         mutationFn: async () => {
-            if (!url) return;
+            if (!mediaUrl) return;
 
             // artificial 5 second delay
             const formData = new FormData();
 
-            const responsereq = await fetch(url);
+            const responsereq = await fetch(mediaUrl);
             const blob = await responsereq.blob();
 
             formData.append('file', blob);
@@ -67,7 +79,7 @@ export const MediaPreview: FC<{
     const debounced = useDebouncedCallback(uploadMedia, 200);
 
     useEffect(() => {
-        if (!media_id && url && isIdle) {
+        if (!media_id && mediaUrl && isIdle) {
             debounced();
         }
     }, []);
@@ -76,9 +88,14 @@ export const MediaPreview: FC<{
         <div
             className={clsx(
                 'relative aspect-video bg-neutral-100 max-w-md w-full rounded-md',
-                isPending && 'border-blue-400 border-2',
-                isIdle && 'border-neutral-200 border',
-                isSuccess && 'border-green-400 border-2'
+                status == 'new-media' &&
+                    isPending &&
+                    'border-blue-400 border-2',
+                status == 'new-media' && isIdle && 'border-neutral-200 border',
+                ['new-media', 'existing-media'].includes(status ?? '') &&
+                    isSuccess &&
+                    'border-green-400 border-2',
+                status == 'removed-media' && 'border-red-400 border-2'
             )}
         >
             {match(fileType)
@@ -92,13 +109,13 @@ export const MediaPreview: FC<{
                     'jpeg',
                     'image/jpeg',
                     'image/gif',
-                    () => <ImagePreview media_id={media_id} url={url} />
+                    () => <ImagePreview media_id={media_id} url={mediaUrl} />
                 )
                 .with('mp4', 'video/mp4', () => (
-                    <VideoPreview media_id={media_id} url={url} />
+                    <VideoPreview media_id={media_id} url={mediaUrl} />
                 ))
                 .with('stl', 'model/stl', () => (
-                    <StlPreview media_id={media_id} url={url} />
+                    <StlPreview media_id={media_id} url={mediaUrl} />
                 ))
                 .otherwise(() => (
                     <div className="p-3 border-orange-500 border-2 rounded-md bg-orange-100 h-full">
@@ -114,9 +131,20 @@ export const MediaPreview: FC<{
             {media_id && (
                 <div className="flex justify-between items-center p-2 border-t-inherit border-t">
                     <div className="pl-4">{media?.description}</div>
-                    <Button className="">
-                        <FiEdit />
-                    </Button>
+                    <div className="flex gap-2">
+                        {delete_media && (
+                            <Button
+                                className=""
+                                type="button"
+                                onClick={() => delete_media?.(media_id)}
+                            >
+                                <FiTrash />
+                            </Button>
+                        )}
+                        <Button className="" type="button">
+                            <FiEdit />
+                        </Button>
+                    </div>
                 </div>
             )}
         </div>
@@ -149,7 +177,9 @@ export const ImagePreview: FC<{ media_id?: number; url?: string }> = ({
                 <div className="p-3 border-red-500 border-2 rounded-md bg-red-100 h-full">
                     <p className="font-bold">Image Preview Error</p>
                     <p>Image not found</p>
-                    <code>{url ?? media?.url}</code>
+                    <code className="text-wrap break-all">
+                        {url ?? media?.url}
+                    </code>
                 </div>
             ) : (
                 <img

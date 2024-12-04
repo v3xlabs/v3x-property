@@ -1,36 +1,57 @@
-import { FC, useCallback, useEffect, useReducer } from 'react';
+import { FC, Reducer, useCallback, useEffect, useReducer } from 'react';
 
 import { Button } from '../ui/Button';
 import { MediaDropzone } from './MediaDropzone';
 import { MediaPreview } from './MediaPreview';
 import { AttachedMedia } from './upload/t';
 
+type Action =
+    | { type: 'add'; media: AttachedMedia[] }
+    | { type: 'update'; blob: string; media: AttachedMedia }
+    | { type: 'remove'; media_id: number };
+
+const reducer: Reducer<AttachedMedia[], Action> = (state, action) => {
+    switch (action.type) {
+        case 'add':
+            return [...state, ...action.media];
+        case 'update':
+            return state.map((m) =>
+                m.status === 'new-media' && m.blob === action.blob
+                    ? action.media
+                    : m
+            );
+        case 'remove':
+            console.log('remove');
+
+            return state
+                .map((m) => {
+                    if (m.media_id === action.media_id) {
+                        // If brand new media, no need to tell engine, just remove it
+                        if (m.status === 'new-media') {
+                            return;
+                        }
+
+                        // Otherwise, tell engine to remove it
+                        return {
+                            ...m,
+                            status: 'removed-media',
+                        } as AttachedMedia;
+                    }
+
+                    return m;
+                })
+                .filter(Boolean);
+        default:
+            return state;
+    }
+};
+
 export const EditMediaGallery: FC<{
     media: AttachedMedia[];
     onChange: (_media: AttachedMedia[]) => void;
 }> = ({ media, onChange }) => {
     // use reducer to manage media
-    const [state, dispatch] = useReducer(
-        (
-            state: AttachedMedia[],
-            action:
-                | { type: 'add'; media: AttachedMedia[] }
-                | { type: 'update'; blob: string; media: AttachedMedia }
-        ) => {
-            switch (action.type) {
-                case 'add':
-                    return [...state, ...action.media];
-                case 'update':
-                    return state.map((m) =>
-                        m.status === 'new-media' && m.blob === action.blob
-                            ? action.media
-                            : m
-                    );
-            }
-        },
-        [media],
-        ([media]) => media
-    );
+    const [state, dispatch] = useReducer(reducer, [media], ([media]) => media);
 
     const onDrop = useCallback(
         (acceptedFiles: File[]) => {
@@ -67,6 +88,7 @@ export const EditMediaGallery: FC<{
                                     url={item.blob}
                                     name={item.name}
                                     kind={item.kind}
+                                    status={item.status}
                                     update_media_id={(media_id) => {
                                         console.log(
                                             'update_media_id',
@@ -79,9 +101,24 @@ export const EditMediaGallery: FC<{
                                             media: { ...item, media_id },
                                         });
                                     }}
+                                    delete_media={(media_id) => {
+                                        dispatch({
+                                            type: 'remove',
+                                            media_id,
+                                        });
+                                    }}
                                 />
                             ) : (
-                                `Existing media ID: ${item.media_id}`
+                                <MediaPreview
+                                    media_id={item.media_id}
+                                    status={item.status}
+                                    delete_media={(media_id) => {
+                                        dispatch({
+                                            type: 'remove',
+                                            media_id,
+                                        });
+                                    }}
+                                />
                             )}
                         </li>
                     ))}

@@ -8,7 +8,12 @@ import {
 import { FC } from 'react';
 import { toast } from 'sonner';
 
-import { useApiDeleteItem, useApiEditItem, useApiItemById } from '@/api/item';
+import {
+    useApiDeleteItem,
+    useApiEditItem,
+    useApiItemById,
+    useApiItemMedia,
+} from '@/api/item';
 import { BaseInput } from '@/components/input/BaseInput';
 import { EditMediaGallery } from '@/components/media/EditMediaGallery';
 import { EditItemForm } from '@/components/media/upload/t';
@@ -67,6 +72,8 @@ export const Route = createFileRoute('/item/$itemId/edit')({
     component: () => {
         const { itemId } = useParams({ from: '/item/$itemId/edit' });
         const { data: item, isLoading } = useApiItemById(itemId);
+        const { data: media, isLoading: isLoadingMedia } =
+            useApiItemMedia(itemId);
         const editItem = useApiEditItem();
         const navigate = useNavigate();
 
@@ -74,7 +81,7 @@ export const Route = createFileRoute('/item/$itemId/edit')({
             defaultValues: {
                 name: item?.name ?? '',
                 media:
-                    item?.media?.map((media_id) => ({
+                    (media ?? item?.media)?.map((media_id) => ({
                         status: 'existing-media',
                         media_id,
                     })) ?? [],
@@ -92,6 +99,7 @@ export const Route = createFileRoute('/item/$itemId/edit')({
                         item_id: itemId,
                         data: {
                             name: value.name,
+                            media: value.media,
                         },
                     },
                     {
@@ -115,7 +123,7 @@ export const Route = createFileRoute('/item/$itemId/edit')({
             },
         });
 
-        if (isLoading) {
+        if (isLoading || isLoadingMedia) {
             return (
                 <SCPage title={`Edit Item ${itemId}`}>
                     <h2>Loading...</h2>
