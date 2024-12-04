@@ -20,6 +20,11 @@ RUN ["/bin/bash", "-c", "set -x && rm target/x86_64-unknown-linux-musl/release/d
 # Now add the rest of the project and build the real main
 COPY src ./src
 COPY migrations ./migrations
+
+# Set the DATABASE_URL environment variable for the build process
+ARG RUNNER_IP
+ENV DATABASE_URL=postgres://postgres:postgres@${RUNNER_IP}:5432/postgres
+
 RUN set -x && cargo build --target x86_64-unknown-linux-musl --release
 RUN mkdir -p /build-out
 RUN set -x && cp target/x86_64-unknown-linux-musl/release/$BINARY_NAME /build-out/
@@ -34,8 +39,6 @@ ARG BINARY_NAME_DEFAULT
 ENV BINARY_NAME=$BINARY_NAME_DEFAULT
 # ARG MY_GREAT_CONFIG_DEFAULT
 # ENV MY_GREAT_CONFIG=$MY_GREAT_CONFIG_DEFAULT
-ARG RUNNER_IP
-ENV DATABASE_URL=postgres://postgres:postgres@${RUNNER_IP}:5432/postgres
 
 ENV RUST_LOG="error,$BINARY_NAME=info"
 COPY --from=builder /build-out/$BINARY_NAME /
