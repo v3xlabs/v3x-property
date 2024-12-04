@@ -72,3 +72,5 @@ jobs:
           push: true
           build-args: |
             BINARY_NAME=v3x-property-engine
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}

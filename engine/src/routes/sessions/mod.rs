@@ -1,7 +1,7 @@
 use std::sync::Arc;
 
-use poem::{web::{Data, Path}, Error, Result};
-use poem_openapi::{payload::Json, OpenApi};
+use poem::{web::Data, Error, Result};
+use poem_openapi::{param::Path, payload::Json, OpenApi};
 use reqwest::StatusCode;
 use tracing::info;
 

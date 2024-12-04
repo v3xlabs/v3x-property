@@ -1,7 +1,7 @@
 use std::sync::Arc;
 
-use poem::web::{Data, Path};
-use poem_openapi::{payload::Json, OpenApi};
+use poem::web::Data;
+use poem_openapi::{param::Path, payload::Json, OpenApi};
 
 use crate::{
     models::user::{user::User, userentry::UserEntry},
