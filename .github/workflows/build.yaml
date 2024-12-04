@@ -27,6 +27,14 @@ jobs:
         working-directory: ./engine
         run: docker compose -f ./compose.yaml up postgres -d
 
+      - name: Setup Env
+        working-directory: ./engine
+        run: cp .env.example .env
+
+      - name: Get Runner IP
+        id: get_ip
+        run: echo "RUNNER_IP=$(hostname -I | awk '{print $1}')" >> $GITHUB_ENV
+
       - name: Migrate db
         working-directory: ./engine
         run: cargo install sqlx-cli --no-default-features --features native-tls,postgres && sqlx migrate run
@@ -34,10 +42,6 @@ jobs:
       - name: Build
         working-directory: ./engine
         run: sqlx migrate run
-
-      - name: Get Runner IP
-        id: get_ip
-        run: echo "RUNNER_IP=$(hostname -I | awk '{print $1}')" >> $GITHUB_ENV
 
       - name: Build docker image using github actions
         uses: docker/build-push-action@v5
