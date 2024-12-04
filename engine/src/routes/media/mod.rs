@@ -1,10 +1,10 @@
 use std::sync::Arc;
 
 use poem::{
-    web::{Data, Multipart, Query},
+    web::{Data, Multipart},
     Result,
 };
-use poem_openapi::{param::Path, payload::Json, Object, OpenApi};
+use poem_openapi::{param::{Path, Query}, payload::Json, Object, OpenApi};
 use reqwest::StatusCode;
 use serde::{Deserialize, Serialize};
 
@@ -20,12 +20,6 @@ pub struct MediaApi;
 #[derive(Deserialize, Debug, Serialize, Object)]
 pub struct MediaIdResponse {
     media_id: String,
-}
-
-#[derive(Deserialize, Debug, Serialize, Object)]
-pub struct CreateMediaRequest {
-    name: String,
-    kind: String,
 }
 
 #[OpenApi]
@@ -66,9 +60,10 @@ impl MediaApi {
     #[oai(path = "/media", method = "post", tag = "ApiTags::Media")]
     async fn create_media(
         &self,
+        name: Query<String>,
+        kind: Query<String>,
         auth: AuthToken,
         state: Data<&Arc<AppState>>,
-        request: Query<CreateMediaRequest>,
         mut upload: Multipart,
     ) -> Json<Media> {
         let file = upload.next_field().await.unwrap().unwrap();
@@ -80,12 +75,12 @@ impl MediaApi {
 
         let url = state
             .storage
-            .upload(&request.name, &request.kind, tempfile.into())
+            .upload(&name.0, &kind.0, tempfile.into())
             .await
             .unwrap();
 
         Json(
-            Media::new(&state.database, request.0.name, url, request.0.kind)
+            Media::new(&state.database, name.0, url, kind.0)
                 .await
                 .unwrap(),
         )

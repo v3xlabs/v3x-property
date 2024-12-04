@@ -10,13 +10,11 @@ use serde::Deserialize;
 
 use crate::state::AppState;
 
-#[derive(Deserialize)]
-struct LoginQuery {
-    redirect: Option<String>,
-}
-
 #[handler]
-pub async fn login(query: Query<LoginQuery>, state: Data<&Arc<AppState>>) -> impl IntoResponse {
+pub async fn login(
+    redirect: Query<Option<String>>,
+    state: Data<&Arc<AppState>>,
+) -> impl IntoResponse {
     // let discovery_url = "http://localhost:8080/realms/master/.well-known/openid-configuration";
 
     // let http_client = reqwest::Client::new();
@@ -32,7 +30,7 @@ pub async fn login(query: Query<LoginQuery>, state: Data<&Arc<AppState>>) -> imp
 
     let options = Options {
         scope: Some(scope),
-        state: query.redirect.clone(),
+        state: redirect.0.clone(),
         prompt: Some(HashSet::from([Prompt::SelectAccount])),
         ..Default::default()
     };

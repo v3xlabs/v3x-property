@@ -26,11 +26,6 @@ pub struct ItemIdResponse {
     item_id: String,
 }
 
-#[derive(Deserialize, Debug, Serialize, Object)]
-pub struct CreateItemRequest {
-    item_id: String,
-}
-
 
 #[derive(poem_openapi::Object, Debug, Clone, Serialize, Deserialize)]
 pub struct ItemUpdatePayload {
@@ -89,11 +84,11 @@ impl ItemsApi {
         &self,
         auth: AuthToken,
         state: Data<&Arc<AppState>>,
-        request: Query<CreateItemRequest>,
+        item_id: Query<String>,
     ) -> Json<Item> {
         Json(
             Item {
-                item_id: request.item_id.clone(),
+                item_id: item_id.0,
                 owner_id: auth.ok().map(|user| user.session.user_id),
                 ..Default::default()
             }

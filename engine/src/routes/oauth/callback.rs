@@ -18,38 +18,38 @@ use crate::{
     state::AppState,
 };
 
-#[derive(Deserialize, Debug)]
-pub struct CallbackQuery {
-    pub state: Option<String>,
-    pub scope: Option<String>,
-    pub hd: Option<String>,
-    pub authuser: Option<String>,
-    pub code: String,
-    pub prompt: Option<String>,
-}
-
 #[handler]
 pub async fn callback(
-    query: Query<CallbackQuery>,
-    state: Data<&Arc<AppState>>,
+    state: Query<Option<String>>,
+    scope: Query<Option<String>>,
+    hd: Query<Option<String>>,
+    authuser: Query<Option<String>>,
+    code: Query<String>,
+    prompt: Query<Option<String>>,
+    app_state: Data<&Arc<AppState>>,
     ip: RealIp,
     headers: &HeaderMap,
 ) -> Result<WithHeader<Redirect>> {
-    let mut token = state.openid.request_token(&query.code).await.map_err(|_| {
-        poem::Error::from_response(Redirect::temporary(state.openid.redirect_url()).into_response())
+    let mut token = app_state.openid.request_token(&code).await.map_err(|_| {
+        poem::Error::from_response(
+            Redirect::temporary(app_state.openid.redirect_url()).into_response(),
+        )
     })?;
 
     let mut token = Token::from(token);
 
     let mut id_token = token.id_token.take().unwrap();
 
-    state.openid.decode_token(&mut id_token).unwrap();
-    state.openid.validate_token(&id_token, None, None).unwrap();
+    app_state.openid.decode_token(&mut id_token).unwrap();
+    app_state
+        .openid
+        .validate_token(&id_token, None, None)
+        .unwrap();
 
-    let oauth_userinfo = state.openid.request_userinfo(&token).await.unwrap();
+    let oauth_userinfo = app_state.openid.request_userinfo(&token).await.unwrap();
 
     // Now we must verify the user information, decide wether they deserve access, and if so return a token.
-    let user = UserEntry::upsert(&oauth_userinfo, None, &state.database)
+    let user = UserEntry::upsert(&oauth_userinfo, None, &app_state.database)
         .await
         .unwrap();
 
@@ -60,7 +60,7 @@ pub async fn callback(
     let hash = hash_session(&token).unwrap();
 
     let _session = Session::new(
-        &state.database,
+        &app_state.database,
         &hash,
         user.user_id,
         user_agent,
@@ -71,8 +71,8 @@ pub async fn callback(
 
     info!("Issued session token for user {}", user.user_id);
 
-    let mut redirect_url: Url = query
-        .state
+    let mut redirect_url: Url = state
+        .0
         .clone()
         .unwrap_or("http://localhost:3000/me".to_string())
         .parse()
@@ -80,6 +80,8 @@ pub async fn callback(
 
     redirect_url.set_query(Some(&format!("token={}", token)));
 
-    Ok(Redirect::temporary(redirect_url)
-        .with_header("Set-Cookie", format!("property.v3x.token={}; Secure; HttpOnly", token)))
+    Ok(Redirect::temporary(redirect_url).with_header(
+        "Set-Cookie",
+        format!("property.v3x.token={}; Secure; HttpOnly", token),
+    ))
 }
