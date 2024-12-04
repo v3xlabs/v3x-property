@@ -22,6 +22,14 @@ jobs:
         with:
           version: "v0.7.4"
 
+      - name: Start postgres via docker-compose dev
+        working-directory: ./engine
+        run: docker compose -f ./docker-compose.dev.yml up -d
+
+      - name: Migrate db
+        working-directory: ./engine
+        run: cargo sqlx migrate run
+
       - name: Build
         working-directory: ./engine
         run: cargo build
