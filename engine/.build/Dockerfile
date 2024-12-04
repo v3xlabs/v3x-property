@@ -22,7 +22,7 @@ RUN ["/bin/bash", "-c", "set -x && rm target/x86_64-unknown-linux-musl/release/d
 # Now add the rest of the project and build the real main
 COPY src ./src
 COPY migrations ./migrations
-COPY .sqlx ./sqlx
+COPY .sqlx ./.sqlx
 
 RUN set -x && SQLX_OFFLINE=true cargo build --target x86_64-unknown-linux-musl --release
 RUN mkdir -p /build-out
