@@ -1,7 +1,7 @@
 import { createLazyFileRoute } from '@tanstack/react-router';
 import { cva, VariantProps } from 'class-variance-authority';
 import { ReactNode, useState } from 'react';
-import { FaGear } from 'react-icons/fa6';
+import { FaCopy, FaGear } from 'react-icons/fa6';
 import { toast } from 'sonner';
 
 import {
@@ -20,6 +20,7 @@ import {
     buttonVariants,
     buttonVariantsConfig,
 } from '@/components/ui/Button';
+import * as Dialog from '@/components/ui/Dialog';
 import * as Dropdown from '@/components/ui/Dropdown';
 import { Input } from '@/components/ui/Input';
 import { Label } from '@/components/ui/Label';
@@ -193,9 +194,9 @@ const CustomComponentSection = <
     );
 };
 
-const component = () => {
+const Components = () => {
     return (
-        <SCPage title="Debug" width="4xl" className="pb-32">
+        <>
             <DebugVariants
                 displayName="Button"
                 config={buttonVariantsConfig.variants!}
@@ -467,10 +468,83 @@ const component = () => {
                     </Button>
                 </div>
             </CustomComponentSection>
-        </SCPage>
+
+            <CustomComponentSection displayName="Dialog">
+                <VariantTitle>Default</VariantTitle>
+                <Dialog.Root>
+                    <Dialog.Trigger asChild>
+                        <Button variant="default">Open</Button>
+                    </Dialog.Trigger>
+                    <Dialog.Content>
+                        <Dialog.Header>
+                            <Dialog.Title>Some Title Here</Dialog.Title>
+                            <Dialog.Description>
+                                Perhaps a lorem ipsum could be here
+                            </Dialog.Description>
+                        </Dialog.Header>
+                        <Dialog.Footer>
+                            <Button type="submit">Confirm</Button>
+                        </Dialog.Footer>
+                    </Dialog.Content>
+                </Dialog.Root>
+
+                <VariantTitle>With Inputs</VariantTitle>
+                <Dialog.Root>
+                    <Dialog.Trigger asChild>
+                        <Button variant="default">Open</Button>
+                    </Dialog.Trigger>
+                    <Dialog.Content className="sm:max-w-md">
+                        <Dialog.Header>
+                            <Dialog.Title>Share link</Dialog.Title>
+                            <Dialog.Description>
+                                Anyone who has this link will be able to view
+                                this.
+                            </Dialog.Description>
+                        </Dialog.Header>
+                        <div className="flex items-center space-x-2">
+                            <div className="grid flex-1 gap-2">
+                                <Label htmlFor="link" className="sr-only">
+                                    Link
+                                </Label>
+                                <Input
+                                    id="link"
+                                    defaultValue="https://v3x.property"
+                                    readOnly
+                                />
+                            </div>
+                            <Button
+                                type="submit"
+                                size="sm"
+                                className="px-3"
+                                onClick={() => {
+                                    navigator.clipboard.writeText(
+                                        'https://www.youtube.com/watch?v=dQw4w9WgXcQ'
+                                    );
+                                    toast.success('Copied to clipboard');
+                                }}
+                            >
+                                <span className="sr-only">Copy</span>
+                                <FaCopy />
+                            </Button>
+                        </div>
+                        <Dialog.Footer className="sm:justify-start">
+                            <Dialog.Close asChild>
+                                <Button type="button" variant="secondary">
+                                    Close
+                                </Button>
+                            </Dialog.Close>
+                        </Dialog.Footer>
+                    </Dialog.Content>
+                </Dialog.Root>
+            </CustomComponentSection>
+        </>
     );
 };
 
 export const Route = createLazyFileRoute('/debug')({
-    component,
+    component: () => (
+        <SCPage title="Debug" width="4xl" className="pb-32">
+            <Components />
+        </SCPage>
+    ),
 });
