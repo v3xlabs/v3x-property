@@ -46,6 +46,6 @@ jobs:
           file: ./engine/.build/Dockerfile
           tags: v3x-property-engine:latest
           push: false
-          build-args:
+          build-args: |
             - BINARY_NAME=v3x-property-engine
             - DATABASE_URL=postgres://postgres:postgres@${{ env.RUNNER_IP }}:5432/postgres
