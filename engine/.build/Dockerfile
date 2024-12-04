@@ -25,6 +25,8 @@ COPY migrations ./migrations
 ARG DATABASE_URL
 ENV DATABASE_URL=$DATABASE_URL
 
+RUN echo "DATABASE_URL=$DATABASE_URL"
+
 RUN set -x && cargo build --target x86_64-unknown-linux-musl --release
 RUN mkdir -p /build-out
 RUN set -x && cp target/x86_64-unknown-linux-musl/release/$BINARY_NAME /build-out/
