@@ -1,14 +1,11 @@
 use std::env;
-
-use aws_config::Region;
-use aws_sdk_s3::{
-    config::Credentials, primitives::ByteStream, types::CreateBucketConfiguration, Client,
-};
-use tracing::info;
+use s3::creds::Credentials;
+use s3::Bucket;
+use s3::Region;
 use uuid::Uuid;
 
 pub struct Storage {
-    client: Client,
+    bucket: Box<Bucket>,
     bucket_name: String,
 }
 
@@ -20,20 +17,15 @@ impl Storage {
         access_key: String,
         secret_key: String,
     ) -> Self {
-        let config = aws_sdk_s3::Config::builder()
-            .endpoint_url(endpoint_url)
-            .region(Region::new(region))
-            .credentials_provider(Credentials::new(
-                access_key, secret_key, None, None, "static",
-            ))
-            .behavior_version_latest()
-            .force_path_style(true)
-            .build();
-
-        let client = Client::from_conf(config);
+        let credentials = Credentials::new(Some(&access_key), Some(&secret_key), None, None, None).unwrap();
+        let region = Region::Custom {
+            region,
+            endpoint: endpoint_url,
+        };
+        let bucket = Bucket::new(&bucket_name, region, credentials).unwrap();
 
         Self {
-            client,
+            bucket,
             bucket_name,
         }
     }
@@ -53,7 +45,7 @@ impl Storage {
         &self,
         name: &str,
         kind: &str,
-        file: ByteStream,
+        file: Vec<u8>,
     ) -> Result<String, anyhow::Error> {
         let file_extension = name.split('.').last().unwrap();
 
@@ -62,47 +54,20 @@ impl Storage {
         let uuid = Uuid::new_v4();
         let url = format!("{}.{}", uuid, file_extension);
 
-        let put_object_output = self
-            .client
-            .put_object()
-            .bucket(&self.bucket_name)
-            .key(&url)
-            .content_type(kind)
-            .body(file)
-            .send()
-            .await
-            .unwrap();
+        self.bucket.put_object(&url, &file).await?;
 
         Ok(url)
     }
 
     async fn ensure_bucket(&self) -> Result<(), anyhow::Error> {
-        let buckets = self.client.list_buckets().send().await.unwrap();
+        // let buckets = self.bucket.list("".to_string(), None).await?;
 
-        info!("Buckets: {:?}", buckets);
+        // info!("Buckets: {:?}", buckets);
 
-        // if bucket does not exist, create it
-        if !buckets
-            .buckets()
-            .iter()
-            .any(|x| x.name().unwrap() == self.bucket_name)
-        {
-            self.client
-                .create_bucket()
-                .create_bucket_configuration(CreateBucketConfiguration::builder().build())
-                .bucket(&self.bucket_name)
-                .send()
-                .await
-                .unwrap();
-
-            self.client
-                .put_bucket_policy()
-                .bucket(&self.bucket_name)
-                .policy(r#"{"Version":"2012-10-17","Statement":[{"Effect":"Allow","Principal":{"AWS":["*"]},"Action":["s3:GetObject"],"Resource":["arn:aws:s3:::property/*"]}]}"#)
-                .send()
-                .await
-                .unwrap();
-        }
+        // // if bucket does not exist, create it
+        // if !buckets.iter().any(|x| x.name == self.bucket_name) {
+        //     self.().await?;
+        // }
 
         Ok(())
     }

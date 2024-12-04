@@ -1,11 +1,8 @@
 use std::{collections::HashSet, sync::Arc};
 
 use openid::{Options, Prompt};
-use poem::{
-    handler, http::Response, web::{headers::Header, Data, Redirect}, IntoResponse
-};
-use poem_openapi::{param::Query, payload::{PlainText}, ApiResponse, OpenApi};
-use serde::Deserialize;
+use poem::web::Data;
+use poem_openapi::{param::Query, payload::PlainText, ApiResponse, OpenApi};
 
 use crate::state::AppState;
 
@@ -19,7 +16,6 @@ enum RedirectResponse {
 
 #[OpenApi]
 impl LoginApi {
-
     #[oai(path = "/login", method = "get")]
     pub async fn login(
         &self,
