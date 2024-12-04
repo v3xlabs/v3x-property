@@ -4,6 +4,7 @@ use instance::InstanceApi;
 use items::ItemsApi;
 use me::MeApi;
 use media::MediaApi;
+use oauth::login::LoginApi;
 use poem::{
     get, handler, listener::TcpListener, middleware::Cors, web::Html, EndpointExt, Route, Server,
 };
@@ -50,6 +51,7 @@ fn get_api() -> impl OpenApi {
         UserApi,
         SessionsApi,
         InstanceApi,
+        LoginApi,
     )
 }
 
@@ -67,7 +69,6 @@ pub async fn serve(state: AppState) -> Result<(), poem::Error> {
     let state = Arc::new(state);
 
     let app = Route::new()
-        .at("/login", get(oauth::login::login))
         .at("/callback", get(oauth::callback::callback))
         .nest("/api", api_service)
         .nest("/openapi.json", spec)

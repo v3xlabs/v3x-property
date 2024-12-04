@@ -2,44 +2,56 @@ use std::{collections::HashSet, sync::Arc};
 
 use openid::{Options, Prompt};
 use poem::{
-    handler,
-    web::{Data, Query, Redirect},
-    IntoResponse,
+    handler, http::Response, web::{headers::Header, Data, Redirect}, IntoResponse
 };
+use poem_openapi::{param::Query, payload::{PlainText}, ApiResponse, OpenApi};
 use serde::Deserialize;
 
 use crate::state::AppState;
 
-#[handler]
-pub async fn login(
-    redirect: Query<Option<String>>,
-    state: Data<&Arc<AppState>>,
-) -> impl IntoResponse {
-    // let discovery_url = "http://localhost:8080/realms/master/.well-known/openid-configuration";
+pub struct LoginApi;
 
-    // let http_client = reqwest::Client::new();
-    // let discovery_response: DiscoveryResponse = http_client
-    //     .get(discovery_url)
-    //     .send()
-    //     .await.unwrap()
-    //     .json()
-    //     .await.unwrap();
+#[derive(ApiResponse)]
+enum RedirectResponse {
+    #[oai(status = 302)]
+    Redirect(PlainText<String>),
+}
 
-    // scopes, for calendar for example https://www.googleapis.com/auth/calendar.events
-    let scope = "openid email profile".to_string();
+#[OpenApi]
+impl LoginApi {
 
-    let options = Options {
-        scope: Some(scope),
-        state: redirect.0.clone(),
-        prompt: Some(HashSet::from([Prompt::SelectAccount])),
-        ..Default::default()
-    };
+    #[oai(path = "/login", method = "get")]
+    pub async fn login(
+        &self,
+        redirect: Query<Option<String>>,
+        state: Data<&Arc<AppState>>,
+    ) -> RedirectResponse {
+        // let discovery_url = "http://localhost:8080/realms/master/.well-known/openid-configuration";
 
-    // Generate the authorization URL
-    let authorize_url = state.openid.auth_url(&options);
+        // let http_client = reqwest::Client::new();
+        // let discovery_response: DiscoveryResponse = http_client
+        //     .get(discovery_url)
+        //     .send()
+        //     .await.unwrap()
+        //     .json()
+        //     .await.unwrap();
 
-    println!("OpenID Connect Authorization URL: {}", authorize_url);
+        // scopes, for calendar for example https://www.googleapis.com/auth/calendar.events
+        let scope = "openid email profile".to_string();
 
-    // redirect to the authorization URL
-    Redirect::temporary(authorize_url.as_str())
+        let options = Options {
+            scope: Some(scope),
+            state: redirect.0.clone(),
+            prompt: Some(HashSet::from([Prompt::SelectAccount])),
+            ..Default::default()
+        };
+
+        // Generate the authorization URL
+        let authorize_url = state.openid.auth_url(&options);
+
+        println!("OpenID Connect Authorization URL: {}", authorize_url);
+
+        // redirect to the authorization URL
+        RedirectResponse::Redirect(PlainText(authorize_url.as_str().to_string()))
+    }
 }
