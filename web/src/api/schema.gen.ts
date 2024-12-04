@@ -133,7 +133,9 @@ export type paths = {
             parameters: {
                 query?: never;
                 header?: never;
-                path?: never;
+                path: {
+                    item_id: string;
+                };
                 cookie?: never;
             };
             requestBody?: never;
@@ -158,7 +160,9 @@ export type paths = {
             parameters: {
                 query?: never;
                 header?: never;
-                path?: never;
+                path: {
+                    item_id: string;
+                };
                 cookie?: never;
             };
             requestBody?: never;
@@ -182,7 +186,9 @@ export type paths = {
             parameters: {
                 query?: never;
                 header?: never;
-                path?: never;
+                path: {
+                    item_id: string;
+                };
                 cookie?: never;
             };
             requestBody: {
@@ -216,7 +222,9 @@ export type paths = {
             parameters: {
                 query?: never;
                 header?: never;
-                path?: never;
+                path: {
+                    item_id: string;
+                };
                 cookie?: never;
             };
             requestBody?: never;
@@ -254,7 +262,9 @@ export type paths = {
             parameters: {
                 query?: never;
                 header?: never;
-                path?: never;
+                path: {
+                    item_id: string;
+                };
                 cookie?: never;
             };
             requestBody?: never;
@@ -314,7 +324,10 @@ export type paths = {
          */
         post: {
             parameters: {
-                query?: never;
+                query: {
+                    name: string;
+                    kind: string;
+                };
                 header?: never;
                 path?: never;
                 cookie?: never;
@@ -390,7 +403,9 @@ export type paths = {
             parameters: {
                 query?: never;
                 header?: never;
-                path?: never;
+                path: {
+                    media_id: number;
+                };
                 cookie?: never;
             };
             requestBody?: never;
@@ -415,7 +430,9 @@ export type paths = {
             parameters: {
                 query?: never;
                 header?: never;
-                path?: never;
+                path: {
+                    media_id: number;
+                };
                 cookie?: never;
             };
             requestBody?: never;
@@ -448,7 +465,9 @@ export type paths = {
             parameters: {
                 query?: never;
                 header?: never;
-                path?: never;
+                path: {
+                    media_id: number;
+                };
                 cookie?: never;
             };
             requestBody?: never;
@@ -599,7 +618,9 @@ export type paths = {
             parameters: {
                 query?: never;
                 header?: never;
-                path?: never;
+                path: {
+                    task_id: number;
+                };
                 cookie?: never;
             };
             requestBody?: never;
@@ -674,7 +695,9 @@ export type paths = {
             parameters: {
                 query?: never;
                 header?: never;
-                path?: never;
+                path: {
+                    user_id: number;
+                };
                 cookie?: never;
             };
             requestBody?: never;
@@ -753,7 +776,9 @@ export type paths = {
             parameters: {
                 query?: never;
                 header?: never;
-                path?: never;
+                path: {
+                    session_id: string;
+                };
                 cookie?: never;
             };
             requestBody?: never;
@@ -817,8 +842,13 @@ export type components = {
     schemas: {
         /** @enum {string} */
         IdCasingPreference: "upper" | "lower";
+        InstanceModulesStatus: {
+            search: boolean;
+            intelligence: boolean;
+        };
         InstanceSettings: {
             id_casing_preference: components["schemas"]["IdCasingPreference"];
+            modules: components["schemas"]["InstanceModulesStatus"];
         };
         Item: {
             item_id: string;

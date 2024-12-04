@@ -8,7 +8,7 @@ import {
 } from '@tanstack/react-query';
 
 import { useAuth } from './auth';
-import { BASE_URL, getHttp } from './core';
+import { apiRequest, BASE_URL, getHttp } from './core';
 import { paths } from './schema.gen';
 
 export type ApiItemResponse = {
@@ -23,25 +23,32 @@ export type ApiItemResponse = {
 
 export const itemByIdQueryOptions = (item_id: string) =>
     queryOptions({
-        queryKey: ['item', item_id],
-        queryFn: getHttp<ApiItemResponse>('/api/item/' + item_id, {
-            auth: 'include',
-        }),
+        queryKey: ['item', '{item_id}', item_id],
+        queryFn: async () => {
+            const response = await apiRequest('/item/{item_id}', 'get', {
+                path: { item_id },
+            });
+
+            return response.data;
+        },
     });
 
 export const useApiItemById = (item_id: string) => {
     return useQuery(itemByIdQueryOptions(item_id));
 };
 
-export const getApiOwnedItems = (): UseQueryOptions<ApiItemResponse[]> => ({
-    queryKey: ['item', 'owned'],
-    queryFn: getHttp('/api/item/owned', {
-        auth: 'include',
-    }),
-});
+export const ownedItemsQueryOptions = () =>
+    queryOptions({
+        queryKey: ['item', 'owned'],
+        queryFn: async () => {
+            const response = await apiRequest('/item/owned', 'get', {});
+
+            return response.data;
+        },
+    });
 
 export const useApiOwnedItems = () => {
-    return useQuery(getApiOwnedItems());
+    return useQuery(ownedItemsQueryOptions());
 };
 
 export const itemMediaQueryOptions = (item_id: string) =>
