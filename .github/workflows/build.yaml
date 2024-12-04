@@ -68,7 +68,7 @@ jobs:
         with:
           context: ./engine
           file: ./engine/.build/Dockerfile
-          tags: v3x-property-engine:latest
-          push: false
+          tags: ghcr.io/v3xlabs/v3x-property/engine:latest
+          push: true
           build-args: |
             BINARY_NAME=v3x-property-engine
