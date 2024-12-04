@@ -1,9 +1,10 @@
 use std::sync::Arc;
 
 use poem::{
-    web::Data, Result
+    web::{Data, Query},
+    Result,
 };
-use poem_openapi::{param::{Path, Query}, payload::Json, Object, OpenApi};
+use poem_openapi::{param::Path, payload::Json, Object, OpenApi};
 use reqwest::StatusCode;
 use serde::{Deserialize, Serialize};
 use tracing::info;

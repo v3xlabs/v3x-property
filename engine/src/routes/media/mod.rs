@@ -1,15 +1,19 @@
 use std::sync::Arc;
 
 use poem::{
-    web::{Data, Multipart},
+    web::{Data, Multipart, Query},
     Result,
 };
-use poem_openapi::{param::{Path, Query}, payload::Json, Object, OpenApi};
+use poem_openapi::{param::Path, payload::Json, Object, OpenApi};
 use reqwest::StatusCode;
 use serde::{Deserialize, Serialize};
 
 use super::ApiTags;
-use crate::{auth::middleware::AuthToken, models::media::{LinkedItem, Media}, state::AppState};
+use crate::{
+    auth::middleware::AuthToken,
+    models::media::{LinkedItem, Media},
+    state::AppState,
+};
 
 pub struct MediaApi;
 
@@ -27,7 +31,7 @@ pub struct CreateMediaRequest {
 #[OpenApi]
 impl MediaApi {
     /// /media
-    /// 
+    ///
     /// Get all media
     #[oai(path = "/media", method = "get", tag = "ApiTags::Media")]
     async fn get_all_media(
@@ -42,7 +46,7 @@ impl MediaApi {
     }
 
     /// /media/unassigned
-    /// 
+    ///
     /// Get all unassigned media
     #[oai(path = "/media/unassigned", method = "get", tag = "ApiTags::Media")]
     async fn get_unassigned_media(
@@ -57,7 +61,7 @@ impl MediaApi {
     }
 
     /// /media
-    /// 
+    ///
     /// Create a new Media
     #[oai(path = "/media", method = "post", tag = "ApiTags::Media")]
     async fn create_media(
@@ -86,9 +90,9 @@ impl MediaApi {
                 .unwrap(),
         )
     }
-    
+
     /// /media/:media_id
-    /// 
+    ///
     /// Get a Media by `media_id`
     #[oai(path = "/media/:media_id", method = "get", tag = "ApiTags::Media")]
     async fn get_media(
@@ -107,19 +111,27 @@ impl MediaApi {
     }
 
     /// /media/:media_id/items
-    /// 
+    ///
     /// Get all items linked to a media by `media_id`
-    #[oai(path = "/media/:media_id/items", method = "get", tag = "ApiTags::Media")]
+    #[oai(
+        path = "/media/:media_id/items",
+        method = "get",
+        tag = "ApiTags::Media"
+    )]
     async fn get_linked_items(
         &self,
         state: Data<&Arc<AppState>>,
         media_id: Path<i32>,
     ) -> Result<Json<Vec<LinkedItem>>> {
-        Ok(Json(Media::get_linked_items(&state.database, media_id.0).await.unwrap()))
+        Ok(Json(
+            Media::get_linked_items(&state.database, media_id.0)
+                .await
+                .unwrap(),
+        ))
     }
 
     /// /media/:media_id
-    /// 
+    ///
     /// Delete a Media by `media_id`
     #[oai(path = "/media/:media_id", method = "delete", tag = "ApiTags::Media")]
     async fn delete_media(
