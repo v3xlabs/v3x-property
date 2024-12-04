@@ -1,40 +1,20 @@
 use std::sync::Arc;
 
 use poem::web::Data;
-use poem_openapi::{payload::Json, Enum, Object, OpenApi};
-use serde::{Deserialize, Serialize};
+use poem_openapi::{payload::Json, OpenApi};
 
-use crate::{auth::middleware::AuthToken, state::AppState};
 use super::ApiTags;
+use crate::{
+    auth::middleware::AuthToken,
+    models::settings::InstanceSettings,
+    state::AppState,
+};
 pub struct InstanceApi;
-
-#[derive(Serialize, Deserialize, Enum)]
-pub enum IdCasingPreference {
-    #[oai(rename = "upper")]
-    #[serde(rename = "upper")]
-    Upper,
-    #[oai(rename = "lower")]
-    #[serde(rename = "lower")]
-    Lower,
-}
-
-#[derive(Serialize, Deserialize, Object)]
-pub struct InstanceSettings {
-    pub id_casing_preference: IdCasingPreference,
-}
-
-impl Default for InstanceSettings {
-    fn default() -> Self {
-        Self {
-            id_casing_preference: IdCasingPreference::Upper,
-        }
-    }
-}
 
 #[OpenApi]
 impl InstanceApi {
     /// /instance/settings
-    /// 
+    ///
     /// Get the instance settings
     #[oai(path = "/instance/settings", method = "get", tag = "ApiTags::Instance")]
     pub async fn settings(
@@ -46,7 +26,7 @@ impl InstanceApi {
         // AuthToken::Active(active_user) => {
         // TODO: check if user has permission to access this resource
 
-        Json(InstanceSettings::default())
+        Json(InstanceSettings::load(&state).await)
         // }
         // _ => {
         // Error::from_string("Not Authenticated", StatusCode::UNAUTHORIZED).into_response(),
