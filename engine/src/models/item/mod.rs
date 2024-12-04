@@ -4,7 +4,12 @@ use serde::{Deserialize, Serialize};
 use sqlx::{query, query_as};
 use tracing::info;
 
-use crate::{database::Database, modules::search::Search, routes::items::{ItemUpdateMediaStatus, ItemUpdatePayload}};
+use super::log::LogEntry;
+use crate::{
+    database::Database,
+    modules::search::Search,
+    routes::items::{ItemUpdateMediaStatus, ItemUpdatePayload},
+};
 
 pub mod field;
 pub mod media;
@@ -57,9 +62,21 @@ impl Item {
     }
 
     pub async fn insert(&self, db: &Database) -> Result<Item, sqlx::Error> {
-        query_as!(Item, "INSERT INTO items (item_id, name, owner_id, location_id, product_id) VALUES ($1, $2, $3, $4, $5) RETURNING *", self.item_id, self.name, self.owner_id, self.location_id, self.product_id)
+        let item = query_as!(Item, "INSERT INTO items (item_id, name, owner_id, location_id, product_id) VALUES ($1, $2, $3, $4, $5) RETURNING *", self.item_id, self.name, self.owner_id, self.location_id, self.product_id)
             .fetch_one(&db.pool)
-            .await
+            .await?;
+
+        LogEntry::new(
+            db,
+            "item",
+            &item.item_id,
+            item.owner_id.unwrap_or(1),
+            "create",
+            serde_json::to_string(&item).unwrap().as_str(),
+        )
+        .await;
+
+        Ok(item)
     }
 
     pub async fn get_all(db: &Database) -> Result<Vec<Item>, sqlx::Error> {
@@ -118,10 +135,10 @@ impl Item {
         }
     }
 
-    pub async fn remove_search(&self, search: &Option<Search>, db: &Database) -> Result<Self, ()> {
+    pub async fn remove_search(&self, search: &Option<Search>, _db: &Database) -> Result<Self, ()> {
         match search {
             Some(search) => {
-                search
+                let _ = search
                     .client
                     .index("items")
                     .delete_document(&self.item_id)
@@ -146,12 +163,12 @@ impl Item {
     pub async fn edit_by_id(
         search: &Option<Search>,
         db: &Database,
-        data: ItemUpdatePayload,
+        data: &ItemUpdatePayload,
         item_id: &str,
     ) -> Result<Item, sqlx::Error> {
         let mut tx = db.pool.begin().await?;
 
-        if let Some(name) = data.name {
+        if let Some(name) = &data.name {
             query!(
                 "UPDATE items SET name = $1 WHERE item_id = $2",
                 name,
@@ -191,17 +208,19 @@ impl Item {
             .await?;
         }
 
-        if let Some(media) = data.media {
+        if let Some(media) = &data.media {
             for media in media {
                 match media.status {
                     ItemUpdateMediaStatus::ExistingMedia => {
                         // nothing needed here
-                    },
+                    }
                     ItemUpdateMediaStatus::NewMedia => {
                         ItemMedia::new(db, item_id, media.media_id).await.unwrap();
                     }
                     ItemUpdateMediaStatus::RemovedMedia => {
-                        ItemMedia::delete(db, item_id, media.media_id).await.unwrap();
+                        ItemMedia::delete(db, item_id, media.media_id)
+                            .await
+                            .unwrap();
                     }
                 }
             }

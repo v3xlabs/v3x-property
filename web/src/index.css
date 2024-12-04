@@ -57,6 +57,10 @@
     @apply text-2xl font-semibold;
 }
 
+.h2 {
+    @apply text-xl font-semibold px-2 py-1.5;
+}
+
 /* reset */
 a {
     all: unset;

@@ -7,6 +7,7 @@ import {
 
 import { formatId, getInstanceSettings } from '@/api/instance_settings';
 import { useApiItemById, useApiItemMedia } from '@/api/item';
+import { ItemLogSection } from '@/components/item/logs/ItemLogSection';
 import { MediaGallery } from '@/components/media/MediaGallery';
 import { Button } from '@/components/ui/Button';
 import { UnauthorizedResourceModal } from '@/components/Unauthorized';
@@ -69,6 +70,7 @@ export const Route = createFileRoute('/item/$itemId/')({
                         <p>{item?.product_id}</p>
                     </div>
                 </div>
+                <ItemLogSection item_id={itemId} />
             </SCPage>
         );
     },

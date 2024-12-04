@@ -9,12 +9,15 @@ use reqwest::StatusCode;
 use serde::{Deserialize, Serialize};
 use tracing::info;
 
+use super::ApiTags;
 use crate::{
     auth::middleware::AuthToken,
-    models::item::{media::ItemMedia, Item},
+    models::{
+        item::{media::ItemMedia, Item},
+        log::LogEntry,
+    },
     state::AppState,
 };
-use super::ApiTags;
 
 pub struct ItemsApi;
 
@@ -60,7 +63,7 @@ pub struct ItemUpdateMediaPayload {
 #[OpenApi]
 impl ItemsApi {
     /// /item/owned
-    /// 
+    ///
     /// Get all items owned by the current user
     #[oai(path = "/item/owned", method = "get", tag = "ApiTags::Items")]
     async fn get_owned_items(
@@ -79,7 +82,7 @@ impl ItemsApi {
     }
 
     /// /item
-    /// 
+    ///
     /// Create an Item
     #[oai(path = "/item", method = "post", tag = "ApiTags::Items")]
     async fn create_item(
@@ -104,7 +107,7 @@ impl ItemsApi {
     }
 
     /// /item/next
-    /// 
+    ///
     /// Suggest next Item Id
     #[oai(path = "/item/next", method = "get", tag = "ApiTags::Items")]
     async fn next_item_id(&self, state: Data<&Arc<AppState>>) -> Json<ItemIdResponse> {
@@ -116,7 +119,7 @@ impl ItemsApi {
     }
 
     /// /item/:item_id
-    /// 
+    ///
     /// Delete an Item by `item_id`
     #[oai(path = "/item/:item_id", method = "delete", tag = "ApiTags::Items")]
     async fn delete_item(
@@ -136,7 +139,7 @@ impl ItemsApi {
     }
 
     /// /item/:item_id
-    /// 
+    ///
     /// Get an Item by `item_id`
     #[oai(path = "/item/:item_id", method = "get", tag = "ApiTags::Items")]
     async fn get_item(
@@ -154,7 +157,7 @@ impl ItemsApi {
     }
 
     /// /item/:item_id
-    /// 
+    ///
     /// Edit an Item by `item_id`
     /// This updates the `name`, `owner_id`, `location_id`, `product_id`, and `media` (linking `"new-media"`, and removing `"removed-media"`)
     #[oai(path = "/item/:item_id", method = "patch", tag = "ApiTags::Items")]
@@ -165,12 +168,23 @@ impl ItemsApi {
         item_id: Path<String>,
         data: Json<ItemUpdatePayload>,
     ) -> Result<()> {
-        Item::edit_by_id(&state.search, &state.database, data.0, &item_id.0).await;
+        let _ = Item::edit_by_id(&state.search, &state.database, &data.0, &item_id.0).await;
+
+        let _ = LogEntry::new(
+            &state.database,
+            "item",
+            &item_id.0,
+            auth.ok().unwrap().session.user_id,
+            "edit",
+            &serde_json::to_string(&data.0).unwrap(),
+        )
+        .await;
+
         Ok(())
     }
 
     /// /item/:item_id/media
-    /// 
+    ///
     /// Get all media for an Item by `item_id`
     #[oai(path = "/item/:item_id/media", method = "get", tag = "ApiTags::Items")]
     async fn get_item_media(
@@ -184,5 +198,22 @@ impl ItemsApi {
             .unwrap();
 
         Ok(Json(media.iter().map(|m| m.media_id).collect()))
+    }
+
+    /// /item/:item_id/logs
+    ///
+    /// Get all logs for an Item by `item_id`
+    #[oai(path = "/item/:item_id/logs", method = "get", tag = "ApiTags::Items")]
+    async fn get_item_logs(
+        &self,
+        state: Data<&Arc<AppState>>,
+        auth: AuthToken,
+        item_id: Path<String>,
+    ) -> Result<Json<Vec<LogEntry>>> {
+        Ok(Json(
+            LogEntry::find_by_resource(&state.database, "item", &item_id.0)
+                .await
+                .unwrap(),
+        ))
     }
 }

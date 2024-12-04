@@ -53,6 +53,22 @@ export const getApiItemMedia = (
     }),
 });
 
+export type ApiLogResponse =
+    paths['/item/{item_id}/logs']['get']['responses']['200']['content']['application/json; charset=utf-8'];
+
+export const getApiItemLogs = (
+    item_id: string
+): UseQueryOptions<ApiLogResponse> => ({
+    queryKey: ['item', item_id, 'logs'],
+    queryFn: getHttp('/api/item/' + item_id + '/logs', {
+        auth: 'include',
+    }),
+});
+
+export const useApiItemLogs = (item_id: string) => {
+    return useQuery(getApiItemLogs(item_id));
+};
+
 export const useApiItemMedia = (item_id: string) => {
     return useQuery(getApiItemMedia(item_id));
 };

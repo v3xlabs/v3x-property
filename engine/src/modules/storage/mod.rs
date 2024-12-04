@@ -2,7 +2,7 @@ use std::env;
 
 use aws_config::Region;
 use aws_sdk_s3::{
-    config::Credentials, primitives::ByteStream, types::{BucketCannedAcl, CreateBucketConfiguration}, Client,
+    config::Credentials, primitives::ByteStream, types::CreateBucketConfiguration, Client,
 };
 use tracing::info;
 use uuid::Uuid;

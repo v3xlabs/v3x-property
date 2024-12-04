@@ -12,7 +12,7 @@ use crate::database::Database;
 pub struct LogEntry {
     pub log_id: i32,
     pub resource_type: String,
-    pub resource_id: i32,
+    pub resource_id: String,
     pub user_id: i32,
     pub action: String,
     pub data: String,
@@ -24,11 +24,11 @@ impl LogEntry {
     /// Let postgres generate the id and created_at
     pub async fn new(
         db: &Database,
-        resource_type: String,
-        resource_id: i32,
+        resource_type: &str,
+        resource_id: &str,
         user_id: i32,
-        action: String,
-        data: String,
+        action: &str,
+        data: &str,
     ) -> Result<Self, sqlx::Error> {
         let log_entry = query_as!(
             LogEntry,
@@ -46,5 +46,14 @@ impl LogEntry {
             .await?;
 
         Ok(log_entry)
+    }
+
+    /// Find by resource_type and resource_id
+    pub async fn find_by_resource(db: &Database, resource_type: &str, resource_id: &str) -> Result<Vec<Self>, sqlx::Error> {
+        let log_entries = query_as!(LogEntry, "SELECT * FROM logs WHERE resource_type = $1 AND resource_id = $2 ORDER BY created_at DESC", resource_type, resource_id)
+            .fetch_all(&db.pool)
+            .await?;
+
+        Ok(log_entries)
     }
 }
