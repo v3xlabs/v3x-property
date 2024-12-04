@@ -126,7 +126,7 @@ export const EditMediaGallery: FC<{
             </div>
             <div className="flex flex-col gap-2 md:w-1/3">
                 <MediaDropzone onDrop={onDrop} />
-                <Button>Add Existing</Button>
+                <Button type="button">Add Existing</Button>
             </div>
         </div>
     );
