@@ -7,7 +7,7 @@ use media::MediaApi;
 use poem::{
     get, handler, listener::TcpListener, middleware::Cors, web::Html, EndpointExt, Route, Server,
 };
-use poem_openapi::{OpenApi, OpenApiService};
+use poem_openapi::{OpenApi, OpenApiService, Tags};
 use search::{tasks::SearchTaskApi, SearchApi};
 use sessions::SessionsApi;
 use users::UserApi;
@@ -22,6 +22,23 @@ pub mod search;
 pub mod sessions;
 pub mod users;
 pub mod media;
+
+#[derive(Tags)]
+enum ApiTags {
+    /// Items-related operations
+    Items,
+    /// Media-related operations
+    Media,
+    /// Search-related operations
+    Search,
+    /// User-related operations
+    User,
+    /// Auth-related operations
+    #[oai(rename = "Authentication")]
+    Auth,
+    /// Instance-related operations
+    Instance,
+}
 
 fn get_api() -> impl OpenApi {
     (

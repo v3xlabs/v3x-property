@@ -5,7 +5,7 @@ use poem_openapi::{payload::Json, Enum, Object, OpenApi};
 use serde::{Deserialize, Serialize};
 
 use crate::{auth::middleware::AuthToken, state::AppState};
-
+use super::ApiTags;
 pub struct InstanceApi;
 
 #[derive(Serialize, Deserialize, Enum)]
@@ -36,7 +36,7 @@ impl InstanceApi {
     /// /instance/settings
     /// 
     /// Get the instance settings
-    #[oai(path = "/instance/settings", method = "get")]
+    #[oai(path = "/instance/settings", method = "get", tag = "ApiTags::Instance")]
     pub async fn settings(
         &self,
         state: Data<&Arc<AppState>>,

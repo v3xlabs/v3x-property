@@ -10,6 +10,8 @@ use tracing::info;
 use crate::models::item::search::SearchableItem;
 use crate::state::AppState;
 
+use super::ApiTags;
+
 pub mod tasks;
 
 pub struct SearchApi;
@@ -31,7 +33,7 @@ impl SearchApi {
     /// /search
     /// 
     /// Search for Items
-    #[oai(path = "/search", method = "get")]
+    #[oai(path = "/search", method = "get", tag = "ApiTags::Search")]
     pub async fn search(
         &self,
         state: Data<&Arc<AppState>>,
@@ -56,7 +58,7 @@ impl SearchApi {
     /// /search/reindex
     /// 
     /// Reindex all Items
-    #[oai(path = "/search/reindex", method = "post")]
+    #[oai(path = "/search/reindex", method = "post", tag = "ApiTags::Search")]
     pub async fn reindex_all_items(&self, state: Data<&Arc<AppState>>) -> Result<()> {
         info!("Reindexing all items");
 

@@ -6,7 +6,7 @@ use reqwest::StatusCode;
 use tracing::info;
 
 use crate::{auth::middleware::AuthToken, models::sessions::Session, state::AppState};
-
+use super::ApiTags;
 pub mod delete;
 
 pub struct SessionsApi;
@@ -16,7 +16,7 @@ impl SessionsApi {
     /// /sessions
     /// 
     /// Get all sessions for the current user
-    #[oai(path = "/sessions", method = "get")]
+    #[oai(path = "/sessions", method = "get", tag = "ApiTags::Auth")]
     async fn get_sessions(
         &self,
         auth: AuthToken,
@@ -34,7 +34,7 @@ impl SessionsApi {
     /// /sessions/:session_id
     /// 
     /// Delete a Session by `session_id`
-    #[oai(path = "/sessions/:session_id", method = "delete")]
+    #[oai(path = "/sessions/:session_id", method = "delete", tag = "ApiTags::Auth")]
     async fn delete_session(
         &self,
         auth: AuthToken,

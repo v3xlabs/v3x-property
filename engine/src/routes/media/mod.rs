@@ -8,6 +8,7 @@ use poem_openapi::{payload::Json, Object, OpenApi};
 use reqwest::StatusCode;
 use serde::{Deserialize, Serialize};
 
+use super::ApiTags;
 use crate::{auth::middleware::AuthToken, models::media::Media, state::AppState};
 
 pub struct MediaApi;
@@ -28,7 +29,7 @@ impl MediaApi {
     /// /media
     /// 
     /// Get all media
-    #[oai(path = "/media", method = "get")]
+    #[oai(path = "/media", method = "get", tag = "ApiTags::Media")]
     async fn get_all_media(
         &self,
         auth: AuthToken,
@@ -43,7 +44,7 @@ impl MediaApi {
     /// /media/unassigned
     /// 
     /// Get all unassigned media
-    #[oai(path = "/media/unassigned", method = "get")]
+    #[oai(path = "/media/unassigned", method = "get", tag = "ApiTags::Media")]
     async fn get_unassigned_media(
         &self,
         auth: AuthToken,
@@ -58,7 +59,7 @@ impl MediaApi {
     /// /media
     /// 
     /// Create a new Media
-    #[oai(path = "/media", method = "post")]
+    #[oai(path = "/media", method = "post", tag = "ApiTags::Media")]
     async fn create_media(
         &self,
         auth: AuthToken,
@@ -89,7 +90,7 @@ impl MediaApi {
     /// /media/:media_id
     /// 
     /// Delete a Media by `media_id`
-    #[oai(path = "/media/:media_id", method = "delete")]
+    #[oai(path = "/media/:media_id", method = "delete", tag = "ApiTags::Media")]
     async fn delete_media(
         &self,
         auth: AuthToken,
@@ -110,7 +111,7 @@ impl MediaApi {
     /// /media/:media_id
     /// 
     /// Get a Media by `media_id`
-    #[oai(path = "/media/:media_id", method = "get")]
+    #[oai(path = "/media/:media_id", method = "get", tag = "ApiTags::Media")]
     async fn get_media(
         &self,
         state: Data<&Arc<AppState>>,

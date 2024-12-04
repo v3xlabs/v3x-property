@@ -14,6 +14,7 @@ use crate::{
     models::item::{media::ItemMedia, Item},
     state::AppState,
 };
+use super::ApiTags;
 
 pub struct ItemsApi;
 
@@ -61,7 +62,7 @@ impl ItemsApi {
     /// /item/owned
     /// 
     /// Get all items owned by the current user
-    #[oai(path = "/item/owned", method = "get")]
+    #[oai(path = "/item/owned", method = "get", tag = "ApiTags::Items")]
     async fn get_owned_items(
         &self,
         auth: AuthToken,
@@ -80,7 +81,7 @@ impl ItemsApi {
     /// /item
     /// 
     /// Create an Item
-    #[oai(path = "/item", method = "post")]
+    #[oai(path = "/item", method = "post", tag = "ApiTags::Items")]
     async fn create_item(
         &self,
         auth: AuthToken,
@@ -105,7 +106,7 @@ impl ItemsApi {
     /// /item/next
     /// 
     /// Suggest next Item Id
-    #[oai(path = "/item/next", method = "get")]
+    #[oai(path = "/item/next", method = "get", tag = "ApiTags::Items")]
     async fn next_item_id(&self, state: Data<&Arc<AppState>>) -> Json<ItemIdResponse> {
         info!("Getting next item id");
 
@@ -117,7 +118,7 @@ impl ItemsApi {
     /// /item/:item_id
     /// 
     /// Delete an Item by `item_id`
-    #[oai(path = "/item/:item_id", method = "delete")]
+    #[oai(path = "/item/:item_id", method = "delete", tag = "ApiTags::Items")]
     async fn delete_item(
         &self,
         auth: AuthToken,
@@ -137,7 +138,7 @@ impl ItemsApi {
     /// /item/:item_id
     /// 
     /// Get an Item by `item_id`
-    #[oai(path = "/item/:item_id", method = "get")]
+    #[oai(path = "/item/:item_id", method = "get", tag = "ApiTags::Items")]
     async fn get_item(
         &self,
         state: Data<&Arc<AppState>>,
@@ -156,7 +157,7 @@ impl ItemsApi {
     /// 
     /// Edit an Item by `item_id`
     /// This updates the `name`, `owner_id`, `location_id`, `product_id`, and `media` (linking `"new-media"`, and removing `"removed-media"`)
-    #[oai(path = "/item/:item_id", method = "patch")]
+    #[oai(path = "/item/:item_id", method = "patch", tag = "ApiTags::Items")]
     async fn edit_item(
         &self,
         auth: AuthToken,
@@ -171,7 +172,7 @@ impl ItemsApi {
     /// /item/:item_id/media
     /// 
     /// Get all media for an Item by `item_id`
-    #[oai(path = "/item/:item_id/media", method = "get")]
+    #[oai(path = "/item/:item_id/media", method = "get", tag = "ApiTags::Items")]
     async fn get_item_media(
         &self,
         state: Data<&Arc<AppState>>,

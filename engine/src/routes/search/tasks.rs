@@ -6,7 +6,9 @@ use poem_openapi::{payload::Json, OpenApi};
 use reqwest::StatusCode;
 use tracing::info;
 
+
 use crate::{models::search::SearchTask, state::AppState};
+use super::ApiTags;
 
 pub struct SearchTaskApi;
 
@@ -15,7 +17,7 @@ impl SearchTaskApi {
     /// /search/tasks
     /// 
     /// Get all Search Tasks
-    #[oai(path = "/search/tasks", method = "get")]
+    #[oai(path = "/search/tasks", method = "get", tag = "ApiTags::Search")]
     pub async fn search_tasks(&self, state: Data<&Arc<AppState>>) -> Json<Vec<SearchTask>> {
         let tasks = SearchTask::find_all(&state.database).await.unwrap();
 
@@ -25,7 +27,7 @@ impl SearchTaskApi {
     /// /search/tasks/:task_id
     /// 
     /// Refresh a Search Task by `task_id`
-    #[oai(path = "/search/tasks/:task_id", method = "put")]
+    #[oai(path = "/search/tasks/:task_id", method = "put", tag = "ApiTags::Search")]
     pub async fn refresh_task(
         &self,
         state: Data<&Arc<AppState>>,

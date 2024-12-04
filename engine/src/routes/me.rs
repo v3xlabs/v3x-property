@@ -9,6 +9,8 @@ use crate::{
     state::AppState,
 };
 
+use super::ApiTags;
+
 pub struct MeApi;
 
 #[OpenApi]
@@ -16,7 +18,7 @@ impl MeApi {
     /// /me
     /// 
     /// Get the current user
-    #[oai(path = "/me", method = "get")]
+    #[oai(path = "/me", method = "get", tag = "ApiTags::User")]
     pub async fn me(&self, state: Data<&Arc<AppState>>, token: AuthToken) -> Json<User> {
         match token {
             AuthToken::Active(active_user) => {
