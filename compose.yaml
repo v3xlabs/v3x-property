@@ -1,5 +1,17 @@
 # runs the engine on port 3000
 services:
+  # Engine
+  engine:
+    image: ghcr.io/v3xlabs/v3x-property-engine:master
+    ports:
+      - "3000:3000"
+    env_file: .env
+    depends_on:
+      postgres:
+        condition: service_healthy
+      keycloak-healthcheck:
+        condition: service_healthy
+
   # Database
   postgres:
     image: postgres:17
@@ -25,7 +37,7 @@ services:
       KC_DB_USERNAME: postgres
       KC_DB_PASSWORD: postgres
 
-      KC_HOSTNAME: localhost
+      KC_HOSTNAME: keycloak
       KC_HOSTNAME_PORT: 8080
       KC_HOSTNAME_STRICT: false
       KC_HOSTNAME_STRICT_HTTPS: false
@@ -39,24 +51,36 @@ services:
       - start-dev
       - --import-realm
     volumes:
-      - ./.build/realm-export.json:/opt/keycloak/data/import/realm-export.json
+      - ./engine/.build/realm-export.json:/opt/keycloak/data/import/realm-export.json
     ports:
       - "8080:8080"
     depends_on:
       postgres:
         condition: service_healthy
+
+  keycloak-healthcheck:
+    image: curlimages/curl
+    command: ["sleep", "infinity"]
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8080/health/ready"]
+      test: ["CMD", "curl", "--head", "-fsS", "http://keycloak:9000/health/ready"]
       interval: 5s
       timeout: 5s
       retries: 10
-
+    depends_on:
+      postgres:
+        condition: service_healthy
+    
   meilisearch:
     image: getmeili/meilisearch:v1.11
     environment:
       MEILI_MASTER_KEY: master
     ports:
       - "7700:7700"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:7700/health"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
   minio:
     image: minio/minio:latest
@@ -64,3 +88,8 @@ services:
     ports:
       - "9000:9000"
       - "9001:9001"
+    healthcheck:
+      test: ["CMD", "curl", "-I", "http://localhost:9000/minio/health/live"]
+      interval: 5s
+      timeout: 5s
+      retries: 5

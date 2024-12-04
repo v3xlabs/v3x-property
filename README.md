@@ -1,11 +1,40 @@
 # v3x-property
 
-## Repo Dev
+## Feature Support
 
-### Prerequisites
+- Meilisearch
+- Ollama
+- Minio S3
 
-- Docker `docker`
-- Docker Buildx `docker-buildx`
+## Run your own instance
+
+```sh
+git clone https://github.com/v3xlabs/v3x-property
+cp .env.example .env
+docker compose up -d
+```
+
+## Developing Locally
+
+This project consists of two parts:
+
+- `engine`: A Rust application that runs the core logic and API.
+- `web`: A Vite React (TS) application that runs the web interface.
+
+To get started locally you need to have `docker` and `docker-compose` installed.
+
+```sh
+# Start Engine
+cd engine
+docker compose up -d   # start the database
+cargo sqlx migrate run # only required for development
+cargo run              # start the engine
+
+# Start Web
+cd web
+pnpm install
+pnpm dev
+```
 
 ## Brainrot
 
@@ -53,26 +82,4 @@ An example of a tracked item could be:
     "created": "2023-06-01T00:00:00Z",
     "modified": "2023-06-01T00:00:00Z"
 }
-```
-
-## Developing Locally
-
-This project consists of two parts:
-
-- `engine`: A Rust application that runs the core logic and API.
-- `web`: A Vite React (TS) application that runs the web interface.
-
-To get started locally you need to have `docker` and `docker-compose` installed.
-
-```
-# Start Engine
-cd engine
-docker compose up -d   # start the database
-cargo sqlx migrate run # only required for development
-cargo run              # start the engine
-
-# Start Web
-cd web
-pnpm install
-pnpm dev
 ```
