@@ -22,8 +22,8 @@ COPY src ./src
 COPY migrations ./migrations
 
 # Set the DATABASE_URL environment variable for the build process
-ARG RUNNER_IP
-ENV DATABASE_URL=postgres://postgres:postgres@${RUNNER_IP}:5432/postgres
+ARG DATABASE_URL
+ENV DATABASE_URL=${DATABASE_URL}
 
 RUN set -x && cargo build --target x86_64-unknown-linux-musl --release
 RUN mkdir -p /build-out
