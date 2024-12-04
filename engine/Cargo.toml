@@ -20,7 +20,9 @@ hmac = "0.12.1"
 meilisearch-sdk = "0.26.1"
 ollama-rs = "0.2.1"
 openid = "0.14.0"
-poem = { version = "3.0.4", git = "https://github.com/poem-web/poem", branch = "master", features = ["rustls"] }
+poem = { version = "3.0.4", git = "https://github.com/poem-web/poem", branch = "master", features = [
+    "rustls",
+] }
 poem-openapi = { version = "5", git = "https://github.com/poem-web/poem", branch = "master", features = [
     "chrono",
     "uuid",
@@ -57,7 +59,9 @@ url = { version = "2.5.2", features = ["serde"] }
 
 async-h1 = "2.3"
 async-tls = "0.11"
-rust-s3 = "0.35.1"
+rust-s3 = { version = "0.36.0-beta.2", default-features = false, features = [
+    "async-std-rustls-tls",
+] }
 
 [dependencies.uuid]
 version = "1.10.0"
