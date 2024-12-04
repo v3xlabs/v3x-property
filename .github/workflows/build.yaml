@@ -55,7 +55,6 @@ jobs:
         working-directory: ./engine
         run: cargo install sqlx-cli --no-default-features --features native-tls,postgres && sqlx migrate run && cargo sqlx prepare
 
-
       - name: Stop postgres via docker-compose dev
         working-directory: ./engine
         run: docker compose -f ./compose.yaml down
