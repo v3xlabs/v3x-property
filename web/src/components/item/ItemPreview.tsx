@@ -12,6 +12,7 @@ import { useMedia } from '@/api/media';
 type Properties = {
     item_id: string;
     variant?: 'avatar' | 'full' | 'compact';
+    image_url?: string;
 };
 
 export const AvatarHolder: FC<{

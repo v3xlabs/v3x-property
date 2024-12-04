@@ -22,3 +22,22 @@ export const getMedia = (
 
 export const useMedia = (media_id: number | undefined) =>
     useQuery(getMedia(media_id));
+
+export type LinkedItem = {
+    item_id: string;
+    name: string;
+    media_id: number;
+};
+
+export const getLinkedItems = (
+    media_id: number | undefined
+): UseQueryOptions<LinkedItem[]> => ({
+    queryKey: ['media', media_id, 'items'],
+    queryFn: getHttp<LinkedItem[]>(`/api/media/${media_id}/items`, {
+        auth: 'include',
+    }),
+    enabled: !!media_id,
+});
+
+export const useLinkedItems = (media_id: number | undefined) =>
+    useQuery(getLinkedItems(media_id));

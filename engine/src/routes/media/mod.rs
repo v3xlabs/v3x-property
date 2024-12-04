@@ -9,7 +9,7 @@ use reqwest::StatusCode;
 use serde::{Deserialize, Serialize};
 
 use super::ApiTags;
-use crate::{auth::middleware::AuthToken, models::media::Media, state::AppState};
+use crate::{auth::middleware::AuthToken, models::media::{LinkedItem, Media}, state::AppState};
 
 pub struct MediaApi;
 
@@ -86,6 +86,37 @@ impl MediaApi {
                 .unwrap(),
         )
     }
+    
+    /// /media/:media_id
+    /// 
+    /// Get a Media by `media_id`
+    #[oai(path = "/media/:media_id", method = "get", tag = "ApiTags::Media")]
+    async fn get_media(
+        &self,
+        state: Data<&Arc<AppState>>,
+        auth: AuthToken,
+        media_id: Path<i32>,
+    ) -> Result<Json<Media>> {
+        Media::get_by_id(&state.database, media_id.0)
+            .await
+            .or(Err(poem::Error::from_status(
+                StatusCode::INTERNAL_SERVER_ERROR,
+            )))?
+            .ok_or(poem::Error::from_status(StatusCode::NOT_FOUND))
+            .map(|x| Json(x))
+    }
+
+    /// /media/:media_id/items
+    /// 
+    /// Get all items linked to a media by `media_id`
+    #[oai(path = "/media/:media_id/items", method = "get", tag = "ApiTags::Media")]
+    async fn get_linked_items(
+        &self,
+        state: Data<&Arc<AppState>>,
+        media_id: Path<i32>,
+    ) -> Result<Json<Vec<LinkedItem>>> {
+        Ok(Json(Media::get_linked_items(&state.database, media_id.0).await.unwrap()))
+    }
 
     /// /media/:media_id
     /// 
@@ -106,24 +137,5 @@ impl MediaApi {
             .unwrap();
 
         Ok(())
-    }
-    
-    /// /media/:media_id
-    /// 
-    /// Get a Media by `media_id`
-    #[oai(path = "/media/:media_id", method = "get", tag = "ApiTags::Media")]
-    async fn get_media(
-        &self,
-        state: Data<&Arc<AppState>>,
-        auth: AuthToken,
-        media_id: Path<i32>,
-    ) -> Result<Json<Media>> {
-        Media::get_by_id(&state.database, media_id.0)
-            .await
-            .or(Err(poem::Error::from_status(
-                StatusCode::INTERNAL_SERVER_ERROR,
-            )))?
-            .ok_or(poem::Error::from_status(StatusCode::NOT_FOUND))
-            .map(|x| Json(x))
     }
 }

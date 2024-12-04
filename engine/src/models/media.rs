@@ -15,6 +15,14 @@ pub struct Media {
     pub updated_at: Option<DateTime<Utc>>,
 }
 
+#[derive(FromRow, Object, Debug, Clone, Serialize, Deserialize, Default)]
+pub struct LinkedItem {
+    pub item_id: String,
+    pub name: String,
+    /// The first media we find linked to this item
+    pub media_id: i32,
+}
+
 impl Media {
     pub async fn new(
         db: &Database,
@@ -49,9 +57,29 @@ impl Media {
         // Find all media that dont have a MediaItem to link them to an item
         // This is useful for finding media that is not yet assigned to an item
         // and can be used for creating new items
-        query_as!(Media, "SELECT * FROM media WHERE media_id NOT IN (SELECT media_id FROM item_media)")
-            .fetch_all(&db.pool)
-            .await
+        query_as!(
+            Media,
+            "SELECT * FROM media WHERE media_id NOT IN (SELECT media_id FROM item_media)"
+        )
+        .fetch_all(&db.pool)
+        .await
+    }
+
+    pub async fn get_linked_items(
+        db: &Database,
+        media_id: i32,
+    ) -> Result<Vec<LinkedItem>, sqlx::Error> {
+        query_as!(
+            LinkedItem,
+            r#"
+        SELECT im.item_id, i.name, im.media_id FROM item_media im
+        JOIN items i ON im.item_id = i.item_id
+        WHERE im.media_id = $1
+        "#,
+            media_id
+        )
+        .fetch_all(&db.pool)
+        .await
     }
 
     pub async fn delete(self, db: &Database) -> Result<(), sqlx::Error> {
