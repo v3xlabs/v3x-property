@@ -35,7 +35,7 @@
             "alwaysDisplayInConsole": false,
             "clientAuthenticatorType": "client-secret",
             "secret": "v3x-property-secret",
-            "redirectUris": ["http://localhost:3000/callback"],
+            "redirectUris": ["http://localhost:3000/api/callback"],
             "webOrigins": ["http://localhost:5173"],
             "notBefore": 0,
             "bearerOnly": false,

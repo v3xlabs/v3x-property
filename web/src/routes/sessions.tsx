@@ -29,7 +29,7 @@ export const Route = createFileRoute('/sessions')({
 
             // eslint-disable-next-line no-undef
             window.location.href =
-                'http://localhost:3000/login?redirect=' +
+                'http://localhost:3000/api/login?redirect=' +
                 encodeURIComponent(location.href);
         }
     },

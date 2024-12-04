@@ -1,10 +1,12 @@
 use std::{collections::HashSet, sync::Arc};
 
 use openid::{Options, Prompt};
-use poem::web::Data;
+use poem::{web::{Data, Redirect}, IntoResponse, Result};
 use poem_openapi::{param::Query, payload::PlainText, ApiResponse, OpenApi};
 
 use crate::state::AppState;
+
+use super::super::ApiTags;
 
 pub struct LoginApi;
 
@@ -16,12 +18,12 @@ enum RedirectResponse {
 
 #[OpenApi]
 impl LoginApi {
-    #[oai(path = "/login", method = "get")]
+    #[oai(path = "/login", method = "get", tag = "ApiTags::Auth")]
     pub async fn login(
         &self,
         redirect: Query<Option<String>>,
         state: Data<&Arc<AppState>>,
-    ) -> RedirectResponse {
+    ) -> Result<()> {
         // let discovery_url = "http://localhost:8080/realms/master/.well-known/openid-configuration";
 
         // let http_client = reqwest::Client::new();
@@ -48,6 +50,8 @@ impl LoginApi {
         println!("OpenID Connect Authorization URL: {}", authorize_url);
 
         // redirect to the authorization URL
-        RedirectResponse::Redirect(PlainText(authorize_url.as_str().to_string()))
+        Err(poem::Error::from_response(
+            Redirect::temporary(authorize_url.as_str().to_string()).into_response(),
+        ))
     }
 }

@@ -2,7 +2,7 @@
 services:
   # Engine
   engine:
-    image: ghcr.io/v3xlabs/v3x-property-engine:master
+    image: ghcr.io/v3xlabs/v3x-property/engine:master
     ports:
       - "3000:3000"
     env_file: .env
