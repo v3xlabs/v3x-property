@@ -25,12 +25,20 @@ jobs:
 
       - name: Start postgres via docker-compose dev
         working-directory: ./engine
-        run: docker compose -f ./compose.yaml up -d
+        run: docker compose -f ./compose.yaml up postgres -d
 
       - name: Migrate db
         working-directory: ./engine
-        run: cargo sqlx migrate run
+        run: cargo install sqlx-cli --no-default-features --features native-tls,postgres && sqlx migrate run
 
       - name: Build
         working-directory: ./engine
-        run: cargo build
+        run: sqlx migrate run
+ 
+      - name: Build docker image using github actions
+        uses: docker/build-push-action@v5
+        with:
+          context: ./engine
+          file: ./engine/.build/Dockerfile
+          tags: v3x-property-engine:latest
+          push: false
