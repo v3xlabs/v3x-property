@@ -4,6 +4,7 @@ on:
   push:
     paths:
       - 'engine/**'
+      - '.github/workflows/build.yaml'
 
 jobs:
   deploy:
