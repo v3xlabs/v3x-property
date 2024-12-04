@@ -18,6 +18,22 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Cache Cargo registry
+        uses: actions/cache@v3
+        with:
+          path: ~/.cargo/registry
+          key: ${{ runner.os }}-cargo-registry-${{ hashFiles('**/Cargo.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-cargo-registry-
+
+      - name: Cache Cargo build
+        uses: actions/cache@v3
+        with:
+          path: target
+          key: ${{ runner.os }}-cargo-build-${{ hashFiles('**/Cargo.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-cargo-build-
+
       - name: Run sccache-cache
         uses: mozilla-actions/sccache-action@v0.0.3
         with:
@@ -37,11 +53,16 @@ jobs:
 
       - name: Migrate db
         working-directory: ./engine
-        run: cargo install sqlx-cli --no-default-features --features native-tls,postgres && sqlx migrate run
+        run: cargo install sqlx-cli --no-default-features --features native-tls,postgres && sqlx migrate run && sqlx migrate prepare
 
-      - name: Build
+
+      - name: Stop postgres via docker-compose dev
         working-directory: ./engine
-        run: sqlx migrate run
+        run: docker compose -f ./compose.yaml down
+
+      # - name: Build
+      #   working-directory: ./engine
+      #   run: cargo build --release
 
       - name: Build docker image using github actions
         uses: docker/build-push-action@v5
@@ -52,4 +73,3 @@ jobs:
           push: false
           build-args: |
             BINARY_NAME=v3x-property-engine
-            DATABASE_URL=postgres://postgres:postgres@${{ env.RUNNER_IP }}:5432/postgres
