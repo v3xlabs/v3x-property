@@ -5,16 +5,16 @@ use poem_openapi::{param::Path, payload::Json, OpenApi};
 use reqwest::StatusCode;
 use tracing::info;
 
-use crate::{auth::middleware::AuthToken, models::sessions::Session, state::AppState};
 use super::ApiTags;
-pub mod delete;
+use crate::{auth::middleware::AuthToken, models::sessions::Session, state::AppState};
+// pub mod delete;
 
 pub struct SessionsApi;
 
 #[OpenApi]
 impl SessionsApi {
     /// /sessions
-    /// 
+    ///
     /// Get all sessions for the current user
     #[oai(path = "/sessions", method = "get", tag = "ApiTags::Auth")]
     async fn get_sessions(
@@ -22,7 +22,9 @@ impl SessionsApi {
         auth: AuthToken,
         state: Data<&Arc<AppState>>,
     ) -> Result<Json<Vec<Session>>> {
-        let active_user = auth.ok().ok_or(Error::from_status(StatusCode::UNAUTHORIZED))?;
+        let active_user = auth
+            .ok()
+            .ok_or(Error::from_status(StatusCode::UNAUTHORIZED))?;
 
         Ok(Json(
             Session::get_by_user_id(&state.database, active_user.session.user_id)
@@ -32,9 +34,13 @@ impl SessionsApi {
     }
 
     /// /sessions/:session_id
-    /// 
+    ///
     /// Delete a Session by `session_id`
-    #[oai(path = "/sessions/:session_id", method = "delete", tag = "ApiTags::Auth")]
+    #[oai(
+        path = "/sessions/:session_id",
+        method = "delete",
+        tag = "ApiTags::Auth"
+    )]
     async fn delete_session(
         &self,
         auth: AuthToken,
