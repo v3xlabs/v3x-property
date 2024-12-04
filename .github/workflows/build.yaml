@@ -25,7 +25,7 @@ jobs:
 
       - name: Start postgres via docker-compose dev
         working-directory: ./engine
-        run: docker compose -f ./docker-compose.dev.yml up -d
+        run: docker compose -f ./compose.yaml up -d
 
       - name: Migrate db
         working-directory: ./engine
