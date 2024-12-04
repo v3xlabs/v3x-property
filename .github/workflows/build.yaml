@@ -34,7 +34,11 @@ jobs:
       - name: Build
         working-directory: ./engine
         run: sqlx migrate run
- 
+
+      - name: Get Runner IP
+        id: get_ip
+        run: echo "RUNNER_IP=$(hostname -I | awk '{print $1}')" >> $GITHUB_ENV
+
       - name: Build docker image using github actions
         uses: docker/build-push-action@v5
         with:
@@ -42,3 +46,6 @@ jobs:
           file: ./engine/.build/Dockerfile
           tags: v3x-property-engine:latest
           push: false
+          build-args:
+            - BINARY_NAME=v3x-property-engine
+            - DATABASE_URL=postgres://postgres:postgres@${{ env.RUNNER_IP }}:5432/postgres
