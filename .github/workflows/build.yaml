@@ -8,7 +8,7 @@ on:
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAME: v3xlabs/v3x-property-engine
+  IMAGE_NAME: v3xlabs/v3x-property/engine
 
 jobs:
   deploy:
