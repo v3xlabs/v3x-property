@@ -3,9 +3,13 @@ services:
   # Engine
   engine:
     image: ghcr.io/v3xlabs/v3x-property/engine:master
+    pull_policy: always
     ports:
       - "3000:3000"
     env_file: .env
+    environment:
+      - RUST_BACKTRACE=1
+      - RUST_LOG=info
     depends_on:
       postgres:
         condition: service_healthy
