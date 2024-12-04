@@ -5,6 +5,10 @@ FROM clux/muslrust:stable as builder
 RUN groupadd -g 10001 -r dockergrp && useradd -r -g dockergrp -u 10001 dockeruser
 ARG BINARY_NAME_DEFAULT
 ENV BINARY_NAME=$BINARY_NAME_DEFAULT
+
+ARG DATABASE_URL
+ENV DATABASE_URL=$DATABASE_URL
+
 # Build the project with target x86_64-unknown-linux-musl
 
 # Build dummy main with the project's Cargo lock and toml
@@ -21,13 +25,9 @@ RUN ["/bin/bash", "-c", "set -x && rm target/x86_64-unknown-linux-musl/release/d
 COPY src ./src
 COPY migrations ./migrations
 
-# Set the DATABASE_URL environment variable for the build process
-ARG DATABASE_URL
-ENV DATABASE_URL=$DATABASE_URL
-
 RUN echo "DATABASE_URL=$DATABASE_URL"
 
-RUN set -x && cargo build --target x86_64-unknown-linux-musl --release
+RUN set -x && DATABASE_URL=$DATABASE_URL cargo build --target x86_64-unknown-linux-musl --release
 RUN mkdir -p /build-out
 RUN set -x && cp target/x86_64-unknown-linux-musl/release/$BINARY_NAME /build-out/
 
