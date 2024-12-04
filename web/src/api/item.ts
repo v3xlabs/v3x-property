@@ -1,5 +1,6 @@
 /* eslint-disable sonarjs/no-duplicate-string */
 import {
+    queryOptions,
     useMutation,
     UseMutationOptions,
     useQuery,
@@ -20,17 +21,16 @@ export type ApiItemResponse = {
     modified?: string;
 };
 
-export const getApiItemById = (
-    item_id: string
-): UseQueryOptions<ApiItemResponse> => ({
-    queryKey: ['item', item_id],
-    queryFn: getHttp('/api/item/' + item_id, {
-        auth: 'include',
-    }),
-});
+export const itemByIdQueryOptions = (item_id: string) =>
+    queryOptions({
+        queryKey: ['item', item_id],
+        queryFn: getHttp<ApiItemResponse>('/api/item/' + item_id, {
+            auth: 'include',
+        }),
+    });
 
 export const useApiItemById = (item_id: string) => {
-    return useQuery(getApiItemById(item_id));
+    return useQuery(itemByIdQueryOptions(item_id));
 };
 
 export const getApiOwnedItems = (): UseQueryOptions<ApiItemResponse[]> => ({
@@ -44,14 +44,13 @@ export const useApiOwnedItems = () => {
     return useQuery(getApiOwnedItems());
 };
 
-export const getApiItemMedia = (
-    item_id: string
-): UseQueryOptions<number[]> => ({
-    queryKey: ['item', item_id, 'media'],
-    queryFn: getHttp('/api/item/' + item_id + '/media', {
-        auth: 'include',
-    }),
-});
+export const itemMediaQueryOptions = (item_id: string) =>
+    queryOptions({
+        queryKey: ['item', item_id, 'media'],
+        queryFn: getHttp<number[]>('/api/item/' + item_id + '/media', {
+            auth: 'include',
+        }),
+    });
 
 export type ApiLogResponse =
     paths['/item/{item_id}/logs']['get']['responses']['200']['content']['application/json; charset=utf-8'];
@@ -70,7 +69,7 @@ export const useApiItemLogs = (item_id: string) => {
 };
 
 export const useApiItemMedia = (item_id: string) => {
-    return useQuery(getApiItemMedia(item_id));
+    return useQuery(itemMediaQueryOptions(item_id));
 };
 
 // Create item

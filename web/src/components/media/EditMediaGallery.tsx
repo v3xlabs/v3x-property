@@ -1,3 +1,4 @@
+/* eslint-disable sonarjs/no-identical-functions */
 import { FC, Reducer, useCallback, useEffect, useReducer } from 'react';
 
 import { Button } from '../ui/Button';
@@ -40,7 +41,7 @@ const reducer: Reducer<AttachedMedia[], Action> = (state, action) => {
 
                     return m;
                 })
-                .filter(Boolean);
+                .filter((m) => !!m);
         default:
             return state;
     }

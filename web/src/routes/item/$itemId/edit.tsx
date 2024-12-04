@@ -99,7 +99,12 @@ export const Route = createFileRoute('/item/$itemId/edit')({
                         item_id: itemId,
                         data: {
                             name: value.name,
-                            media: value.media,
+                            media: value.media
+                                .filter((m) => m.media_id !== undefined)
+                                .map((m) => ({
+                                    status: m.status,
+                                    media_id: m.media_id!,
+                                })),
                         },
                     },
                     {

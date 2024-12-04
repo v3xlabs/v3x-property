@@ -1,12 +1,20 @@
 import {
+    useQueryErrorResetBoundary,
+    useSuspenseQuery,
+} from '@tanstack/react-query';
+import {
     createFileRoute,
     Link,
     redirect,
-    useParams,
+    useRouter,
 } from '@tanstack/react-router';
+import { useEffect } from 'react';
 
-import { formatId, getInstanceSettings } from '@/api/instance_settings';
-import { useApiItemById, useApiItemMedia } from '@/api/item';
+import {
+    formatId,
+    instanceSettingsQueryOptions,
+} from '@/api/instance_settings';
+import { itemByIdQueryOptions, itemMediaQueryOptions } from '@/api/item';
 import { ItemLogSection } from '@/components/item/logs/ItemLogSection';
 import { MediaGallery } from '@/components/media/MediaGallery';
 import { Button } from '@/components/ui/Button';
@@ -17,31 +25,40 @@ import { queryClient } from '@/util/query';
 
 export const Route = createFileRoute('/item/$itemId/')({
     // if item_id is not formatId(item_id, instanceSettings), redirect to the formatted item_id
-    loader: async ({ context, params }) => {
+    loader: async ({ params }) => {
+        // Ensure instance settings are loaded
         const instanceSettings = await queryClient.ensureQueryData(
-            getInstanceSettings()
+            instanceSettingsQueryOptions
         );
+
         const formattedItemId = formatId(params.itemId, instanceSettings);
 
+        // Redirect if the item_id is not formatted
         if (formattedItemId !== params.itemId) {
             console.log('redirecting to', formattedItemId);
 
             return redirect({ to: `/item/${formattedItemId}` });
         }
+
+        // Preload item and media
+        return Promise.all([
+            queryClient.ensureQueryData(itemByIdQueryOptions(params.itemId)),
+            queryClient.ensureQueryData(itemMediaQueryOptions(params.itemId)),
+        ]);
     },
     component: () => {
-        const { itemId } = useParams({ from: '/item/$itemId/' });
+        const { itemId } = Route.useParams();
 
-        const { data: item, error } = useApiItemById(itemId);
-        const { data: media, error: mediaError } = useApiItemMedia(itemId);
+        const item = useSuspenseQuery(itemByIdQueryOptions(itemId));
+        const media = useSuspenseQuery(itemMediaQueryOptions(itemId));
 
-        if (error) {
+        if (item.error) {
             return <UnauthorizedResourceModal />;
         }
 
         return (
             <SCPage
-                title={(item && item.name) || `Item ${itemId}`}
+                title={(item.data && item.data.name) || `Item ${itemId}`}
                 suffix={
                     <Button asChild>
                         <Link to="/item/$itemId/edit" params={{ itemId }}>
@@ -53,24 +70,46 @@ export const Route = createFileRoute('/item/$itemId/')({
                 <div className="card pt-4">
                     <div className="px-4">
                         <MediaGallery
-                            media_ids={media ?? (item?.media || [])}
+                            media_ids={media.data ?? (item.data?.media || [])}
                         />
                     </div>
                     <div className="p-4">
-                        {item?.owner_id && (
+                        {item.data?.owner_id && (
                             <div>
                                 <h3>Owner</h3>
                                 <UserProfile
-                                    user_id={item.owner_id.toString()}
+                                    user_id={item.data.owner_id.toString()}
                                 />
                             </div>
                         )}
                     </div>
                     <div>
-                        <p>{item?.product_id}</p>
+                        <p>{item.data?.product_id}</p>
                     </div>
                 </div>
                 <ItemLogSection item_id={itemId} />
+            </SCPage>
+        );
+    },
+    errorComponent: ({ error }) => {
+        const router = useRouter();
+        // const parameters = Route.useParams();
+        const queryErrorResetBoundary = useQueryErrorResetBoundary();
+
+        useEffect(() => {
+            // Reset the query error boundary
+            queryErrorResetBoundary.reset();
+        }, [queryErrorResetBoundary]);
+
+        return (
+            <SCPage title={'Could not load the item'}>
+                <div className="card space-y-3">
+                    <p>There was an issue loading the item.</p>
+                    <code className="block bg-muted p-2 rounded-md">
+                        {error.message}
+                    </code>
+                    <Button onClick={() => router.invalidate()}>Retry</Button>
+                </div>
             </SCPage>
         );
     },

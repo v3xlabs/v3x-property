@@ -70,6 +70,10 @@ export const getHttp =
                 throw new Error('Token expired');
             }
 
+            if (!response.ok) {
+                throw new Error(response.statusText);
+            }
+
             return (await response.json()) as T;
         } catch (error) {
             console.error(error);
