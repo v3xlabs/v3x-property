@@ -38,6 +38,9 @@ jobs:
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
+        ports:
+          # Maps tcp port 5432 on service container to the host
+          - 5432:5432
 
     steps:
       - name: Checkout
@@ -70,7 +73,7 @@ jobs:
           cp .env.example .env
 
           # Replace the postgres url with the service container name
-          sed -i 's|DATABASE_URL=.*|DATABASE_URL=postgres://postgres:postgres@postgres:5432/property|g' .env
+          sed -i 's|DATABASE_URL=.*|DATABASE_URL=postgres://postgres:postgres@localhost:5432/property|g' .env
 
       - name: Run DB migrations
         working-directory: ./engine
