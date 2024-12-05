@@ -1,18 +1,14 @@
 use std::sync::Arc;
 
 use poem::web::Data;
-use poem::{IntoResponse, Result};
-use poem_openapi::{ApiResponse, Object};
+use poem::Result;
+use poem_openapi::Object;
 use poem_openapi::{param::Path, payload::Json, OpenApi};
-use reqwest::StatusCode;
 use serde::{Deserialize, Serialize};
 
 use super::super::ApiTags;
 use crate::models::keys::UserApiKey;
-use crate::{
-    models::user::{user::User, userentry::UserEntry},
-    state::AppState,
-};
+use crate::state::AppState;
 
 pub struct UserKeysApi;
 
@@ -67,14 +63,20 @@ impl UserKeysApi {
     /// /user/:user_id/keys/:token_id
     ///
     /// Delete an API key for a user
-    #[oai(path = "/user/:user_id/keys/:token_id", method = "delete", tag = "ApiTags::User")]
+    #[oai(
+        path = "/user/:user_id/keys/:token_id",
+        method = "delete",
+        tag = "ApiTags::User"
+    )]
     pub async fn delete_key(
         &self,
         state: Data<&Arc<AppState>>,
         user_id: Path<i32>,
         token_id: Path<i32>,
     ) -> Result<()> {
-        UserApiKey::delete_by_token_id(token_id.0, &state.database).await.unwrap();
+        UserApiKey::delete_by_token_id(token_id.0, &state.database)
+            .await
+            .unwrap();
         // StatusCode::NO_CONTENT
         Ok(())
     }

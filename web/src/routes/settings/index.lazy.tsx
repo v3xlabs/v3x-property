@@ -7,6 +7,7 @@ import { useInstanceSettings } from '@/api/instance_settings';
 import { SearchTaskTable } from '@/components/search_tasks/SearchTaskTable';
 import { Button } from '@/components/ui/Button';
 import { SCPage } from '@/layouts/SimpleCenterPage';
+import { UserApiKeysTable } from '@/components/user_api_keys/UserApiKeysTable';
 
 export const Route = createLazyFileRoute('/settings/')({
     component: () => {
@@ -41,6 +42,9 @@ export const Route = createLazyFileRoute('/settings/')({
                 </div>
                 <div className="card">
                     <SearchTaskTable />
+                </div>
+                <div className="card">
+                    <UserApiKeysTable />
                 </div>
             </SCPage>
         );
