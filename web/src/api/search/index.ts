@@ -14,8 +14,9 @@ export const getSearch = (query: string) =>
         queryKey: ['search', query],
         queryFn: async () => {
             const response = await apiRequest('/search', 'get', {
-                // TODO: implement query into search
-                // query,
+                query: {
+                    query,
+                },
             });
 
             return response.data;

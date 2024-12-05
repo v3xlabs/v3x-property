@@ -505,7 +505,9 @@ export type paths = {
          */
         get: {
             parameters: {
-                query?: never;
+                query: {
+                    query: string;
+                };
                 header?: never;
                 path?: never;
                 cookie?: never;
