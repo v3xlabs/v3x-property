@@ -20,8 +20,7 @@ USER dockeruser
 # -----------------------
 # BINARY_NAME: Name of the executable (default: v3x-property-engine)
 # RUST_LOG: Logging configuration (default: error,{BINARY_NAME}=info)
-ARG BINARY_NAME_DEFAULT=v3x-property-engine
-ENV BINARY_NAME=$BINARY_NAME_DEFAULT
+ARG BINARY_NAME=v3x-property-engine
 ENV RUST_LOG="error,$BINARY_NAME=info"
 
 # Binary Installation
