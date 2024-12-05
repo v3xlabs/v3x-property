@@ -58,8 +58,8 @@ jobs:
 
       - name: Prepare DB
         working-directory: ./engine
-        run: sqlx migrate run
+        run: cargo sqlx migrate run
 
       - name: Check sqlx metadata files
         working-directory: ./engine
-        run: sqlx prepare --check
+        run: cargo sqlx prepare --check
