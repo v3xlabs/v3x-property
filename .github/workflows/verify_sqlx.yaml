@@ -14,9 +14,6 @@ jobs:
       packages: write
       attestations: write
       id-token: write
-    env:
-      SCCACHE_GHA_ENABLED: "true"
-      RUSTC_WRAPPER: "sccache"
     services:
       # Label used to access the service container
       postgres:

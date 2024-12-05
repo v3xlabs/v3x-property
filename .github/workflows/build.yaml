@@ -1,17 +1,16 @@
 name: 🏗️ Build
 
-# Add at the top level, after 'name:'
-concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
-
 # Trigger this workflow when changes happen to our core directories
 on:
   push:
     paths:
       - "engine/**" # Our Rust backend
       - "web/**" # Our web frontend
-      - ".github/workflows/engine_build.yaml"
+      - ".github/workflows/build.yaml"
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 # Set up some global variables we'll use throughout
 env:
