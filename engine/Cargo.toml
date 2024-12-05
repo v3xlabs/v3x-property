@@ -18,7 +18,9 @@ dotenvy = "0.15.7"
 hex = "0.4.3"
 hmac = "0.12.1"
 meilisearch-sdk = "0.26.1"
-ollama-rs = "0.2.1"
+ollama-rs = { version = "0.2.1", features = [
+    "rustls",
+], default-features = false }
 openid = { version = "0.14.0", default-features = false, features = ["rustls"] }
 poem = { version = "3.0.4", git = "https://github.com/poem-web/poem", branch = "master", features = [
     "rustls",
