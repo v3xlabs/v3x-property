@@ -25,7 +25,7 @@ jobs:
   build-engine:
     strategy:
       matrix:
-        platform: &platforms
+        platform:
           - arch: x86_64-unknown-linux-musl
             docker: linux/amd64
           - arch: aarch64-unknown-linux-musl
@@ -110,7 +110,11 @@ jobs:
       - build-web
     strategy:
       matrix:
-        platform: *platforms
+        platform:
+          - arch: x86_64-unknown-linux-musl
+            docker: linux/amd64
+          - arch: aarch64-unknown-linux-musl
+            docker: linux/arm64
     steps:
       - name: Checkout
         uses: actions/checkout@v4
