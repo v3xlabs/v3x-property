@@ -9,6 +9,8 @@ use crate::{
 };
 use super::ApiTags;
 
+pub mod keys;
+
 pub struct UserApi;
 
 #[OpenApi]

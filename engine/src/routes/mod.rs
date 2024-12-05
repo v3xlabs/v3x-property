@@ -7,17 +7,13 @@ use me::MeApi;
 use media::MediaApi;
 use oauth::{callback::CallbackApi, login::LoginApi};
 use poem::{
-    endpoint::{StaticFileEndpoint, StaticFilesEndpoint},
-    get, handler,
-    listener::TcpListener,
-    middleware::Cors,
-    web::Html,
-    EndpointExt, Route, Server,
+    endpoint::StaticFilesEndpoint, get, handler, listener::TcpListener, middleware::Cors,
+    web::Html, EndpointExt, Route, Server,
 };
 use poem_openapi::{OpenApi, OpenApiService, Tags};
 use search::{tasks::SearchTaskApi, SearchApi};
 use sessions::SessionsApi;
-use users::UserApi;
+use users::{keys::UserKeysApi, UserApi};
 
 use crate::state::AppState;
 
@@ -55,6 +51,7 @@ fn get_api() -> impl OpenApi {
         SearchTaskApi,
         MeApi,
         UserApi,
+        UserKeysApi,
         SessionsApi,
         InstanceApi,
         LoginApi,
