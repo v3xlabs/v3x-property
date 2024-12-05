@@ -145,7 +145,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: ${{ env.BINARY_NAME }}
-          path: ${{ steps.binary.outputs.path }}
+          path: target/x86_64-unknown-linux-musl/release/${{ env.BINARY_NAME }}
 
       - name: Build docker image using github actions
         uses: docker/build-push-action@v6
@@ -161,7 +161,7 @@ jobs:
           build-args: |
             BINARY_PATH=target/x86_64-unknown-linux-musl/release/${{ env.BINARY_NAME }}
           # Testing new build setup
-          push: false
+          push: true
 
       # Testing new build setup
       # - name: Generate artifact attestation
