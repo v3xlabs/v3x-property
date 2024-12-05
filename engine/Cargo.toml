@@ -34,7 +34,13 @@ poem-openapi = { version = "5", git = "https://github.com/poem-web/poem", branch
     "static-files",
 ] }
 regex = "1.11.1"
-reqwest = "0.12.5"
+reqwest = { version = "0.12.5", features = [
+    "rustls-tls",
+    # Add back the default features excluding native-tls
+    "charset",
+    "http2",
+    "macos-system-configuration",
+], default-features = false }
 rustls = "0.23.19"
 scraper = "0.21.0"
 serde = "1.0.204"
