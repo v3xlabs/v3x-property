@@ -36,4 +36,4 @@ EXPOSE 3000
 # Application Startup
 # -----------------
 # Using exec form of CMD as there is no shell in scratch image
-CMD ["/$BINARY_NAME"]
+CMD ["/${BINARY_NAME}"]
