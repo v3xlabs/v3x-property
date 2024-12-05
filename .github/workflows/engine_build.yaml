@@ -101,11 +101,12 @@ jobs:
           touch .env
           echo "DATABASE_URL=postgres://postgres:postgres@localhost:5432/property" >> .env
 
-      - name: Run DB migrations
+      - name: Migrate DB and prepare sqlx
         working-directory: ./engine
         run: |
-          cargo install sqlx-cli --no-default-features --features native-tls,postgres \
-          && sqlx migrate run
+          cargo install sqlx-cli --no-default-features --features native-tls,postgres
+          sqlx migrate run
+          # sqlx prepare
 
       - name: Extract metadata (tags, labels) for Docker
         id: meta
@@ -131,9 +132,8 @@ jobs:
         working-directory: ./engine
         env:
           BINARY_NAME: ${{ env.BINARY_NAME }}
-        run: |
-          cargo build --target x86_64-unknown-linux-musl --release \
-          && echo "path=$(target/x86_64-unknown-linux-musl/release/${BINARY_NAME})" >> $GITHUB_OUTPUT
+          # SQLX_OFFLINE: true
+        run: cargo build --target x86_64-unknown-linux-musl --release
 
       # Debug log the binary path
       - name: Debug log binary path
@@ -159,7 +159,7 @@ jobs:
           annotations: ${{ steps.meta.outputs.annotations }}
           # Variables
           build-args: |
-            BINARY_PATH=${{ steps.binary.outputs.path }}
+            BINARY_PATH=target/x86_64-unknown-linux-musl/release/${{ env.BINARY_NAME }}
           # Testing new build setup
           push: false
 
