@@ -27,6 +27,12 @@ ENV RUST_LOG="error,v3x-property-engine=info"
 ARG BINARY_PATH
 COPY ${BINARY_PATH} /v3x-property-engine
 
+# Web UI
+# -----
+# WEBUI_PATH: Path to the pre-compiled web UI from GitHub Actions
+ARG WEBUI_PATH
+COPY ${WEBUI_PATH} /web
+
 # Network Configuration
 # -------------------
 EXPOSE 3000

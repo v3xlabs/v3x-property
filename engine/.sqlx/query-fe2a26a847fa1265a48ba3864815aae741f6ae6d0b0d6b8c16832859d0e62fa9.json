@@ -1,0 +1,52 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "SELECT user_id, oauth_sub, oauth_data::text::json as \"oauth_data!: Json<Userinfo>\", nickname, created_at, updated_at FROM users WHERE user_id = $1",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "user_id",
+        "type_info": "Int4"
+      },
+      {
+        "ordinal": 1,
+        "name": "oauth_sub",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 2,
+        "name": "oauth_data!: Json<Userinfo>",
+        "type_info": "Json"
+      },
+      {
+        "ordinal": 3,
+        "name": "nickname",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 4,
+        "name": "created_at",
+        "type_info": "Timestamptz"
+      },
+      {
+        "ordinal": 5,
+        "name": "updated_at",
+        "type_info": "Timestamptz"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Int4"
+      ]
+    },
+    "nullable": [
+      false,
+      false,
+      null,
+      true,
+      true,
+      true
+    ]
+  },
+  "hash": "fe2a26a847fa1265a48ba3864815aae741f6ae6d0b0d6b8c16832859d0e62fa9"
+}

@@ -1,108 +1,182 @@
-name: 🏗️ Build Engine
+name: 🏗️ Build
 
+# Add at the top level, after 'name:'
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+# Trigger this workflow when changes happen to our core directories
 on:
   push:
     paths:
-      - 'engine/**'
-      - '.github/workflows/build.yaml'
+      - "engine/**" # Our Rust backend
+      - "web/**" # Our web frontend
+      - ".github/workflows/engine_build.yaml"
 
+# Set up some global variables we'll use throughout
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: v3xlabs/v3x-property/engine
+  BINARY_NAME: v3x-property-engine
+  DOCKER_BUILDKIT: 1 # Enable BuildKit
+  COMPOSE_DOCKER_CLI_BUILD: 1
 
 jobs:
-  deploy:
-    runs-on: ubuntu-20.04
+  # 🦀 First job: Build our Rust backend
+  build-engine:
+    strategy:
+      matrix:
+        platform: [x86_64-unknown-linux-musl, aarch64-unknown-linux-musl]
+    timeout-minutes: 20 # Prevent hanging builds
+    runs-on: ubuntu-latest
     permissions:
       contents: read
-      packages: write
-      attestations: write
-      id-token: write
-    env:
-      SCCACHE_GHA_ENABLED: "true"
-      RUSTC_WRAPPER: "sccache"
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # Set up Rust with the specific target we need
+      - name: Install Rust
+        run: |
+          rustup toolchain install stable --profile minimal --no-self-update
+          rustup target add x86_64-unknown-linux-musl  # Static linking FTW!
+
+      # musl-tools needed for static compilation
+      - name: Install musl-tools
+        run: |
+          sudo apt-get update --yes && \
+          sudo apt-get install --yes musl-tools
+
+      # Speed up builds by caching dependencies
+      - name: Cache Rust
+        uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: engine
+
+      # 🔨 Build our static binary
+      - name: Build Rust binary
+        working-directory: ./engine
+        env:
+          BINARY_NAME: ${{ env.BINARY_NAME }}
+          SQLX_OFFLINE: true # Use prepared SQL queries
+        run: cargo build --target x86_64-unknown-linux-musl --release
+
+      # 📦 Save our binary for later
+      - name: Upload built binary as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: engine-x86_64-unknown-linux-musl
+          path: engine/target/x86_64-unknown-linux-musl/release/${{ env.BINARY_NAME }}
+          retention-days: 1 # Save storage by cleaning up quickly
+          compression-level: 9 # Maximum compression
+
+      - name: Check binary size
+        run: |
+          size=$(stat -f %z "engine/target/x86_64-unknown-linux-musl/release/${{ env.BINARY_NAME }}")
+          if [ $size -gt 50000000 ]; then
+            echo "Binary size exceeds 50MB limit"
+            exit 1
+          fi
+
+  # 🌐 Second job: Build our web frontend
+  build-web:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
       - name: Checkout
         uses: actions/checkout@v3
         with:
           fetch-depth: 0
 
-      - name: Configure sccache
-        uses: actions/github-script@v6
+      # Get our Node.js tools ready
+      - name: Install Tools & Dependencies
+        uses: ./.github/actions/install
+
+      # Build the web assets
+      - name: Build
+        working-directory: ./web
+        run: NODE_ENV=production pnpm run build
+
+      # 📦 Save our web assets for later
+      - name: Upload built web as artifact
+        uses: actions/upload-artifact@v4
         with:
-          script: |
-            core.exportVariable('ACTIONS_CACHE_URL', process.env.ACTIONS_CACHE_URL || '');
-            core.exportVariable('ACTIONS_RUNTIME_TOKEN', process.env.ACTIONS_RUNTIME_TOKEN || '');
-  
-      - name: Run sccache-cache
-        uses: mozilla-actions/sccache-action@v0.0.3
+          name: web
+          path: web/dist
+
+  # 🐳 Final job: Package everything into a Docker image
+  docker-build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+      attestations: write # For security attestations
+      id-token: write
+    needs: # Wait for other jobs to finish
+      - build-engine
+      - build-web
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # 📥 Grab our built binary
+      - name: Download built binary
+        uses: actions/download-artifact@v4
+        id: engine-binary
         with:
-          version: "v0.7.4"
+          name: engine-x86_64-unknown-linux-musl
 
-      - name: Log in to the Container registry
-        uses: docker/login-action@65b78e6e13532edd9afa3aa52ac7964289d1a9c1
+      # 📥 Grab our web assets
+      - name: Download built web
+        uses: actions/download-artifact@v4
+        id: web
         with:
-          registry: ${{ env.REGISTRY }}
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+          name: web
 
-      - name: Cache Cargo registry
-        uses: actions/cache@v3
-        with:
-          path: ~/.cargo/registry
-          key: ${{ runner.os }}-cargo-registry-${{ hashFiles('**/Cargo.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-cargo-registry-
-
-      - name: Cache Cargo build
-        uses: actions/cache@v3
-        with:
-          path: target
-          key: ${{ runner.os }}-cargo-build-${{ hashFiles('**/Cargo.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-cargo-build-
-
-      - name: Run sccache-cache
-        uses: mozilla-actions/sccache-action@v0.0.3
-        with:
-          version: "v0.7.4"
-
-      - name: Start postgres via docker-compose dev
-        working-directory: ./engine
-        run: docker compose -f ./compose.yaml up postgres -d
-
-      - name: Setup Env
-        working-directory: ./engine
-        run: cp .env.example .env
-
-      - name: Get Runner IP
-        id: get_ip
-        run: echo "RUNNER_IP=$(hostname -I | awk '{print $1}')" >> $GITHUB_ENV
-
-      - name: Migrate db
-        working-directory: ./engine
-        run: cargo install sqlx-cli --no-default-features --features native-tls,postgres && sqlx migrate run && cargo sqlx prepare
-
-      - name: Stop postgres via docker-compose dev
-        working-directory: ./engine
-        run: docker compose -f ./compose.yaml down
-
+      # Set up Docker metadata for nice tags
       - name: Extract metadata (tags, labels) for Docker
         id: meta
         uses: docker/metadata-action@v5
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          tags: |
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=semver,pattern={{major}}
+            type=edge
+            type=sha
 
+      # Log into GitHub's container registry
+      - name: Log in to the Container registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      # Set up Docker Buildx
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      # 🚀 Build and push our final Docker image
       - name: Build docker image using github actions
         uses: docker/build-push-action@v6
         id: push
         with:
           context: ./engine
-          file: ./engine/.build/Dockerfile
+          file: ./engine/.build/Dockerfile.scratch
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
+          annotations: ${{ steps.meta.outputs.annotations }}
+          build-args: |
+            BINARY_PATH=${{ steps.engine-binary.outputs.path }}
+            WEBUI_PATH=${{ steps.web.outputs.path }}
           push: true
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
 
+      # 🔐 Generate security attestation for our image
       - name: Generate artifact attestation
         uses: actions/attest-build-provenance@v1
         with:

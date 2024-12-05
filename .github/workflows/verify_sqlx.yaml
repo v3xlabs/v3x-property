@@ -1,0 +1,68 @@
+name: 🧰 Verify SQLx Metadata
+
+on:
+  push:
+    paths:
+      - "engine/**"
+      - ".github/workflows/verify_sqlx.yaml"
+
+jobs:
+  deploy:
+    runs-on: ubuntu-20.04
+    permissions:
+      contents: read
+      packages: write
+      attestations: write
+      id-token: write
+    env:
+      SCCACHE_GHA_ENABLED: "true"
+      RUSTC_WRAPPER: "sccache"
+    services:
+      # Label used to access the service container
+      postgres:
+        # Docker Hub image
+        image: postgres:17
+        # Provide the password for postgres
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: property
+        # Set health checks to wait until postgres has started
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 5s
+          --health-timeout 2s
+          --health-retries 10
+        ports:
+          # Maps tcp port 5432 on service container to the host
+          - 5432:5432
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Rust
+        run: |
+          rustup toolchain install stable --profile minimal --no-self-update
+
+      - name: Cache Rust
+        uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: engine
+
+      - name: Install sqlx-cli
+        working-directory: ./engine
+        run: |
+          cargo install sqlx-cli --no-default-features --features native-tls,postgres
+
+      - name: Set github env
+        run: |
+          echo "DATABASE_URL=postgres://postgres:postgres@localhost:5432/property" >> $GITHUB_ENV
+
+      - name: Prepare DB
+        working-directory: ./engine
+        run: sqlx migrate run
+
+      - name: Check sqlx metadata files
+        working-directory: ./engine
+        run: sqlx prepare --check
