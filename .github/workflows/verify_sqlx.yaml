@@ -7,7 +7,7 @@ on:
       - ".github/workflows/verify_sqlx.yaml"
 
 jobs:
-  deploy:
+  verify_sqlx:
     runs-on: ubuntu-20.04
     permissions:
       contents: read

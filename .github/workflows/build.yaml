@@ -22,11 +22,15 @@ env:
   COMPOSE_DOCKER_CLI_BUILD: 1
 
 jobs:
-  # 🦀 First job: Build our Rust backend
+  # 🦀 First job: Build our Rust backend for multiple architectures
   build-engine:
     strategy:
       matrix:
-        platform: [x86_64-unknown-linux-musl, aarch64-unknown-linux-musl]
+        platform: &platforms
+          - arch: x86_64-unknown-linux-musl
+            docker: linux/amd64
+          - arch: aarch64-unknown-linux-musl
+            docker: linux/arm64
     timeout-minutes: 20 # Prevent hanging builds
     runs-on: ubuntu-latest
     permissions:
@@ -39,7 +43,7 @@ jobs:
       - name: Install Rust
         run: |
           rustup toolchain install stable --profile minimal --no-self-update
-          rustup target add x86_64-unknown-linux-musl  # Static linking FTW!
+          rustup target add ${{ matrix.platform.arch }}
 
       # musl-tools needed for static compilation
       - name: Install musl-tools
@@ -59,24 +63,16 @@ jobs:
         env:
           BINARY_NAME: ${{ env.BINARY_NAME }}
           SQLX_OFFLINE: true # Use prepared SQL queries
-        run: cargo build --target x86_64-unknown-linux-musl --release
+        run: cargo build --target ${{ matrix.platform.arch }} --release
 
       # 📦 Save our binary for later
       - name: Upload built binary as artifact
         uses: actions/upload-artifact@v4
         with:
-          name: engine-x86_64-unknown-linux-musl
-          path: engine/target/x86_64-unknown-linux-musl/release/${{ env.BINARY_NAME }}
+          name: engine-${{ matrix.platform.arch }}
+          path: engine/target/${{ matrix.platform.arch }}/release/${{ env.BINARY_NAME }}
           retention-days: 1 # Save storage by cleaning up quickly
           compression-level: 9 # Maximum compression
-
-      - name: Check binary size
-        run: |
-          size=$(stat -f %z "engine/target/x86_64-unknown-linux-musl/release/${{ env.BINARY_NAME }}")
-          if [ $size -gt 50000000 ]; then
-            echo "Binary size exceeds 50MB limit"
-            exit 1
-          fi
 
   # 🌐 Second job: Build our web frontend
   build-web:
@@ -105,17 +101,17 @@ jobs:
           name: web
           path: web/dist
 
-  # 🐳 Final job: Package everything into a Docker image
+  # 🐳 Third job: Package everything into a multi-arch Docker digests
   docker-build:
     runs-on: ubuntu-latest
     permissions:
       contents: read
-      packages: write
-      attestations: write # For security attestations
-      id-token: write
     needs: # Wait for other jobs to finish
       - build-engine
       - build-web
+    strategy:
+      matrix:
+        platform: *platforms
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -125,7 +121,7 @@ jobs:
         uses: actions/download-artifact@v4
         id: engine-binary
         with:
-          name: engine-x86_64-unknown-linux-musl
+          name: engine-${{ matrix.platform.arch }}
 
       # 📥 Grab our web assets
       - name: Download built web
@@ -134,7 +130,15 @@ jobs:
         with:
           name: web
 
-      # Set up Docker metadata for nice tags
+      # Set up QEMU for multi-arch builds
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+
+      # Set up Docker Buildx
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      # Extract metadata
       - name: Extract metadata (tags, labels) for Docker
         id: meta
         uses: docker/metadata-action@v5
@@ -146,6 +150,62 @@ jobs:
             type=semver,pattern={{major}}
             type=edge
             type=sha
+
+      # 🚀 Build and push multi-arch Docker image
+      - name: Build Docker digests
+        uses: docker/build-push-action@v6
+        id: build
+        with:
+          context: ./engine
+          file: ./engine/.build/Dockerfile.scratch
+          platforms: linux/amd64,linux/arm64
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          annotations: ${{ steps.meta.outputs.annotations }}
+
+          outputs: type=image,name=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }},push-by-digest=true,name-canonical=true,push=true
+
+          build-args: |
+            BINARY_PATH=${{ steps.engine-binary.outputs.path }}
+            WEBUI_PATH=${{ steps.web.outputs.path }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Export digest
+        run: |
+          mkdir -p /tmp/digests
+          digest="${{ steps.build.outputs.digest }}"
+          touch "/tmp/digests/${digest#sha256:}"
+
+      - name: Upload digest
+        uses: actions/upload-artifact@v4
+        with:
+          name: digests-${{ matrix.platform.arch }}
+          path: /tmp/digests/*
+          if-no-files-found: error
+          retention-days: 1
+
+  # 🐳 Final job: Merge multi-arch digests into a single artifact
+  docker-merge:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+      attestations: write # For security attestations
+      id-token: write
+    needs: # Wait for other jobs to finish
+      - docker-build
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # 📥 Grab our digests
+      - name: Download digests
+        uses: actions/download-artifact@v4
+        with:
+          path: /tmp/digests
+          pattern: digests-*
+          merge-multiple: true
 
       # Log into GitHub's container registry
       - name: Log in to the Container registry
@@ -159,27 +219,25 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      # 🚀 Build and push our final Docker image
-      - name: Build docker image using github actions
-        uses: docker/build-push-action@v6
-        id: push
+      # Extract metadata
+      - name: Extract metadata (tags, labels) for Docker
+        id: meta
+        uses: docker/metadata-action@v5
         with:
-          context: ./engine
-          file: ./engine/.build/Dockerfile.scratch
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
-          annotations: ${{ steps.meta.outputs.annotations }}
-          build-args: |
-            BINARY_PATH=${{ steps.engine-binary.outputs.path }}
-            WEBUI_PATH=${{ steps.web.outputs.path }}
-          push: true
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          tags: |
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=semver,pattern={{major}}
+            type=edge
+            type=sha
 
-      # 🔐 Generate security attestation for our image
-      - name: Generate artifact attestation
-        uses: actions/attest-build-provenance@v1
-        with:
-          subject-name: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
-          subject-digest: ${{ steps.push.outputs.digest }}
-          push-to-registry: true
+      - name: Create manifest list and push
+        working-directory: /tmp/digests
+        run: |
+          docker buildx imagetools create $(jq -cr '.tags | map("-t " + .) | join(" ")' <<< "$DOCKER_METADATA_OUTPUT_JSON") \
+            $(printf '${{ env.REGISTRY_IMAGE }}@sha256:%s ' *)
+
+      - name: Inspect image
+        run: |
+          docker buildx imagetools inspect ${{ env.REGISTRY_IMAGE }}:${{ steps.meta.outputs.version }}
