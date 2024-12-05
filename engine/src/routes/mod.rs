@@ -1,12 +1,18 @@
-use std::sync::Arc;
+use std::{env, sync::Arc};
 
+use async_std::path::PathBuf;
 use instance::InstanceApi;
 use items::ItemsApi;
 use me::MeApi;
 use media::MediaApi;
 use oauth::{callback::CallbackApi, login::LoginApi};
 use poem::{
-    get, handler, listener::TcpListener, middleware::Cors, web::Html, EndpointExt, Route, Server,
+    endpoint::{StaticFileEndpoint, StaticFilesEndpoint},
+    get, handler,
+    listener::TcpListener,
+    middleware::Cors,
+    web::Html,
+    EndpointExt, Route, Server,
 };
 use poem_openapi::{OpenApi, OpenApiService, Tags};
 use search::{tasks::SearchTaskApi, SearchApi};
@@ -18,11 +24,11 @@ use crate::state::AppState;
 pub mod instance;
 pub mod items;
 pub mod me;
+pub mod media;
 pub mod oauth;
 pub mod search;
 pub mod sessions;
 pub mod users;
-pub mod media;
 
 #[derive(Tags)]
 enum ApiTags {
@@ -67,13 +73,22 @@ pub async fn serve(state: AppState) -> Result<(), poem::Error> {
 
     let spec = api_service.spec_endpoint();
 
+    let static_files = StaticFilesEndpoint::new(
+        std::fs::canonicalize(PathBuf::from(
+            env::var("WEB_PATH").unwrap_or("./web".to_string()),
+        ))
+        .unwrap(),
+    )
+    .fallback_to_index()
+    .index_file("index.html");
+
     let state = Arc::new(state);
 
     let app = Route::new()
         .nest("/api", api_service)
         .nest("/openapi.json", spec)
         .at("/docs", get(get_openapi_docs))
-        .at("/", get(get_openapi_docs))
+        .at("/*", static_files)
         .with(Cors::new())
         .data(state);
 
