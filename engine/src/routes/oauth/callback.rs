@@ -26,8 +26,21 @@ use crate::{
 
 pub struct CallbackApi;
 
+#[derive(ApiResponse)]
+pub enum RedirectResponse {
+    /// Redirect to the frontend with authentication token
+    #[oai(status = 302)]
+    Redirect(#[oai(header = "Location")] String),
+    /// Bad request
+    #[oai(status = 400)]
+    BadRequest(PlainText<String>),
+}
+
 #[OpenApi]
 impl CallbackApi {
+    /// /callback
+    ///
+    /// OpenID Connect callback endpoint, redeems the code and issues a session token
     #[oai(path = "/callback", method = "get", tag = "ApiTags::Auth")]
     pub async fn callback(
         &self,
@@ -40,8 +53,8 @@ impl CallbackApi {
         app_state: Data<&Arc<AppState>>,
         ip: RealIp,
         headers: &HeaderMap,
-    ) -> Result<()> {
-        let mut token = app_state.openid.request_token(&code).await.map_err(|_| {
+    ) -> Result<RedirectResponse> {
+        let token = app_state.openid.request_token(&code).await.map_err(|_| {
             poem::Error::from_response(
                 Redirect::temporary(app_state.openid.redirect_url()).into_response(),
             )
@@ -92,8 +105,6 @@ impl CallbackApi {
         redirect_url.set_query(Some(&format!("token={}", token)));
         redirect_url.set_query(Some(&format!("token={}", token)));
 
-        Err(poem::Error::from_response(
-            Redirect::temporary(redirect_url.to_string()).into_response(),
-        ))
+        Ok(RedirectResponse::Redirect(redirect_url.to_string()))
     }
 }
