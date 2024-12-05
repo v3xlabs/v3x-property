@@ -98,11 +98,8 @@ jobs:
       - name: Create and populate .env
         working-directory: ./engine
         run: |
-          # Copy the example env file
-          cp .env.example .env
-
-          # Replace the postgres url with the service container name
-          sed -i 's|DATABASE_URL=.*|DATABASE_URL=postgres://postgres:postgres@localhost:5432/property|g' .env
+          touch .env
+          echo "DATABASE_URL=postgres://postgres:postgres@localhost:5432/property" >> .env
 
       - name: Run DB migrations
         working-directory: ./engine
