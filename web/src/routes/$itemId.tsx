@@ -14,10 +14,8 @@ export const Route = createFileRoute('/$itemId')({
         );
         const formattedItemId = formatId(params.itemId, instanceSettings);
 
-        if (formattedItemId !== params.itemId) {
-            console.log('redirecting to', formattedItemId);
+        console.log('redirecting to', formattedItemId);
 
-            return redirect({ to: `/item/${formattedItemId}` });
-        }
+        return redirect({ to: `/item/${formattedItemId}` });
     },
 });

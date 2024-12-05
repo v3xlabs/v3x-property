@@ -2,7 +2,7 @@ import TimeAgo from 'javascript-time-ago';
 import en from 'javascript-time-ago/locale/en';
 import { match } from 'ts-pattern';
 
-import { ApiLogResponse, useApiItemLogs } from '@/api/item';
+import { ApiLogResponse, useItemLogs } from '@/api/item';
 import { UserProfile } from '@/components/UserProfile';
 
 export type ApiLogEntry = ApiLogResponse[number];
@@ -48,7 +48,7 @@ const ItemLogEntry = ({ log }: { log: ApiLogEntry }) => {
 };
 
 export const ItemLogSection = ({ item_id }: { item_id: string }) => {
-    const { data: logs } = useApiItemLogs(item_id);
+    const { data: logs } = useItemLogs(item_id);
 
     return (
         <div>

@@ -6,7 +6,7 @@ import { FC } from 'react';
 import { match } from 'ts-pattern';
 
 import { formatId, useInstanceSettings } from '@/api/instance_settings';
-import { ApiItemResponse, useApiItemById, useApiItemMedia } from '@/api/item';
+import { ApiItemResponse, useItemById, useItemMedia } from '@/api/item';
 import { useMedia } from '@/api/media';
 
 type Properties = {
@@ -92,8 +92,8 @@ export const ItemPreviewHoverCard: FC<{
 const UNKNOWN_USER = 'Unknown User';
 
 export const ItemPreview: FC<Properties> = ({ item_id, variant }) => {
-    const { data: item, isLoading } = useApiItemById(item_id);
-    const { data: media } = useApiItemMedia(item_id);
+    const { data: item, isLoading } = useItemById(item_id);
+    const { data: media } = useItemMedia(item_id);
     const { data: mediaData } = useMedia(media?.[0]);
     const { data: instanceSettings } = useInstanceSettings();
     const formattedItemId = formatId(item?.item_id, instanceSettings);

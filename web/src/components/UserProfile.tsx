@@ -5,11 +5,11 @@ import clsx from 'clsx';
 import { FC } from 'react';
 import { match } from 'ts-pattern';
 
-import { ApiMeResponse, useApiMe } from '@/api/me';
-import { useApiUserById } from '@/api/user';
+import { ApiMeResponse, useMe } from '@/api/me';
+import { useUserById } from '@/api/user';
 
 type Properties = {
-    user_id: string;
+    user_id: number;
     variant?: 'avatar' | 'full' | 'compact';
 };
 
@@ -100,8 +100,8 @@ export const getInitials = (name?: string) => {
 const UNKNOWN_USER = 'Unknown User';
 
 export const UserProfile: FC<Properties> = ({ user_id, variant }) => {
-    const { data: user, isLoading } = useApiUserById(user_id);
-    const { data: me } = useApiMe();
+    const { data: user, isLoading } = useUserById(user_id);
+    const { data: me } = useMe();
 
     if (isLoading) {
         return <div>Loading...</div>;
@@ -115,7 +115,7 @@ export const UserProfile: FC<Properties> = ({ user_id, variant }) => {
                         <HoverCard.Trigger asChild>
                             <Link
                                 to="/user/$userId"
-                                params={{ userId: user_id }}
+                                params={{ userId: user_id.toString() }}
                                 className="p-1 border rounded-md flex items-center gap-2 hover:bg-black/5"
                             >
                                 <AvatarHolder
@@ -132,7 +132,7 @@ export const UserProfile: FC<Properties> = ({ user_id, variant }) => {
                         <HoverCard.Trigger asChild>
                             <Link
                                 to="/user/$userId"
-                                params={{ userId: user_id }}
+                                params={{ userId: user_id.toString() }}
                                 className="p-1.5 border cursor-pointer rounded-md flex items-center gap-2 hover:bg-black/5"
                             >
                                 <AvatarHolder
@@ -153,7 +153,7 @@ export const UserProfile: FC<Properties> = ({ user_id, variant }) => {
                         <HoverCard.Trigger asChild>
                             <Link
                                 to="/user/$userId"
-                                params={{ userId: user_id }}
+                                params={{ userId: user_id.toString() }}
                                 className="p-1.5 border cursor-pointer rounded-md flex items-center gap-2 hover:bg-black/5"
                             >
                                 <AvatarHolder

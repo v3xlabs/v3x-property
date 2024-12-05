@@ -6,8 +6,8 @@ import { FiLoader } from 'react-icons/fi';
 
 import { useAuth } from '@/api/auth';
 import { ApiRequest, BASE_URL } from '@/api/core';
-import { useApiMe } from '@/api/me';
-import { useUserApiKeys } from '@/api/user';
+import { useMe } from '@/api/me';
+import { useUserPats } from '@/api/user/pat';
 
 import { Button } from '../ui/Button';
 
@@ -32,7 +32,7 @@ const TokenTableEntry = ({
             // /api/search/tasks/{id} PUT
             const response = await fetch(
                 BASE_URL +
-                `/user/${apiToken.user_id}/keys/${apiToken.token_id}`,
+                    `/user/${apiToken.user_id}/keys/${apiToken.token_id}`,
                 {
                     method: 'DELETE',
                     headers: {
@@ -70,14 +70,12 @@ const TokenTableEntry = ({
 };
 
 export const UserApiKeysTable = () => {
-    const {
-        data: { user_id },
-    } = useApiMe();
-    const { data, refetch } = useUserApiKeys(user_id);
+    const { data: me } = useMe();
+    const { data, refetch } = useUserPats(me?.user_id ?? 0);
 
     return (
         <div className="w-full">
-            <h2>Search Tasks</h2>
+            <h2>Personal Access Tokens</h2>
             {(data || []).length > 0 ? (
                 <table className="w-full">
                     <tbody className="w-full">

@@ -6,8 +6,8 @@ import { BASE_URL } from '@/api/core';
 import { useInstanceSettings } from '@/api/instance_settings';
 import { SearchTaskTable } from '@/components/search_tasks/SearchTaskTable';
 import { Button } from '@/components/ui/Button';
-import { SCPage } from '@/layouts/SimpleCenterPage';
 import { UserApiKeysTable } from '@/components/user_api_keys/UserApiKeysTable';
+import { SCPage } from '@/layouts/SimpleCenterPage';
 
 export const Route = createLazyFileRoute('/settings/')({
     component: () => {

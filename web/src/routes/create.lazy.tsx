@@ -4,7 +4,7 @@ import { FiArrowRight } from 'react-icons/fi';
 
 import { isValidId } from '@/api/generate_id';
 import { formatId, useInstanceSettings } from '@/api/instance_settings';
-import { useApiCreateItem } from '@/api/item';
+import { useCreateItem } from '@/api/item';
 import { NewItemIdInput } from '@/components/input/NewItemIdInput';
 import { Button } from '@/components/ui/Button';
 import { SCPage } from '@/layouts/SimpleCenterPage';
@@ -12,7 +12,7 @@ import { SCPage } from '@/layouts/SimpleCenterPage';
 const component = () => {
     const { data: instanceSettings } = useInstanceSettings();
     const navigate = useNavigate();
-    const { mutate: createItem } = useApiCreateItem();
+    const { mutate: createItem } = useCreateItem();
 
     const { Field, Subscribe, handleSubmit } = useForm({
         defaultValues: {

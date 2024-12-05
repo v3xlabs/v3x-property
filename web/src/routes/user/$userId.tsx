@@ -1,12 +1,13 @@
 import { createFileRoute, useParams } from '@tanstack/react-router';
 
-import { useApiUserById } from '@/api/user';
+import { useUserById } from '@/api/user';
 import { SCPage } from '@/layouts/SimpleCenterPage';
 
 export const Route = createFileRoute('/user/$userId')({
     component: () => {
         const { userId } = useParams({ from: '/user/$userId' });
-        const { data: user, isLoading } = useApiUserById(userId);
+        const user_id = Number.parseInt(userId);
+        const { data: user, isLoading } = useUserById(user_id);
 
         return (
             <SCPage title="User Profile">

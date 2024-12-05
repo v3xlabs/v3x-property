@@ -15,10 +15,10 @@ import {
     instanceSettingsQueryOptions,
 } from '@/api/instance_settings';
 import {
-    itemByIdQueryOptions,
-    itemMediaQueryOptions,
-    useApiDeleteItem,
-    useApiEditItem,
+    getItemById,
+    getItemMedia,
+    useDeleteItem,
+    useEditItem,
 } from '@/api/item';
 import { BaseInput } from '@/components/input/BaseInput';
 import { EditMediaGallery } from '@/components/media/EditMediaGallery';
@@ -29,7 +29,7 @@ import { SCPage } from '@/layouts/SimpleCenterPage';
 import { queryClient } from '@/util/query';
 
 export const DeleteItemModal: FC<{ itemId: string }> = ({ itemId }) => {
-    const deleteItem = useApiDeleteItem({
+    const deleteItem = useDeleteItem({
         onSuccess() {
             navigate({
                 to: '/item/$itemId',
@@ -94,15 +94,15 @@ export const Route = createFileRoute('/item/$itemId/edit')({
 
         // Preload item and media
         return Promise.all([
-            queryClient.ensureQueryData(itemByIdQueryOptions(params.itemId)),
-            queryClient.ensureQueryData(itemMediaQueryOptions(params.itemId)),
+            queryClient.ensureQueryData(getItemById(params.itemId)),
+            queryClient.ensureQueryData(getItemMedia(params.itemId)),
         ]);
     },
     component: () => {
         const { itemId } = useParams({ from: '/item/$itemId/edit' });
-        const { data: item } = useSuspenseQuery(itemByIdQueryOptions(itemId));
-        const { data: media } = useSuspenseQuery(itemMediaQueryOptions(itemId));
-        const editItem = useApiEditItem();
+        const { data: item } = useSuspenseQuery(getItemById(itemId));
+        const { data: media } = useSuspenseQuery(getItemMedia(itemId));
+        const editItem = useEditItem();
         const navigate = useNavigate();
 
         const { Field, Subscribe, handleSubmit } = useForm<EditItemForm>({

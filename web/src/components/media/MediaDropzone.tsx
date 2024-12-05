@@ -2,7 +2,7 @@ import { FC } from 'react';
 import { useDropzone } from 'react-dropzone';
 
 export const MediaDropzone: FC<{
-    onDrop: (acceptedFiles: File[]) => void;
+    onDrop: (_acceptedFiles: File[]) => void;
 }> = ({ onDrop }) => {
     const { getRootProps, getInputProps, isDragActive, acceptedFiles } =
         useDropzone({

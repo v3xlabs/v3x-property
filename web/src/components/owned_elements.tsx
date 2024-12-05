@@ -1,11 +1,11 @@
 import { Link } from '@tanstack/react-router';
 
-import { useApiOwnedItems } from '@/api/item';
+import { useOwnedItems } from '@/api/item';
 
 import { Button } from './ui/Button';
 
 export const AllOwnedItems = () => {
-    const { data } = useApiOwnedItems();
+    const { data } = useOwnedItems();
 
     return (
         <div className="space-y-2">

@@ -2,24 +2,16 @@ use std::sync::Arc;
 
 use poem::web::{Data, Query};
 use poem::Result;
-use poem_openapi::Object;
 use poem_openapi::{payload::Json, OpenApi};
-use serde::{Deserialize, Serialize};
 use tracing::info;
 
+use super::ApiTags;
 use crate::models::item::search::SearchableItem;
 use crate::state::AppState;
-
-use super::ApiTags;
 
 pub mod tasks;
 
 pub struct SearchApi;
-
-#[derive(Debug, Serialize, Deserialize, Object)]
-pub struct SearchQueryParams {
-    pub query: String,
-}
 
 // #[derive(Debug, Serialize, Deserialize, Object)]
 // pub struct SearchResult {
@@ -31,13 +23,13 @@ pub struct SearchQueryParams {
 #[OpenApi]
 impl SearchApi {
     /// /search
-    /// 
+    ///
     /// Search for Items
     #[oai(path = "/search", method = "get", tag = "ApiTags::Search")]
     pub async fn search(
         &self,
         state: Data<&Arc<AppState>>,
-        query: Query<SearchQueryParams>,
+        query: Query<String>,
     ) -> Json<Vec<SearchableItem>> {
         let search = state.search.as_ref().unwrap();
 
@@ -45,7 +37,7 @@ impl SearchApi {
             .client
             .index("items")
             .search()
-            .with_query(&query.query)
+            .with_query(&query)
             .execute::<SearchableItem>()
             .await
             .unwrap();
@@ -56,7 +48,7 @@ impl SearchApi {
     }
 
     /// /search/reindex
-    /// 
+    ///
     /// Reindex all Items
     #[oai(path = "/search/reindex", method = "post", tag = "ApiTags::Search")]
     pub async fn reindex_all_items(&self, state: Data<&Arc<AppState>>) -> Result<()> {

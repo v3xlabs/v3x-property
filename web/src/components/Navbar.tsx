@@ -4,7 +4,7 @@ import { Link } from '@tanstack/react-router';
 import { FileRoutesByPath } from '@tanstack/react-router';
 
 import { useAuth } from '@/api/auth';
-import { useApiMe } from '@/api/me';
+import { useMe } from '@/api/me';
 import * as DropdownMenu from '@/components/ui/Dropdown';
 
 import { AvatarHolder, getInitials } from './UserProfile';
@@ -13,7 +13,7 @@ const LOGIN_URL = 'http://localhost:3000/api/login';
 
 export const Navbar = () => {
     const { token, clearAuthToken } = useAuth();
-    const { data: meData, isLoading: isVerifyingAuth } = useApiMe();
+    const { data: meData, isLoading: isVerifyingAuth } = useMe();
 
     const login_here_url =
         LOGIN_URL + '?redirect=' + encodeURIComponent(window.location.href);

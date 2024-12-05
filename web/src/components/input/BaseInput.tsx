@@ -7,7 +7,7 @@ import { Label } from '@/components/ui/Label';
 export type BaseInputProperties = {
     label?: string;
     suffix?: ReactNode;
-    onChange?: (value: string) => void;
+    onChange?: (_value: string) => void;
     errorMessage?: string;
     width?: 'full' | 'fit';
 } & Omit<ComponentPropsWithoutRef<typeof Input>, 'onChange'>;

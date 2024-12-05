@@ -7,9 +7,9 @@ import {
     UseQueryOptions,
 } from '@tanstack/react-query';
 
-import { useAuth } from './auth';
-import { apiRequest, BASE_URL, getHttp } from './core';
-import { paths } from './schema.gen';
+import { useAuth } from '../auth';
+import { apiRequest, BASE_URL, getHttp } from '../core';
+import { paths } from '../schema.gen';
 
 export type ApiItemResponse = {
     item_id: string;
@@ -21,7 +21,7 @@ export type ApiItemResponse = {
     modified?: string;
 };
 
-export const itemByIdQueryOptions = (item_id: string) =>
+export const getItemById = (item_id: string) =>
     queryOptions({
         queryKey: ['item', '{item_id}', item_id],
         queryFn: async () => {
@@ -33,11 +33,11 @@ export const itemByIdQueryOptions = (item_id: string) =>
         },
     });
 
-export const useApiItemById = (item_id: string) => {
-    return useQuery(itemByIdQueryOptions(item_id));
+export const useItemById = (item_id: string) => {
+    return useQuery(getItemById(item_id));
 };
 
-export const ownedItemsQueryOptions = () =>
+export const getOwnedItems = () =>
     queryOptions({
         queryKey: ['item', 'owned'],
         queryFn: async () => {
@@ -47,11 +47,11 @@ export const ownedItemsQueryOptions = () =>
         },
     });
 
-export const useApiOwnedItems = () => {
-    return useQuery(ownedItemsQueryOptions());
+export const useOwnedItems = () => {
+    return useQuery(getOwnedItems());
 };
 
-export const itemMediaQueryOptions = (item_id: string) =>
+export const getItemMedia = (item_id: string) =>
     queryOptions({
         queryKey: ['item', item_id, 'media'],
         queryFn: getHttp<number[]>('/api/item/' + item_id + '/media', {
@@ -59,10 +59,14 @@ export const itemMediaQueryOptions = (item_id: string) =>
         }),
     });
 
+export const useItemMedia = (item_id: string) => {
+    return useQuery(getItemMedia(item_id));
+};
+
 export type ApiLogResponse =
     paths['/item/{item_id}/logs']['get']['responses']['200']['content']['application/json; charset=utf-8'];
 
-export const getApiItemLogs = (
+export const getItemLogs = (
     item_id: string
 ): UseQueryOptions<ApiLogResponse> => ({
     queryKey: ['item', item_id, 'logs'],
@@ -71,17 +75,13 @@ export const getApiItemLogs = (
     }),
 });
 
-export const useApiItemLogs = (item_id: string) => {
-    return useQuery(getApiItemLogs(item_id));
-};
-
-export const useApiItemMedia = (item_id: string) => {
-    return useQuery(itemMediaQueryOptions(item_id));
+export const useItemLogs = (item_id: string) => {
+    return useQuery(getItemLogs(item_id));
 };
 
 // Create item
 // This endpoint provisions the desired item_id with a placeholder item
-export const useApiCreateItem = () => {
+export const useCreateItem = () => {
     return useMutation({
         mutationFn: async (item_id: string) =>
             fetch(BASE_URL + '/api/item?item_id=' + item_id, {
@@ -96,7 +96,7 @@ export const useApiCreateItem = () => {
 
 // Delete item
 // This endpoint deletes the item from the database and the search index.
-export const useApiDeleteItem = (
+export const useDeleteItem = (
     options?: UseMutationOptions<boolean, Error, string>
 ) => {
     const { clearAuthToken } = useAuth();
@@ -124,7 +124,7 @@ export const useApiDeleteItem = (
 };
 
 // Edit item
-export const useApiEditItem = () => {
+export const useEditItem = () => {
     return useMutation({
         mutationFn: async ({
             item_id,

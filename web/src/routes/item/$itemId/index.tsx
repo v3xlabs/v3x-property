@@ -14,7 +14,7 @@ import {
     formatId,
     instanceSettingsQueryOptions,
 } from '@/api/instance_settings';
-import { itemByIdQueryOptions, itemMediaQueryOptions } from '@/api/item';
+import { getItemById, getItemMedia } from '@/api/item';
 import { ItemLogSection } from '@/components/item/logs/ItemLogSection';
 import { MediaGallery } from '@/components/media/MediaGallery';
 import { Button } from '@/components/ui/Button';
@@ -42,15 +42,15 @@ export const Route = createFileRoute('/item/$itemId/')({
 
         // Preload item and media
         return Promise.all([
-            queryClient.ensureQueryData(itemByIdQueryOptions(params.itemId)),
-            queryClient.ensureQueryData(itemMediaQueryOptions(params.itemId)),
+            queryClient.ensureQueryData(getItemById(params.itemId)),
+            queryClient.ensureQueryData(getItemMedia(params.itemId)),
         ]);
     },
     component: () => {
         const { itemId } = Route.useParams();
 
-        const item = useSuspenseQuery(itemByIdQueryOptions(itemId));
-        const media = useSuspenseQuery(itemMediaQueryOptions(itemId));
+        const item = useSuspenseQuery(getItemById(itemId));
+        const media = useSuspenseQuery(getItemMedia(itemId));
 
         if (item.error) {
             return <UnauthorizedResourceModal />;
@@ -69,17 +69,13 @@ export const Route = createFileRoute('/item/$itemId/')({
             >
                 <div className="card pt-4">
                     <div className="px-4">
-                        <MediaGallery
-                            media_ids={media.data ?? (item.data?.media || [])}
-                        />
+                        <MediaGallery media_ids={media.data} />
                     </div>
                     <div className="p-4">
                         {item.data?.owner_id && (
                             <div>
                                 <h3>Owner</h3>
-                                <UserProfile
-                                    user_id={item.data.owner_id.toString()}
-                                />
+                                <UserProfile user_id={item.data.owner_id} />
                             </div>
                         )}
                     </div>
