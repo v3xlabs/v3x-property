@@ -54,29 +54,7 @@ jobs:
       - name: Install musl-tools
         run: |
           sudo apt-get update --yes && \
-          sudo apt-get install --yes musl-tools pkg-config musl-dev libssl-dev \
-          && sudo ln -s /usr/include/x86_64-linux-gnu/asm /usr/include/x86_64-linux-musl/asm \
-          && sudo ln -s /usr/include/asm-generic /usr/include/x86_64-linux-musl/asm-generic \
-          && sudo ln -s /usr/include/linux /usr/include/x86_64-linux-musl/linux
-
-      # Add this new step
-      - name: Install OpenSSL for musl
-        run: |
-          mkdir -p /home/runner/openssl && cd /home/runner/openssl \
-          && wget https://www.openssl.org/source/openssl-3.0.8.tar.gz \
-          && tar xvf openssl-3.0.8.tar.gz \
-          && cd openssl-3.0.8 \
-          && CC="musl-gcc -fPIC" ./Configure no-shared no-async --prefix=/usr/local/musl --openssldir=/usr/local/musl linux-x86_64 \
-          && make -j$(nproc) \
-          && sudo make install
-
-      # Add environment variables before the build step
-      - name: Set OpenSSL env vars
-        run: |
-          echo "PKG_CONFIG_SYSROOT_DIR=/usr/local/musl" >> $GITHUB_ENV
-          echo "PKG_CONFIG_PATH=/usr/local/musl/lib/pkgconfig" >> $GITHUB_ENV
-          echo "OPENSSL_DIR=/usr/local/musl" >> $GITHUB_ENV
-          echo "OPENSSL_STATIC=1" >> $GITHUB_ENV
+          sudo apt-get install --yes musl-tools
 
       - name: Cache Rust
         uses: Swatinem/rust-cache@v2
