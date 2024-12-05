@@ -18,16 +18,14 @@ USER dockeruser
 
 # Application Configuration
 # -----------------------
-# BINARY_NAME: Name of the executable (default: v3x-property-engine)
-# RUST_LOG: Logging configuration (default: error,{BINARY_NAME}=info)
-ARG BINARY_NAME=v3x-property-engine
-ENV RUST_LOG="error,$BINARY_NAME=info"
+# RUST_LOG: Logging configuration (default: error,v3x-property-engine=info)
+ENV RUST_LOG="error,v3x-property-engine=info"
 
 # Binary Installation
 # -----------------
 # BINARY_PATH: Path to the pre-compiled binary from GitHub Actions
 ARG BINARY_PATH
-COPY ${BINARY_PATH} /${BINARY_NAME}
+COPY ${BINARY_PATH} /v3x-property-engine
 
 # Network Configuration
 # -------------------
@@ -36,4 +34,4 @@ EXPOSE 3000
 # Application Startup
 # -----------------
 # Using exec form of CMD as there is no shell in scratch image
-CMD ["/${BINARY_NAME}"]
+CMD ["/v3x-property-engine"]
