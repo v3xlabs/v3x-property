@@ -119,7 +119,7 @@ jobs:
         id: engine-binary
         with:
           name: engine-${{ matrix.platform.arch }}
-          path: artifacts/v3x-property-engine
+          path: artifacts
 
       # 📥 Grab our web assets
       - name: Download built web
