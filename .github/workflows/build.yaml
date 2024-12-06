@@ -129,6 +129,11 @@ jobs:
           name: web
           path: artifacts/web
 
+      - name: Prepare artifacts
+        run: |
+          chmod 755 ./artifacts/v3x-property-engine
+          ls -la ./artifacts
+
       # Set up QEMU for multi-arch builds
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
