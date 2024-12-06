@@ -98,6 +98,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
+      packages: write
     needs: # Wait for other jobs to finish
       - build-engine
       - build-web
