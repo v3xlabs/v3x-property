@@ -119,6 +119,7 @@ jobs:
         id: engine-binary
         with:
           name: engine-${{ matrix.platform.arch }}
+          path: artifacts/v3x-property-engine
 
       # 📥 Grab our web assets
       - name: Download built web
@@ -126,6 +127,7 @@ jobs:
         id: web
         with:
           name: web
+          path: artifacts/web
 
       # Set up QEMU for multi-arch builds
       - name: Set up QEMU
@@ -155,7 +157,7 @@ jobs:
         uses: docker/build-push-action@v6
         id: build
         with:
-          context: ./engine
+          context: ./artifacts
           file: ./engine/.build/Dockerfile.scratch
           platforms: ${{ matrix.platform.docker }}
           labels: ${{ steps.meta.outputs.labels }}
@@ -164,8 +166,8 @@ jobs:
           outputs: type=image,name=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }},push-by-digest=true,name-canonical=true,push=true
 
           build-args: |
-            BINARY_PATH=${{ steps.engine-binary.outputs.path }}
-            WEBUI_PATH=${{ steps.web.outputs.path }}
+            BINARY_PATH=./v3x-property-engine
+            WEBUI_PATH=./web
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
