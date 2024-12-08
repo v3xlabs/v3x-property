@@ -22,7 +22,7 @@ impl Storage {
             region,
             endpoint: endpoint_url,
         };
-        let bucket = Bucket::new(&bucket_name, region, credentials).unwrap();
+        let bucket = Bucket::new(&bucket_name, region, credentials).unwrap().with_path_style();
 
         Self {
             bucket,
