@@ -1,5 +1,3 @@
-#![feature(try_trait_v2)]
-
 use terminal_banner::Banner;
 use tracing::info;
 

@@ -1,5 +1,4 @@
-use std::convert::Infallible;
-use std::{ops::FromResidual, sync::Arc};
+use std::sync::Arc;
 
 use poem::{web::Data, Result};
 use poem_openapi::{payload::Json, ApiResponse, OpenApi};
@@ -21,8 +20,16 @@ pub enum MeResponse {
     Unauthorized,
 }
 
-impl FromResidual<Result<Infallible, MeResponse>> for MeResponse {
-    fn from_residual(residual: Result<Infallible, MeResponse>) -> Self {
+// impl FromResidual<Result<Infallible, MeResponse>> for MeResponse {
+//     fn from_residual(residual: Result<Infallible, MeResponse>) -> Self {
+//         match residual {
+//             Err(err) => err,
+//             _ => unreachable!(),
+//         }
+//     }
+// }
+impl From<Result<MeResponse, MeResponse>> for MeResponse {
+    fn from(residual: Result<MeResponse, MeResponse>) -> Self {
         match residual {
             Err(err) => err,
             _ => unreachable!(),
@@ -38,13 +45,13 @@ impl MeApi {
     ///
     /// Get the current user
     #[oai(path = "/me", method = "get", tag = "ApiTags::User")]
-    pub async fn me(&self, state: Data<&Arc<AppState>>, token: AuthToken) -> MeResponse {
+    pub async fn me(&self, state: Data<&Arc<AppState>>, token: AuthToken) -> Result<MeResponse> {
         let active_user = token.ok().ok_or(MeResponse::Unauthorized)?;
 
         let user_entry = UserEntry::find_by_user_id(active_user.session.user_id, &state.database)
             .await
             .map_err(|_| MeResponse::Unauthorized)?
             .ok_or(MeResponse::Unauthorized)?;
-        MeResponse::Ok(Json(User::from(user_entry)))
+        Ok(MeResponse::Ok(Json(User::from(user_entry))))
     }
 }
