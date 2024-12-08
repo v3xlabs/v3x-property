@@ -164,9 +164,11 @@ impl ItemsApi {
         item_id: Path<String>,
         data: Json<ItemUpdatePayload>,
     ) -> Result<()> {
-        let _ = Item::edit_by_id(&state.search, &state.database, &data.0, &item_id.0).await;
+        Item::edit_by_id(&state.search, &state.database, &data.0, &item_id.0)
+            .await
+            .unwrap();
 
-        let _ = LogEntry::new(
+        LogEntry::new(
             &state.database,
             "item",
             &item_id.0,
@@ -174,7 +176,8 @@ impl ItemsApi {
             "edit",
             &serde_json::to_string(&data.0).unwrap(),
         )
-        .await;
+        .await
+        .unwrap();
 
         Ok(())
     }

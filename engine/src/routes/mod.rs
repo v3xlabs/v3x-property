@@ -2,7 +2,7 @@ use std::{env, sync::Arc};
 
 use async_std::path::PathBuf;
 use instance::InstanceApi;
-use items::ItemsApi;
+use item::ItemsApi;
 use logs::LogsApi;
 use me::MeApi;
 use media::MediaApi;
@@ -12,6 +12,7 @@ use poem::{
     web::Html, EndpointExt, Route, Server,
 };
 use poem_openapi::{OpenApi, OpenApiService, Tags};
+use product::ProductApi;
 use search::{tasks::SearchTaskApi, SearchApi};
 use sessions::SessionsApi;
 use users::{keys::UserKeysApi, UserApi};
@@ -19,7 +20,7 @@ use users::{keys::UserKeysApi, UserApi};
 use crate::state::AppState;
 
 pub mod instance;
-pub mod items;
+pub mod item;
 pub mod me;
 pub mod media;
 pub mod oauth;
@@ -27,11 +28,14 @@ pub mod search;
 pub mod sessions;
 pub mod users;
 pub mod logs;
+pub mod product;
 
 #[derive(Tags)]
 enum ApiTags {
     /// Items-related operations
     Items,
+    /// Product-related operations
+    Product,
     /// Media-related operations
     Media,
     /// Logs-related operations
@@ -50,6 +54,7 @@ enum ApiTags {
 fn get_api() -> impl OpenApi {
     (
         ItemsApi,
+        ProductApi,
         MediaApi,
         SearchApi,
         SearchTaskApi,

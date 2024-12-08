@@ -8,7 +8,7 @@ use super::log::LogEntry;
 use crate::{
     database::Database,
     modules::search::Search,
-    routes::items::{ItemUpdateMediaStatus, ItemUpdatePayload},
+    routes::item::{ItemUpdateMediaStatus, ItemUpdatePayload},
 };
 
 pub mod field;
