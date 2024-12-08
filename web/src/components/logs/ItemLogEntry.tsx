@@ -24,9 +24,14 @@ export const ItemLogEntry = ({
     return (
         <li className="block pt-2 first:pt-0">
             <div className="flex flex-row-reverse justify-between">
-                {view === 'global' && (
-                    <ItemPreview item_id={log.resource_id} variant="compact" />
-                )}
+                <div>
+                    {view === 'global' && (
+                        <ItemPreview
+                            item_id={log.resource_id}
+                            variant="compact"
+                        />
+                    )}
+                </div>
                 <div className="flex items-center gap-2">
                     {match({ action: log.action })
                         .with({ action: 'create' }, () => (

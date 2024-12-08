@@ -107,6 +107,7 @@ export const MediaPreview: FC<{
                     'svg',
                     'image/svg+xml',
                     'jpeg',
+                    'jpg',
                     'image/jpeg',
                     'image/gif',
                     () => <ImagePreview media_id={media_id} url={mediaUrl} />
