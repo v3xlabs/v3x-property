@@ -8,7 +8,8 @@ on:
 
 jobs:
   verify_sqlx:
-    runs-on: ubuntu-20.04
+    # runs-on: ubuntu-20.04
+    runs-on: buildjet-4vcpu-ubuntu-2204
     permissions:
       contents: read
       packages: write
