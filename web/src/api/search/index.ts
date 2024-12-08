@@ -1,26 +1,16 @@
-import { queryOptions, useQuery } from '@tanstack/react-query';
+import { apiRequest, createQuery } from '../core';
 
-import { ApiRequest, apiRequest } from '../core';
+export type SearchableItem = (typeof useSearch.$inferData)[number];
 
-export type SearchableItem = ApiRequest<
-    '/search',
-    'get'
->['response']['data'][number];
+export const useSearch = createQuery({
+    queryKey: ['search'],
+    fetcher: async ({ query }: { query: string }) => {
+        const response = await apiRequest('/search', 'get', {
+            query: {
+                query,
+            },
+        });
 
-export type SearchApiResponse = SearchableItem[];
-
-export const getSearch = (query: string) =>
-    queryOptions({
-        queryKey: ['search', query],
-        queryFn: async () => {
-            const response = await apiRequest('/search', 'get', {
-                query: {
-                    query,
-                },
-            });
-
-            return response.data;
-        },
-    });
-
-export const useSearch = (query: string) => useQuery(getSearch(query));
+        return response.data;
+    },
+});

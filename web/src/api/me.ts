@@ -1,17 +1,12 @@
-import { queryOptions, useQuery } from '@tanstack/react-query';
+import { apiRequest, createQuery } from './core';
 
-import { ApiRequest, apiRequest } from './core';
+export type ApiMeResponse = typeof useMe.$inferData;
 
-export type ApiMeResponse = ApiRequest<'/me', 'get'>['response']['data'];
+export const useMe = createQuery({
+    queryKey: ['me'],
+    fetcher: async () => {
+        const response = await apiRequest('/me', 'get', {});
 
-export const getMe = () =>
-    queryOptions({
-        queryKey: ['me'],
-        queryFn: async () => {
-            const response = await apiRequest('/me', 'get', {});
-
-            return response.data;
-        },
-    });
-
-export const useMe = () => useQuery(getMe());
+        return response.data;
+    },
+});

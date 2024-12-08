@@ -3,7 +3,7 @@ import { useItemLogs } from '@/api/item';
 import { ItemLogEntry } from './ItemLogEntry';
 
 export const ItemLogSection = ({ item_id }: { item_id: string }) => {
-    const { data: logs } = useItemLogs(item_id);
+    const { data: logs } = useItemLogs({ variables: { item_id } });
 
     return (
         <div>

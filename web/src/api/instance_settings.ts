@@ -1,23 +1,17 @@
-import { queryOptions, useQuery } from '@tanstack/react-query';
+import { apiRequest, createQuery } from './core';
 
-import { getHttp } from './core';
+export type InstanceSettings = typeof useInstanceSettings.$inferData;
 
-export type IdCasingPreference = 'upper' | 'lower';
+export type IdCasingPreference = InstanceSettings['id_casing_preference'];
 
-export type InstanceSettings = {
-    id_casing_preference: IdCasingPreference;
-};
-
-export const instanceSettingsQueryOptions = queryOptions({
+export const useInstanceSettings = createQuery({
     queryKey: ['instance_settings'],
-    queryFn: getHttp<InstanceSettings>('/api/instance/settings', {
-        auth: 'include',
-    }),
-});
+    fetcher: async () => {
+        const response = await apiRequest('/instance/settings', 'get', {});
 
-export const useInstanceSettings = () => {
-    return useQuery(instanceSettingsQueryOptions);
-};
+        return response.data;
+    },
+});
 
 export const formatIdCasing = (
     id: string | undefined,

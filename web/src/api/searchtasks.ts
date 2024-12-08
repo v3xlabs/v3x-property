@@ -1,22 +1,14 @@
-import { useHttp } from './core';
+import { apiRequest, createQuery } from './core';
 
-export type SearchTasksApiResponse = SearchTask[];
+export type SearchTasksApiResponse = typeof useSearchTasks.$inferData;
 
-export type SearchTask = {
-    task_id: number;
-    external_task_id: number;
-    status: SearchTaskStatus;
-    details: string | null;
-    updated_at: string;
-};
+export type SearchTask = SearchTasksApiResponse[number];
 
-export type SearchTaskStatus =
-    | 'enqueued'
-    | 'processing'
-    | 'succeeded'
-    | 'failed';
+export const useSearchTasks = createQuery({
+    queryKey: ['search_tasks'],
+    fetcher: async () => {
+        const response = await apiRequest('/search/tasks', 'get', {});
 
-export const useTasks = () =>
-    useHttp<SearchTasksApiResponse>('/api/search/tasks', {
-        auth: 'required',
-    });
+        return response.data;
+    },
+});

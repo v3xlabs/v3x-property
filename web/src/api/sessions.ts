@@ -1,15 +1,12 @@
-import { useHttp } from './core';
+import { apiRequest, createQuery } from './core';
 
-export type SessionResponse = {
-    session_id: string;
-    user_id: number;
-    user_agent: string;
-    user_ip: string;
-    last_access: string;
-    // valid: boolean;
-};
+export type SessionResponse = (typeof useSessions.$inferData)[number];
 
-export const useSessions = () =>
-    useHttp<SessionResponse[]>('/api/sessions', {
-        auth: 'required',
-    });
+export const useSessions = createQuery({
+    queryKey: ['sessions'],
+    fetcher: async () => {
+        const response = await apiRequest('/sessions', 'get', {});
+
+        return response.data;
+    },
+});

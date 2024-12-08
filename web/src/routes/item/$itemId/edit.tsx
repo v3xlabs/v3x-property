@@ -10,15 +10,12 @@ import {
 import { FC } from 'react';
 import { toast } from 'sonner';
 
+import { formatId, useInstanceSettings } from '@/api/instance_settings';
 import {
-    formatId,
-    instanceSettingsQueryOptions,
-} from '@/api/instance_settings';
-import {
-    getItemById,
-    getItemMedia,
     useDeleteItem,
     useEditItem,
+    useItemById,
+    useItemMedia,
 } from '@/api/item';
 import { BaseInput } from '@/components/input/BaseInput';
 import { EditMediaGallery } from '@/components/media/EditMediaGallery';
@@ -63,7 +60,7 @@ export const DeleteItemModal: FC<{ itemId: string }> = ({ itemId }) => {
                         variant="destructive"
                         onClick={(event) => {
                             event.preventDefault();
-                            deleteItem.mutate(itemId);
+                            deleteItem.mutate({ item_id: itemId });
                         }}
                         disabled={deleteItem.isPending}
                     >
@@ -80,7 +77,7 @@ export const Route = createFileRoute('/item/$itemId/edit')({
     loader: async ({ params }) => {
         // Ensure instance settings are loaded
         const instanceSettings = await queryClient.ensureQueryData(
-            instanceSettingsQueryOptions
+            useInstanceSettings.getFetchOptions()
         );
 
         const formattedItemId = formatId(params.itemId, instanceSettings);
@@ -94,15 +91,31 @@ export const Route = createFileRoute('/item/$itemId/edit')({
 
         // Preload item and media
         return Promise.all([
-            queryClient.ensureQueryData(getItemById(params.itemId)),
-            queryClient.ensureQueryData(getItemMedia(params.itemId)),
+            queryClient.ensureQueryData(
+                useItemById.getFetchOptions({
+                    item_id: params.itemId,
+                })
+            ),
+            queryClient.ensureQueryData(
+                useItemMedia.getFetchOptions({
+                    item_id: params.itemId,
+                })
+            ),
         ]);
     },
     component: () => {
         const { itemId } = useParams({ from: '/item/$itemId/edit' });
-        const { data: item, refetch } = useSuspenseQuery(getItemById(itemId));
-        const { data: media } = useSuspenseQuery(getItemMedia(itemId));
-        const { mutateAsync: editItem } = useEditItem();
+        const { data: item, refetch } = useSuspenseQuery(
+            useItemById.getOptions({
+                item_id: itemId,
+            })
+        );
+        const { data: media } = useSuspenseQuery(
+            useItemMedia.getOptions({
+                item_id: itemId,
+            })
+        );
+        const { mutateAsync: editItem } = useEditItem({});
         const navigate = useNavigate();
 
         const { Field, Subscribe, handleSubmit } = useForm<EditItemForm>({

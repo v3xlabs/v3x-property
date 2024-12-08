@@ -13,7 +13,7 @@ const LOGIN_URL = 'http://localhost:3000/api/login';
 
 export const Navbar = () => {
     const { token, clearAuthToken } = useAuth();
-    const { data: meData, isLoading: isVerifyingAuth } = useMe();
+    const { data: meData, isLoading: isVerifyingAuth } = useMe({});
 
     const login_here_url =
         LOGIN_URL + '?redirect=' + encodeURIComponent(window.location.href);

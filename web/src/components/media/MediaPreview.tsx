@@ -23,7 +23,10 @@ export const MediaPreview: FC<{
     update_media_id?: (_media_id: number) => void;
     delete_media?: (_media_id: number) => void;
 }> = ({ media_id, url, name, kind, status, update_media_id, delete_media }) => {
-    const { data: media } = useMedia(media_id);
+    const { data: media } = useMedia({
+        variables: { media_id: media_id! },
+        enabled: !!media_id,
+    });
 
     const fileType = kind ?? media?.url.split('.').pop();
     const { token } = useAuth();
@@ -156,7 +159,10 @@ export const VideoPreview: FC<{ media_id?: number; url?: string }> = ({
     media_id,
     url,
 }) => {
-    const { data: media } = useMedia(media_id);
+    const { data: media } = useMedia({
+        variables: { media_id: media_id! },
+        enabled: !!media_id,
+    });
 
     return (
         <div>
@@ -169,7 +175,10 @@ export const ImagePreview: FC<{ media_id?: number; url?: string }> = ({
     media_id,
     url,
 }) => {
-    const { data: media } = useMedia(media_id);
+    const { data: media } = useMedia({
+        variables: { media_id: media_id! },
+        enabled: !!media_id,
+    });
     const [imageNotFound, setImageNotFound] = useState(false);
 
     return (
@@ -198,7 +207,10 @@ export const StlPreview: FC<{ media_id?: number; url?: string }> = ({
     media_id,
     url,
 }) => {
-    const { data: media } = useMedia(media_id);
+    const { data: media } = useMedia({
+        variables: { media_id: media_id! },
+        enabled: !!media_id,
+    });
 
     return (
         <ErrorBoundary>

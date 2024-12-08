@@ -7,7 +7,7 @@ import { FiLoader } from 'react-icons/fi';
 
 import { useAuth } from '@/api/auth';
 import { BASE_URL } from '@/api/core';
-import { SearchTask, useTasks } from '@/api/searchtasks';
+import { SearchTask, useSearchTasks } from '@/api/searchtasks';
 
 import { Button } from '../ui/Button';
 
@@ -85,7 +85,7 @@ const TaskTableEntry = ({
 };
 
 export const SearchTaskTable = () => {
-    const { data, refetch } = useTasks();
+    const { data, refetch } = useSearchTasks({});
 
     return (
         <div className="w-full">

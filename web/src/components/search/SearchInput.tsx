@@ -8,7 +8,9 @@ import { Button } from '../ui/Button';
 
 export const SearchInput = () => {
     const [query, setQuery] = useState('');
-    const { data: searchResults } = useSearch(query);
+    const { data: searchResults } = useSearch({
+        variables: { query },
+    });
 
     return (
         <div className="w-full space-y-2">

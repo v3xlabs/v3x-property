@@ -6,7 +6,7 @@ import { FC } from 'react';
 import { match } from 'ts-pattern';
 
 import { formatId, useInstanceSettings } from '@/api/instance_settings';
-import { ApiItemResponse, useItemById, useItemMedia } from '@/api/item';
+import { useItemById, useItemMedia } from '@/api/item';
 import { useMedia } from '@/api/media';
 
 type Properties = {
@@ -52,9 +52,9 @@ export const AvatarHolder: FC<{
 };
 
 export const ItemPreviewHoverCard: FC<{
-    item?: ApiItemResponse;
+    item: typeof useItemById.$inferData;
 }> = ({ item }) => {
-    const { data: instanceSettings } = useInstanceSettings();
+    const { data: instanceSettings } = useInstanceSettings({});
     const formattedItemId = formatId(item?.item_id, instanceSettings);
 
     return (
@@ -92,10 +92,17 @@ export const ItemPreviewHoverCard: FC<{
 const UNKNOWN_ITEM = 'Unknown Item';
 
 export const ItemPreview: FC<Properties> = ({ item_id, variant }) => {
-    const { data: item, isLoading, isError } = useItemById(item_id);
-    const { data: media } = useItemMedia(item_id);
-    const { data: mediaData } = useMedia(media?.[0]);
-    const { data: instanceSettings } = useInstanceSettings();
+    const {
+        data: item,
+        isLoading,
+        isError,
+    } = useItemById({ variables: { item_id } });
+    const { data: media } = useItemMedia({ variables: { item_id } });
+    const { data: mediaData } = useMedia({
+        variables: { media_id: media?.[0]! },
+        enabled: !!media?.[0],
+    });
+    const { data: instanceSettings } = useInstanceSettings({});
     const formattedItemId = formatId(item?.item_id, instanceSettings);
 
     const mediaUrl = (() => {

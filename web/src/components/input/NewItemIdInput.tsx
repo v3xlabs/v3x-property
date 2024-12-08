@@ -16,7 +16,7 @@ export const NewItemIdInput = (properties: BaseInputProperties) => {
     );
     const { mutate: generateId } = useMutation({
         mutationFn: async () => {
-            const response = await fetch(`${BASE_URL}/api/item/next`);
+            const response = await fetch(new URL('/api/item/next', BASE_URL));
             const data = await response.json();
 
             return data.item_id;
