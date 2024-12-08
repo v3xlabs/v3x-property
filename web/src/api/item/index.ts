@@ -31,6 +31,7 @@ export const getItemById = (item_id: string) =>
 
             return response.data;
         },
+        retry: false,
     });
 
 export const useItemById = (item_id: string) => {

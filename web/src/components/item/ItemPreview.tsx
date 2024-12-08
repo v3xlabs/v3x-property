@@ -89,10 +89,10 @@ export const ItemPreviewHoverCard: FC<{
     );
 };
 
-const UNKNOWN_USER = 'Unknown User';
+const UNKNOWN_ITEM = 'Unknown Item';
 
 export const ItemPreview: FC<Properties> = ({ item_id, variant }) => {
-    const { data: item, isLoading } = useItemById(item_id);
+    const { data: item, isLoading, isError } = useItemById(item_id);
     const { data: media } = useItemMedia(item_id);
     const { data: mediaData } = useMedia(media?.[0]);
     const { data: instanceSettings } = useInstanceSettings();
@@ -120,7 +120,10 @@ export const ItemPreview: FC<Properties> = ({ item_id, variant }) => {
                         <HoverCard.Trigger asChild>
                             <Link
                                 to={`/item/${formattedItemId}`}
-                                className="p-1 border rounded-md flex items-center gap-2 hover:bg-black/5"
+                                className={clsx(
+                                    'p-1 border rounded-md flex items-center gap-2 hover:bg-black/5',
+                                    isError && 'bg-red-50'
+                                )}
                                 data-testid="item-preview-avatar"
                             >
                                 <AvatarHolder image={mediaUrl} initials={''} />
@@ -134,7 +137,10 @@ export const ItemPreview: FC<Properties> = ({ item_id, variant }) => {
                         <HoverCard.Trigger asChild>
                             <Link
                                 to={`/item/${formattedItemId}`}
-                                className="p-1.5 border cursor-pointer rounded-md flex items-center gap-2 hover:bg-black/5"
+                                className={clsx(
+                                    'p-1.5 border cursor-pointer rounded-md inline-flex items-center gap-2 hover:bg-black/5',
+                                    isError && 'bg-red-50'
+                                )}
                                 data-testid="item-preview-compact"
                             >
                                 <AvatarHolder
@@ -142,13 +148,16 @@ export const ItemPreview: FC<Properties> = ({ item_id, variant }) => {
                                     initials={''}
                                     size="compact"
                                 />
-                                <span className="flex flex-col justify-start">
+                                <span className="flex gap-0.5 items-baseline justify-start">
                                     <span className="Text !leading-[1.2em]">
-                                        {item?.name || UNKNOWN_USER}
+                                        {item?.name || UNKNOWN_ITEM}
                                     </span>
-                                    <span className="opacity-50 text-xs !leading-[1em]">
-                                        #{formattedItemId}
-                                    </span>
+                                    {/* TODO: Figure out why -z-10 is needed to prevent overlap with user preview in logs page */}
+                                    {formattedItemId && (
+                                        <span className="opacity-50 text-xs !leading-[1em] -z-10">
+                                            #{formattedItemId}
+                                        </span>
+                                    )}
                                 </span>
                             </Link>
                         </HoverCard.Trigger>
@@ -160,17 +169,22 @@ export const ItemPreview: FC<Properties> = ({ item_id, variant }) => {
                         <HoverCard.Trigger asChild>
                             <Link
                                 to={`/item/${formattedItemId}`}
-                                className="p-1.5 border cursor-pointer rounded-md flex items-center gap-2 hover:bg-black/5"
+                                className={clsx(
+                                    'p-1.5 border cursor-pointer rounded-md flex items-center gap-2 hover:bg-black/5',
+                                    isError && 'bg-red-50'
+                                )}
                                 data-testid="item-preview-full"
                             >
                                 <AvatarHolder image={mediaUrl} initials={''} />
                                 <div className="flex flex-col gap-1 justify-center">
                                     <div className="Text !leading-[0.75em]">
-                                        {item?.name || UNKNOWN_USER}
+                                        {item?.name || UNKNOWN_ITEM}
                                     </div>
-                                    <div className="Text faded !leading-[0.75em]">
-                                        #{formattedItemId}
-                                    </div>
+                                    {formattedItemId && (
+                                        <div className="Text faded !leading-[0.75em]">
+                                            #{formattedItemId}
+                                        </div>
+                                    )}
                                 </div>
                             </Link>
                         </HoverCard.Trigger>

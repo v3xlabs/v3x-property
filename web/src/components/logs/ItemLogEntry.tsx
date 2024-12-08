@@ -23,30 +23,32 @@ export const ItemLogEntry = ({
 
     return (
         <li className="block pt-2 first:pt-0">
-            {view === 'global' && (
-                <ItemPreview item_id={log.resource_id} variant="compact" />
-            )}
-            <div className="flex items-center gap-2">
-                {match({ action: log.action })
-                    .with({ action: 'create' }, () => (
-                        <>
-                            <span>Created by</span>
-                            <UserProfile
-                                user_id={log.user_id}
-                                variant="compact"
-                            />
-                        </>
-                    ))
-                    .with({ action: 'edit' }, () => (
-                        <>
-                            <span>Edited by</span>
-                            <UserProfile
-                                user_id={log.user_id}
-                                variant="compact"
-                            />
-                        </>
-                    ))
-                    .otherwise(() => log.action)}
+            <div className="flex flex-row-reverse justify-between">
+                {view === 'global' && (
+                    <ItemPreview item_id={log.resource_id} variant="compact" />
+                )}
+                <div className="flex items-center gap-2">
+                    {match({ action: log.action })
+                        .with({ action: 'create' }, () => (
+                            <>
+                                <span>Created by</span>
+                                <UserProfile
+                                    user_id={log.user_id}
+                                    variant="compact"
+                                />
+                            </>
+                        ))
+                        .with({ action: 'edit' }, () => (
+                            <>
+                                <span>Edited by</span>
+                                <UserProfile
+                                    user_id={log.user_id}
+                                    variant="compact"
+                                />
+                            </>
+                        ))
+                        .otherwise(() => log.action)}
+                </div>
             </div>
             <div className="text-sm text-gray-500">{created_ago}</div>
             {!['create', 'edit'].includes(log.action) && (
