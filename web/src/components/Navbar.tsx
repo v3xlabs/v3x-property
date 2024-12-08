@@ -39,8 +39,7 @@ export const Navbar = () => {
                             ['/search', 'Search', 'search-navlink'],
                             ['/items', 'Items', 'items-navlink'],
                             ['/products', 'Products', 'products-navlink'],
-                            ['/logs', 'Logs', 'logs-navlink'],
-                            ['/create', 'Create', 'create-navlink'],
+                            ['/logs/', 'Logs', 'logs-navlink'],
                         ] as [keyof FileRoutesByPath, string, string][]
                     ).map(([path, name, slug]) => (
                         <li key={path}>
@@ -56,60 +55,83 @@ export const Navbar = () => {
                     ))}
                 </ul>
             </div>
-            {token && meData && (
-                <div className="h-full border-l">
-                    <DropdownMenu.Root>
-                        <DropdownMenu.Trigger asChild>
-                            <button
-                                className="h-full p-1 flex items-center gap-2 px-2 hover:bg-black/5"
-                                data-testid="user-dropdown-trigger"
+            <div className="flex items-center gap-2">
+                <ul className="h-fit flex items-center">
+                    {(
+                        [['/create', 'Create', 'create-navlink']] as [
+                            keyof FileRoutesByPath,
+                            string,
+                            string
+                        ][]
+                    ).map(([path, name, slug]) => (
+                        <li key={path}>
+                            <Link
+                                key={path}
+                                to={path}
+                                data-testid={slug}
+                                className="[&.active]:bg-black/10 hover:bg-black/5 py-1 px-2 cursor-pointer"
                             >
-                                {/* <div className="h-full aspect-square bg-black/10 relative">
+                                {name}
+                            </Link>
+                        </li>
+                    ))}
+                </ul>
+
+                {token && meData && (
+                    <div className="h-full border-l">
+                        <DropdownMenu.Root>
+                            <DropdownMenu.Trigger asChild>
+                                <button
+                                    className="h-full p-1 flex items-center gap-2 px-2 hover:bg-black/5"
+                                    data-testid="user-dropdown-trigger"
+                                >
+                                    {/* <div className="h-full aspect-square bg-black/10 relative">
                                     <img
-                                        src={meData?.picture}
-                                        className="w-full h-full object-contain"
+                                    src={meData?.picture}
+                                    className="w-full h-full object-contain"
                                     />
-                                </div> */}
-                                <AvatarHolder
-                                    initials={getInitials(meData.name)}
-                                    image={meData.picture}
-                                    size="compact"
-                                />
-                                <div data-testid="user-dropdown-name">
-                                    {meData.name}
-                                </div>
-                            </button>
-                        </DropdownMenu.Trigger>
+                                    </div> */}
+                                    <AvatarHolder
+                                        initials={getInitials(meData.name)}
+                                        image={meData.picture}
+                                        size="compact"
+                                    />
+                                    <div data-testid="user-dropdown-name">
+                                        {meData.name}
+                                    </div>
+                                </button>
+                            </DropdownMenu.Trigger>
 
-                        <DropdownMenu.Content sideOffset={5}>
-                            <DropdownMenu.Item asChild>
-                                <Link to="/sessions">Sessions</Link>
-                            </DropdownMenu.Item>
-                            <DropdownMenu.Item asChild>
-                                <Link to="/settings">Settings</Link>
-                            </DropdownMenu.Item>
+                            <DropdownMenu.Content sideOffset={5}>
+                                <DropdownMenu.Item asChild>
+                                    <Link to="/sessions">Sessions</Link>
+                                </DropdownMenu.Item>
+                                <DropdownMenu.Item asChild>
+                                    <Link to="/settings">Settings</Link>
+                                </DropdownMenu.Item>
 
-                            <DropdownMenu.Separator />
-                            <DropdownMenu.Item
-                                onClick={() => {
-                                    clearAuthToken();
-                                }}
-                            >
-                                Logout
-                            </DropdownMenu.Item>
-                        </DropdownMenu.Content>
-                    </DropdownMenu.Root>
-                </div>
-            )}
-            {(!token || (token && !meData)) && (
-                <a
-                    href={login_here_url}
-                    className="h-full border-l px-2 py-0.5 flex items-center hover:bg-black/10"
-                    data-testid="login-button"
-                >
-                    Login
-                </a>
-            )}
+                                <DropdownMenu.Separator />
+                                <DropdownMenu.Item
+                                    onClick={() => {
+                                        clearAuthToken();
+                                    }}
+                                >
+                                    Logout
+                                </DropdownMenu.Item>
+                            </DropdownMenu.Content>
+                        </DropdownMenu.Root>
+                    </div>
+                )}
+                {(!token || (token && !meData)) && (
+                    <a
+                        href={login_here_url}
+                        className="h-full border-l px-2 py-0.5 flex items-center hover:bg-black/10"
+                        data-testid="login-button"
+                    >
+                        Login
+                    </a>
+                )}
+            </div>
         </nav>
     );
 };

@@ -39,6 +39,8 @@ impl SearchApi {
             .index("items")
             .search()
             .with_query(&query)
+            // TODO: Re-enable hybrid search when more stable
+            // .with_hybrid("ollama", 0.9)
             .execute::<SearchableItem>()
             .await
             .unwrap();

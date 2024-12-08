@@ -17,6 +17,8 @@ pub struct Search {
     pub client: Client,
 }
 
+pub const EMBEDDINGS_MODEL: &str = "all-minilm";
+
 impl Search {
     pub async fn new(
         url: String,
@@ -38,7 +40,7 @@ impl Search {
             if let Some(intelligence) = intelligence {
                 let x = intelligence
                     .ollama
-                    .pull_model("nomic-embed-text".to_string(), false)
+                    .pull_model(EMBEDDINGS_MODEL.to_string(), false)
                     .await
                     .unwrap();
 
@@ -74,8 +76,8 @@ impl Search {
                                     .join("/api/embeddings")
                                     .unwrap()
                                     .to_string(),
-                                "model": "nomic-embed-text",
-                                "documentTemplate": "{{doc.name}}",
+                                "model": EMBEDDINGS_MODEL,
+                                "documentTemplate": "An item named {{doc.name}}",
                                 "dimensions": 768
                             }
                         }
