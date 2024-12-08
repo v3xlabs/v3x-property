@@ -110,7 +110,7 @@ impl ItemsApi {
         info!("Getting next item id");
 
         Json(ItemIdResponse {
-            item_id: Item::next_id(&state.database).await.unwrap(),
+            item_id: Item::next_id(&state).await.unwrap(),
         })
     }
 

@@ -1,14 +1,17 @@
+use std::sync::Arc;
+
 use chrono::{DateTime, Utc};
 use media::ItemMedia;
 use serde::{Deserialize, Serialize};
 use sqlx::{query, query_as};
 use tracing::info;
 
-use super::log::LogEntry;
+use super::{log::LogEntry, settings::InstanceSettings};
 use crate::{
     database::Database,
     modules::search::Search,
     routes::item::{ItemUpdateMediaStatus, ItemUpdatePayload},
+    state::AppState,
 };
 
 pub mod field;
@@ -104,18 +107,26 @@ impl Item {
     /// Start generation at 0, and check if the id is already taken.
     /// If it is, increment until we find an unused id.
     /// TODO: Implement resuming from the last id.
-    pub async fn next_id(db: &Database) -> Result<String, sqlx::Error> {
-        let mut id = 1;
+    pub async fn next_id(state: &Arc<AppState>) -> Result<String, sqlx::Error> {
+        let initial_id = InstanceSettings::get_last_item_id(&state.database)
+            .await
+            .unwrap();
+        let mut id = initial_id;
+
         loop {
             let id_str = id.to_string();
             info!("Checking if id {} is taken", id_str);
             if query("SELECT 1 FROM items WHERE item_id = $1")
                 .bind(id_str.clone())
-                .fetch_optional(&db.pool)
+                .fetch_optional(&state.database.pool)
                 .await
                 .unwrap()
                 .is_none()
             {
+                if id != initial_id {
+                    InstanceSettings::update_last_item_id(&state.database, id - 1).await;
+                }
+
                 return Ok(id_str);
             }
             id += 1;

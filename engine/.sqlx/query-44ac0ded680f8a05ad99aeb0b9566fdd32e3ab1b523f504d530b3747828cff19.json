@@ -1,0 +1,42 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "SELECT id_casing_preference as \"id_casing_preference: IdCasingPreference\", last_item_id, instance_id FROM instance_settings WHERE instance_id = 1",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "id_casing_preference: IdCasingPreference",
+        "type_info": {
+          "Custom": {
+            "name": "id_casing",
+            "kind": {
+              "Enum": [
+                "upper",
+                "lower"
+              ]
+            }
+          }
+        }
+      },
+      {
+        "ordinal": 1,
+        "name": "last_item_id",
+        "type_info": "Int8"
+      },
+      {
+        "ordinal": 2,
+        "name": "instance_id",
+        "type_info": "Int4"
+      }
+    ],
+    "parameters": {
+      "Left": []
+    },
+    "nullable": [
+      false,
+      false,
+      false
+    ]
+  },
+  "hash": "44ac0ded680f8a05ad99aeb0b9566fdd32e3ab1b523f504d530b3747828cff19"
+}
