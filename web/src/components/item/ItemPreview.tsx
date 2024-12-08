@@ -24,7 +24,7 @@ export const AvatarHolder: FC<{
     return (
         <Avatar.Root
             className={clsx(
-                'inline-flex items-center justify-center align-middle overflow-hidden select-none w-11 h-11 rounded-full bg-gray-300',
+                'inline-flex items-center justify-center align-middle overflow-hidden select-none w-11 h-11 rounded-md bg-gray-300',
                 size === 'compact' && '!size-6'
             )}
         >
