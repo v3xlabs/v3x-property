@@ -1,23 +1,42 @@
-import { queryOptions, useQuery } from '@tanstack/react-query';
+import { queryOptions, useMutation, useQuery } from '@tanstack/react-query';
 
-import { getHttp } from './core';
+import { ApiRequest, apiRequest } from './core';
 
 export type IdCasingPreference = 'upper' | 'lower';
+export type InstanceSettings = ApiRequest<
+    '/instance/settings',
+    'get'
+>['response']['data'];
 
-export type InstanceSettings = {
-    id_casing_preference: IdCasingPreference;
-};
-
-export const instanceSettingsQueryOptions = queryOptions({
+export const getInstanceSettings = queryOptions({
     queryKey: ['instance_settings'],
-    queryFn: getHttp<InstanceSettings>('/api/instance/settings', {
-        auth: 'include',
-    }),
+    queryFn: async () => {
+        const response = await apiRequest('/instance/settings', 'get', {});
+
+        return response.data;
+    },
 });
 
 export const useInstanceSettings = () => {
-    return useQuery(instanceSettingsQueryOptions);
+    return useQuery(getInstanceSettings);
 };
+
+export type ConfigurableInstanceSettings = ApiRequest<
+    '/instance/settings',
+    'put'
+>['body']['data'];
+
+export const useUpdateInstanceSettings = () =>
+    useMutation({
+        mutationFn: async (data: ConfigurableInstanceSettings) => {
+            const response = await apiRequest('/instance/settings', 'put', {
+                contentType: 'application/json; charset=utf-8',
+                data,
+            });
+
+            return response.data;
+        },
+    });
 
 export const formatIdCasing = (
     id: string | undefined,

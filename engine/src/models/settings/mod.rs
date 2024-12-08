@@ -86,12 +86,23 @@ impl InstanceSettings {
     }
 
     pub async fn update_instance_settings(db: &Database, settings: &InstanceSettingsConfigurable) {
-        query("INSERT INTO instance_settings (instance_id, id_casing_preference, last_item_id) VALUES (1, $1, $2)")
-            .bind(settings.id_casing_preference)
-            .bind(settings.last_item_id)
-            .execute(&db.pool)
-            .await
-            .unwrap();
+        query(
+            r#"
+            INSERT INTO instance_settings (
+                instance_id, 
+                id_casing_preference, 
+                last_item_id
+            ) VALUES (1, $1, $2) 
+            ON CONFLICT (instance_id) DO UPDATE SET
+                id_casing_preference = $1,
+                last_item_id = $2
+            "#
+        )
+        .bind(settings.id_casing_preference)
+        .bind(settings.last_item_id)
+        .execute(&db.pool)
+        .await
+        .unwrap();
     }
 
     pub async fn get_last_item_id(db: &Database) -> Result<i64, sqlx::Error> {

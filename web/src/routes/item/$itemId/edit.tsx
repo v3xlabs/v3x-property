@@ -12,7 +12,7 @@ import { toast } from 'sonner';
 
 import {
     formatId,
-    instanceSettingsQueryOptions,
+    getInstanceSettings,
 } from '@/api/instance_settings';
 import {
     getItemById,
@@ -80,7 +80,7 @@ export const Route = createFileRoute('/item/$itemId/edit')({
     loader: async ({ params }) => {
         // Ensure instance settings are loaded
         const instanceSettings = await queryClient.ensureQueryData(
-            instanceSettingsQueryOptions
+            getInstanceSettings
         );
 
         const formattedItemId = formatId(params.itemId, instanceSettings);

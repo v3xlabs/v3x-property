@@ -12,7 +12,7 @@ import { useEffect } from 'react';
 
 import {
     formatId,
-    instanceSettingsQueryOptions,
+    getInstanceSettings,
 } from '@/api/instance_settings';
 import { getItemById, getItemMedia } from '@/api/item';
 import { ItemLogSection } from '@/components/logs/ItemLogSection';
@@ -28,7 +28,7 @@ export const Route = createFileRoute('/item/$itemId/')({
     loader: async ({ params }) => {
         // Ensure instance settings are loaded
         const instanceSettings = await queryClient.ensureQueryData(
-            instanceSettingsQueryOptions
+            getInstanceSettings
         );
 
         const formattedItemId = formatId(params.itemId, instanceSettings);

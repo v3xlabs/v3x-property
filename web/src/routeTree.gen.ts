@@ -15,6 +15,7 @@ import { createFileRoute } from '@tanstack/react-router'
 import { Route as rootRoute } from './routes/__root'
 import { Route as SessionsImport } from './routes/sessions'
 import { Route as ItemIdImport } from './routes/$itemId'
+import { Route as SettingsIndexImport } from './routes/settings/index'
 import { Route as UserUserIdImport } from './routes/user/$userId'
 import { Route as ItemItemIdIndexImport } from './routes/item/$itemId/index'
 import { Route as ItemItemIdEditImport } from './routes/item/$itemId/edit'
@@ -25,7 +26,6 @@ const DebugLazyImport = createFileRoute('/debug')()
 const CreateLazyImport = createFileRoute('/create')()
 const AboutLazyImport = createFileRoute('/about')()
 const IndexLazyImport = createFileRoute('/')()
-const SettingsIndexLazyImport = createFileRoute('/settings/')()
 const SearchIndexLazyImport = createFileRoute('/search/')()
 const ProductsIndexLazyImport = createFileRoute('/products/')()
 const LogsIndexLazyImport = createFileRoute('/logs/')()
@@ -63,13 +63,6 @@ const IndexLazyRoute = IndexLazyImport.update({
   getParentRoute: () => rootRoute,
 } as any).lazy(() => import('./routes/index.lazy').then((d) => d.Route))
 
-const SettingsIndexLazyRoute = SettingsIndexLazyImport.update({
-  path: '/settings/',
-  getParentRoute: () => rootRoute,
-} as any).lazy(() =>
-  import('./routes/settings/index.lazy').then((d) => d.Route),
-)
-
 const SearchIndexLazyRoute = SearchIndexLazyImport.update({
   path: '/search/',
   getParentRoute: () => rootRoute,
@@ -91,6 +84,11 @@ const ItemsIndexLazyRoute = ItemsIndexLazyImport.update({
   path: '/items/',
   getParentRoute: () => rootRoute,
 } as any).lazy(() => import('./routes/items/index.lazy').then((d) => d.Route))
+
+const SettingsIndexRoute = SettingsIndexImport.update({
+  path: '/settings/',
+  getParentRoute: () => rootRoute,
+} as any)
 
 const UserUserIdRoute = UserUserIdImport.update({
   path: '/user/$userId',
@@ -160,6 +158,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof UserUserIdImport
       parentRoute: typeof rootRoute
     }
+    '/settings/': {
+      id: '/settings/'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof SettingsIndexImport
+      parentRoute: typeof rootRoute
+    }
     '/items/': {
       id: '/items/'
       path: '/items'
@@ -186,13 +191,6 @@ declare module '@tanstack/react-router' {
       path: '/search'
       fullPath: '/search'
       preLoaderRoute: typeof SearchIndexLazyImport
-      parentRoute: typeof rootRoute
-    }
-    '/settings/': {
-      id: '/settings/'
-      path: '/settings'
-      fullPath: '/settings'
-      preLoaderRoute: typeof SettingsIndexLazyImport
       parentRoute: typeof rootRoute
     }
     '/item/$itemId/edit': {
@@ -222,11 +220,11 @@ export const routeTree = rootRoute.addChildren({
   CreateLazyRoute,
   DebugLazyRoute,
   UserUserIdRoute,
+  SettingsIndexRoute,
   ItemsIndexLazyRoute,
   LogsIndexLazyRoute,
   ProductsIndexLazyRoute,
   SearchIndexLazyRoute,
-  SettingsIndexLazyRoute,
   ItemItemIdEditRoute,
   ItemItemIdIndexRoute,
 })
@@ -246,11 +244,11 @@ export const routeTree = rootRoute.addChildren({
         "/create",
         "/debug",
         "/user/$userId",
+        "/settings/",
         "/items/",
         "/logs/",
         "/products/",
         "/search/",
-        "/settings/",
         "/item/$itemId/edit",
         "/item/$itemId/"
       ]
@@ -276,6 +274,9 @@ export const routeTree = rootRoute.addChildren({
     "/user/$userId": {
       "filePath": "user/$userId.tsx"
     },
+    "/settings/": {
+      "filePath": "settings/index.tsx"
+    },
     "/items/": {
       "filePath": "items/index.lazy.tsx"
     },
@@ -287,9 +288,6 @@ export const routeTree = rootRoute.addChildren({
     },
     "/search/": {
       "filePath": "search/index.lazy.tsx"
-    },
-    "/settings/": {
-      "filePath": "settings/index.lazy.tsx"
     },
     "/item/$itemId/edit": {
       "filePath": "item/$itemId/edit.tsx"

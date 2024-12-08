@@ -2,7 +2,7 @@ import { createFileRoute, redirect } from '@tanstack/react-router';
 
 import {
     formatId,
-    instanceSettingsQueryOptions,
+    getInstanceSettings,
 } from '@/api/instance_settings';
 import { queryClient } from '@/util/query';
 
@@ -10,7 +10,7 @@ export const Route = createFileRoute('/$itemId')({
     component: () => <div>Hello /$itemId!</div>,
     loader: async ({ context, params }) => {
         const instanceSettings = await queryClient.ensureQueryData(
-            instanceSettingsQueryOptions
+            getInstanceSettings
         );
         const formattedItemId = formatId(params.itemId, instanceSettings);
 

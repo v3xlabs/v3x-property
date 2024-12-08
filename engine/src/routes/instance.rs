@@ -1,12 +1,12 @@
 use std::sync::Arc;
 
-use poem::web::Data;
+use poem::{web::Data, Result};
 use poem_openapi::{payload::Json, OpenApi};
 
 use super::ApiTags;
 use crate::{
     auth::middleware::AuthToken,
-    models::settings::InstanceSettings,
+    models::settings::{InstanceSettings, InstanceSettingsConfigurable},
     state::AppState,
 };
 pub struct InstanceApi;
@@ -33,5 +33,19 @@ impl InstanceApi {
         // panic!()
         // }
         // }
+    }
+
+    /// /instance/settings
+    ///
+    /// Update the instance settings
+    #[oai(path = "/instance/settings", method = "put", tag = "ApiTags::Instance")]
+    pub async fn update_settings(
+        &self,
+        state: Data<&Arc<AppState>>,
+        token: AuthToken,
+        settings: Json<InstanceSettingsConfigurable>,
+    ) -> Result<()> {
+        InstanceSettings::update_instance_settings(&state.database, &settings).await;
+        Ok(())
     }
 }

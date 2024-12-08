@@ -9,6 +9,7 @@ export type BaseInputProperties = {
     suffix?: ReactNode;
     onChange?: (_value: string) => void;
     errorMessage?: string;
+    description?: string;
     width?: 'full' | 'fit';
 } & Omit<ComponentPropsWithoutRef<typeof Input>, 'onChange'>;
 
@@ -19,6 +20,7 @@ export const BaseInput = ({
     suffix,
     onChange,
     errorMessage,
+    description,
     width = 'fit',
     ...rest
 }: BaseInputProperties) => {
@@ -48,6 +50,9 @@ export const BaseInput = ({
                 {suffix}
             </div>
             {errorMessage && <p className="text-red-500">{errorMessage}</p>}
+            {description && (
+                <p className="text-sm text-neutral-500">{description}</p>
+            )}
         </>
     );
 };

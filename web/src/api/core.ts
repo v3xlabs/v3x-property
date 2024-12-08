@@ -311,6 +311,13 @@ export const apiRequest = async <
                 headers: response.headers,
             } as any;
 
+        case 'text/plain; charset=utf-8':
+            return {
+                status: response.status,
+                contentType: responseContentType,
+                data: await response.text(),
+            } as any;
+
         case 'application/json; charset=utf-8':
             return {
                 status: response.status,

@@ -1246,7 +1246,31 @@ export type paths = {
                 };
             };
         };
-        put?: never;
+        /**
+         * /instance/settings
+         * @description Update the instance settings
+         */
+        put: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json; charset=utf-8": components["schemas"]["InstanceSettingsConfigurable"];
+                };
+            };
+            responses: {
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
         post?: never;
         delete?: never;
         options?: never;
@@ -1376,8 +1400,20 @@ export type components = {
             intelligence: boolean;
         };
         InstanceSettings: {
-            id_casing_preference: components["schemas"]["IdCasingPreference"];
+            id_casing_preference: components["schemas"]["IdCasingPreference"] & unknown;
+            /**
+             * Format: int64
+             * @description When using numeric item IDs, this last ID is used to generate the next ID.
+             */
+            last_item_id: number;
             modules: components["schemas"]["InstanceModulesStatus"];
+        };
+        InstanceSettingsConfigurable: {
+            /** Format: int64 */
+            instance_id: number;
+            id_casing_preference: components["schemas"]["IdCasingPreference"];
+            /** Format: int64 */
+            last_item_id: number;
         };
         Item: {
             item_id: string;

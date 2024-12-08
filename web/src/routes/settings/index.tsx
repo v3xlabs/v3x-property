@@ -1,17 +1,21 @@
 import { useMutation } from '@tanstack/react-query';
-import { createLazyFileRoute } from '@tanstack/react-router';
+import { createFileRoute } from '@tanstack/react-router';
 
 import { useAuth } from '@/api/auth';
 import { BASE_URL } from '@/api/core';
-import { useInstanceSettings } from '@/api/instance_settings';
+import { getInstanceSettings } from '@/api/instance_settings';
 import { SearchTaskTable } from '@/components/search_tasks/SearchTaskTable';
+import { InstanceSettings } from '@/components/settings/InstanceSettings';
 import { Button } from '@/components/ui/Button';
 import { UserApiKeysTable } from '@/components/user_api_keys/UserApiKeysTable';
 import { SCPage } from '@/layouts/SimpleCenterPage';
+import { queryClient } from '@/util/query';
 
-export const Route = createLazyFileRoute('/settings/')({
+export const Route = createFileRoute('/settings/')({
+    loader: async () => {
+        await queryClient.ensureQueryData(getInstanceSettings);
+    },
     component: () => {
-        const { data: instanceSettings } = useInstanceSettings();
         const { token } = useAuth();
         const { mutate: indexAllItems } = useMutation({
             mutationFn: async () => {
@@ -35,10 +39,7 @@ export const Route = createLazyFileRoute('/settings/')({
                     </Button>
                 </div>
                 <div className="card">
-                    <h2>Instance Settings</h2>
-                    <pre className="bg-black/5 p-4 rounded-lg">
-                        {JSON.stringify(instanceSettings, undefined, 2)}
-                    </pre>
+                    <InstanceSettings />
                 </div>
                 <div className="card">
                     <SearchTaskTable />
