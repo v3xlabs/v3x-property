@@ -69,7 +69,7 @@ jobs:
 
   # 🌐 Second job: Build our web frontend
   build-web:
-    runs-on: ubuntu-latest
+    runs-on: buildjet-4vcpu-ubuntu-2204
     permissions:
       contents: read
     steps:
@@ -96,7 +96,6 @@ jobs:
 
   # 🐳 Third job: Package everything into a multi-arch Docker digests
   docker-build:
-    runs-on: ubuntu-latest
     permissions:
       contents: read
       packages: write
@@ -108,8 +107,11 @@ jobs:
         platform:
           - arch: x86_64-unknown-linux-musl
             docker: linux/amd64
+            runner: buildjet-4vcpu-ubuntu-2204
           - arch: aarch64-unknown-linux-musl
             docker: linux/arm64
+            runner: buildjet-4vcpu-ubuntu-2204-arm
+    runs-on: ${{ matrix.platform.runner }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -134,10 +136,6 @@ jobs:
         run: |
           chmod 755 ./artifacts/v3x-property-engine
           ls -la ./artifacts
-
-      # Set up QEMU for multi-arch builds
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v3
 
       # Set up Docker Buildx
       - name: Set up Docker Buildx
@@ -193,7 +191,7 @@ jobs:
 
   # 🐳 Final job: Merge multi-arch digests into a single artifact
   docker-merge:
-    runs-on: ubuntu-latest
+    runs-on: buildjet-4vcpu-ubuntu-2204
     permissions:
       contents: read
       packages: write
