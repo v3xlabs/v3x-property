@@ -5,8 +5,9 @@ use s3::Region;
 use uuid::Uuid;
 
 pub struct Storage {
-    bucket: Box<Bucket>,
-    bucket_name: String,
+    pub endpoint_url: String,
+    pub bucket: Box<Bucket>,
+    pub bucket_name: String,
 }
 
 impl Storage {
@@ -20,11 +21,12 @@ impl Storage {
         let credentials = Credentials::new(Some(&access_key), Some(&secret_key), None, None, None).unwrap();
         let region = Region::Custom {
             region,
-            endpoint: endpoint_url,
+            endpoint: endpoint_url.clone(),
         };
         let bucket = Bucket::new(&bucket_name, region, credentials).unwrap().with_path_style();
 
         Self {
+            endpoint_url,
             bucket,
             bucket_name,
         }

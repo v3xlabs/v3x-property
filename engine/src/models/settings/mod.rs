@@ -45,6 +45,8 @@ impl Default for InstanceSettingsConfigurable {
 
 #[derive(Serialize, Deserialize, Object)]
 pub struct InstanceSettings {
+    /// Configurable
+
     /// The casing preference for IDs.
     /// For example, if this is set to `Upper`, then the ID `ab3` will redirect to `AB3`.
     /// This allows for consistent casing across items.
@@ -52,6 +54,9 @@ pub struct InstanceSettings {
     /// When using numeric item IDs, this last ID is used to generate the next ID.
     pub last_item_id: i64,
 
+    /// Generated
+
+    /// The status of the instance modules.
     pub modules: InstanceModulesStatus,
 }
 

@@ -13,6 +13,7 @@ import { ErrorBoundary } from '@/components/ErrorBoundary';
 import { StlPreviewWindow } from '@/components/stl_preview/StlPreview';
 
 import { Button } from '../ui/Button';
+import { useInstanceSettings } from '@/api/instance_settings';
 
 export const MediaPreview: FC<{
     media_id?: number;
@@ -23,6 +24,7 @@ export const MediaPreview: FC<{
     update_media_id?: (_media_id: number) => void;
     delete_media?: (_media_id: number) => void;
 }> = ({ media_id, url, name, kind, status, update_media_id, delete_media }) => {
+    const { data: instanceSettings } = useInstanceSettings();
     const { data: media } = useMedia(media_id);
 
     const fileType = kind ?? media?.url.split('.').pop();
@@ -35,7 +37,13 @@ export const MediaPreview: FC<{
             return link;
         }
 
-        return 'http://localhost:9000/property/' + link;
+        return (
+            instanceSettings?.modules.storage.endpoint_url +
+            '/' +
+            instanceSettings?.modules.storage.bucket +
+            '/' +
+            link
+        );
     })();
 
     const {

@@ -209,46 +209,6 @@ export type paths = {
         };
         trace?: never;
     };
-    "/item/{item_id}/media": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * /item/:item_id/media
-         * @description Get all media for an Item by `item_id`
-         */
-        get: {
-            parameters: {
-                query?: never;
-                header?: never;
-                path: {
-                    item_id: string;
-                };
-                cookie?: never;
-            };
-            requestBody?: never;
-            responses: {
-                200: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json; charset=utf-8": number[];
-                    };
-                };
-            };
-        };
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
     "/item/{item_id}/logs": {
         parameters: {
             query?: never;
@@ -277,6 +237,46 @@ export type paths = {
                     };
                     content: {
                         "application/json; charset=utf-8": components["schemas"]["LogEntry"][];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/item/{item_id}/media": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * /item/:item_id/media
+         * @description Get all media for an Item by `item_id`
+         */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    item_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json; charset=utf-8": number[];
                     };
                 };
             };
@@ -981,6 +981,18 @@ export type paths = {
                         "application/json; charset=utf-8": components["schemas"]["User"];
                     };
                 };
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
             };
         };
         put?: never;
@@ -1395,9 +1407,14 @@ export type components = {
         };
         /** @enum {string} */
         IdCasingPreference: "upper" | "lower";
+        InstanceModuleStorageStatus: {
+            endpoint_url: string;
+            bucket: string;
+        };
         InstanceModulesStatus: {
             search: boolean;
             intelligence: boolean;
+            storage: components["schemas"]["InstanceModuleStorageStatus"];
         };
         InstanceSettings: {
             id_casing_preference: components["schemas"]["IdCasingPreference"] & unknown;
@@ -1406,7 +1423,7 @@ export type components = {
              * @description When using numeric item IDs, this last ID is used to generate the next ID.
              */
             last_item_id: number;
-            modules: components["schemas"]["InstanceModulesStatus"];
+            modules: components["schemas"]["InstanceModulesStatus"] & unknown;
         };
         InstanceSettingsConfigurable: {
             /** Format: int64 */

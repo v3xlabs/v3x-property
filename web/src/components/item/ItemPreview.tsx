@@ -105,7 +105,13 @@ export const ItemPreview: FC<Properties> = ({ item_id, variant }) => {
             return link;
         }
 
-        return 'http://localhost:9000/property/' + link;
+        return (
+            instanceSettings?.modules.storage.endpoint_url +
+            '/' +
+            instanceSettings?.modules.storage.bucket +
+            '/' +
+            link
+        );
     })();
 
     if (isLoading) {
