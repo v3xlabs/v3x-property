@@ -56,4 +56,13 @@ impl LogEntry {
 
         Ok(log_entries)
     }
+
+    /// Get all log entries sorted by most recent
+    pub async fn get_all(db: &Database) -> Result<Vec<Self>, sqlx::Error> {
+        let log_entries = query_as!(LogEntry, "SELECT * FROM logs ORDER BY created_at DESC")
+            .fetch_all(&db.pool)
+            .await?;
+
+        Ok(log_entries)
+    }
 }

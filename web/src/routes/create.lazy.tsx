@@ -12,7 +12,7 @@ import { SCPage } from '@/layouts/SimpleCenterPage';
 const component = () => {
     const { data: instanceSettings } = useInstanceSettings();
     const navigate = useNavigate();
-    const { mutate: createItem } = useCreateItem();
+    const { mutateAsync: createItem } = useCreateItem();
 
     const { Field, Subscribe, handleSubmit } = useForm({
         defaultValues: {

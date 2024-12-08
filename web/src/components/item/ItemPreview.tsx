@@ -35,7 +35,7 @@ export const AvatarHolder: FC<{
                         size === 'compact' && '!size-6'
                     )}
                     src={image}
-                    alt={alt || 'User Avatar'}
+                    alt={alt || 'Unknown Item'}
                 />
             )}
             <Avatar.Fallback
@@ -142,8 +142,13 @@ export const ItemPreview: FC<Properties> = ({ item_id, variant }) => {
                                     initials={''}
                                     size="compact"
                                 />
-                                <span className="Text !leading-[0.75em]">
-                                    {item?.name || UNKNOWN_USER}
+                                <span className="flex flex-col justify-start">
+                                    <span className="Text !leading-[1.2em]">
+                                        {item?.name || UNKNOWN_USER}
+                                    </span>
+                                    <span className="opacity-50 text-xs !leading-[1em]">
+                                        #{formattedItemId}
+                                    </span>
                                 </span>
                             </Link>
                         </HoverCard.Trigger>

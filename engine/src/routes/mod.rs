@@ -3,6 +3,7 @@ use std::{env, sync::Arc};
 use async_std::path::PathBuf;
 use instance::InstanceApi;
 use items::ItemsApi;
+use logs::LogsApi;
 use me::MeApi;
 use media::MediaApi;
 use oauth::{callback::CallbackApi, login::LoginApi};
@@ -25,6 +26,7 @@ pub mod oauth;
 pub mod search;
 pub mod sessions;
 pub mod users;
+pub mod logs;
 
 #[derive(Tags)]
 enum ApiTags {
@@ -32,6 +34,8 @@ enum ApiTags {
     Items,
     /// Media-related operations
     Media,
+    /// Logs-related operations
+    Logs,
     /// Search-related operations
     Search,
     /// User-related operations
@@ -49,6 +53,7 @@ fn get_api() -> impl OpenApi {
         MediaApi,
         SearchApi,
         SearchTaskApi,
+        LogsApi,
         MeApi,
         UserApi,
         UserKeysApi,

@@ -100,9 +100,9 @@ export const Route = createFileRoute('/item/$itemId/edit')({
     },
     component: () => {
         const { itemId } = useParams({ from: '/item/$itemId/edit' });
-        const { data: item } = useSuspenseQuery(getItemById(itemId));
+        const { data: item, refetch } = useSuspenseQuery(getItemById(itemId));
         const { data: media } = useSuspenseQuery(getItemMedia(itemId));
-        const editItem = useEditItem();
+        const { mutateAsync: editItem } = useEditItem();
         const navigate = useNavigate();
 
         const { Field, Subscribe, handleSubmit } = useForm<EditItemForm>({
@@ -114,7 +114,7 @@ export const Route = createFileRoute('/item/$itemId/edit')({
                         media_id,
                     })) ?? [],
             },
-            onSubmit: ({ value }) => {
+            onSubmit: async ({ value }) => {
                 console.log('FORM SUBMIT', value);
                 const toastId = `item-edit-${itemId}`;
 
@@ -122,7 +122,7 @@ export const Route = createFileRoute('/item/$itemId/edit')({
                     id: toastId,
                 });
 
-                editItem.mutate(
+                await editItem(
                     {
                         item_id: itemId,
                         data: {
@@ -136,10 +136,11 @@ export const Route = createFileRoute('/item/$itemId/edit')({
                         },
                     },
                     {
-                        onSuccess(data, variables, context) {
+                        onSuccess: async (data, variables, context) => {
                             toast.success('Item saved', {
                                 id: toastId,
                             });
+                            await refetch();
                             navigate({
                                 to: '/item/$itemId',
                                 params: { itemId },

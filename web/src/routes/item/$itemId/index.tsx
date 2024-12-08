@@ -15,7 +15,7 @@ import {
     instanceSettingsQueryOptions,
 } from '@/api/instance_settings';
 import { getItemById, getItemMedia } from '@/api/item';
-import { ItemLogSection } from '@/components/item/logs/ItemLogSection';
+import { ItemLogSection } from '@/components/logs/ItemLogSection';
 import { MediaGallery } from '@/components/media/MediaGallery';
 import { Button } from '@/components/ui/Button';
 import { UnauthorizedResourceModal } from '@/components/Unauthorized';
