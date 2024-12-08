@@ -1,7 +1,7 @@
 ARG BINARY_NAME_DEFAULT=v3x-property-engine
 # ARG MY_GREAT_CONFIG_DEFAULT="someconfig-default-value"
 
-FROM clux/muslrust:stable as builder
+FROM clux/muslrust:nightly as builder
 RUN groupadd -g 10001 -r dockergrp && useradd -r -g dockergrp -u 10001 dockeruser
 ARG BINARY_NAME_DEFAULT
 ENV BINARY_NAME=$BINARY_NAME_DEFAULT
