@@ -30,8 +30,8 @@ export const Route = createFileRoute('/sessions')({
 
             // eslint-disable-next-line no-undef
             window.location.href =
-                BASE_URL +
-                '/login?redirect=' +
+                new URL('/login', BASE_URL).toString() +
+                '?redirect=' +
                 encodeURIComponent(location.href);
         }
     },

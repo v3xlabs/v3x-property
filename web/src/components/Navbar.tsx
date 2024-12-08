@@ -10,7 +10,7 @@ import * as DropdownMenu from '@/components/ui/Dropdown';
 
 import { AvatarHolder, getInitials } from './UserProfile';
 
-const LOGIN_URL = BASE_URL + '/login';
+const LOGIN_URL = new URL('/login', BASE_URL).toString();
 
 export const Navbar = () => {
     const { token, clearAuthToken } = useAuth();
