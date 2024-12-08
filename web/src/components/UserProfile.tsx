@@ -100,8 +100,10 @@ export const getInitials = (name?: string) => {
 const UNKNOWN_USER = 'Unknown User';
 
 export const UserProfile: FC<Properties> = ({ user_id, variant }) => {
-    const { data: user, isLoading } = useUserById(user_id);
-    const { data: me } = useMe();
+    const { data: user, isLoading } = useUserById({
+        variables: { user_id },
+    });
+    const { data: me } = useMe({});
 
     if (isLoading) {
         return <div>Loading...</div>;

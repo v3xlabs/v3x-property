@@ -1,14 +1,24 @@
 /* eslint-disable sonarjs/no-duplicate-string */
 import {
+    DefaultError,
     DefinedUseQueryResult,
+    QueryClient,
+    QueryFunction,
+    QueryFunctionContext,
+    QueryKey,
     QueryObserverOptions,
+    skipToken,
+    useMutation,
+    UseMutationOptions,
     useQuery,
+    UseQueryOptions,
 } from '@tanstack/react-query';
 
 import { useAuth } from './auth';
 import { paths } from './schema.gen';
 
-export const BASE_URL = 'http://localhost:3000';
+export const BASE_URL =
+    import.meta.env.VITE_API_URL || `${window.location.origin}/api/`;
 
 type HTTPMethod =
     | 'get'
@@ -128,7 +138,7 @@ export class ApiError extends Error {
     }
 }
 
-export type ApiRequest<
+export type ApiRoute<
     TPath extends keyof paths,
     TMethod extends PathMethods<TPath>,
     TRoute extends AnyRoute = paths[TPath][TMethod] extends AnyRoute
@@ -256,7 +266,7 @@ export const apiRequest = async <
         }
     }
 
-    const url = new URL('/api' + path, BASE_URL);
+    const url = new URL(`.${path}`, BASE_URL);
 
     if (query) {
         for (const [key, value] of Object.entries(query)) {
@@ -272,18 +282,29 @@ export const apiRequest = async <
         }
     }
 
-    const { token } = useAuth.getState();
+    const { token, clearAuthToken } = useAuth.getState();
 
     if (token) {
         headers.set('Authorization', 'Bearer ' + token);
     }
 
+    if (contentType) {
+        headers.set('Content-Type', contentType);
+    }
+
     const response = await fetch(url, {
-        method,
+        method: method.toUpperCase(),
         headers,
         body: convertBody(data, contentType),
         ...fetchOptions,
     });
+
+    if (response.status === 401) {
+        console.log('Token expired, clearing token');
+        clearAuthToken();
+
+        throw new ApiError('Token expired', 401);
+    }
 
     if (!response.ok) {
         throw ApiError.fromResponse(response);
@@ -309,6 +330,156 @@ export const apiRequest = async <
         default:
             throw new Error('Unsupported content type: ' + responseContentType);
     }
+};
+
+/// Query Creators
+
+const getFullKey = (queryKey: QueryKey, variables?: any): QueryKey => {
+    return variables === undefined ? queryKey : [...queryKey, variables];
+};
+
+export type CreateQueryOptions<
+    TFunctionData,
+    TVariables = void,
+    TError = DefaultError
+> = Omit<
+    UseQueryOptions<TFunctionData, TError>,
+    'queryKey' | 'queryFn' | 'select'
+> & {
+    fetcher: (
+        variables: TVariables,
+        context: QueryFunctionContext
+    ) => TFunctionData | Promise<TFunctionData>;
+    queryKey: QueryKey;
+    variables?: TVariables;
+};
+
+export type QueryHookOptions<
+    TFunctionData,
+    TVariables = void,
+    TError = DefaultError,
+    TData = TFunctionData
+> = Omit<
+    UseQueryOptions<TFunctionData, TError, TData>,
+    'queryKey' | 'queryFn' | 'queryKeyHashFn'
+> &
+    (TVariables extends void
+        ? {
+              variables?: undefined;
+          }
+        : {
+              variables: TVariables;
+          });
+
+export const createQuery = <
+    TFunctionData,
+    TVariables = void,
+    TError = DefaultError
+>(
+    defaultOptions: CreateQueryOptions<TFunctionData, TVariables, TError>
+) => {
+    const getQueryOptions = (
+        fetcherFunction: (
+            variables: TVariables,
+            context: QueryFunctionContext
+        ) => TFunctionData | Promise<TFunctionData>,
+        variables: TVariables
+    ) => {
+        return {
+            queryFn:
+                variables && variables === skipToken
+                    ? (skipToken as any)
+                    : (context: QueryFunctionContext) =>
+                          fetcherFunction(variables, context),
+            queryKey: getFullKey(defaultOptions.queryKey, variables),
+        } as {
+            queryFn: QueryFunction<TFunctionData, QueryKey>;
+            queryKey: QueryKey;
+        };
+    };
+
+    const getKey = (variables?: TVariables) =>
+        getFullKey(defaultOptions.queryKey, variables);
+
+    const getOptions = (variables: TVariables) => {
+        return {
+            ...defaultOptions,
+            ...getQueryOptions(defaultOptions.fetcher, variables),
+        };
+    };
+
+    const getFetchOptions = (variables: TVariables) => {
+        return {
+            ...getQueryOptions(defaultOptions.fetcher, variables),
+            queryKeyHashFn: defaultOptions.queryKeyHashFn,
+        };
+    };
+
+    const useTQ = <TData = TFunctionData>(
+        options: QueryHookOptions<TFunctionData, TVariables, TError, TData>,
+        queryClient?: QueryClient
+    ) => {
+        return useQuery(
+            {
+                ...defaultOptions,
+                ...options,
+                ...getQueryOptions(
+                    defaultOptions.fetcher,
+                    // @ts-ignore
+                    options.variables ?? defaultOptions.variables
+                ),
+            },
+            queryClient
+        );
+    };
+
+    useTQ.getOptions = getOptions;
+    useTQ.getKey = getKey;
+    useTQ.getFetchOptions = getFetchOptions;
+    useTQ.fetcher = defaultOptions.fetcher;
+
+    return useTQ as typeof useTQ & {
+        /** Type helper to infer the data type returned by this query. **Does not exist at runtime.** */
+        $inferData: TFunctionData;
+        /** Type helper to infer the variables type accepted by this query. **Does not exist at runtime.** */
+        $inferVariables: TVariables;
+    };
+};
+
+export const createMutation = <
+    TData = unknown,
+    TVariables = void,
+    TError = DefaultError,
+    TContext = unknown
+>(
+    defaultOptions: UseMutationOptions<TData, TError, TVariables, TContext>
+) => {
+    const useTM = (
+        options: Omit<
+            UseMutationOptions<TData, TError, TVariables, TContext>,
+            'mutationFn'
+        >,
+        queryClient?: QueryClient
+    ) => {
+        return useMutation(
+            {
+                ...defaultOptions,
+                ...options,
+            },
+            queryClient
+        );
+    };
+
+    useTM.getKey = () => defaultOptions.mutationKey;
+    useTM.getOptions = () => defaultOptions;
+    useTM.mutationFn = defaultOptions.mutationFn;
+
+    return useTM as typeof useTM & {
+        /** Type helper to infer the data type returned by this mutation. **Does not exist at runtime.** */
+        $inferData: TData;
+        /** Type helper to infer the variables type accepted by this mutation. **Does not exist at runtime.** */
+        $inferVariables: TVariables;
+    };
 };
 
 /**
@@ -374,7 +545,7 @@ export const getHttp =
         }
 
         try {
-            const response = await fetch(BASE_URL + url, { headers });
+            const response = await fetch(new URL(url, BASE_URL), { headers });
 
             if (response.status === 401) {
                 console.log('Token expired, clearing token');

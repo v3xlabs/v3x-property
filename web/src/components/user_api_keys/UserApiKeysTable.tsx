@@ -5,7 +5,7 @@ import clsx from 'clsx';
 import { FiLoader } from 'react-icons/fi';
 
 import { useAuth } from '@/api/auth';
-import { ApiRequest, BASE_URL } from '@/api/core';
+import { ApiRoute, BASE_URL } from '@/api/core';
 import { useMe } from '@/api/me';
 import { useUserPats } from '@/api/user/pat';
 
@@ -14,7 +14,7 @@ import { Button } from '../ui/Button';
 // TimeAgo.addDefaultLocale(en);
 // const timeAgo = new TimeAgo('en-US');
 
-type UserApiKey = ApiRequest<
+type UserApiKey = ApiRoute<
     '/user/{user_id}/keys',
     'get'
 >['response']['data'][number];
@@ -70,8 +70,10 @@ const TokenTableEntry = ({
 };
 
 export const UserApiKeysTable = () => {
-    const { data: me } = useMe();
-    const { data, refetch } = useUserPats(me?.user_id ?? 0);
+    const { data: me } = useMe({});
+    const { data, refetch } = useUserPats({
+        variables: { user_id: me?.user_id ?? 0 },
+    });
 
     return (
         <div className="w-full">

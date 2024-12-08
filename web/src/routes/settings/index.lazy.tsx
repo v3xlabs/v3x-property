@@ -11,7 +11,7 @@ import { SCPage } from '@/layouts/SimpleCenterPage';
 
 export const Route = createLazyFileRoute('/settings/')({
     component: () => {
-        const { data: instanceSettings } = useInstanceSettings();
+        const { data: instanceSettings } = useInstanceSettings({});
         const { token } = useAuth();
         const { mutate: indexAllItems } = useMutation({
             mutationFn: async () => {

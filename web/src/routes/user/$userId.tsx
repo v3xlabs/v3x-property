@@ -7,7 +7,9 @@ export const Route = createFileRoute('/user/$userId')({
     component: () => {
         const { userId } = useParams({ from: '/user/$userId' });
         const user_id = Number.parseInt(userId);
-        const { data: user, isLoading } = useUserById(user_id);
+        const { data: user, isLoading } = useUserById({
+            variables: { user_id },
+        });
 
         return (
             <SCPage title="User Profile">

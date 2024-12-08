@@ -2,12 +2,12 @@ import TimeAgo from 'javascript-time-ago';
 import en from 'javascript-time-ago/locale/en';
 import { match } from 'ts-pattern';
 
-import { ApiLogResponse } from '@/api/item';
+import { type useItemLogs } from '@/api/item';
 import { UserProfile } from '@/components/UserProfile';
 
 import { ItemPreview } from '../item/ItemPreview';
 
-export type ApiLogEntry = ApiLogResponse[number];
+export type ApiLogEntry = (typeof useItemLogs.$inferData)[number];
 
 TimeAgo.addDefaultLocale(en);
 const timeAgo = new TimeAgo('en-US');

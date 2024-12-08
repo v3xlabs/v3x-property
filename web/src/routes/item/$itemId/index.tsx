@@ -10,11 +10,8 @@ import {
 } from '@tanstack/react-router';
 import { useEffect } from 'react';
 
-import {
-    formatId,
-    instanceSettingsQueryOptions,
-} from '@/api/instance_settings';
-import { getItemById, getItemMedia } from '@/api/item';
+import { formatId, useInstanceSettings } from '@/api/instance_settings';
+import { useItemById, useItemMedia } from '@/api/item';
 import { ItemLogSection } from '@/components/logs/ItemLogSection';
 import { MediaGallery } from '@/components/media/MediaGallery';
 import { Button } from '@/components/ui/Button';
@@ -28,7 +25,7 @@ export const Route = createFileRoute('/item/$itemId/')({
     loader: async ({ params }) => {
         // Ensure instance settings are loaded
         const instanceSettings = await queryClient.ensureQueryData(
-            instanceSettingsQueryOptions
+            useInstanceSettings.getFetchOptions()
         );
 
         const formattedItemId = formatId(params.itemId, instanceSettings);
@@ -42,15 +39,31 @@ export const Route = createFileRoute('/item/$itemId/')({
 
         // Preload item and media
         return Promise.all([
-            queryClient.ensureQueryData(getItemById(params.itemId)),
-            queryClient.ensureQueryData(getItemMedia(params.itemId)),
+            queryClient.ensureQueryData(
+                useItemById.getFetchOptions({
+                    item_id: params.itemId,
+                })
+            ),
+            queryClient.ensureQueryData(
+                useItemMedia.getFetchOptions({
+                    item_id: params.itemId,
+                })
+            ),
         ]);
     },
     component: () => {
         const { itemId } = Route.useParams();
 
-        const item = useSuspenseQuery(getItemById(itemId));
-        const media = useSuspenseQuery(getItemMedia(itemId));
+        const item = useSuspenseQuery(
+            useItemById.getOptions({
+                item_id: itemId,
+            })
+        );
+        const media = useSuspenseQuery(
+            useItemMedia.getOptions({
+                item_id: itemId,
+            })
+        );
 
         if (item.error) {
             return <UnauthorizedResourceModal />;

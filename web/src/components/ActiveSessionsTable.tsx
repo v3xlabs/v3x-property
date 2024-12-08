@@ -11,7 +11,7 @@ import { LeafletPreview } from './LeafletPreview';
 import { Button } from './ui/Button';
 
 const ActiveSession: FC<{ session: SessionResponse }> = ({ session }) => {
-    const { refetch: updateSessions } = useSessions();
+    const { refetch: updateSessions } = useSessions({});
     const { token } = useAuth();
     const { data: geoip } = useGeoIp(session.user_ip);
     const user_agent = UAParser(session.user_agent);
@@ -101,7 +101,7 @@ const ActiveSession: FC<{ session: SessionResponse }> = ({ session }) => {
 };
 
 export const ActiveSessionsTable: FC = () => {
-    const { data: sessions } = useSessions();
+    const { data: sessions } = useSessions({});
 
     return (
         <div className="p-2 space-y-2">

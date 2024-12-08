@@ -10,9 +10,9 @@ import { Button } from '@/components/ui/Button';
 import { SCPage } from '@/layouts/SimpleCenterPage';
 
 const component = () => {
-    const { data: instanceSettings } = useInstanceSettings();
+    const { data: instanceSettings } = useInstanceSettings({});
     const navigate = useNavigate();
-    const { mutateAsync: createItem } = useCreateItem();
+    const { mutateAsync: createItem } = useCreateItem({});
 
     const { Field, Subscribe, handleSubmit } = useForm({
         defaultValues: {
@@ -23,7 +23,7 @@ const component = () => {
 
             if (!formattedItemId) return;
 
-            await createItem(formattedItemId);
+            await createItem({ item_id: formattedItemId });
 
             // navigate to the new item
             navigate({

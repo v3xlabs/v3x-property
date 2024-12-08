@@ -1,22 +1,12 @@
-import { queryOptions, useQuery } from '@tanstack/react-query';
+import { apiRequest, createQuery } from '../core';
 
-import { ApiRequest, apiRequest } from '../core';
+export const useUserById = createQuery({
+    queryKey: ['user', 'by-id'],
+    fetcher: async ({ user_id }: { user_id: number }) => {
+        const response = await apiRequest('/user/{user_id}', 'get', {
+            path: { user_id },
+        });
 
-export type ApiUserByIdResponse = ApiRequest<
-    '/user/{user_id}',
-    'get'
->['response'];
-
-export const getUserById = (user_id: number) =>
-    queryOptions({
-        queryKey: ['user', user_id],
-        queryFn: async () => {
-            const response = await apiRequest('/user/{user_id}', 'get', {
-                path: { user_id },
-            });
-
-            return response.data;
-        },
-    });
-
-export const useUserById = (user_id: number) => useQuery(getUserById(user_id));
+        return response.data;
+    },
+});

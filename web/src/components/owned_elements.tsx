@@ -5,7 +5,7 @@ import { useOwnedItems } from '@/api/item';
 import { Button } from './ui/Button';
 
 export const AllOwnedItems = () => {
-    const { data } = useOwnedItems();
+    const { data } = useOwnedItems({});
 
     return (
         <div className="space-y-2">
