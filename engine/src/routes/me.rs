@@ -1,37 +1,50 @@
-use std::sync::Arc;
+use std::convert::Infallible;
+use std::{ops::FromResidual, sync::Arc};
 
-use poem::web::Data;
-use poem_openapi::{payload::Json, OpenApi};
+use poem::{web::Data, Result};
+use poem_openapi::{payload::Json, ApiResponse, OpenApi};
 
+use super::ApiTags;
 use crate::{
     auth::middleware::AuthToken,
     models::user::{user::User, userentry::UserEntry},
     state::AppState,
 };
 
-use super::ApiTags;
+#[derive(ApiResponse)]
+pub enum MeResponse {
+    #[oai(status = 200)]
+    Ok(Json<User>),
+    #[oai(status = 500)]
+    InternalError,
+    #[oai(status = 401)]
+    Unauthorized,
+}
+
+impl FromResidual<Result<Infallible, MeResponse>> for MeResponse {
+    fn from_residual(residual: Result<Infallible, MeResponse>) -> Self {
+        match residual {
+            Err(err) => err,
+            _ => unreachable!(),
+        }
+    }
+}
 
 pub struct MeApi;
 
 #[OpenApi]
 impl MeApi {
     /// /me
-    /// 
+    ///
     /// Get the current user
     #[oai(path = "/me", method = "get", tag = "ApiTags::User")]
-    pub async fn me(&self, state: Data<&Arc<AppState>>, token: AuthToken) -> Json<User> {
-        match token {
-            AuthToken::Active(active_user) => {
-                let user = UserEntry::find_by_user_id(active_user.session.user_id, &state.database)
-                    .await
-                    .unwrap();
+    pub async fn me(&self, state: Data<&Arc<AppState>>, token: AuthToken) -> MeResponse {
+        let active_user = token.ok().ok_or(MeResponse::Unauthorized)?;
 
-                Json(user.unwrap().into())
-            }
-            _ => {
-                // Error::from_string("Not Authenticated", StatusCode::UNAUTHORIZED).into_response(),
-                panic!()
-            }
-        }
+        let user_entry = UserEntry::find_by_user_id(active_user.session.user_id, &state.database)
+            .await
+            .map_err(|_| MeResponse::Unauthorized)?
+            .ok_or(MeResponse::Unauthorized)?;
+        MeResponse::Ok(Json(User::from(user_entry)))
     }
 }

@@ -13,12 +13,11 @@ use tracing::info;
 use super::ApiTags;
 use crate::{
     auth::middleware::AuthToken,
-    models::{
-        item::{media::ItemMedia, Item},
-        log::LogEntry,
-    },
+    models::{item::Item, log::LogEntry},
     state::AppState,
 };
+
+pub mod media;
 
 pub struct ItemsApi;
 
@@ -26,7 +25,6 @@ pub struct ItemsApi;
 pub struct ItemIdResponse {
     item_id: String,
 }
-
 
 #[derive(poem_openapi::Object, Debug, Clone, Serialize, Deserialize)]
 pub struct ItemUpdatePayload {
@@ -41,13 +39,13 @@ pub struct ItemUpdatePayload {
 pub enum ItemUpdateMediaStatus {
     #[serde(rename = "new-media")]
     #[oai(rename = "new-media")]
-    NewMedia,
+    New,
     #[serde(rename = "removed-media")]
     #[oai(rename = "removed-media")]
-    RemovedMedia,
+    Removed,
     #[serde(rename = "existing-media")]
     #[oai(rename = "existing-media")]
-    ExistingMedia,
+    Existing,
 }
 
 #[derive(poem_openapi::Object, Debug, Clone, Serialize, Deserialize)]
@@ -55,6 +53,7 @@ pub struct ItemUpdateMediaPayload {
     pub status: ItemUpdateMediaStatus,
     pub media_id: i32,
 }
+
 
 #[OpenApi]
 impl ItemsApi {
@@ -180,23 +179,6 @@ impl ItemsApi {
         .unwrap();
 
         Ok(())
-    }
-
-    /// /item/:item_id/media
-    ///
-    /// Get all media for an Item by `item_id`
-    #[oai(path = "/item/:item_id/media", method = "get", tag = "ApiTags::Items")]
-    async fn get_item_media(
-        &self,
-        state: Data<&Arc<AppState>>,
-        auth: AuthToken,
-        item_id: Path<String>,
-    ) -> Result<Json<Vec<i32>>> {
-        let media = ItemMedia::get_by_item_id(&state.database, &item_id.0)
-            .await
-            .unwrap();
-
-        Ok(Json(media.iter().map(|m| m.media_id).collect()))
     }
 
     /// /item/:item_id/logs

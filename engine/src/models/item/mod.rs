@@ -10,7 +10,8 @@ use super::{log::LogEntry, settings::InstanceSettings};
 use crate::{
     database::Database,
     modules::search::Search,
-    routes::item::{ItemUpdateMediaStatus, ItemUpdatePayload},
+    routes::item::ItemUpdatePayload,
+    routes::item::ItemUpdateMediaStatus,
     state::AppState,
 };
 
@@ -222,13 +223,13 @@ impl Item {
         if let Some(media) = &data.media {
             for media in media {
                 match media.status {
-                    ItemUpdateMediaStatus::ExistingMedia => {
+                    ItemUpdateMediaStatus::Existing => {
                         // nothing needed here
                     }
-                    ItemUpdateMediaStatus::NewMedia => {
+                    ItemUpdateMediaStatus::New => {
                         ItemMedia::new(db, item_id, media.media_id).await.unwrap();
                     }
-                    ItemUpdateMediaStatus::RemovedMedia => {
+                    ItemUpdateMediaStatus::Removed => {
                         ItemMedia::delete(db, item_id, media.media_id)
                             .await
                             .unwrap();

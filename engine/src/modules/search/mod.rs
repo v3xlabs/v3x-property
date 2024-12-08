@@ -63,6 +63,7 @@ impl Search {
                 info!("Vector store enabled: {:?}", response.text().await.unwrap());
 
                 // TODO: check if embeddings are already enabled on meilisearch
+                // TODO: create searchTask
                 // you have to manually enable vectorStore (experimental feature)
                 let response = client
                     .patch(format!("{}/indexes/items/settings", url))

@@ -4,7 +4,11 @@ use openid::DiscoveredClient;
 use reqwest::Url;
 use tracing::warn;
 
-use crate::{auth::oauth::OpenIDClient, database::Database, modules::{intelligence::Intelligence, search::Search, storage::Storage}};
+use crate::{
+    auth::oauth::OpenIDClient,
+    database::Database,
+    modules::{intelligence::Intelligence, search::Search, storage::Storage},
+};
 
 pub struct AppState {
     pub database: Database,
@@ -31,7 +35,17 @@ impl AppState {
                 .to_string();
             let openid_issuer = env::var("OPENID_ISSUER").unwrap().parse().unwrap();
 
-            DiscoveredClient::discover(
+            // disable tls verification for local development
+            let http_client = reqwest::Client::builder()
+                .danger_accept_invalid_certs(env::var("OPENID_ACCEPT_INVALID_CERTS")
+                    .unwrap_or("false".to_string())
+                    .parse()
+                    .unwrap())
+                .build()
+                .unwrap();
+
+            DiscoveredClient::discover_with_client(
+                http_client,
                 openid_client_id,
                 openid_client_secret,
                 openid_redirect,

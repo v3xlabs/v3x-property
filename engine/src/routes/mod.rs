@@ -2,7 +2,7 @@ use std::{env, sync::Arc};
 
 use async_std::path::PathBuf;
 use instance::InstanceApi;
-use item::ItemsApi;
+use item::{media::ItemMediaApi, ItemsApi};
 use logs::LogsApi;
 use me::MeApi;
 use media::MediaApi;
@@ -21,14 +21,14 @@ use crate::state::AppState;
 
 pub mod instance;
 pub mod item;
+pub mod logs;
 pub mod me;
 pub mod media;
 pub mod oauth;
+pub mod product;
 pub mod search;
 pub mod sessions;
 pub mod users;
-pub mod logs;
-pub mod product;
 
 #[derive(Tags)]
 enum ApiTags {
@@ -53,17 +53,28 @@ enum ApiTags {
 
 fn get_api() -> impl OpenApi {
     (
+        // Items
         ItemsApi,
+        ItemMediaApi,
+        // Product
         ProductApi,
+        // Media
         MediaApi,
+        // Search
         SearchApi,
         SearchTaskApi,
+        // Logs
         LogsApi,
+        // Me
         MeApi,
+        // User
         UserApi,
         UserKeysApi,
+        // Sessions
         SessionsApi,
+        // Instance
         InstanceApi,
+        // Auth
         LoginApi,
         CallbackApi,
     )

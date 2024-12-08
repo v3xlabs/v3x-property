@@ -10,10 +10,7 @@ import {
 import { FC } from 'react';
 import { toast } from 'sonner';
 
-import {
-    formatId,
-    getInstanceSettings,
-} from '@/api/instance_settings';
+import { formatId, getInstanceSettings } from '@/api/instance_settings';
 import {
     getItemById,
     getItemMedia,

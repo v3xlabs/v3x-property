@@ -2,17 +2,11 @@ use std::sync::Arc;
 
 use openid::Token;
 use poem::{
-    handler,
     http::HeaderMap,
-    web::{Data, RealIp, Redirect, WithHeader},
+    web::{Data, RealIp, Redirect},
     IntoResponse, Result,
 };
-use poem_openapi::{
-    param::Query,
-    payload::{PlainText, Response},
-    ApiResponse, Object, OpenApi,
-};
-use serde::Deserialize;
+use poem_openapi::{param::Query, payload::PlainText, ApiResponse, OpenApi};
 use tracing::info;
 use url::Url;
 use uuid::Uuid;

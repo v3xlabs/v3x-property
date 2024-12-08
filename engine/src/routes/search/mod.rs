@@ -1,6 +1,6 @@
 use std::sync::Arc;
 
-use poem::web::{Data};
+use poem::web::Data;
 use poem::Result;
 use poem_openapi::param::Query;
 use poem_openapi::{payload::Json, OpenApi};
