@@ -38,6 +38,8 @@ test.describe.serial('item flows', () => {
         h1 = await page.locator('h1');
         await expect(h1).toHaveText(`Edit Item ${newItemIdInput}`);
 
+        expect(await page.getByRole('button', { name: 'Save' })).toBeDisabled();
+
         await page
             .getByRole('textbox', { name: 'Name' })
             .fill(DEFAULT_ITEM_NAME);
@@ -57,6 +59,8 @@ test.describe.serial('item flows', () => {
 
         await page.getByTestId('search-button').click();
 
+        await page.waitForTimeout(300);
+
         await expect(page.getByTestId('search-results')).toBeVisible();
 
         await page.getByTestId('item-preview-full').first().click();
@@ -69,7 +73,8 @@ test.describe.serial('item flows', () => {
 
         await page.getByTestId('items-navlink').click();
 
-        await page.getByRole('link', { name: 'View' }).first().click();
+        await page.getByTestId('item-preview-full').first().click();
+
         await page.getByRole('link', { name: 'Edit' }).click();
         await page.getByRole('button', { name: 'Delete Item' }).click();
         await page.getByRole('button', { name: 'Yes, delete item' }).click();
