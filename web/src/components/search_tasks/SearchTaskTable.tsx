@@ -27,7 +27,7 @@ const TaskTableEntry = ({
             // /api/search/tasks/{id} PUT
             const response = await fetch(
                 // TODO: migrate to use task_id
-                BASE_URL + `/api/search/tasks/${task.external_task_id}`,
+                BASE_URL + `search/tasks/${task.external_task_id}`,
                 {
                     method: 'PUT',
                     headers: {

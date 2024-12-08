@@ -15,7 +15,7 @@ export const Route = createLazyFileRoute('/settings/')({
         const { token } = useAuth();
         const { mutate: indexAllItems } = useMutation({
             mutationFn: async () => {
-                const response = await fetch(BASE_URL + '/api/search/reindex', {
+                const response = await fetch(BASE_URL + 'search/reindex', {
                     method: 'POST',
                     headers: {
                         Authorization: `Bearer ${token}`,

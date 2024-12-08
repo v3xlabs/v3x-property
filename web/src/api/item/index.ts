@@ -85,7 +85,7 @@ export const useItemLogs = (item_id: string) => {
 export const useCreateItem = () => {
     return useMutation({
         mutationFn: async (item_id: string) =>
-            fetch(BASE_URL + '/api/item?item_id=' + item_id, {
+            fetch(BASE_URL + 'item?item_id=' + item_id, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -104,7 +104,7 @@ export const useDeleteItem = (
 
     return useMutation({
         mutationFn: async (item_id: string) => {
-            const response = await fetch(BASE_URL + '/api/item/' + item_id, {
+            const response = await fetch(BASE_URL + 'item/' + item_id, {
                 method: 'DELETE',
                 headers: {
                     Authorization: 'Bearer ' + useAuth.getState().token,
@@ -134,7 +134,7 @@ export const useEditItem = () => {
             item_id: string;
             data: paths['/item/{item_id}']['patch']['requestBody']['content']['application/json; charset=utf-8'];
         }) => {
-            const response = await fetch(BASE_URL + '/api/item/' + item_id, {
+            const response = await fetch(BASE_URL + 'item/' + item_id, {
                 method: 'PATCH',
                 headers: {
                     'Content-Type': 'application/json',

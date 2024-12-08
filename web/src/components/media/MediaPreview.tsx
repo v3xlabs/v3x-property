@@ -57,7 +57,7 @@ export const MediaPreview: FC<{
 
             const response = await fetch(
                 BASE_URL +
-                    '/api/media?name=' +
+                    'media?name=' +
                     encodeURIComponent(name ?? '') +
                     '&kind=' +
                     encodeURIComponent(fileType ?? ''),

@@ -8,7 +8,8 @@ import {
 import { useAuth } from './auth';
 import { paths } from './schema.gen';
 
-export const BASE_URL = 'http://localhost:3000';
+export const BASE_URL =
+    import.meta.env.VITE_API_URL || `${window.location.origin}/api/`;
 
 type HTTPMethod =
     | 'get'
@@ -256,7 +257,7 @@ export const apiRequest = async <
         }
     }
 
-    const url = new URL('/api' + path, BASE_URL);
+    const url = new URL(`.${path}`, BASE_URL);
 
     if (query) {
         for (const [key, value] of Object.entries(query)) {
@@ -272,18 +273,29 @@ export const apiRequest = async <
         }
     }
 
-    const { token } = useAuth.getState();
+    const { token, clearAuthToken } = useAuth.getState();
 
     if (token) {
         headers.set('Authorization', 'Bearer ' + token);
     }
 
+    if (contentType) {
+        headers.set('Content-Type', contentType);
+    }
+
     const response = await fetch(url, {
-        method,
+        method: method.toUpperCase(),
         headers,
         body: convertBody(data, contentType),
         ...fetchOptions,
     });
+
+    if (response.status === 401) {
+        console.log('Token expired, clearing token');
+        clearAuthToken();
+
+        throw new ApiError('Token expired', 401);
+    }
 
     if (!response.ok) {
         throw ApiError.fromResponse(response);
@@ -374,7 +386,7 @@ export const getHttp =
         }
 
         try {
-            const response = await fetch(BASE_URL + url, { headers });
+            const response = await fetch(new URL(url, BASE_URL), { headers });
 
             if (response.status === 401) {
                 console.log('Token expired, clearing token');

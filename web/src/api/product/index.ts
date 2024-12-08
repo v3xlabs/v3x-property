@@ -85,7 +85,7 @@ export const useProductLogs = (product_id: number) => {
 export const useCreateProduct = () => {
     return useMutation({
         mutationFn: async (name: string) =>
-            fetch(BASE_URL + '/api/product?name=' + name, {
+            fetch(BASE_URL + 'product?name=' + name, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -104,15 +104,12 @@ export const useDeleteProduct = (
 
     return useMutation({
         mutationFn: async (product_id: number) => {
-            const response = await fetch(
-                BASE_URL + '/api/product/' + product_id,
-                {
-                    method: 'DELETE',
-                    headers: {
-                        Authorization: 'Bearer ' + useAuth.getState().token,
-                    },
-                }
-            );
+            const response = await fetch(BASE_URL + 'product/' + product_id, {
+                method: 'DELETE',
+                headers: {
+                    Authorization: 'Bearer ' + useAuth.getState().token,
+                },
+            });
 
             if (response.status === 401) {
                 console.log('Token expired, clearing token');
@@ -137,17 +134,14 @@ export const useEditProduct = () => {
             product_id: number;
             data: paths['/product/{product_id}']['patch']['requestBody']['content']['application/json; charset=utf-8'];
         }) => {
-            const response = await fetch(
-                BASE_URL + '/api/product/' + product_id,
-                {
-                    method: 'PATCH',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        Authorization: 'Bearer ' + useAuth.getState().token,
-                    },
-                    body: JSON.stringify(data),
-                }
-            );
+            const response = await fetch(BASE_URL + 'product/' + product_id, {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: 'Bearer ' + useAuth.getState().token,
+                },
+                body: JSON.stringify(data),
+            });
 
             return response.ok;
         },
