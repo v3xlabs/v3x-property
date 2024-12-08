@@ -21,7 +21,11 @@ export const Navbar = () => {
     console.log({ meData });
 
     return (
-        <div className="w-full bg-white border-b h-8 flex items-center justify-between">
+        <nav
+            role="navigation"
+            aria-label="Main"
+            className="w-full bg-white border-b h-8 flex items-center justify-between"
+        >
             <div className="h-full flex space-x-2">
                 <Link
                     to="/"
@@ -29,7 +33,7 @@ export const Navbar = () => {
                 >
                     v3x.property
                 </Link>
-                <div className="h-full flex items-center">
+                <ul className="h-full flex items-center">
                     {(
                         [
                             ['/search', 'Search', 'search-navlink'],
@@ -39,16 +43,18 @@ export const Navbar = () => {
                             ['/create', 'Create', 'create-navlink'],
                         ] as [keyof FileRoutesByPath, string, string][]
                     ).map(([path, name, slug]) => (
-                        <Link
-                            key={path}
-                            to={path}
-                            data-testid={slug}
-                            className="[&.active]:bg-black/10 hover:bg-black/5 py-1 px-2 cursor-pointer"
-                        >
-                            {name}
-                        </Link>
+                        <li key={path}>
+                            <Link
+                                key={path}
+                                to={path}
+                                data-testid={slug}
+                                className="[&.active]:bg-black/10 hover:bg-black/5 py-1 px-2 cursor-pointer"
+                            >
+                                {name}
+                            </Link>
+                        </li>
                     ))}
-                </div>
+                </ul>
             </div>
             {token && meData && (
                 <div className="h-full border-l">
@@ -104,6 +110,6 @@ export const Navbar = () => {
                     Login
                 </a>
             )}
-        </div>
+        </nav>
     );
 };

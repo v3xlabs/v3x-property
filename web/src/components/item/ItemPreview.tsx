@@ -126,7 +126,11 @@ export const ItemPreview: FC<Properties> = ({ item_id, variant }) => {
                                 )}
                                 data-testid="item-preview-avatar"
                             >
-                                <AvatarHolder image={mediaUrl} initials={''} />
+                                <AvatarHolder
+                                    image={mediaUrl}
+                                    initials={''}
+                                    alt={item?.name || UNKNOWN_ITEM}
+                                />
                             </Link>
                         </HoverCard.Trigger>
                         <ItemPreviewHoverCard item={item!} />
@@ -147,6 +151,7 @@ export const ItemPreview: FC<Properties> = ({ item_id, variant }) => {
                                     image={mediaUrl}
                                     initials={''}
                                     size="compact"
+                                    alt={item?.name || UNKNOWN_ITEM}
                                 />
                                 <span className="flex gap-0.5 items-baseline justify-start">
                                     <span className="Text !leading-[1.2em]">
@@ -175,7 +180,11 @@ export const ItemPreview: FC<Properties> = ({ item_id, variant }) => {
                                 )}
                                 data-testid="item-preview-full"
                             >
-                                <AvatarHolder image={mediaUrl} initials={''} />
+                                <AvatarHolder
+                                    image={mediaUrl}
+                                    initials={''}
+                                    alt={item?.name || UNKNOWN_ITEM}
+                                />
                                 <div className="flex flex-col gap-1 justify-center">
                                     <div className="Text !leading-[0.75em]">
                                         {item?.name || UNKNOWN_ITEM}
