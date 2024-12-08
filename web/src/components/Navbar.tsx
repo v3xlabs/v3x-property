@@ -4,12 +4,13 @@ import { Link } from '@tanstack/react-router';
 import { FileRoutesByPath } from '@tanstack/react-router';
 
 import { useAuth } from '@/api/auth';
+import { BASE_URL } from '@/api/core';
 import { useMe } from '@/api/me';
 import * as DropdownMenu from '@/components/ui/Dropdown';
 
 import { AvatarHolder, getInitials } from './UserProfile';
 
-const LOGIN_URL = 'http://localhost:3000/api/login';
+const LOGIN_URL = BASE_URL + '/login';
 
 export const Navbar = () => {
     const { token, clearAuthToken } = useAuth();

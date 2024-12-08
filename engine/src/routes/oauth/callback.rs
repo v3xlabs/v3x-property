@@ -92,7 +92,8 @@ impl CallbackApi {
         let mut redirect_url: Url = state
             .0
             .clone()
-            .unwrap_or("http://localhost:3000/me".to_string())
+            // TODO: update this constant
+            .unwrap_or("http://localhost:3000/".to_string())
             .parse()
             .unwrap();
 

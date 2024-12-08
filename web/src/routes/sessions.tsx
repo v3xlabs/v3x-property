@@ -2,6 +2,7 @@ import { createFileRoute } from '@tanstack/react-router';
 import { FC } from 'react';
 
 import { useAuth } from '@/api/auth';
+import { BASE_URL } from '@/api/core';
 import { ActiveSessionsTable } from '@/components/ActiveSessionsTable';
 import { SCPage } from '@/layouts/SimpleCenterPage';
 
@@ -29,7 +30,8 @@ export const Route = createFileRoute('/sessions')({
 
             // eslint-disable-next-line no-undef
             window.location.href =
-                'http://localhost:3000/api/login?redirect=' +
+                BASE_URL +
+                '/login?redirect=' +
                 encodeURIComponent(location.href);
         }
     },
