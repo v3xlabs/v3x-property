@@ -1,0 +1,56 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "SELECT * FROM logs ORDER BY created_at DESC",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "log_id",
+        "type_info": "Int4"
+      },
+      {
+        "ordinal": 1,
+        "name": "resource_type",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 2,
+        "name": "resource_id",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 3,
+        "name": "user_id",
+        "type_info": "Int4"
+      },
+      {
+        "ordinal": 4,
+        "name": "action",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 5,
+        "name": "data",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 6,
+        "name": "created_at",
+        "type_info": "Timestamptz"
+      }
+    ],
+    "parameters": {
+      "Left": []
+    },
+    "nullable": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ]
+  },
+  "hash": "6bef6882b2e6b81bdb2235f67ca7bf7896e6e7614cd6178ce5d5b9ba056d26ad"
+}

@@ -1,0 +1,32 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "SELECT p.product_id, p.name, pm.media_id AS primary_media_id\n             FROM products p\n             LEFT JOIN product_media pm ON p.product_id = pm.product_id\n             GROUP BY p.product_id, p.name, pm.media_id\n             ORDER BY pm.media_id ASC\n             LIMIT 1",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "product_id",
+        "type_info": "Int4"
+      },
+      {
+        "ordinal": 1,
+        "name": "name",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 2,
+        "name": "primary_media_id",
+        "type_info": "Int4"
+      }
+    ],
+    "parameters": {
+      "Left": []
+    },
+    "nullable": [
+      false,
+      false,
+      false
+    ]
+  },
+  "hash": "0cc2aeb043d820ba95efa7ad8e9078106ea7dd84dfd68cd4cf18b7bd37fc54a2"
+}

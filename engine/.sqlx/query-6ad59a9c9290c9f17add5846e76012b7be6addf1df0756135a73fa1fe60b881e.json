@@ -1,0 +1,15 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "DELETE FROM product_media WHERE product_id = $1 AND media_id = $2",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Int4",
+        "Int4"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "6ad59a9c9290c9f17add5846e76012b7be6addf1df0756135a73fa1fe60b881e"
+}
