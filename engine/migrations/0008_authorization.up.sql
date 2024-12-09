@@ -59,12 +59,12 @@ INSERT INTO policies (
 -- Authed users can read all instance settings
 INSERT INTO policies (
     resource_type, resource_id, action, subject_type, subject_id) VALUES
-    ('instance::settings', NULL, 'read', 'authed', 'true');
+    ('instance', 'settings', 'read', 'authed', 'true');
 
 -- Only the first signed in user (user_id = 2) can write to instance settings
 INSERT INTO policies (
     resource_type, resource_id, action, subject_type, subject_id) VALUES
-    ('instance::settings', NULL, 'write', 'user', '2');
+    ('instance', 'settings', 'write', 'user', '2');
 
 -- Update the policy_id column to continue at 1000
 ALTER SEQUENCE policies_policy_id_seq RESTART WITH 1000;

@@ -78,8 +78,8 @@ impl User {
         resource_id: Option<&str>,
         permissions: impl AsRef<[Permission]>,
     ) -> Option<Vec<Permission>> {
-        let policies = Self::check_permissions(db, user, resource_type, resource_id, permissions)
-            .await;
+        let policies =
+            Self::check_permissions(db, user, resource_type, resource_id, permissions).await;
         if !policies.is_empty() && policies.iter().any(|x| !x.is_empty()) {
             Some(
                 policies
@@ -107,7 +107,7 @@ impl User {
         for permission in permissions.as_ref() {
             let permission_str = permission.to_string();
 
-            tracing::info!(
+            tracing::debug!(
                 "Checking permission: {} for user: {:?} on resource: {:?}",
                 permission_str,
                 user_id,
@@ -147,9 +147,16 @@ impl User {
         let user_id = user.unwrap_or(-1).to_string();
         let is_authed = user.is_some().to_string();
 
+        tracing::info!(
+            "Enumerating permissions for user: {:?} on resource: {:?} / {:?}",
+            user_id,
+            resource_type,
+            resource_id
+        );
+
         let policies = query!(
             r#"SELECT action FROM policies WHERE
-                resource_type = $1 AND
+               resource_type = $1 AND
                 (resource_id IS NULL OR resource_id = $2) AND
                 ((subject_type = 'user' AND subject_id = $3) OR
                 (subject_type = 'authed' AND subject_id = $4))
@@ -163,19 +170,15 @@ impl User {
         .await
         .unwrap();
 
-        tracing::info!("Policies: {:?}", policies);
-
         // Merge permissions into a set and output as a vector of Permission
         let mut permissions = HashSet::new();
         for policy in policies {
-            tracing::info!("Policy: {:?}", policy);
             permissions.insert(policy.action);
         }
-        let x = permissions
+
+        permissions
             .into_iter()
             .filter_map(|x| Permission::try_from(x.as_str()).ok())
-            .collect();
-        tracing::info!("Permissions: {:?}", x);
-        x
+            .collect()
     }
 }

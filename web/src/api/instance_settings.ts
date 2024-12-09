@@ -1,5 +1,6 @@
 import { queryOptions, useMutation, useQuery } from '@tanstack/react-query';
 
+import { useAuth } from './auth';
 import { ApiRequest, apiRequest } from './core';
 
 export type IdCasingPreference = 'upper' | 'lower';
@@ -15,6 +16,7 @@ export const getInstanceSettings = queryOptions({
 
         return response.data;
     },
+    enabled: !!useAuth.getState().token,
 });
 
 export const useInstanceSettings = () => {

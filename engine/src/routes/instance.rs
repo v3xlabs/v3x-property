@@ -1,12 +1,16 @@
 use std::sync::Arc;
 
-use poem::{web::Data, Result};
+use poem::{web::Data, Error, Result};
 use poem_openapi::{payload::Json, OpenApi};
+use reqwest::StatusCode;
 
 use super::ApiTags;
 use crate::{
-    auth::middleware::AuthToken,
-    models::settings::{InstanceSettings, InstanceSettingsConfigurable},
+    auth::{middleware::AuthToken, permissions::Permission},
+    models::{
+        settings::{InstanceSettings, InstanceSettingsConfigurable},
+        user::user::User,
+    },
     state::AppState,
 };
 pub struct InstanceApi;
@@ -20,19 +24,19 @@ impl InstanceApi {
     pub async fn settings(
         &self,
         state: Data<&Arc<AppState>>,
-        token: AuthToken,
-    ) -> Json<InstanceSettings> {
-        // match token {
-        // AuthToken::Active(active_user) => {
-        // TODO: check if user has permission to access this resource
+        user: AuthToken,
+    ) -> Result<Json<InstanceSettings>> {
+        User::has_permissions(
+            &state.database,
+            user,
+            "instance",
+            Some("settings"),
+            &[Permission::Read],
+        )
+        .await
+        .ok_or(Error::from_status(StatusCode::UNAUTHORIZED))?;
 
-        Json(InstanceSettings::load(&state).await)
-        // }
-        // _ => {
-        // Error::from_string("Not Authenticated", StatusCode::UNAUTHORIZED).into_response(),
-        // panic!()
-        // }
-        // }
+        Ok(Json(InstanceSettings::load(&state).await))
     }
 
     /// /instance/settings
@@ -45,6 +49,16 @@ impl InstanceApi {
         token: AuthToken,
         settings: Json<InstanceSettingsConfigurable>,
     ) -> Result<()> {
+        User::has_permissions(
+            &state.database,
+            token,
+            "instance",
+            Some("settings"),
+            &[Permission::Write],
+        )
+        .await
+        .ok_or(Error::from_status(StatusCode::UNAUTHORIZED))?;
+
         InstanceSettings::update_instance_settings(&state.database, &settings).await;
         Ok(())
     }
