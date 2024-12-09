@@ -27,7 +27,7 @@ export const BaseInput = ({
     const id = useId();
 
     return (
-        <>
+        <div className="space-y-2">
             {label && <Label htmlFor={id}>{label}</Label>}
             <div
                 className={clsx(
@@ -53,6 +53,6 @@ export const BaseInput = ({
             {description && (
                 <p className="text-sm text-neutral-500">{description}</p>
             )}
-        </>
+        </div>
     );
 };

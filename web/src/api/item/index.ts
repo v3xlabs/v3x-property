@@ -54,7 +54,7 @@ export const useOwnedItems = () => {
 
 export const getItemMedia = (item_id: string) =>
     queryOptions({
-        queryKey: ['item', item_id, 'media'],
+        queryKey: ['item', '{item_id}', item_id, 'media'],
         queryFn: async () => {
             const response = await apiRequest('/item/{item_id}/media', 'get', {
                 path: { item_id },
@@ -86,7 +86,7 @@ export const useItemLogs = (item_id: string) => {
 
 export const getItemTags = (item_id: string) =>
     queryOptions({
-        queryKey: ['item', item_id, 'tags'],
+        queryKey: ['item', '{item_id}', item_id, 'tags'],
         queryFn: async () => {
             const response = await apiRequest('/item/{item_id}/tags', 'get', {
                 path: { item_id },
