@@ -12,7 +12,7 @@ use tracing::info;
 
 use super::ApiTags;
 use crate::{
-    auth::{middleware::AuthToken, permissions::Action},
+    auth::{middleware::AuthUser, permissions::Action},
     models::{item::Item, log::LogEntry},
     state::AppState,
 };
@@ -62,13 +62,13 @@ impl ItemsApi {
     #[oai(path = "/item/owned", method = "get", tag = "ApiTags::Items")]
     async fn get_owned_items(
         &self,
-        user: AuthToken,
+        user: AuthUser,
         state: Data<&Arc<AppState>>,
     ) -> Result<Json<Vec<Item>>> {
         user.check_policy("item", "owned", Action::Read).await?;
 
         Ok(Json(
-            Item::get_by_owner_id(&state.database, user.ok().unwrap().session.user_id)
+            Item::get_by_owner_id(&state.database, user.user_id().unwrap())
                 .await
                 .unwrap(),
         ))
@@ -80,7 +80,7 @@ impl ItemsApi {
     #[oai(path = "/item", method = "post", tag = "ApiTags::Items")]
     async fn create_item(
         &self,
-        user: AuthToken,
+        user: AuthUser,
         state: Data<&Arc<AppState>>,
         item_id: Query<String>,
     ) -> Result<Json<Item>> {
@@ -89,7 +89,7 @@ impl ItemsApi {
         Ok(Json(
             Item {
                 item_id: item_id.0,
-                owner_id: user.ok().map(|user| user.session.user_id),
+                owner_id: user.user_id(),
                 ..Default::default()
             }
             .insert(&state.database)
@@ -107,7 +107,7 @@ impl ItemsApi {
     #[oai(path = "/item/next", method = "get", tag = "ApiTags::Items")]
     async fn next_item_id(
         &self,
-        user: AuthToken,
+        user: AuthUser,
         state: Data<&Arc<AppState>>,
     ) -> Result<Json<ItemIdResponse>> {
         user.check_policy("item", None, Action::Read).await?;
@@ -125,7 +125,7 @@ impl ItemsApi {
     #[oai(path = "/item/:item_id", method = "delete", tag = "ApiTags::Items")]
     async fn delete_item(
         &self,
-        user: AuthToken,
+        user: AuthUser,
         state: Data<&Arc<AppState>>,
         item_id: Path<String>,
     ) -> Result<()> {
@@ -149,7 +149,7 @@ impl ItemsApi {
     async fn get_item(
         &self,
         state: Data<&Arc<AppState>>,
-        user: AuthToken,
+        user: AuthUser,
         item_id: Path<String>,
     ) -> Result<Json<Item>> {
         user.check_policy("item", item_id.0.to_string().as_str(), Action::Read)
@@ -170,7 +170,7 @@ impl ItemsApi {
     #[oai(path = "/item/:item_id", method = "patch", tag = "ApiTags::Items")]
     async fn edit_item(
         &self,
-        user: AuthToken,
+        user: AuthUser,
         state: Data<&Arc<AppState>>,
         item_id: Path<String>,
         data: Json<ItemUpdatePayload>,
@@ -186,7 +186,7 @@ impl ItemsApi {
             &state.database,
             "item",
             &item_id.0,
-            user.ok().unwrap().session.user_id,
+            user.user_id().unwrap(),
             "edit",
             &serde_json::to_string(&data.0).unwrap(),
         )
@@ -203,7 +203,7 @@ impl ItemsApi {
     async fn get_item_logs(
         &self,
         state: Data<&Arc<AppState>>,
-        user: AuthToken,
+        user: AuthUser,
         item_id: Path<String>,
     ) -> Result<Json<Vec<LogEntry>>> {
         user.check_policy("item", item_id.0.to_string().as_str(), Action::Read)

@@ -9,7 +9,7 @@ use reqwest::StatusCode;
 use serde::{Deserialize, Serialize};
 
 use super::super::ApiTags;
-use crate::auth::middleware::AuthToken;
+use crate::auth::middleware::AuthUser;
 use crate::models::keys::UserApiKey;
 use crate::state::AppState;
 
@@ -35,16 +35,16 @@ impl UserKeysApi {
     #[oai(path = "/user/:user_id/keys", method = "post", tag = "ApiTags::User")]
     pub async fn create_key(
         &self,
-        user: AuthToken,
+        user: AuthUser,
         state: Data<&Arc<AppState>>,
         user_id: Path<i32>,
         body: Json<CreateKeyRequest>,
     ) -> Result<Json<CreateKeyResponse>> {
         let user = user
-            .ok()
+            .user_id()
             .ok_or(Error::from_status(StatusCode::UNAUTHORIZED))?;
 
-        if user.session.user_id != user_id.0 {
+        if user != user_id.0 {
             return Err(Error::from_status(StatusCode::FORBIDDEN));
         }
 
@@ -62,15 +62,15 @@ impl UserKeysApi {
     #[oai(path = "/user/:user_id/keys", method = "get", tag = "ApiTags::User")]
     pub async fn get_keys(
         &self,
-        user: AuthToken,
+        user: AuthUser,
         state: Data<&Arc<AppState>>,
         user_id: Path<i32>,
     ) -> Result<Json<Vec<UserApiKey>>> {
         let user = user
-            .ok()
+            .user_id()
             .ok_or(Error::from_status(StatusCode::UNAUTHORIZED))?;
 
-        if user.session.user_id != user_id.0 {
+        if user != user_id.0 {
             return Err(Error::from_status(StatusCode::FORBIDDEN));
         }
 
@@ -91,16 +91,16 @@ impl UserKeysApi {
     )]
     pub async fn delete_key(
         &self,
-        user: AuthToken,
+        user: AuthUser,
         state: Data<&Arc<AppState>>,
         user_id: Path<i32>,
         token_id: Path<i32>,
     ) -> Result<()> {
         let user = user
-            .ok()
+            .user_id()
             .ok_or(Error::from_status(StatusCode::UNAUTHORIZED))?;
 
-        if user.session.user_id != user_id.0 {
+        if user != user_id.0 {
             return Err(Error::from_status(StatusCode::FORBIDDEN));
         }
 

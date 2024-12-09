@@ -6,7 +6,7 @@ use poem_openapi::{payload::Json, OpenApi};
 use super::ApiTags;
 use crate::{
     auth::{
-        middleware::AuthToken,
+        middleware::AuthUser,
         permissions::Action,
     },
     models::settings::{InstanceSettings, InstanceSettingsConfigurable},
@@ -23,7 +23,7 @@ impl InstanceApi {
     pub async fn settings(
         &self,
         state: Data<&Arc<AppState>>,
-        user: AuthToken,
+        user: AuthUser,
     ) -> Result<Json<InstanceSettings>> {
         user.check_policy("instance", "settings", Action::Read)
             .await?;
@@ -38,7 +38,7 @@ impl InstanceApi {
     pub async fn update_settings(
         &self,
         state: Data<&Arc<AppState>>,
-        user: AuthToken,
+        user: AuthUser,
         settings: Json<InstanceSettingsConfigurable>,
     ) -> Result<()> {
         user.check_policy("instance", "settings", Action::Write)

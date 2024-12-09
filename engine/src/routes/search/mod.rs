@@ -7,7 +7,7 @@ use poem_openapi::{payload::Json, OpenApi};
 use tracing::info;
 
 use super::ApiTags;
-use crate::auth::middleware::AuthToken;
+use crate::auth::middleware::AuthUser;
 use crate::auth::permissions::Action;
 use crate::models::item::search::SearchableItem;
 use crate::state::AppState;
@@ -31,7 +31,7 @@ impl SearchApi {
     #[oai(path = "/search", method = "get", tag = "ApiTags::Search")]
     pub async fn search(
         &self,
-        user: AuthToken,
+        user: AuthUser,
         state: Data<&Arc<AppState>>,
         query: Query<String>,
     ) -> Result<Json<Vec<SearchableItem>>> {
@@ -62,7 +62,7 @@ impl SearchApi {
     #[oai(path = "/search/reindex", method = "post", tag = "ApiTags::Search")]
     pub async fn reindex_all_items(
         &self,
-        user: AuthToken,
+        user: AuthUser,
         state: Data<&Arc<AppState>>,
     ) -> Result<()> {
         // TODO: change to search

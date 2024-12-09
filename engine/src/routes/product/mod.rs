@@ -11,7 +11,7 @@ use serde::{Deserialize, Serialize};
 
 use super::ApiTags;
 use crate::{
-    auth::{middleware::AuthToken, permissions::Action},
+    auth::{middleware::AuthUser, permissions::Action},
     models::{
         log::LogEntry,
         product::{media::ProductMedia, Product, ProductSlim},
@@ -61,7 +61,7 @@ impl ProductApi {
     #[oai(path = "/product", method = "get", tag = "ApiTags::Product")]
     async fn get_products(
         &self,
-        user: AuthToken,
+        user: AuthUser,
         state: Data<&Arc<AppState>>,
     ) -> Result<Json<Vec<Product>>> {
         user.check_policy("product", None, Action::Read).await?;
@@ -75,7 +75,7 @@ impl ProductApi {
     #[oai(path = "/product/slim", method = "get", tag = "ApiTags::Product")]
     async fn get_products_slim(
         &self,
-        user: AuthToken,
+        user: AuthUser,
         state: Data<&Arc<AppState>>,
     ) -> Result<Json<Vec<ProductSlim>>> {
         user.check_policy("product", None, Action::Read).await?;
@@ -91,7 +91,7 @@ impl ProductApi {
     #[oai(path = "/product", method = "post", tag = "ApiTags::Product")]
     async fn create_product(
         &self,
-        user: AuthToken,
+        user: AuthUser,
         state: Data<&Arc<AppState>>,
         name: Query<String>,
     ) -> Result<Json<Product>> {
@@ -100,7 +100,7 @@ impl ProductApi {
         Ok(Json(
             Product::new(
                 &state.database,
-                user.ok().map(|user| user.session.user_id),
+                user.user_id(),
                 name.0,
             )
             .await
@@ -121,7 +121,7 @@ impl ProductApi {
     )]
     async fn delete_product(
         &self,
-        user: AuthToken,
+        user: AuthUser,
         state: Data<&Arc<AppState>>,
         product_id: Path<i32>,
     ) -> Result<()> {
@@ -152,7 +152,7 @@ impl ProductApi {
     async fn get_product(
         &self,
         state: Data<&Arc<AppState>>,
-        user: AuthToken,
+        user: AuthUser,
         product_id: Path<i32>,
     ) -> Result<Json<Product>> {
         user.check_policy("product", product_id.0.to_string().as_str(), Action::Read)
@@ -179,7 +179,7 @@ impl ProductApi {
     )]
     async fn edit_product(
         &self,
-        user: AuthToken,
+        user: AuthUser,
         state: Data<&Arc<AppState>>,
         product_id: Path<i32>,
         data: Json<ProductUpdatePayload>,
@@ -201,7 +201,7 @@ impl ProductApi {
             &state.database,
             "product",
             &product_id.0.to_string(),
-            user.ok().unwrap().session.user_id,
+            user.user_id().unwrap(),
             "edit",
             &serde_json::to_string(&data.0).unwrap(),
         )
@@ -222,7 +222,7 @@ impl ProductApi {
     async fn get_product_media(
         &self,
         state: Data<&Arc<AppState>>,
-        user: AuthToken,
+        user: AuthUser,
         product_id: Path<i32>,
     ) -> Result<Json<Vec<i32>>> {
         user.check_policy("product", product_id.0.to_string().as_str(), Action::Read)
@@ -246,7 +246,7 @@ impl ProductApi {
     async fn get_product_logs(
         &self,
         state: Data<&Arc<AppState>>,
-        user: AuthToken,
+        user: AuthUser,
         product_id: Path<i32>,
     ) -> Result<Json<Vec<LogEntry>>> {
         user.check_policy("product", product_id.0.to_string().as_str(), Action::Read)

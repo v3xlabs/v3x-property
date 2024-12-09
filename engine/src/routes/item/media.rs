@@ -6,7 +6,7 @@ use poem_openapi::param::Path;
 use poem_openapi::payload::Json;
 use poem_openapi::OpenApi;
 
-use crate::auth::middleware::AuthToken;
+use crate::auth::middleware::AuthUser;
 use crate::auth::permissions::Action;
 use crate::models::item::media::ItemMedia;
 use crate::routes::ApiTags;
@@ -23,7 +23,7 @@ impl ItemMediaApi {
     async fn get_item_media(
         &self,
         state: Data<&Arc<AppState>>,
-        user: AuthToken,
+        user: AuthUser,
         item_id: Path<String>,
     ) -> Result<Json<Vec<i32>>> {
         user.check_policy("item", item_id.0.to_string().as_str(), Action::Read)

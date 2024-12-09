@@ -6,7 +6,7 @@ use reqwest::StatusCode;
 
 use super::ApiTags;
 use crate::{
-    auth::middleware::AuthToken,
+    auth::middleware::AuthUser,
     models::user::{user::User, userentry::UserEntry},
     state::AppState,
 };
@@ -23,16 +23,16 @@ impl UserApi {
     #[oai(path = "/user/:user_id", method = "get", tag = "ApiTags::User")]
     pub async fn user(
         &self,
-        user: AuthToken,
+        user: AuthUser,
         state: Data<&Arc<AppState>>,
         user_id: Path<i32>,
     ) -> Result<Json<User>> {
         let user = user
-            .ok()
+            .user_id()
             .ok_or(Error::from_status(StatusCode::UNAUTHORIZED))?;
 
         // TODO: Fix to check policy user:read
-        if user.session.user_id != user_id.0 {
+        if user != user_id.0 {
             return Err(Error::from_status(StatusCode::FORBIDDEN));
         }
 

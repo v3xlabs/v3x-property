@@ -5,7 +5,7 @@ use poem_openapi::{param::Query, payload::Json, OpenApi};
 
 use super::ApiTags;
 use crate::{
-    auth::{middleware::AuthToken, permissions::Action},
+    auth::{middleware::AuthUser, permissions::Action},
     models::user::user::User,
     state::AppState,
 };
@@ -20,7 +20,7 @@ impl PolicyApi {
     pub async fn enumerate(
         &self,
         state: Data<&Arc<AppState>>,
-        user: AuthToken,
+        user: AuthUser,
         /// Example: "item" | "product" | "media" | "user"
         resource_type: Query<String>,
         /// Example: "1234" | "AB123"

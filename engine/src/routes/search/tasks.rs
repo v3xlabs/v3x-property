@@ -7,7 +7,7 @@ use reqwest::StatusCode;
 use tracing::info;
 
 use super::ApiTags;
-use crate::auth::middleware::AuthToken;
+use crate::auth::middleware::AuthUser;
 use crate::auth::permissions::Action;
 use crate::{models::search::SearchTask, state::AppState};
 
@@ -21,7 +21,7 @@ impl SearchTaskApi {
     #[oai(path = "/search/tasks", method = "get", tag = "ApiTags::Search")]
     pub async fn search_tasks(
         &self,
-        user: AuthToken,
+        user: AuthUser,
         state: Data<&Arc<AppState>>,
     ) -> Result<Json<Vec<SearchTask>>> {
         user.check_policy("search", None, Action::Read).await?;
@@ -41,7 +41,7 @@ impl SearchTaskApi {
     )]
     pub async fn refresh_task(
         &self,
-        user: AuthToken,
+        user: AuthUser,
         state: Data<&Arc<AppState>>,
         task_id: Path<i32>,
     ) -> Result<Json<SearchTask>> {

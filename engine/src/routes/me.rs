@@ -5,7 +5,7 @@ use poem_openapi::{payload::Json, ApiResponse, OpenApi};
 
 use super::ApiTags;
 use crate::{
-    auth::middleware::AuthToken,
+    auth::middleware::AuthUser,
     models::user::{user::User, userentry::UserEntry},
     state::AppState,
 };
@@ -47,10 +47,10 @@ impl MeApi {
     ///
     /// Get the current user
     #[oai(path = "/me", method = "get", tag = "ApiTags::User")]
-    pub async fn me(&self, state: Data<&Arc<AppState>>, token: AuthToken) -> Result<MeResponse> {
-        let active_user = token.ok().ok_or(MeResponse::Forbidden)?;
+    pub async fn me(&self, state: Data<&Arc<AppState>>, token: AuthUser) -> Result<MeResponse> {
+        let active_user = token.user_id().ok_or(MeResponse::Forbidden)?;
 
-        let user_entry = UserEntry::find_by_user_id(active_user.session.user_id, &state.database)
+        let user_entry = UserEntry::find_by_user_id(active_user, &state.database)
             .await
             .map_err(|_| MeResponse::Forbidden)?
             .ok_or(MeResponse::Forbidden)?;

@@ -6,7 +6,11 @@ use reqwest::StatusCode;
 use tracing::info;
 
 use super::ApiTags;
-use crate::{auth::middleware::AuthToken, models::sessions::Session, state::AppState};
+use crate::{
+    auth::{middleware::AuthUser, permissions::Action},
+    models::sessions::Session,
+    state::AppState,
+};
 // pub mod delete;
 
 pub struct SessionsApi;
@@ -19,15 +23,15 @@ impl SessionsApi {
     #[oai(path = "/sessions", method = "get", tag = "ApiTags::Auth")]
     async fn get_sessions(
         &self,
-        auth: AuthToken,
+        auth: AuthUser,
         state: Data<&Arc<AppState>>,
     ) -> Result<Json<Vec<Session>>> {
         let active_user = auth
-            .ok()
+            .user_id()
             .ok_or(Error::from_status(StatusCode::UNAUTHORIZED))?;
 
         Ok(Json(
-            Session::get_by_user_id(&state.database, active_user.session.user_id)
+            Session::get_by_user_id(&state.database, active_user)
                 .await
                 .unwrap(),
         ))
@@ -43,25 +47,25 @@ impl SessionsApi {
     )]
     async fn delete_session(
         &self,
-        auth: AuthToken,
+        auth: AuthUser,
         state: Data<&Arc<AppState>>,
         session_id: Path<String>,
-    ) -> poem_openapi::payload::Json<Vec<Session>> {
+    ) -> Result<Json<Vec<Session>>> {
+        let user_id = auth.user_id().unwrap();
+        auth.check_policy("user", user_id.to_string().as_str(), Action::Write)
+            .await?;
+
         match auth {
-            AuthToken::Active(active_user, _) => {
+            AuthUser::User(active_user, _) => {
                 info!("Deleting session {:?}", session_id.0);
 
-                let sessions = Session::invalidate_by_id(
-                    &state.database,
-                    active_user.session.user_id,
-                    &session_id.0,
-                )
-                .await
-                .unwrap();
+                let sessions = Session::invalidate_by_id(&state.database, user_id, &session_id.0)
+                    .await
+                    .unwrap();
 
-                Json(sessions)
+                Ok(Json(sessions))
             }
-            _ => Json(vec![]),
+            _ => Ok(Json(vec![])),
             // _ => Error::from_string("Not Authenticated", StatusCode::UNAUTHORIZED).into_response(),
         }
     }

@@ -5,7 +5,7 @@ use poem_openapi::{payload::Json, OpenApi};
 
 use super::ApiTags;
 use crate::{
-    auth::{middleware::AuthToken, permissions::Action},
+    auth::{middleware::AuthUser, permissions::Action},
     models::log::LogEntry,
     state::AppState,
 };
@@ -20,7 +20,7 @@ impl LogsApi {
     #[oai(path = "/logs", method = "get", tag = "ApiTags::Logs")]
     async fn get_all_logs(
         &self,
-        user: AuthToken,
+        user: AuthUser,
         state: Data<&Arc<AppState>>,
     ) -> Result<Json<Vec<LogEntry>>> {
         user.check_policy("log", None, Action::Read).await?;

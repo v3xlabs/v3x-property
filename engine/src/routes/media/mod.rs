@@ -14,7 +14,7 @@ use serde::{Deserialize, Serialize};
 
 use super::ApiTags;
 use crate::{
-    auth::{middleware::AuthToken, permissions::Action},
+    auth::{middleware::AuthUser, permissions::Action},
     models::media::{LinkedItem, Media},
     state::AppState,
 };
@@ -34,7 +34,7 @@ impl MediaApi {
     #[oai(path = "/media", method = "get", tag = "ApiTags::Media")]
     async fn get_all_media(
         &self,
-        user: AuthToken,
+        user: AuthUser,
         state: Data<&Arc<AppState>>,
     ) -> Result<Json<Vec<Media>>> {
         user.check_policy("media", None, Action::Read).await?;
@@ -48,7 +48,7 @@ impl MediaApi {
     #[oai(path = "/media/unassigned", method = "get", tag = "ApiTags::Media")]
     async fn get_unassigned_media(
         &self,
-        user: AuthToken,
+        user: AuthUser,
         state: Data<&Arc<AppState>>,
     ) -> Result<Json<Vec<Media>>> {
         user.check_policy("media", None, Action::Read).await?;
@@ -64,7 +64,7 @@ impl MediaApi {
         &self,
         name: Query<String>,
         kind: Query<String>,
-        user: AuthToken,
+        user: AuthUser,
         state: Data<&Arc<AppState>>,
         mut upload: Multipart,
     ) -> Result<Json<Media>> {
@@ -97,7 +97,7 @@ impl MediaApi {
     async fn get_media(
         &self,
         state: Data<&Arc<AppState>>,
-        user: AuthToken,
+        user: AuthUser,
         media_id: Path<i32>,
     ) -> Result<Json<Media>> {
         user.check_policy("media", media_id.0.to_string().as_str(), Action::Read)
@@ -123,7 +123,7 @@ impl MediaApi {
     async fn get_linked_items(
         &self,
         state: Data<&Arc<AppState>>,
-        user: AuthToken,
+        user: AuthUser,
         media_id: Path<i32>,
     ) -> Result<Json<Vec<LinkedItem>>> {
         user.check_policy("media", media_id.0.to_string().as_str(), Action::Read)
@@ -142,7 +142,7 @@ impl MediaApi {
     #[oai(path = "/media/:media_id", method = "delete", tag = "ApiTags::Media")]
     async fn delete_media(
         &self,
-        user: AuthToken,
+        user: AuthUser,
         state: Data<&Arc<AppState>>,
         media_id: Path<i32>,
     ) -> Result<()> {

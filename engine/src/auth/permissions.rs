@@ -7,7 +7,7 @@ use sqlx::{query, FromRow};
 
 use crate::{database::Database, models::user::user::User};
 
-use super::middleware::AuthToken;
+use super::middleware::AuthUser;
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, Enum)]
 pub enum Action {
@@ -76,9 +76,9 @@ pub struct Policy {
     pub updated_at: DateTime<Utc>,
 }
 
-impl From<AuthToken> for Option<i32> {
-    fn from(val: AuthToken) -> Self {
-        val.ok().map(|x| x.session.user_id)
+impl From<AuthUser> for Option<i32> {
+    fn from(val: AuthUser) -> Self {
+        val.user_id()
     }
 }
 
