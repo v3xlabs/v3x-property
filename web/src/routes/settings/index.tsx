@@ -5,7 +5,6 @@ import { useAuth } from '@/api/auth';
 import { BASE_URL } from '@/api/core';
 import { getInstanceSettings } from '@/api/instance_settings';
 import { useMe } from '@/api/me';
-import { useHasPolicy } from '@/api/policy';
 import { SearchTaskTable } from '@/components/search_tasks/SearchTaskTable';
 import { InstanceSettings } from '@/components/settings/InstanceSettings';
 import { Button } from '@/components/ui/Button';

@@ -117,9 +117,9 @@ impl AuthToken {
         let user = self.ok().map(|x| x.session.user_id);
         let resource_id: Option<&str> = resource_id.into();
 
-        User::has_permissions(db, user, resource_type, resource_id.into(), actions.into())
+        User::has_permissions(db, user, resource_type, resource_id, actions.into())
             .await
-            .ok_or(Error::from_string("No permission", StatusCode::FORBIDDEN))
+            .ok_or(Error::from_status(StatusCode::FORBIDDEN))
             .map(|_| ())
     }
 }

@@ -2,6 +2,7 @@ import { useMutation } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
 import { FiRefreshCcw } from 'react-icons/fi';
 
+import { useAuth } from '@/api/auth';
 import { BASE_URL } from '@/api/core';
 import { Button } from '@/components/ui/Button';
 
@@ -14,9 +15,17 @@ export const NewItemIdInput = (properties: BaseInputProperties) => {
     const [placeholderValue, setPlaceholderValue] = useState(
         placeholderValues[0]
     );
+    const { token } = useAuth();
+    // TODO: Replace implementation w the hook
+    // const { data: itemId, refetch } = useGenerateId();
     const { mutate: generateId } = useMutation({
         mutationFn: async () => {
-            const response = await fetch(`${BASE_URL}item/next`);
+            const response = await fetch(`${BASE_URL}item/next`, {
+                method: 'GET',
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
             const data = await response.json();
 
             return data.item_id;

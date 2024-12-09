@@ -2,9 +2,10 @@ import { useForm } from '@tanstack/react-form';
 import { createLazyFileRoute, useNavigate } from '@tanstack/react-router';
 import { FiArrowRight } from 'react-icons/fi';
 
-import { isValidId } from '@/api/generate_id';
+import { ApiError } from '@/api/core';
 import { formatId, useInstanceSettings } from '@/api/instance_settings';
 import { useCreateItem } from '@/api/item';
+import { isValidId } from '@/api/item/generate_id';
 import { useHasPolicy } from '@/api/policy';
 import { NewItemIdInput } from '@/components/input/NewItemIdInput';
 import { Button } from '@/components/ui/Button';
@@ -14,7 +15,15 @@ const component = () => {
     const { data: instanceSettings } = useInstanceSettings();
     const navigate = useNavigate();
     const { mutateAsync: createItem } = useCreateItem();
-    const { ok: canCreateItem } = useHasPolicy('item', 'create', 'write');
+    const { ok: canCreateItem, isSuccess: isCanCreateSuccess } = useHasPolicy(
+        'item',
+        'create',
+        'write'
+    );
+
+    if (!canCreateItem && isCanCreateSuccess) {
+        throw new ApiError('You do not have permission to create items', 403);
+    }
 
     const { Field, Subscribe, handleSubmit } = useForm({
         defaultValues: {
@@ -34,14 +43,6 @@ const component = () => {
             });
         },
     });
-
-    if (!canCreateItem) {
-        return (
-            <div className="p-4">
-                You do not have permission to create items
-            </div>
-        );
-    }
 
     // const isDisabled = !state.isFormValid;
     // const formattedItemId = formatId(state.values.itemId, instanceSettings);

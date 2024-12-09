@@ -28,9 +28,12 @@ export const useHasPolicy = (
     resourceId: string,
     action: Permission
 ) => {
-    const { data: policy } = useQuery(getPolicy(resourceType, resourceId));
+    const { data: policy, isSuccess } = useQuery(
+        getPolicy(resourceType, resourceId)
+    );
 
     return {
         ok: policy?.some((policyAction) => policyAction === action),
+        isSuccess,
     };
 };
