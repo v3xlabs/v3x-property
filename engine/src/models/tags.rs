@@ -14,8 +14,20 @@ pub struct Tag {
 }
 
 impl Tag {
-    pub async fn new(db: &Database, name: String) -> Result<Tag, sqlx::Error> {
-        query_as!(Tag, "INSERT INTO tags (name) VALUES ($1) RETURNING *", name)
+    pub async fn new(db: &Database, name: &str) -> Result<Tag, sqlx::Error> {
+        query_as!(Tag, "INSERT INTO tags (name) VALUES ($1) RETURNING *", name.into())
+            .fetch_one(&db.pool)
+            .await
+    }
+
+    pub async fn get_all(db: &Database) -> Result<Vec<Tag>, sqlx::Error> {
+        query_as!(Tag, "SELECT * FROM tags")
+            .fetch_all(&db.pool)
+            .await
+    }
+
+    pub async fn delete(db: &Database, tag_id: i32) -> Result<Tag, sqlx::Error> {
+        query_as!(Tag, "DELETE FROM tags WHERE tag_id = $1 RETURNING *", tag_id)
             .fetch_one(&db.pool)
             .await
     }

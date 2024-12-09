@@ -17,10 +17,12 @@ use policy::PolicyApi;
 use product::ProductApi;
 use search::{tasks::SearchTaskApi, SearchApi};
 use sessions::SessionsApi;
+use tags::TagsApi;
 use users::{keys::UserKeysApi, UserApi};
 
 use crate::state::AppState;
 
+pub mod fields;
 pub mod instance;
 pub mod item;
 pub mod logs;
@@ -31,8 +33,8 @@ pub mod policy;
 pub mod product;
 pub mod search;
 pub mod sessions;
+pub mod tags;
 pub mod users;
-pub mod fields;
 
 #[derive(Tags)]
 enum ApiTags {
@@ -44,6 +46,8 @@ enum ApiTags {
     Media,
     /// Fields-related operations
     Fields,
+    /// Tags-related operations
+    Tags,
     /// Logs-related operations
     Logs,
     /// Search-related operations
@@ -60,8 +64,7 @@ enum ApiTags {
 fn get_api() -> impl OpenApi {
     (
         // Items
-        ItemsApi,
-        ItemMediaApi,
+        (ItemsApi, ItemMediaApi),
         // Product
         ProductApi,
         // Media
@@ -71,6 +74,8 @@ fn get_api() -> impl OpenApi {
         SearchTaskApi,
         // Fields
         FieldsApi,
+        // Tags
+        TagsApi,
         // Logs
         LogsApi,
         // Me
