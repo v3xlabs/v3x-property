@@ -10,11 +10,9 @@ import {
 } from '@tanstack/react-router';
 import { useEffect } from 'react';
 
-import {
-    formatId,
-    getInstanceSettings,
-} from '@/api/instance_settings';
+import { formatId, getInstanceSettings } from '@/api/instance_settings';
 import { getItemById, getItemMedia } from '@/api/item';
+import { getPolicy } from '@/api/policy';
 import { ItemLogSection } from '@/components/logs/ItemLogSection';
 import { MediaGallery } from '@/components/media/MediaGallery';
 import { Button } from '@/components/ui/Button';
@@ -38,6 +36,14 @@ export const Route = createFileRoute('/item/$itemId/')({
             console.log('redirecting to', formattedItemId);
 
             return redirect({ to: `/item/${formattedItemId}` });
+        }
+
+        const x = await queryClient.ensureQueryData(
+            getPolicy('item', params.itemId)
+        );
+
+        if (!x.includes('read')) {
+            throw new Error('Unauthorized (Invalid Policy)');
         }
 
         // Preload item and media

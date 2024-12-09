@@ -12,6 +12,7 @@ use poem::{
     web::Html, EndpointExt, Route, Server,
 };
 use poem_openapi::{OpenApi, OpenApiService, Tags};
+use policy::PolicyApi;
 use product::ProductApi;
 use search::{tasks::SearchTaskApi, SearchApi};
 use sessions::SessionsApi;
@@ -29,6 +30,7 @@ pub mod product;
 pub mod search;
 pub mod sessions;
 pub mod users;
+pub mod policy;
 
 #[derive(Tags)]
 enum ApiTags {
@@ -70,6 +72,8 @@ fn get_api() -> impl OpenApi {
         // User
         UserApi,
         UserKeysApi,
+        // Policy
+        PolicyApi,
         // Sessions
         SessionsApi,
         // Instance

@@ -55,9 +55,13 @@ export const useOwnedItems = () => {
 export const getItemMedia = (item_id: string) =>
     queryOptions({
         queryKey: ['item', item_id, 'media'],
-        queryFn: getHttp<number[]>('/api/item/' + item_id + '/media', {
-            auth: 'include',
-        }),
+        queryFn: async () => {
+            const response = await apiRequest('/item/{item_id}/media', 'get', {
+                path: { item_id },
+            });
+
+            return response.data;
+        },
     });
 
 export const useItemMedia = (item_id: string) => {

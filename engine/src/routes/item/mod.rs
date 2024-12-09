@@ -1,6 +1,6 @@
 use std::sync::Arc;
 
-use poem::{web::Data, Result};
+use poem::{web::Data, Error, Result};
 use poem_openapi::{
     param::{Path, Query},
     payload::Json,
@@ -12,8 +12,8 @@ use tracing::info;
 
 use super::ApiTags;
 use crate::{
-    auth::middleware::AuthToken,
-    models::{item::Item, log::LogEntry},
+    auth::{middleware::AuthToken, permissions::Permission},
+    models::{item::Item, log::LogEntry, user::user::User},
     state::AppState,
 };
 
@@ -53,7 +53,6 @@ pub struct ItemUpdateMediaPayload {
     pub status: ItemUpdateMediaStatus,
     pub media_id: i32,
 }
-
 
 #[OpenApi]
 impl ItemsApi {
@@ -140,9 +139,19 @@ impl ItemsApi {
     async fn get_item(
         &self,
         state: Data<&Arc<AppState>>,
-        auth: AuthToken,
+        user: AuthToken,
         item_id: Path<String>,
     ) -> Result<Json<Item>> {
+        User::has_permissions(
+            &state.database,
+            user,
+            "item",
+            Some(&item_id.0),
+            &[Permission::Read],
+        )
+        .await
+        .ok_or(Error::from_status(StatusCode::UNAUTHORIZED))?;
+
         let item = Item::get_by_id(&state.database, &item_id.0).await.unwrap();
 
         match item {

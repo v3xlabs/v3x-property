@@ -389,7 +389,9 @@ export const getHttp =
                 );
             }
 
-            headers.append('Authorization', 'Bearer ' + token);
+            if (token) {
+                headers.append('Authorization', 'Bearer ' + token);
+            }
         }
 
         try {

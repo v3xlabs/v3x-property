@@ -1,0 +1,25 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "SELECT action FROM policies WHERE\n                resource_type = $1 AND\n                (resource_id IS NULL OR resource_id = $2) AND\n                ((subject_type = 'user' AND subject_id = $3) OR\n                (subject_type = 'authed' AND subject_id = $4))\n                ",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "action",
+        "type_info": "Text"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Text",
+        "Text",
+        "Text",
+        "Text"
+      ]
+    },
+    "nullable": [
+      false
+    ]
+  },
+  "hash": "9ada832515234c467a58cd6c43485f875a3820a7fd3661b0ce67bfa66731eff5"
+}

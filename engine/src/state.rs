@@ -1,14 +1,16 @@
 use std::env;
 
-use openid::DiscoveredClient;
+use openid::{Client, Discovered, DiscoveredClient, StandardClaims};
 use reqwest::Url;
 use tracing::warn;
 
 use crate::{
-    auth::oauth::OpenIDClient,
     database::Database,
     modules::{intelligence::Intelligence, search::Search, storage::Storage},
 };
+
+pub type OpenIDClient = Client<Discovered, StandardClaims>;
+
 
 pub struct AppState {
     pub database: Database,

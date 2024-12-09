@@ -1150,6 +1150,49 @@ export type paths = {
         patch?: never;
         trace?: never;
     };
+    "/policy/enumerate": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * /policy/enumerate
+         * @description Enumerate the permissions for a user
+         */
+        get: {
+            parameters: {
+                query: {
+                    /** @description Example: "item" | "product" | "media" | "user" */
+                    resource_type: string;
+                    /** @description Example: "1234" | "AB123" */
+                    resource_id: string;
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json; charset=utf-8": components["schemas"]["Permission"][];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/sessions": {
         parameters: {
             query?: never;
@@ -1501,6 +1544,8 @@ export type components = {
             /** Format: date-time */
             updated_at?: string;
         };
+        /** @enum {string} */
+        Permission: "read" | "write" | "delete";
         Product: {
             /** Format: int32 */
             product_id: number;

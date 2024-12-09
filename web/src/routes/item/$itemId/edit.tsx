@@ -224,17 +224,21 @@ export const Route = createFileRoute('/item/$itemId/edit')({
                                 Cancel
                             </Link>
                         </Button>
-                        <Subscribe>
-                            {({ canSubmit }) => (
+                        <Subscribe
+                            selector={(state) => [
+                                state.canSubmit,
+                                state.isSubmitting,
+                            ]}
+                            children={([canSubmit, isSubmitting]) => (
                                 <Button
                                     variant="primary"
-                                    disabled={!canSubmit}
+                                    disabled={!canSubmit || isSubmitting}
                                     type="submit"
                                 >
                                     Save
                                 </Button>
                             )}
-                        </Subscribe>
+                        />
                     </div>
                 </form>
                 <div className="border-2 border-dashed rounded-md p-4 border-red-300 mt-8">
