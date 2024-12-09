@@ -1,7 +1,7 @@
 import { createLazyFileRoute } from '@tanstack/react-router';
 import { cva, VariantProps } from 'class-variance-authority';
 import { ReactNode, useState } from 'react';
-import { FaCopy, FaGear } from 'react-icons/fa6';
+import { FaCheck, FaCopy, FaGear } from 'react-icons/fa6';
 import { toast } from 'sonner';
 
 import {
@@ -20,13 +20,14 @@ import {
     buttonVariants,
     buttonVariantsConfig,
 } from '@/components/ui/Button';
+import * as Command from '@/components/ui/Command';
 import * as Dialog from '@/components/ui/Dialog';
 import * as Dropdown from '@/components/ui/Dropdown';
 import { Input } from '@/components/ui/Input';
 import { Label } from '@/components/ui/Label';
+import * as Popover from '@/components/ui/Popover';
 import { SCPage } from '@/layouts/SimpleCenterPage';
-import { BaseVariants } from '@/util/style';
-
+import { BaseVariants, cn } from '@/util/style';
 // Helper function to generate all combinations of variant values
 const generateCombinations = <
     T extends BaseVariants,
@@ -536,6 +537,99 @@ const Components = () => {
                         </Dialog.Footer>
                     </Dialog.Content>
                 </Dialog.Root>
+            </CustomComponentSection>
+
+            <CustomComponentSection displayName="Popover">
+                <Popover.Root>
+                    <Popover.Trigger asChild>
+                        <Button variant="default">Open</Button>
+                    </Popover.Trigger>
+                    <Popover.Content>
+                        All of the secret content you could ever dream of
+                    </Popover.Content>
+                </Popover.Root>
+            </CustomComponentSection>
+
+            <CustomComponentSection
+                displayName="Combobox"
+                states={{
+                    open1: false,
+                    value1: '',
+                }}
+            >
+                {(properties) => (
+                    <>
+                        <Popover.Root
+                            open={properties.open1}
+                            onOpenChange={properties.setOpen1}
+                        >
+                            <Popover.Trigger asChild>
+                                <Button variant="default">
+                                    {properties.value1 || 'Select a Framework'}
+                                </Button>
+                            </Popover.Trigger>
+                            <Popover.Content className="w-[200px] p-0">
+                                <Command.Root>
+                                    <Command.Input placeholder="Search framework..." />
+                                    <Command.List>
+                                        <Command.Empty>
+                                            No framework found.
+                                        </Command.Empty>
+                                        <Command.Group>
+                                            {[
+                                                {
+                                                    label: 'React',
+                                                    value: 'react',
+                                                },
+                                                {
+                                                    label: 'Vue',
+                                                    value: 'vue',
+                                                },
+                                                {
+                                                    label: 'Svelte',
+                                                    value: 'svelte',
+                                                },
+                                                {
+                                                    label: 'Angular',
+                                                    value: 'angular',
+                                                },
+                                            ].map((framework) => (
+                                                <Command.Item
+                                                    key={framework.value}
+                                                    value={framework.value}
+                                                    onSelect={(
+                                                        currentValue
+                                                    ) => {
+                                                        properties.setValue1(
+                                                            currentValue ===
+                                                                properties.value1
+                                                                ? ''
+                                                                : currentValue
+                                                        );
+                                                        properties.setOpen1(
+                                                            false
+                                                        );
+                                                    }}
+                                                >
+                                                    {framework.label}
+                                                    <FaCheck
+                                                        className={cn(
+                                                            'ml-auto',
+                                                            properties.value1 ===
+                                                                framework.value
+                                                                ? 'opacity-100'
+                                                                : 'opacity-0'
+                                                        )}
+                                                    />
+                                                </Command.Item>
+                                            ))}
+                                        </Command.Group>
+                                    </Command.List>
+                                </Command.Root>
+                            </Popover.Content>
+                        </Popover.Root>
+                    </>
+                )}
             </CustomComponentSection>
         </>
     );
