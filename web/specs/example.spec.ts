@@ -19,7 +19,7 @@ test.describe.serial('item flows', () => {
     test('create an item', async () => {
         await page.goto(WEB_URL);
 
-        await page.getByTestId('create-navlink').click();
+        await page.getByRole('link', { name: 'Create' }).click();
 
         let h1 = await page.locator('h1');
 
@@ -53,7 +53,7 @@ test.describe.serial('item flows', () => {
     test('search item', async () => {
         await page.goto(WEB_URL + '/search');
 
-        await page.getByTestId('search-navlink').click();
+        await page.getByRole('link', { name: 'Search' }).click();
 
         await page.getByTestId('search-input').fill(DEFAULT_ITEM_NAME);
 
@@ -71,7 +71,7 @@ test.describe.serial('item flows', () => {
     test('delete item', async () => {
         await page.goto(WEB_URL);
 
-        await page.getByTestId('items-navlink').click();
+        await page.getByRole('link', { name: 'Items' }).click();
 
         await page.getByTestId('item-preview-full').first().click();
 
