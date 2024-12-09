@@ -11,6 +11,8 @@ pub struct FieldDefinition {
     pub definition_id: String,
     pub kind: FieldKind,
     pub name: String,
+    pub description: Option<String>,
+    pub placeholder: Option<String>,
     pub created_at: Option<DateTime<Utc>>,
     pub updated_at: Option<DateTime<Utc>>,
 }

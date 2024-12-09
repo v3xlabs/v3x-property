@@ -27,6 +27,16 @@
         "ordinal": 4,
         "name": "updated_at",
         "type_info": "Timestamptz"
+      },
+      {
+        "ordinal": 5,
+        "name": "description",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 6,
+        "name": "placeholder",
+        "type_info": "Text"
       }
     ],
     "parameters": {
@@ -39,6 +49,8 @@
       false,
       false,
       false,
+      true,
+      true,
       true,
       true
     ]
