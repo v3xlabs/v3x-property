@@ -1,6 +1,6 @@
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
-use sqlx::query_as;
+use sqlx::{query, query_as};
 
 use crate::{database::Database, routes::item::ItemDataField};
 
@@ -65,5 +65,34 @@ impl ItemField {
         )
         .fetch_all(&db.pool)
         .await
+    }
+
+    pub async fn upsert(
+        db: &Database,
+        item_id: &str,
+        definition_id: &str,
+        value: &serde_json::Value,
+    ) -> Result<ItemField, sqlx::Error> {
+        query_as!(
+            ItemField,
+            "INSERT INTO item_fields (item_id, definition_id, value) VALUES ($1, $2, $3) ON CONFLICT (item_id, definition_id) DO UPDATE SET value = $3 RETURNING *",
+            item_id,
+            definition_id,
+            value
+        )
+        .fetch_one(&db.pool)
+        .await
+    }
+
+    pub async fn delete(db: &Database, item_id: &str, definition_id: &str) -> Result<(), sqlx::Error> {
+        query!(
+            "DELETE FROM item_fields WHERE item_id = $1 AND definition_id = $2",
+            item_id,
+            definition_id
+        )
+        .execute(&db.pool)
+        .await?;
+
+        Ok(())
     }
 }

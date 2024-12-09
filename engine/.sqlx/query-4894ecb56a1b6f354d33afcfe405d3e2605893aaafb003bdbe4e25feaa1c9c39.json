@@ -1,0 +1,15 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "DELETE FROM item_fields WHERE item_id = $1 AND definition_id = $2",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Text",
+        "Text"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "4894ecb56a1b6f354d33afcfe405d3e2605893aaafb003bdbe4e25feaa1c9c39"
+}

@@ -33,12 +33,21 @@ pub struct ItemIdResponse {
 }
 
 #[derive(poem_openapi::Object, Debug, Clone, Serialize, Deserialize)]
+pub struct ItemUpdateFieldPayload {
+    pub definition_id: String,
+    /// The value of the field
+    /// Empty value for deleting the field
+    pub value: serde_json::Value,
+}
+
+#[derive(poem_openapi::Object, Debug, Clone, Serialize, Deserialize)]
 pub struct ItemUpdatePayload {
     pub name: Option<String>,
     pub owner_id: Option<i32>,
     pub location_id: Option<i32>,
     pub product_id: Option<i32>,
     pub media: Option<Vec<ItemUpdateMediaPayload>>,
+    pub fields: Option<Vec<ItemUpdateFieldPayload>>,
 }
 
 #[derive(poem_openapi::Enum, Debug, Clone, Serialize, Deserialize, PartialEq)]

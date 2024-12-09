@@ -1,6 +1,7 @@
 use std::sync::Arc;
 
 use chrono::{DateTime, Utc};
+use field::ItemField;
 use media::ItemMedia;
 use serde::{Deserialize, Serialize};
 use sqlx::{query, query_as};
@@ -231,6 +232,16 @@ impl Item {
                             .await
                             .unwrap();
                     }
+                }
+            }
+        }
+
+        if let Some(fields) = &data.fields {
+            for field in fields {
+                if field.value.is_null() {
+                    ItemField::delete(db, item_id, &field.definition_id).await.unwrap();
+                } else {
+                    ItemField::upsert(db, item_id, &field.definition_id, &field.value).await.unwrap();
                 }
             }
         }

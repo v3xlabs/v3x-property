@@ -1789,6 +1789,12 @@ export type components = {
         ItemIdResponse: {
             item_id: string;
         };
+        ItemUpdateFieldPayload: {
+            definition_id: string;
+            /** @description The value of the field
+             *     Empty value for deleting the field */
+            value: unknown;
+        };
         ItemUpdateMediaPayload: {
             status: components["schemas"]["ItemUpdateMediaStatus"];
             /** Format: int32 */
@@ -1805,6 +1811,7 @@ export type components = {
             /** Format: int32 */
             product_id?: number;
             media?: components["schemas"]["ItemUpdateMediaPayload"][];
+            fields?: components["schemas"]["ItemUpdateFieldPayload"][];
         };
         LinkedItem: {
             item_id: string;
