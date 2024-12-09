@@ -1,6 +1,6 @@
-import { createSyncStoragePersister } from '@tanstack/query-sync-storage-persister';
 import { QueryClient } from '@tanstack/react-query';
-import { persistQueryClient } from '@tanstack/react-query-persist-client';
+// import { createSyncStoragePersister } from '@tanstack/query-sync-storage-persister';
+// import { persistQueryClient } from '@tanstack/react-query-persist-client';
 
 export const queryClient = new QueryClient({
     defaultOptions: {
@@ -10,12 +10,12 @@ export const queryClient = new QueryClient({
     },
 });
 
-const localStoragePersister = createSyncStoragePersister({
-    storage: localStorage,
-});
+// const localStoragePersister = createSyncStoragePersister({
+//     storage: localStorage,
+// });
 
-persistQueryClient({
-    // @ts-ignore
-    queryClient,
-    persister: localStoragePersister,
-});
+// persistQueryClient({
+//     // @ts-ignore
+//     queryClient,
+//     persister: localStoragePersister,
+// });

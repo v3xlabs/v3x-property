@@ -7,10 +7,7 @@ use serde::{Deserialize, Serialize};
 use super::ApiTags;
 use crate::{
     auth::{middleware::AuthUser, permissions::Action},
-    models::{
-        field::{definition::FieldDefinition, kind::FieldKind},
-        log::LogEntry,
-    },
+    models::field::{definition::FieldDefinition, kind::FieldKind},
     state::AppState,
 };
 
@@ -71,7 +68,11 @@ impl FieldsApi {
     /// /fields/definitions/:id
     ///
     /// Update a field definition
-    #[oai(path = "/field/definitions/:definition_id", method = "patch", tag = "ApiTags::Fields")]
+    #[oai(
+        path = "/field/definitions/:definition_id",
+        method = "patch",
+        tag = "ApiTags::Fields"
+    )]
     async fn update_field_definition(
         &self,
         user: AuthUser,

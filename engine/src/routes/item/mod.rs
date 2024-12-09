@@ -1,5 +1,6 @@
 use std::sync::Arc;
 
+use chrono::{DateTime, Utc};
 use poem::{web::Data, Result};
 use poem_openapi::{
     param::{Path, Query},
@@ -8,12 +9,17 @@ use poem_openapi::{
 };
 use reqwest::StatusCode;
 use serde::{Deserialize, Serialize};
+use sqlx::prelude::FromRow;
 use tracing::info;
 
 use super::ApiTags;
 use crate::{
     auth::{middleware::AuthUser, permissions::Action},
-    models::{item::{field::ItemField, Item}, log::LogEntry},
+    models::{
+        field::kind::FieldKind,
+        item::{field::ItemField, Item},
+        log::LogEntry,
+    },
     state::AppState,
 };
 
@@ -52,6 +58,19 @@ pub enum ItemUpdateMediaStatus {
 pub struct ItemUpdateMediaPayload {
     pub status: ItemUpdateMediaStatus,
     pub media_id: i32,
+}
+
+#[derive(poem_openapi::Object, Debug, Clone, Serialize, Deserialize, FromRow)]
+pub struct ItemDataField {
+    pub item_id: String,
+    pub definition_id: String,
+    pub value: serde_json::Value,
+    pub definition_name: String,
+    pub definition_kind: FieldKind,
+    pub definition_description: Option<String>,
+    pub definition_placeholder: Option<String>,
+    pub created_at: Option<DateTime<Utc>>,
+    pub updated_at: Option<DateTime<Utc>>,
 }
 
 #[OpenApi]
@@ -205,11 +224,15 @@ impl ItemsApi {
         state: Data<&Arc<AppState>>,
         user: AuthUser,
         item_id: Path<String>,
-    ) -> Result<Json<Vec<ItemField>>> {
+    ) -> Result<Json<Vec<ItemDataField>>> {
         user.check_policy("item", item_id.0.to_string().as_str(), Action::Read)
             .await?;
 
-        Ok(Json(ItemField::get_by_item_id(&state.database, &item_id.0).await.unwrap()))
+        Ok(Json(
+            ItemField::get_by_item_id_with_definitions(&state.database, &item_id.0)
+                .await
+                .unwrap(),
+        ))
     }
 
     /// /item/:item_id/logs

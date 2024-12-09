@@ -2,7 +2,7 @@ use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 use sqlx::query_as;
 
-use crate::database::Database;
+use crate::{database::Database, routes::item::ItemDataField};
 
 #[derive(sqlx::FromRow, poem_openapi::Object, Debug, Clone, Serialize, Deserialize)]
 pub struct ItemField {
@@ -38,6 +38,29 @@ impl ItemField {
         query_as!(
             ItemField,
             "SELECT * FROM item_fields WHERE item_id = $1",
+            item_id
+        )
+        .fetch_all(&db.pool)
+        .await
+    }
+
+    pub async fn get_by_item_id_with_definitions(
+        db: &Database,
+        item_id: &str,
+    ) -> Result<Vec<ItemDataField>, sqlx::Error> {
+        // join with field_definitions
+        // remap description, placeholder, kind, to field_description, field_placeholder, field_kind
+        query_as!(
+            ItemDataField,
+            r#"SELECT
+                item_fields.*,
+                field_definitions.name AS definition_name,
+                field_definitions.kind AS definition_kind,
+                field_definitions.description AS definition_description,
+                field_definitions.placeholder AS definition_placeholder
+            FROM item_fields
+            JOIN field_definitions ON item_fields.definition_id = field_definitions.definition_id
+            WHERE item_fields.item_id = $1"#,
             item_id
         )
         .fetch_all(&db.pool)
