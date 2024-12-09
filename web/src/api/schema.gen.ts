@@ -987,6 +987,12 @@ export type paths = {
                     };
                     content?: never;
                 };
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
                 500: {
                     headers: {
                         [name: string]: unknown;
@@ -1180,7 +1186,7 @@ export type paths = {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/json; charset=utf-8": components["schemas"]["Permission"][];
+                        "application/json; charset=utf-8": components["schemas"]["Action"][];
                     };
                 };
             };
@@ -1440,6 +1446,15 @@ export type paths = {
 export type webhooks = Record<string, never>;
 export type components = {
     schemas: {
+        /** @enum {string} */
+        Action: "read" | "write" | "delete";
+        BuildDetails: {
+            git_hash?: string;
+            version: string;
+            target: string;
+            /** Format: date-time */
+            timestamp: string;
+        };
         CreateKeyRequest: {
             name: string;
             permissions: string;
@@ -1466,6 +1481,7 @@ export type components = {
              * @description When using numeric item IDs, this last ID is used to generate the next ID.
              */
             last_item_id: number;
+            build_info: components["schemas"]["BuildDetails"] & unknown;
             modules: components["schemas"]["InstanceModulesStatus"] & unknown;
         };
         InstanceSettingsConfigurable: {
@@ -1544,8 +1560,6 @@ export type components = {
             /** Format: date-time */
             updated_at?: string;
         };
-        /** @enum {string} */
-        Permission: "read" | "write" | "delete";
         Product: {
             /** Format: int32 */
             product_id: number;

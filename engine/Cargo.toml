@@ -72,6 +72,7 @@ async-tls = "0.11"
 rust-s3 = { version = "0.36.0-beta.2", default-features = false, features = [
     "async-std-rustls-tls",
 ] }
+build-info = "0.0.39"
 
 [dependencies.uuid]
 version = "1.10.0"
@@ -85,3 +86,6 @@ features = [
 [features]
 default = ["oauth2"]
 oauth2 = []
+
+[build-dependencies]
+build-info-build = "0.0.39"

@@ -1,5 +1,7 @@
 use std::sync::Arc;
 
+use build_info::BuildInfo;
+use chrono::{DateTime, Utc};
 use modules::InstanceModulesStatus;
 use poem_openapi::{Enum, Object};
 use serde::{Deserialize, Serialize};
@@ -11,6 +13,8 @@ use sqlx::{
 use crate::{database::Database, state::AppState};
 
 mod modules;
+
+build_info::build_info!(fn build_info);
 
 #[derive(
     Serialize, Deserialize, PartialEq, PartialOrd, Enum, Type, Copy, Clone, Debug, Default,
@@ -44,6 +48,32 @@ impl Default for InstanceSettingsConfigurable {
 }
 
 #[derive(Serialize, Deserialize, Object)]
+pub struct BuildDetails {
+    pub git_hash: Option<String>,
+    pub version: String,
+    pub target: String,
+    pub timestamp: DateTime<Utc>,
+}
+
+impl From<&BuildInfo> for BuildDetails {
+    fn from(build_info: &BuildInfo) -> Self {
+        let version = &build_info.crate_info.version;
+        let target = build_info.target.to_string();
+        let timestamp = build_info.timestamp;
+
+        let vc = build_info.version_control.clone();
+        let git = vc.and_then(|vc| vc.git().cloned());
+
+        Self {
+            git_hash: git.map(|g| g.commit_short_id.clone()),
+            version: version.to_string(),
+            target,
+            timestamp,
+        }
+    }
+}
+
+#[derive(Serialize, Deserialize, Object)]
 pub struct InstanceSettings {
     /// Configurable
 
@@ -55,6 +85,7 @@ pub struct InstanceSettings {
     pub last_item_id: i64,
 
     /// Generated
+    pub build_info: BuildDetails,
 
     /// The status of the instance modules.
     pub modules: InstanceModulesStatus,
@@ -62,6 +93,8 @@ pub struct InstanceSettings {
 
 impl InstanceSettings {
     pub async fn load(state: &Arc<AppState>) -> Self {
+        let build_info = build_info();
+
         // TODO: load the instance settings from the database
         let settings = match query_as!(
             InstanceSettingsConfigurable,
@@ -87,6 +120,7 @@ impl InstanceSettings {
             id_casing_preference: settings.id_casing_preference,
             last_item_id: settings.last_item_id,
             modules: InstanceModulesStatus::load(state).await,
+            build_info: build_info.into(),
         }
     }
 

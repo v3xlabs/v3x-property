@@ -6,6 +6,7 @@ import { BASE_URL } from '@/api/core';
 import { getInstanceSettings } from '@/api/instance_settings';
 import { useMe } from '@/api/me';
 import { SearchTaskTable } from '@/components/search_tasks/SearchTaskTable';
+import { BuildDetails } from '@/components/settings/BuildDetails';
 import { InstanceSettings } from '@/components/settings/InstanceSettings';
 import { Button } from '@/components/ui/Button';
 import { UserApiKeysTable } from '@/components/user_api_keys/UserApiKeysTable';
@@ -51,6 +52,7 @@ export const Route = createFileRoute('/settings/')({
                 <div className="card">
                     <InstanceSettings />
                 </div>
+                <BuildDetails />
                 <div className="card">
                     <SearchTaskTable />
                 </div>

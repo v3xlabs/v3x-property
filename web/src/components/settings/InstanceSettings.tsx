@@ -44,10 +44,11 @@ export const InstanceSettings = () => {
                     event.preventDefault();
                     handleSubmit();
                 }}
+                className="space-y-4"
             >
                 <h2>Instance Settings</h2>
                 <pre className="bg-black/5 p-4 rounded-lg text-wrap">
-                    {JSON.stringify(instanceSettings, undefined, 2)}
+                    {JSON.stringify(instanceSettings.modules, undefined, 2)}
                 </pre>
                 <div>
                     <Field
