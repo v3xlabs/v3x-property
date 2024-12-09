@@ -24,14 +24,20 @@ pub struct FieldDefinition {
 impl FieldDefinition {
     pub async fn new(
         db: &Database,
-        kind: FieldKind,
-        name: String,
+        definition_id: &str,
+        name: &str,
+        kind: &FieldKind,
+        description: Option<&str>,
+        placeholder: Option<&str>,
     ) -> Result<FieldDefinition, sqlx::Error> {
         query_as!(
             FieldDefinition,
-            "INSERT INTO field_definitions (kind, name) VALUES ($1, $2) RETURNING *",
+            "INSERT INTO field_definitions (definition_id, kind, name, description, placeholder) VALUES ($1, $2, $3, $4, $5) RETURNING *",
+            definition_id,
             kind.to_string(),
-            name
+            name,
+            description,
+            placeholder
         )
         .fetch_one(&db.pool)
         .await
@@ -41,5 +47,26 @@ impl FieldDefinition {
         query_as!(FieldDefinition, "SELECT * FROM field_definitions")
             .fetch_all(&db.pool)
             .await
+    }
+
+    pub async fn update(
+        db: &Database,
+        definition_id: &str,
+        name: &str,
+        kind: &FieldKind,
+        description: Option<&str>,
+        placeholder: Option<&str>,
+    ) -> Result<FieldDefinition, sqlx::Error> {
+        query_as!(
+            FieldDefinition,
+            "UPDATE field_definitions SET name = $2, kind = $3, description = $4, placeholder = $5 WHERE definition_id = $1 RETURNING *",
+            definition_id,
+            name,
+            kind.to_string(),
+            description,
+            placeholder
+        )
+        .fetch_one(&db.pool)
+        .await
     }
 }
