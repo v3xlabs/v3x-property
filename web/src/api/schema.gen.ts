@@ -209,6 +209,46 @@ export type paths = {
         };
         trace?: never;
     };
+    "/item/{item_id}/fields": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * /item/:item_id/fields
+         * @description Get all fields for an Item by `item_id`
+         */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    item_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json; charset=utf-8": components["schemas"]["ItemDataField"][];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/item/{item_id}/logs": {
         parameters: {
             query?: never;
@@ -915,6 +955,114 @@ export type paths = {
         patch?: never;
         trace?: never;
     };
+    "/field/definitions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * /field/definitions
+         * @description Get all field definitions
+         */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json; charset=utf-8": components["schemas"]["FieldDefinition"][];
+                    };
+                };
+            };
+        };
+        put?: never;
+        /**
+         * /field/definitions
+         * @description Create a new field definition
+         */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json; charset=utf-8": components["schemas"]["FieldDefinition"];
+                };
+            };
+            responses: {
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json; charset=utf-8": components["schemas"]["FieldDefinition"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/field/definitions/{definition_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /**
+         * /fields/definitions/:id
+         * @description Update a field definition
+         */
+        patch: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    definition_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json; charset=utf-8": components["schemas"]["FieldDefinition"];
+                };
+            };
+            responses: {
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json; charset=utf-8": components["schemas"]["FieldDefinition"];
+                    };
+                };
+            };
+        };
+        trace?: never;
+    };
     "/logs": {
         parameters: {
             query?: never;
@@ -1463,6 +1611,22 @@ export type components = {
             key: components["schemas"]["UserApiKey"];
             token: string;
         };
+        FieldDefinition: {
+            definition_id: string;
+            kind: components["schemas"]["FieldKind"] & unknown;
+            /** @description The name of the field */
+            name: string;
+            /** @description Description of the field */
+            description?: string;
+            /** @description Placeholder text for the field */
+            placeholder?: string;
+            /** Format: date-time */
+            created_at?: string;
+            /** Format: date-time */
+            updated_at?: string;
+        };
+        /** @enum {string} */
+        FieldKind: "String" | "Number" | "Boolean" | "Json";
         /** @enum {string} */
         IdCasingPreference: "upper" | "lower";
         InstanceModuleStorageStatus: {
@@ -1500,6 +1664,19 @@ export type components = {
             owner_id?: number;
             /** Format: int32 */
             location_id?: number;
+            /** Format: date-time */
+            created_at?: string;
+            /** Format: date-time */
+            updated_at?: string;
+        };
+        ItemDataField: {
+            item_id: string;
+            definition_id: string;
+            value: unknown;
+            definition_name: string;
+            definition_kind: components["schemas"]["FieldKind"];
+            definition_description?: string;
+            definition_placeholder?: string;
             /** Format: date-time */
             created_at?: string;
             /** Format: date-time */
