@@ -26,6 +26,8 @@ services:
       POSTGRES_DB: property
     ports:
       - "5432:5432"
+    volumes:
+      - ./postgres-data:/var/lib/postgresql
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres -d postgres"]
       interval: 5s
@@ -80,6 +82,8 @@ services:
       MEILI_MASTER_KEY: master
     ports:
       - "7700:7700"
+    volumes:
+      - ./meili-data:/meili_data
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:7700/health"]
       interval: 5s
@@ -92,6 +96,8 @@ services:
     ports:
       - "9000:9000"
       - "9001:9001"
+    volumes:
+      - ./minio-data:/data
     healthcheck:
       test: ["CMD", "curl", "-I", "http://localhost:9000/minio/health/live"]
       interval: 5s
