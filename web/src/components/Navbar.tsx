@@ -24,12 +24,6 @@ export const Navbar = () => {
 
     const navLinks = [
         {
-            path: '/search',
-            name: 'Search',
-            icon: <FiSearch />,
-            slug: 'search-navlink',
-        },
-        {
             path: '/items',
             name: 'Items',
             icon: <FiBox />,
@@ -42,16 +36,22 @@ export const Navbar = () => {
             slug: 'products-navlink',
         },
         {
-            path: '/logs/',
-            name: 'Logs',
-            icon: <FiLogOut />,
-            slug: 'logs-navlink',
+            path: '/search',
+            name: 'Search',
+            icon: <FiSearch />,
+            slug: 'search-navlink',
         },
         {
             path: '/create',
             name: 'Create',
             icon: <FiPlusCircle />,
             slug: 'create-navlink',
+        },
+        {
+            path: '/logs/',
+            name: 'Logs',
+            icon: <FiLogOut />,
+            slug: 'logs-navlink',
         },
     ];
 
