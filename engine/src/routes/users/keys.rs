@@ -1,7 +1,7 @@
 use std::sync::Arc;
 
-use poem::Error;
 use poem::web::Data;
+use poem::Error;
 use poem::Result;
 use poem_openapi::Object;
 use poem_openapi::{param::Path, payload::Json, OpenApi};
@@ -40,7 +40,9 @@ impl UserKeysApi {
         user_id: Path<i32>,
         body: Json<CreateKeyRequest>,
     ) -> Result<Json<CreateKeyResponse>> {
-        let user = user.ok().ok_or(Error::from_status(StatusCode::UNAUTHORIZED))?;
+        let user = user
+            .ok()
+            .ok_or(Error::from_status(StatusCode::UNAUTHORIZED))?;
 
         if user.session.user_id != user_id.0 {
             return Err(Error::from_status(StatusCode::FORBIDDEN));
@@ -64,7 +66,9 @@ impl UserKeysApi {
         state: Data<&Arc<AppState>>,
         user_id: Path<i32>,
     ) -> Result<Json<Vec<UserApiKey>>> {
-        let user = user.ok().ok_or(Error::from_status(StatusCode::UNAUTHORIZED))?;
+        let user = user
+            .ok()
+            .ok_or(Error::from_status(StatusCode::UNAUTHORIZED))?;
 
         if user.session.user_id != user_id.0 {
             return Err(Error::from_status(StatusCode::FORBIDDEN));
@@ -92,7 +96,9 @@ impl UserKeysApi {
         user_id: Path<i32>,
         token_id: Path<i32>,
     ) -> Result<()> {
-        let user = user.ok().ok_or(Error::from_status(StatusCode::UNAUTHORIZED))?;
+        let user = user
+            .ok()
+            .ok_or(Error::from_status(StatusCode::UNAUTHORIZED))?;
 
         if user.session.user_id != user_id.0 {
             return Err(Error::from_status(StatusCode::FORBIDDEN));

@@ -20,21 +20,16 @@ impl Intelligence {
 
         info!("Ollama models detected: {:?}", models);
 
-        Ok(Self {
-            ollama,
-        })
+        Ok(Self { ollama })
     }
 
     pub async fn guess() -> Result<Self, anyhow::Error> {
-        let url = env::var("OLLAMA_URL")
-            .map_err(|_| anyhow::anyhow!("OLLAMA_URL is not set"))?;
+        let url = env::var("OLLAMA_URL").map_err(|_| anyhow::anyhow!("OLLAMA_URL is not set"))?;
         let port = env::var("OLLAMA_PORT")
             .map_err(|_| anyhow::anyhow!("OLLAMA_PORT is not set"))?
             .parse::<u16>()
             .map_err(|_| anyhow::anyhow!("OLLAMA_PORT is not a valid u16"))?;
 
-        Self::new(url, port)
-            .await
-            .map_err(anyhow::Error::from)
+        Self::new(url, port).await.map_err(anyhow::Error::from)
     }
 }

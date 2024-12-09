@@ -60,7 +60,11 @@ impl SearchApi {
     ///
     /// Reindex all Items
     #[oai(path = "/search/reindex", method = "post", tag = "ApiTags::Search")]
-    pub async fn reindex_all_items(&self, user: AuthToken, state: Data<&Arc<AppState>>) -> Result<()> {
+    pub async fn reindex_all_items(
+        &self,
+        user: AuthToken,
+        state: Data<&Arc<AppState>>,
+    ) -> Result<()> {
         // TODO: change to search
         user.check_policy("search", None, Action::Write).await?;
 

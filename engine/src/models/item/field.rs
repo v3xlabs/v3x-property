@@ -31,9 +31,16 @@ impl ItemField {
         .await
     }
 
-    pub async fn get_by_item_id(db: &Database, item_id: &str) -> Result<Vec<ItemField>, sqlx::Error> {
-        query_as!(ItemField, "SELECT * FROM item_fields WHERE item_id = $1", item_id)
-            .fetch_all(&db.pool)
-            .await
+    pub async fn get_by_item_id(
+        db: &Database,
+        item_id: &str,
+    ) -> Result<Vec<ItemField>, sqlx::Error> {
+        query_as!(
+            ItemField,
+            "SELECT * FROM item_fields WHERE item_id = $1",
+            item_id
+        )
+        .fetch_all(&db.pool)
+        .await
     }
 }

@@ -16,7 +16,6 @@ import { getPolicy } from '@/api/policy';
 import { ItemLogSection } from '@/components/logs/ItemLogSection';
 import { MediaGallery } from '@/components/media/MediaGallery';
 import { Button } from '@/components/ui/Button';
-import { UnauthorizedResourceModal } from '@/components/Unauthorized';
 import { UserProfile } from '@/components/UserProfile';
 import { SCPage } from '@/layouts/SimpleCenterPage';
 import { queryClient } from '@/util/query';
@@ -57,10 +56,6 @@ export const Route = createFileRoute('/item/$itemId/')({
 
         const item = useSuspenseQuery(getItemById(itemId));
         const media = useSuspenseQuery(getItemMedia(itemId));
-
-        if (item.error) {
-            return <UnauthorizedResourceModal />;
-        }
 
         return (
             <SCPage

@@ -8,11 +8,8 @@ use tracing::info;
 
 use super::{log::LogEntry, settings::InstanceSettings};
 use crate::{
-    database::Database,
-    modules::search::Search,
-    routes::item::ItemUpdatePayload,
-    routes::item::ItemUpdateMediaStatus,
-    state::AppState,
+    database::Database, modules::search::Search, routes::item::ItemUpdateMediaStatus,
+    routes::item::ItemUpdatePayload, state::AppState,
 };
 
 pub mod field;

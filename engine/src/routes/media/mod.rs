@@ -100,7 +100,8 @@ impl MediaApi {
         user: AuthToken,
         media_id: Path<i32>,
     ) -> Result<Json<Media>> {
-        user.check_policy("media", media_id.0.to_string().as_str(), Action::Read).await?;
+        user.check_policy("media", media_id.0.to_string().as_str(), Action::Read)
+            .await?;
 
         Media::get_by_id(&state.database, media_id.0)
             .await
@@ -125,7 +126,8 @@ impl MediaApi {
         user: AuthToken,
         media_id: Path<i32>,
     ) -> Result<Json<Vec<LinkedItem>>> {
-        user.check_policy("media", media_id.0.to_string().as_str(), Action::Read).await?;
+        user.check_policy("media", media_id.0.to_string().as_str(), Action::Read)
+            .await?;
 
         Ok(Json(
             Media::get_linked_items(&state.database, media_id.0)
@@ -144,7 +146,8 @@ impl MediaApi {
         state: Data<&Arc<AppState>>,
         media_id: Path<i32>,
     ) -> Result<()> {
-        user.check_policy("media", media_id.0.to_string().as_str(), Action::Write).await?;
+        user.check_policy("media", media_id.0.to_string().as_str(), Action::Write)
+            .await?;
 
         Media::get_by_id(&state.database, media_id.0)
             .await

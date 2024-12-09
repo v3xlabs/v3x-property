@@ -41,8 +41,12 @@ impl ProductMedia {
         db: &Database,
         product_id: &i32,
     ) -> Result<Vec<ProductMedia>, sqlx::Error> {
-        query_as!(ProductMedia, "SELECT * FROM product_media WHERE product_id = $1", product_id)
-            .fetch_all(&db.pool)
-            .await
+        query_as!(
+            ProductMedia,
+            "SELECT * FROM product_media WHERE product_id = $1",
+            product_id
+        )
+        .fetch_all(&db.pool)
+        .await
     }
 }

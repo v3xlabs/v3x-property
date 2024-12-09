@@ -1,6 +1,6 @@
 use std::sync::Arc;
 
-use poem::{web::Data, Error, Result};
+use poem::{web::Data, Result};
 use poem_openapi::{
     param::{Path, Query},
     payload::Json,
@@ -13,7 +13,7 @@ use tracing::info;
 use super::ApiTags;
 use crate::{
     auth::{middleware::AuthToken, permissions::Action},
-    models::{item::Item, log::LogEntry, user::user::User},
+    models::{item::Item, log::LogEntry},
     state::AppState,
 };
 

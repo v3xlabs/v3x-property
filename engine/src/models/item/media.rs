@@ -37,9 +37,16 @@ impl ItemMedia {
         Ok(())
     }
 
-    pub async fn get_by_item_id(db: &Database, item_id: &str) -> Result<Vec<ItemMedia>, sqlx::Error> {
-        query_as!(ItemMedia, "SELECT * FROM item_media WHERE item_id = $1", item_id)
-            .fetch_all(&db.pool)
-            .await
+    pub async fn get_by_item_id(
+        db: &Database,
+        item_id: &str,
+    ) -> Result<Vec<ItemMedia>, sqlx::Error> {
+        query_as!(
+            ItemMedia,
+            "SELECT * FROM item_media WHERE item_id = $1",
+            item_id
+        )
+        .fetch_all(&db.pool)
+        .await
     }
 }

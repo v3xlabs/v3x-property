@@ -33,11 +33,13 @@ pub struct SearchableItemVectorsOllama {
 
 impl Item {
     pub async fn into_search(&self, db: &Database) -> Result<SearchableItem, sqlx::Error> {
-        let fields = Some(ItemField::get_by_item_id(db, &self.item_id)
-        .await?
-        .iter()
-        .map(|field| field.into())
-        .collect());
+        let fields = Some(
+            ItemField::get_by_item_id(db, &self.item_id)
+                .await?
+                .iter()
+                .map(|field| field.into())
+                .collect(),
+        );
 
         Ok(SearchableItem {
             item_id: self.item_id.clone(),

@@ -2,10 +2,13 @@ use std::sync::Arc;
 
 use poem::{web::Data, Result};
 use poem_openapi::{payload::Json, OpenApi};
-use reqwest::StatusCode;
 
 use super::ApiTags;
-use crate::{auth::{middleware::AuthToken, permissions::Action}, models::log::LogEntry, state::AppState};
+use crate::{
+    auth::{middleware::AuthToken, permissions::Action},
+    models::log::LogEntry,
+    state::AppState,
+};
 
 pub struct LogsApi;
 

@@ -11,7 +11,6 @@ use crate::{
 
 pub type OpenIDClient = Client<Discovered, StandardClaims>;
 
-
 pub struct AppState {
     pub database: Database,
     // #[cfg(feature = "oauth")]
@@ -39,10 +38,12 @@ impl AppState {
 
             // disable tls verification for local development
             let http_client = reqwest::Client::builder()
-                .danger_accept_invalid_certs(env::var("OPENID_ACCEPT_INVALID_CERTS")
-                    .unwrap_or("false".to_string())
-                    .parse()
-                    .unwrap())
+                .danger_accept_invalid_certs(
+                    env::var("OPENID_ACCEPT_INVALID_CERTS")
+                        .unwrap_or("false".to_string())
+                        .parse()
+                        .unwrap(),
+                )
                 .build()
                 .unwrap();
 

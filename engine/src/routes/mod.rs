@@ -26,11 +26,11 @@ pub mod logs;
 pub mod me;
 pub mod media;
 pub mod oauth;
+pub mod policy;
 pub mod product;
 pub mod search;
 pub mod sessions;
 pub mod users;
-pub mod policy;
 
 #[derive(Tags)]
 enum ApiTags {

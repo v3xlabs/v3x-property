@@ -72,7 +72,10 @@ impl Session {
     }
 
     /// Set every session to invalid
-    pub async fn invalidate_by_user_id(db: &Database, user_id: i32) -> Result<Vec<Self>, sqlx::Error> {
+    pub async fn invalidate_by_user_id(
+        db: &Database,
+        user_id: i32,
+    ) -> Result<Vec<Self>, sqlx::Error> {
         let sessions = query_as!(
             Session,
             "UPDATE sessions SET valid = FALSE WHERE user_id = $1 RETURNING *",

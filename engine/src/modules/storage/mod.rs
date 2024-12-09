@@ -1,7 +1,7 @@
-use std::env;
 use s3::creds::Credentials;
 use s3::Bucket;
 use s3::Region;
+use std::env;
 use uuid::Uuid;
 
 pub struct Storage {
@@ -18,12 +18,15 @@ impl Storage {
         access_key: String,
         secret_key: String,
     ) -> Self {
-        let credentials = Credentials::new(Some(&access_key), Some(&secret_key), None, None, None).unwrap();
+        let credentials =
+            Credentials::new(Some(&access_key), Some(&secret_key), None, None, None).unwrap();
         let region = Region::Custom {
             region,
             endpoint: endpoint_url.clone(),
         };
-        let bucket = Bucket::new(&bucket_name, region, credentials).unwrap().with_path_style();
+        let bucket = Bucket::new(&bucket_name, region, credentials)
+            .unwrap()
+            .with_path_style();
 
         Self {
             endpoint_url,

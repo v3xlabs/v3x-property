@@ -6,21 +6,24 @@ use poem_openapi::{param::Path, payload::Json, OpenApi};
 use reqwest::StatusCode;
 use tracing::info;
 
-
+use super::ApiTags;
 use crate::auth::middleware::AuthToken;
 use crate::auth::permissions::Action;
 use crate::{models::search::SearchTask, state::AppState};
-use super::ApiTags;
 
 pub struct SearchTaskApi;
 
 #[OpenApi]
 impl SearchTaskApi {
     /// /search/tasks
-    /// 
+    ///
     /// Get all Search Tasks
     #[oai(path = "/search/tasks", method = "get", tag = "ApiTags::Search")]
-    pub async fn search_tasks(&self, user: AuthToken, state: Data<&Arc<AppState>>) -> Result<Json<Vec<SearchTask>>> {
+    pub async fn search_tasks(
+        &self,
+        user: AuthToken,
+        state: Data<&Arc<AppState>>,
+    ) -> Result<Json<Vec<SearchTask>>> {
         user.check_policy("search", None, Action::Read).await?;
 
         let tasks = SearchTask::find_all(&state.database).await.unwrap();
@@ -29,9 +32,13 @@ impl SearchTaskApi {
     }
 
     /// /search/tasks/:task_id
-    /// 
+    ///
     /// Refresh a Search Task by `task_id`
-    #[oai(path = "/search/tasks/:task_id", method = "put", tag = "ApiTags::Search")]
+    #[oai(
+        path = "/search/tasks/:task_id",
+        method = "put",
+        tag = "ApiTags::Search"
+    )]
     pub async fn refresh_task(
         &self,
         user: AuthToken,

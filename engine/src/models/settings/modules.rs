@@ -20,7 +20,6 @@ pub struct InstanceModulesStatus {
 
 impl InstanceModulesStatus {
     pub async fn load(state: &Arc<AppState>) -> Self {
-
         // TODO: introduce more information about connection & status
         Self {
             search: state.search.is_some(),

@@ -49,7 +49,11 @@ impl LogEntry {
     }
 
     /// Find by resource_type and resource_id
-    pub async fn find_by_resource(db: &Database, resource_type: &str, resource_id: &str) -> Result<Vec<Self>, sqlx::Error> {
+    pub async fn find_by_resource(
+        db: &Database,
+        resource_type: &str,
+        resource_id: &str,
+    ) -> Result<Vec<Self>, sqlx::Error> {
         let log_entries = query_as!(LogEntry, "SELECT * FROM logs WHERE resource_type = $1 AND resource_id = $2 ORDER BY created_at DESC", resource_type, resource_id)
             .fetch_all(&db.pool)
             .await?;

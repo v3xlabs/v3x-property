@@ -1,19 +1,15 @@
 use std::sync::Arc;
 
-use poem::{web::Data, Error, Result};
+use poem::{web::Data, Result};
 use poem_openapi::{payload::Json, OpenApi};
-use reqwest::StatusCode;
 
 use super::ApiTags;
 use crate::{
     auth::{
         middleware::AuthToken,
-        permissions::{Action, Actions},
+        permissions::Action,
     },
-    models::{
-        settings::{InstanceSettings, InstanceSettingsConfigurable},
-        user::user::User,
-    },
+    models::settings::{InstanceSettings, InstanceSettingsConfigurable},
     state::AppState,
 };
 pub struct InstanceApi;

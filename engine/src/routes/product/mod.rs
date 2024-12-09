@@ -125,7 +125,8 @@ impl ProductApi {
         state: Data<&Arc<AppState>>,
         product_id: Path<i32>,
     ) -> Result<()> {
-        user.check_policy("product", product_id.0.to_string().as_str(), Action::Write).await?;
+        user.check_policy("product", product_id.0.to_string().as_str(), Action::Write)
+            .await?;
 
         let product = Product::get_by_id(&state.database, product_id.0)
             .await
@@ -154,7 +155,8 @@ impl ProductApi {
         user: AuthToken,
         product_id: Path<i32>,
     ) -> Result<Json<Product>> {
-        user.check_policy("product", product_id.0.to_string().as_str(), Action::Read).await?;
+        user.check_policy("product", product_id.0.to_string().as_str(), Action::Read)
+            .await?;
 
         let product = Product::get_by_id(&state.database, product_id.0)
             .await
@@ -182,7 +184,8 @@ impl ProductApi {
         product_id: Path<i32>,
         data: Json<ProductUpdatePayload>,
     ) -> Result<()> {
-        user.check_policy("product", product_id.0.to_string().as_str(), Action::Write).await?;
+        user.check_policy("product", product_id.0.to_string().as_str(), Action::Write)
+            .await?;
 
         let product = Product::get_by_id(&state.database, product_id.0)
             .await
@@ -222,7 +225,8 @@ impl ProductApi {
         user: AuthToken,
         product_id: Path<i32>,
     ) -> Result<Json<Vec<i32>>> {
-        user.check_policy("product", product_id.0.to_string().as_str(), Action::Read).await?;
+        user.check_policy("product", product_id.0.to_string().as_str(), Action::Read)
+            .await?;
 
         let media = ProductMedia::get_by_product_id(&state.database, &product_id.0)
             .await
@@ -245,7 +249,8 @@ impl ProductApi {
         user: AuthToken,
         product_id: Path<i32>,
     ) -> Result<Json<Vec<LogEntry>>> {
-        user.check_policy("product", product_id.0.to_string().as_str(), Action::Read).await?;
+        user.check_policy("product", product_id.0.to_string().as_str(), Action::Read)
+            .await?;
 
         Ok(Json(
             LogEntry::find_by_resource(&state.database, "product", &product_id.0.to_string())

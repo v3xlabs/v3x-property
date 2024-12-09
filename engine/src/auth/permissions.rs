@@ -3,7 +3,7 @@ use std::{collections::HashSet, fmt::Display};
 use chrono::{DateTime, Utc};
 use poem_openapi::{Enum, Object};
 use serde::{Deserialize, Serialize};
-use sqlx::{query, query_as, FromRow};
+use sqlx::{query, FromRow};
 
 use crate::{database::Database, models::user::user::User};
 

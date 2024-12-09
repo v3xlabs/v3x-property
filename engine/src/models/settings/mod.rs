@@ -101,7 +101,7 @@ impl InstanceSettings {
             ON CONFLICT (instance_id) DO UPDATE SET
                 id_casing_preference = $1,
                 last_item_id = $2
-            "#
+            "#,
         )
         .bind(settings.id_casing_preference)
         .bind(settings.last_item_id)
