@@ -10,6 +10,8 @@ import { formatId, useInstanceSettings } from '@/api/instance_settings';
 import { ApiItemResponse, useItemById, useItemMedia } from '@/api/item';
 import { useMedia } from '@/api/media';
 
+const UNKNOWN_ITEM = 'Unknown Item';
+
 type Properties = {
     item_id: string;
     variant?: 'avatar' | 'full' | 'compact';
@@ -18,10 +20,9 @@ type Properties = {
 
 export const AvatarHolder: FC<{
     image?: string;
-    initials?: string;
     alt?: string;
     size?: 'compact' | 'default';
-}> = ({ image, initials, alt, size }) => {
+}> = ({ image, alt, size }) => {
     return (
         <div
             className={clsx(
@@ -51,7 +52,14 @@ export const AvatarHolder: FC<{
                     )}
                     delayMs={600}
                 >
-                    {initials || 'X'}
+                    <img
+                        className={clsx(
+                            'w-full h-full object-cover',
+                            size === 'compact' && '!size-6'
+                        )}
+                        src="/default_cube.webp"
+                        alt={alt || UNKNOWN_ITEM}
+                    />
                 </Avatar.Fallback>
             </Avatar.Root>
         </div>
@@ -68,7 +76,7 @@ export const ItemPreviewHoverCard: FC<{
     return (
         <HoverCard.Content className="HoverCardContent border" sideOffset={5}>
             <div className="flex flex-col gap-3">
-                <AvatarHolder image={mediaUrl} initials={''} />
+                <AvatarHolder image={mediaUrl} />
                 <div className="flex flex-col gap-3">
                     <div>
                         <div className="Text bold">{item?.name}</div>
@@ -97,8 +105,6 @@ export const ItemPreviewHoverCard: FC<{
     );
 };
 
-const UNKNOWN_ITEM = 'Unknown Item';
-
 export const ItemPreview: FC<Properties> = ({ item_id, variant }) => {
     const { data: item, isLoading, isError, error } = useItemById(item_id);
     const { data: media } = useItemMedia(item_id);
@@ -109,7 +115,11 @@ export const ItemPreview: FC<Properties> = ({ item_id, variant }) => {
     const mediaUrl = (() => {
         const link = mediaData?.url;
 
-        if (link?.includes(':')) {
+        if (!link) {
+            return;
+        }
+
+        if (link.includes(':')) {
             return link;
         }
 
@@ -154,12 +164,14 @@ export const ItemPreview: FC<Properties> = ({ item_id, variant }) => {
                             >
                                 <AvatarHolder
                                     image={mediaUrl}
-                                    initials={''}
                                     alt={item?.name || UNKNOWN_ITEM}
                                 />
                             </Link>
                         </HoverCard.Trigger>
-                        <ItemPreviewHoverCard item={item!} mediaUrl={mediaUrl} />
+                        <ItemPreviewHoverCard
+                            item={item!}
+                            mediaUrl={mediaUrl}
+                        />
                     </HoverCard.Root>
                 ))
                 .with({ variant: 'compact' }, () => (
@@ -175,7 +187,6 @@ export const ItemPreview: FC<Properties> = ({ item_id, variant }) => {
                             >
                                 <AvatarHolder
                                     image={mediaUrl}
-                                    initials={''}
                                     size="compact"
                                     alt={item?.name || UNKNOWN_ITEM}
                                 />
@@ -192,7 +203,10 @@ export const ItemPreview: FC<Properties> = ({ item_id, variant }) => {
                                 </span>
                             </Link>
                         </HoverCard.Trigger>
-                        <ItemPreviewHoverCard item={item!} mediaUrl={mediaUrl}/>
+                        <ItemPreviewHoverCard
+                            item={item!}
+                            mediaUrl={mediaUrl}
+                        />
                     </HoverCard.Root>
                 ))
                 .otherwise(() => (
@@ -208,7 +222,6 @@ export const ItemPreview: FC<Properties> = ({ item_id, variant }) => {
                             >
                                 <AvatarHolder
                                     image={mediaUrl}
-                                    initials={''}
                                     alt={item?.name || UNKNOWN_ITEM}
                                 />
                                 <div className="flex flex-col -space-y-1.5 justify-center overflow-hidden">
@@ -223,7 +236,10 @@ export const ItemPreview: FC<Properties> = ({ item_id, variant }) => {
                                 </div>
                             </Link>
                         </HoverCard.Trigger>
-                        <ItemPreviewHoverCard item={item!} mediaUrl={mediaUrl} />
+                        <ItemPreviewHoverCard
+                            item={item!}
+                            mediaUrl={mediaUrl}
+                        />
                     </HoverCard.Root>
                 ))}
         </div>
