@@ -1,4 +1,5 @@
 /* eslint-disable no-undef */
+import { queryClient } from '@/util/query';
 import { create } from 'zustand';
 
 const AUTH_TOKEN_KEY = 'property.v3x.token';
@@ -50,5 +51,10 @@ export const useAuth = create<{
         }
 
         set({ token: undefined });
+
+        // clear the queryclient
+        // queryClient.clear();
+        queryClient.invalidateQueries();
+        queryClient.refetchQueries();
     },
 }));

@@ -291,8 +291,10 @@ export const apiRequest = async <
     });
 
     if (response.status === 401) {
-        console.log('Token expired, clearing token');
-        clearAuthToken();
+        if (token) {
+            console.log('Token expired, clearing token');
+            clearAuthToken();
+        }
 
         throw new ApiError('Token expired', 401);
     }
@@ -398,8 +400,10 @@ export const getHttp =
             const response = await fetch(new URL(url, BASE_URL), { headers });
 
             if (response.status === 401) {
-                console.log('Token expired, clearing token');
-                clearAuthToken();
+                if (token) {
+                    console.log('Token expired, clearing token');
+                    clearAuthToken();
+                }
 
                 throw new Error('Token expired');
             }

@@ -1,6 +1,6 @@
-import { queryOptions } from '@tanstack/react-query';
+import { queryOptions, useQuery } from '@tanstack/react-query';
 
-import { apiRequest } from './core';
+import { ApiRequest, apiRequest } from './core';
 
 export const getPolicy = (resourceType: string, resourceId: string) =>
     queryOptions({
@@ -15,4 +15,22 @@ export const getPolicy = (resourceType: string, resourceId: string) =>
 
             return response.data;
         },
+        retry: false,
     });
+
+export type Permission = ApiRequest<
+    '/policy/enumerate',
+    'get'
+>['response']['data'][number];
+
+export const useHasPolicy = (
+    resourceType: string,
+    resourceId: string,
+    action: Permission
+) => {
+    const { data: policy } = useQuery(getPolicy(resourceType, resourceId));
+
+    return {
+        ok: policy?.some((policyAction) => policyAction === action),
+    };
+};
