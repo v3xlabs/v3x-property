@@ -32,13 +32,13 @@ export const AvatarHolder: FC<{
         >
             <Avatar.Root
                 className={clsx(
-                    'inline-flex items-center justify-center align-middle overflow-hidden select-none w-full h-full rounded-md bg-gray-300 size-8'
+                    'inline-flex items-center justify-center align-middle overflow-hidden select-none w-full h-full rounded-md size-8'
                 )}
             >
                 {image && (
                     <Avatar.Image
                         className={clsx(
-                            'w-full h-full object-cover',
+                            'w-full h-full object-contain',
                             size === 'compact' && '!size-6'
                         )}
                         src={image}
