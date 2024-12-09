@@ -6,7 +6,10 @@ use reqwest::StatusCode;
 
 use super::ApiTags;
 use crate::{
-    auth::{middleware::AuthToken, permissions::Permission},
+    auth::{
+        middleware::AuthToken,
+        permissions::{Action, Actions},
+    },
     models::{
         settings::{InstanceSettings, InstanceSettingsConfigurable},
         user::user::User,
@@ -26,15 +29,8 @@ impl InstanceApi {
         state: Data<&Arc<AppState>>,
         user: AuthToken,
     ) -> Result<Json<InstanceSettings>> {
-        User::has_permissions(
-            &state.database,
-            user,
-            "instance",
-            Some("settings"),
-            &[Permission::Read],
-        )
-        .await
-        .ok_or(Error::from_status(StatusCode::FORBIDDEN))?;
+        user.check_policy("instance", "settings", Action::Read)
+            .await?;
 
         Ok(Json(InstanceSettings::load(&state).await))
     }
@@ -46,18 +42,11 @@ impl InstanceApi {
     pub async fn update_settings(
         &self,
         state: Data<&Arc<AppState>>,
-        token: AuthToken,
+        user: AuthToken,
         settings: Json<InstanceSettingsConfigurable>,
     ) -> Result<()> {
-        User::has_permissions(
-            &state.database,
-            token,
-            "instance",
-            Some("settings"),
-            &[Permission::Write],
-        )
-        .await
-        .ok_or(Error::from_status(StatusCode::FORBIDDEN))?;
+        user.check_policy("instance", "settings", Action::Write)
+            .await?;
 
         InstanceSettings::update_instance_settings(&state.database, &settings).await;
         Ok(())

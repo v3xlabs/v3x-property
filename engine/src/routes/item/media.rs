@@ -7,9 +7,10 @@ use poem_openapi::payload::Json;
 use poem_openapi::OpenApi;
 
 use crate::auth::middleware::AuthToken;
+use crate::auth::permissions::Action;
 use crate::models::item::media::ItemMedia;
-use crate::state::AppState;
 use crate::routes::ApiTags;
+use crate::state::AppState;
 
 pub struct ItemMediaApi;
 
@@ -22,9 +23,12 @@ impl ItemMediaApi {
     async fn get_item_media(
         &self,
         state: Data<&Arc<AppState>>,
-        auth: AuthToken,
+        user: AuthToken,
         item_id: Path<String>,
     ) -> Result<Json<Vec<i32>>> {
+        user.check_policy("item", item_id.0.to_string().as_str(), Action::Read)
+            .await?;
+
         let media = ItemMedia::get_by_item_id(&state.database, &item_id.0)
             .await
             .unwrap();

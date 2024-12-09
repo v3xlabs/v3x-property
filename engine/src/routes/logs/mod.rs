@@ -5,7 +5,7 @@ use poem_openapi::{payload::Json, OpenApi};
 use reqwest::StatusCode;
 
 use super::ApiTags;
-use crate::{auth::middleware::AuthToken, models::log::LogEntry, state::AppState};
+use crate::{auth::{middleware::AuthToken, permissions::Action}, models::log::LogEntry, state::AppState};
 
 pub struct LogsApi;
 
@@ -17,12 +17,11 @@ impl LogsApi {
     #[oai(path = "/logs", method = "get", tag = "ApiTags::Logs")]
     async fn get_all_logs(
         &self,
-        auth: AuthToken,
+        user: AuthToken,
         state: Data<&Arc<AppState>>,
     ) -> Result<Json<Vec<LogEntry>>> {
-        match auth.ok() {
-            Some(user) => Ok(Json(LogEntry::get_all(&state.database).await.unwrap())),
-            None => Err(StatusCode::UNAUTHORIZED.into()),
-        }
+        user.check_policy("log", None, Action::Read).await?;
+
+        Ok(Json(LogEntry::get_all(&state.database).await.unwrap()))
     }
 }

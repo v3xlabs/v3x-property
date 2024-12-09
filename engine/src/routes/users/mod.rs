@@ -1,11 +1,12 @@
 use std::sync::Arc;
 
-use poem::{web::Data, Result};
+use poem::{web::Data, Error, Result};
 use poem_openapi::{param::Path, payload::Json, OpenApi};
 use reqwest::StatusCode;
 
 use super::ApiTags;
 use crate::{
+    auth::middleware::AuthToken,
     models::user::{user::User, userentry::UserEntry},
     state::AppState,
 };
@@ -22,9 +23,19 @@ impl UserApi {
     #[oai(path = "/user/:user_id", method = "get", tag = "ApiTags::User")]
     pub async fn user(
         &self,
+        user: AuthToken,
         state: Data<&Arc<AppState>>,
         user_id: Path<i32>,
     ) -> Result<Json<User>> {
+        let user = user
+            .ok()
+            .ok_or(Error::from_status(StatusCode::UNAUTHORIZED))?;
+
+        // TODO: Fix to check policy user:read
+        if user.session.user_id != user_id.0 {
+            return Err(Error::from_status(StatusCode::FORBIDDEN));
+        }
+
         let user = UserEntry::find_by_user_id(user_id.0, &state.database)
             .await
             .unwrap();

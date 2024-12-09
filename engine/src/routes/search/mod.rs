@@ -7,6 +7,8 @@ use poem_openapi::{payload::Json, OpenApi};
 use tracing::info;
 
 use super::ApiTags;
+use crate::auth::middleware::AuthToken;
+use crate::auth::permissions::Action;
 use crate::models::item::search::SearchableItem;
 use crate::state::AppState;
 
@@ -29,9 +31,13 @@ impl SearchApi {
     #[oai(path = "/search", method = "get", tag = "ApiTags::Search")]
     pub async fn search(
         &self,
+        user: AuthToken,
         state: Data<&Arc<AppState>>,
         query: Query<String>,
-    ) -> Json<Vec<SearchableItem>> {
+    ) -> Result<Json<Vec<SearchableItem>>> {
+        // TODO: chance to search
+        user.check_policy("search", None, Action::Read).await?;
+
         let search = state.search.as_ref().unwrap();
 
         let tasks = search
@@ -47,14 +53,17 @@ impl SearchApi {
 
         let results = tasks.hits.iter().map(|r| r.result.clone()).collect();
 
-        Json(results)
+        Ok(Json(results))
     }
 
     /// /search/reindex
     ///
     /// Reindex all Items
     #[oai(path = "/search/reindex", method = "post", tag = "ApiTags::Search")]
-    pub async fn reindex_all_items(&self, state: Data<&Arc<AppState>>) -> Result<()> {
+    pub async fn reindex_all_items(&self, user: AuthToken, state: Data<&Arc<AppState>>) -> Result<()> {
+        // TODO: change to search
+        user.check_policy("search", None, Action::Write).await?;
+
         info!("Reindexing all items");
 
         state

@@ -5,7 +5,7 @@ use poem_openapi::{param::Query, payload::Json, OpenApi};
 
 use super::ApiTags;
 use crate::{
-    auth::{middleware::AuthToken, permissions::Permission},
+    auth::{middleware::AuthToken, permissions::Action},
     models::user::user::User,
     state::AppState,
 };
@@ -25,7 +25,7 @@ impl PolicyApi {
         resource_type: Query<String>,
         /// Example: "1234" | "AB123"
         resource_id: Query<String>,
-    ) -> Result<Json<Vec<Permission>>> {
+    ) -> Result<Json<Vec<Action>>> {
         Ok(Json(
             User::enumerate_permissions(
                 &state.database,

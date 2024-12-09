@@ -48,7 +48,7 @@ impl SessionsApi {
         session_id: Path<String>,
     ) -> poem_openapi::payload::Json<Vec<Session>> {
         match auth {
-            AuthToken::Active(active_user) => {
+            AuthToken::Active(active_user, _) => {
                 info!("Deleting session {:?}", session_id.0);
 
                 let sessions = Session::invalidate_by_id(

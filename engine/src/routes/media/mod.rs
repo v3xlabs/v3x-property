@@ -4,13 +4,17 @@ use poem::{
     web::{Data, Multipart},
     Result,
 };
-use poem_openapi::{param::{Path, Query}, payload::Json, Object, OpenApi};
+use poem_openapi::{
+    param::{Path, Query},
+    payload::Json,
+    Object, OpenApi,
+};
 use reqwest::StatusCode;
 use serde::{Deserialize, Serialize};
 
 use super::ApiTags;
 use crate::{
-    auth::middleware::AuthToken,
+    auth::{middleware::AuthToken, permissions::Action},
     models::media::{LinkedItem, Media},
     state::AppState,
 };
@@ -30,13 +34,12 @@ impl MediaApi {
     #[oai(path = "/media", method = "get", tag = "ApiTags::Media")]
     async fn get_all_media(
         &self,
-        auth: AuthToken,
+        user: AuthToken,
         state: Data<&Arc<AppState>>,
     ) -> Result<Json<Vec<Media>>> {
-        match auth.ok() {
-            Some(user) => Ok(Json(Media::get_all(&state.database).await.unwrap())),
-            None => Err(StatusCode::UNAUTHORIZED.into()),
-        }
+        user.check_policy("media", None, Action::Read).await?;
+
+        Ok(Json(Media::get_all(&state.database).await.unwrap()))
     }
 
     /// /media/unassigned
@@ -45,13 +48,12 @@ impl MediaApi {
     #[oai(path = "/media/unassigned", method = "get", tag = "ApiTags::Media")]
     async fn get_unassigned_media(
         &self,
-        auth: AuthToken,
+        user: AuthToken,
         state: Data<&Arc<AppState>>,
     ) -> Result<Json<Vec<Media>>> {
-        match auth.ok() {
-            Some(user) => Ok(Json(Media::get_unassigned(&state.database).await.unwrap())),
-            None => Err(StatusCode::UNAUTHORIZED.into()),
-        }
+        user.check_policy("media", None, Action::Read).await?;
+
+        Ok(Json(Media::get_unassigned(&state.database).await.unwrap()))
     }
 
     /// /media
@@ -62,10 +64,12 @@ impl MediaApi {
         &self,
         name: Query<String>,
         kind: Query<String>,
-        auth: AuthToken,
+        user: AuthToken,
         state: Data<&Arc<AppState>>,
         mut upload: Multipart,
-    ) -> Json<Media> {
+    ) -> Result<Json<Media>> {
+        user.check_policy("media", None, Action::Write).await?;
+
         let file = upload.next_field().await.unwrap().unwrap();
         let tempfile = file.bytes().await.unwrap();
 
@@ -79,11 +83,11 @@ impl MediaApi {
             .await
             .unwrap();
 
-        Json(
+        Ok(Json(
             Media::new(&state.database, name.0, url, kind.0)
                 .await
                 .unwrap(),
-        )
+        ))
     }
 
     /// /media/:media_id
@@ -93,16 +97,18 @@ impl MediaApi {
     async fn get_media(
         &self,
         state: Data<&Arc<AppState>>,
-        auth: AuthToken,
+        user: AuthToken,
         media_id: Path<i32>,
     ) -> Result<Json<Media>> {
+        user.check_policy("media", media_id.0.to_string().as_str(), Action::Read).await?;
+
         Media::get_by_id(&state.database, media_id.0)
             .await
             .or(Err(poem::Error::from_status(
                 StatusCode::INTERNAL_SERVER_ERROR,
             )))?
             .ok_or(poem::Error::from_status(StatusCode::NOT_FOUND))
-            .map(|x| Json(x))
+            .map(Json)
     }
 
     /// /media/:media_id/items
@@ -116,8 +122,11 @@ impl MediaApi {
     async fn get_linked_items(
         &self,
         state: Data<&Arc<AppState>>,
+        user: AuthToken,
         media_id: Path<i32>,
     ) -> Result<Json<Vec<LinkedItem>>> {
+        user.check_policy("media", media_id.0.to_string().as_str(), Action::Read).await?;
+
         Ok(Json(
             Media::get_linked_items(&state.database, media_id.0)
                 .await
@@ -131,10 +140,12 @@ impl MediaApi {
     #[oai(path = "/media/:media_id", method = "delete", tag = "ApiTags::Media")]
     async fn delete_media(
         &self,
-        auth: AuthToken,
+        user: AuthToken,
         state: Data<&Arc<AppState>>,
         media_id: Path<i32>,
     ) -> Result<()> {
+        user.check_policy("media", media_id.0.to_string().as_str(), Action::Write).await?;
+
         Media::get_by_id(&state.database, media_id.0)
             .await
             .unwrap()

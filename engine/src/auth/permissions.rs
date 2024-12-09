@@ -10,7 +10,7 @@ use crate::{database::Database, models::user::user::User};
 use super::middleware::AuthToken;
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, Enum)]
-pub enum Permission {
+pub enum Action {
     #[serde(rename = "read")]
     #[oai(rename = "read")]
     Read,
@@ -23,7 +23,7 @@ pub enum Permission {
 }
 
 /// TODO: Figure out how to replace Display and TryFrom with Serde (without the quotes)
-impl Display for Permission {
+impl Display for Action {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         let s = serde_json::to_string(self).unwrap();
         let text = s.trim_matches('"').to_string();
@@ -31,15 +31,27 @@ impl Display for Permission {
     }
 }
 
-impl TryFrom<&str> for Permission {
+impl TryFrom<&str> for Action {
     type Error = ();
     fn try_from(value: &str) -> Result<Self, Self::Error> {
         match value {
-            "read" => Ok(Permission::Read),
-            "write" => Ok(Permission::Write),
-            "delete" => Ok(Permission::Delete),
+            "read" => Ok(Action::Read),
+            "write" => Ok(Action::Write),
+            "delete" => Ok(Action::Delete),
             _ => Err(()),
         }
+    }
+}
+
+pub enum Actions {
+    One(Action),
+    Any(Vec<Action>),
+    All(Vec<Action>),
+}
+
+impl From<Action> for Actions {
+    fn from(val: Action) -> Self {
+        Actions::One(val)
     }
 }
 
@@ -76,73 +88,85 @@ impl User {
         user: impl Into<Option<i32>>,
         resource_type: &str,
         resource_id: Option<&str>,
-        permissions: impl AsRef<[Permission]>,
-    ) -> Option<Vec<Permission>> {
-        let policies =
-            Self::check_permissions(db, user, resource_type, resource_id, permissions).await;
-        if !policies.is_empty() && policies.iter().any(|x| !x.is_empty()) {
-            Some(
-                policies
-                    .iter()
-                    .map(|x| Permission::try_from(x[0].action.as_str()).unwrap())
-                    .collect(),
-            )
-        } else {
-            None
+        actions: Actions,
+    ) -> Option<bool> {
+        // let policies =
+        //     Self::check_permissions(db, user, resource_type, resource_id, actions).await;
+        // if !policies.is_empty() && policies.iter().any(|x| !x.is_empty()) {
+        //     Some(
+        //         policies
+        //             .iter()
+        //             .map(|x| Action::try_from(x[0].action.as_str()).unwrap())
+        //             .collect(),
+        //     )
+        // } else {
+        //     None
+        // }
+
+        let permissions = Self::enumerate_permissions(db, user, resource_type, &resource_id).await;
+
+        let bv = match actions {
+            Actions::One(action) => permissions.contains(&action),
+            Actions::Any(actions) => actions.iter().any(|x| permissions.contains(x)),
+            Actions::All(actions) => actions.iter().all(|x| permissions.contains(x)),
+        };
+        match bv {
+            true => Some(true),
+            false => None,
         }
     }
 
-    pub async fn check_permissions(
-        db: &Database,
-        user: impl Into<Option<i32>>,
-        resource_type: &str,
-        resource_id: Option<&str>,
-        permissions: impl AsRef<[Permission]>,
-    ) -> Vec<Vec<Policy>> {
-        let mut results = Vec::with_capacity(permissions.as_ref().len());
-        let user: Option<i32> = user.into();
-        let is_authed = user.is_some().to_string();
-        let user_id = user.unwrap_or(-1).to_string();
+    // pub async fn check_permissions(
+    //     db: &Database,
+    //     user: impl Into<Option<i32>>,
+    //     resource_type: &str,
+    //     resource_id: Option<&str>,
+    //     actions: Actions,
+    // ) -> Vec<Vec<Policy>> {
+    //     let mut results = Vec::with_capacity(actions.as_vec().len());
+    //     let user: Option<i32> = user.into();
+    //     let is_authed = user.is_some().to_string();
+    //     let user_id = user.unwrap_or(-1).to_string();
 
-        for permission in permissions.as_ref() {
-            let permission_str = permission.to_string();
+    //     for action in actions.as_ref() {
+    //         let permission_str = action.to_string();
 
-            tracing::debug!(
-                "Checking permission: {} for user: {:?} on resource: {:?}",
-                permission_str,
-                user_id,
-                resource_id
-            );
+    //         tracing::debug!(
+    //             "Checking permission: {} for user: {:?} on resource: {:?}",
+    //             permission_str,
+    //             user_id,
+    //             resource_id
+    //         );
 
-            let result = query_as!(
-                Policy,
-                r#"SELECT * FROM policies WHERE
-                    resource_type = $1 AND
-                    action = $2 AND
-                    ((subject_type = 'user' AND subject_id = $3) OR
-                    (subject_type = 'authed' AND subject_id = $4)) AND
-                    (resource_id IS NULL OR resource_id = $5)
-                    ORDER BY resource_id DESC, subject_type DESC"#,
-                resource_type,
-                permission_str,
-                user_id,
-                is_authed,
-                resource_id.unwrap_or(""),
-            )
-            .fetch_all(&db.pool)
-            .await
-            .unwrap();
-            results.push(result);
-        }
-        results
-    }
+    //         let result = query_as!(
+    //             Policy,
+    //             r#"SELECT * FROM policies WHERE
+    //                 resource_type = $1 AND
+    //                 action = $2 AND
+    //                 ((subject_type = 'user' AND subject_id = $3) OR
+    //                 (subject_type = 'authed' AND subject_id = $4)) AND
+    //                 (resource_id IS NULL OR resource_id = $5)
+    //                 ORDER BY resource_id DESC, subject_type DESC"#,
+    //             resource_type,
+    //             permission_str,
+    //             user_id,
+    //             is_authed,
+    //             resource_id.unwrap_or(""),
+    //         )
+    //         .fetch_all(&db.pool)
+    //         .await
+    //         .unwrap();
+    //         results.push(result);
+    //     }
+    //     results
+    // }
 
     pub async fn enumerate_permissions(
         db: &Database,
         user: impl Into<Option<i32>>,
         resource_type: &str,
         resource_id: &Option<&str>,
-    ) -> Vec<Permission> {
+    ) -> Vec<Action> {
         let user: Option<i32> = user.into();
         let user_id = user.unwrap_or(-1).to_string();
         let is_authed = user.is_some().to_string();
@@ -178,7 +202,7 @@ impl User {
 
         permissions
             .into_iter()
-            .filter_map(|x| Permission::try_from(x.as_str()).ok())
+            .filter_map(|x| Action::try_from(x.as_str()).ok())
             .collect()
     }
 }

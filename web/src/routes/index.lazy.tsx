@@ -13,7 +13,7 @@ const component = () => {
                 </div>
             </div>
             <div className="card">
-                <div className="w-full flex items-center justify-center gap-4">
+                <div className="w-full flex items-center justify-center gap-4 flex-wrap">
                     <UserProfile user_id={1} variant="full" />
                     <UserProfile user_id={2} variant="full" />
                     <UserProfile user_id={2} variant="compact" />

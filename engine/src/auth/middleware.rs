@@ -7,8 +7,11 @@ use poem_openapi::{
 };
 use reqwest::StatusCode;
 
-use super::hash::hash_session;
-use crate::{models::sessions::Session, state::AppState};
+use super::{hash::hash_session, permissions::Actions};
+use crate::{
+    models::{sessions::Session, user::user::User},
+    state::AppState,
+};
 
 #[derive(Clone)]
 pub struct ActiveUser {
@@ -17,15 +20,15 @@ pub struct ActiveUser {
 
 #[derive(Clone)]
 pub enum AuthToken {
-    Active(ActiveUser),
-    None,
+    Active(ActiveUser, Arc<AppState>),
+    None(Arc<AppState>),
 }
 
 impl AuthToken {
     pub fn ok(&self) -> Option<&ActiveUser> {
         match self {
-            AuthToken::Active(user) => Some(user),
-            AuthToken::None => None,
+            AuthToken::Active(user, _) => Some(user),
+            AuthToken::None(_) => None,
         }
     }
 }
@@ -43,6 +46,8 @@ impl<'a> ApiExtractor<'a> for AuthToken {
         _param_opts: ExtractParamOptions<Self::ParamType>,
     ) -> Result<Self> {
         let state = <Data<&Arc<AppState>> as FromRequest>::from_request(req, body).await?;
+
+        let state = state.0;
 
         // extract cookies from request
         let _cookies = req.headers().get("Cookie").and_then(|x| x.to_str().ok());
@@ -68,9 +73,9 @@ impl<'a> ApiExtractor<'a> for AuthToken {
                         StatusCode::UNAUTHORIZED,
                     ))?;
 
-                Ok(AuthToken::Active(ActiveUser { session }))
+                Ok(AuthToken::Active(ActiveUser { session }, state.clone()))
             }
-            None => Ok(AuthToken::None),
+            None => Ok(AuthToken::None(state.clone())),
         }
     }
 
@@ -91,5 +96,30 @@ impl<'a> ApiExtractor<'a> for AuthToken {
     }
     fn security_schemes() -> Vec<&'static str> {
         vec!["AuthToken"]
+    }
+}
+
+impl AuthToken {
+    fn state(&self) -> &Arc<AppState> {
+        match self {
+            AuthToken::Active(_, state) => state,
+            AuthToken::None(state) => state,
+        }
+    }
+
+    pub async fn check_policy(
+        &self,
+        resource_type: &str,
+        resource_id: impl Into<Option<&str>>,
+        actions: impl Into<Actions>,
+    ) -> Result<(), Error> {
+        let db = &self.state().database;
+        let user = self.ok().map(|x| x.session.user_id);
+        let resource_id: Option<&str> = resource_id.into();
+
+        User::has_permissions(db, user, resource_type, resource_id.into(), actions.into())
+            .await
+            .ok_or(Error::from_string("No permission", StatusCode::FORBIDDEN))
+            .map(|_| ())
     }
 }

@@ -12,7 +12,7 @@ use tracing::info;
 
 use super::ApiTags;
 use crate::{
-    auth::{middleware::AuthToken, permissions::Permission},
+    auth::{middleware::AuthToken, permissions::Action},
     models::{item::Item, log::LogEntry, user::user::User},
     state::AppState,
 };
@@ -65,15 +65,7 @@ impl ItemsApi {
         user: AuthToken,
         state: Data<&Arc<AppState>>,
     ) -> Result<Json<Vec<Item>>> {
-        User::has_permissions(
-            &state.database,
-            user.clone(),
-            "item",
-            None,
-            &[Permission::Read],
-        )
-        .await
-        .ok_or(Error::from_status(StatusCode::FORBIDDEN))?;
+        user.check_policy("item", "owned", Action::Read).await?;
 
         Ok(Json(
             Item::get_by_owner_id(&state.database, user.ok().unwrap().session.user_id)
@@ -92,15 +84,7 @@ impl ItemsApi {
         state: Data<&Arc<AppState>>,
         item_id: Query<String>,
     ) -> Result<Json<Item>> {
-        User::has_permissions(
-            &state.database,
-            user.clone(),
-            "item",
-            None,
-            &[Permission::Write],
-        )
-        .await
-        .ok_or(Error::from_status(StatusCode::FORBIDDEN))?;
+        user.check_policy("item", None, Action::Write).await?;
 
         Ok(Json(
             Item {
@@ -126,9 +110,7 @@ impl ItemsApi {
         user: AuthToken,
         state: Data<&Arc<AppState>>,
     ) -> Result<Json<ItemIdResponse>> {
-        User::has_permissions(&state.database, user, "item", None, &[Permission::Read])
-            .await
-            .ok_or(Error::from_status(StatusCode::FORBIDDEN))?;
+        user.check_policy("item", None, Action::Read).await?;
 
         info!("Getting next item id");
 
@@ -147,15 +129,8 @@ impl ItemsApi {
         state: Data<&Arc<AppState>>,
         item_id: Path<String>,
     ) -> Result<()> {
-        User::has_permissions(
-            &state.database,
-            user,
-            "item",
-            Some(&item_id),
-            &[Permission::Delete],
-        )
-        .await
-        .ok_or(Error::from_status(StatusCode::FORBIDDEN))?;
+        user.check_policy("item", item_id.0.to_string().as_str(), Action::Delete)
+            .await?;
 
         let item = Item::get_by_id(&state.database, &item_id.0)
             .await
@@ -177,15 +152,8 @@ impl ItemsApi {
         user: AuthToken,
         item_id: Path<String>,
     ) -> Result<Json<Item>> {
-        User::has_permissions(
-            &state.database,
-            user,
-            "item",
-            Some(&item_id),
-            &[Permission::Read],
-        )
-        .await
-        .ok_or(Error::from_status(StatusCode::FORBIDDEN))?;
+        user.check_policy("item", item_id.0.to_string().as_str(), Action::Read)
+            .await?;
 
         let item = Item::get_by_id(&state.database, &item_id.0).await.unwrap();
 
@@ -207,15 +175,8 @@ impl ItemsApi {
         item_id: Path<String>,
         data: Json<ItemUpdatePayload>,
     ) -> Result<()> {
-        User::has_permissions(
-            &state.database,
-            user.clone(),
-            "item",
-            Some(&item_id),
-            &[Permission::Write],
-        )
-        .await
-        .ok_or(Error::from_status(StatusCode::FORBIDDEN))?;
+        user.check_policy("item", item_id.0.to_string().as_str(), Action::Write)
+            .await?;
 
         Item::edit_by_id(&state.search, &state.database, &data.0, &item_id.0)
             .await
@@ -245,15 +206,8 @@ impl ItemsApi {
         user: AuthToken,
         item_id: Path<String>,
     ) -> Result<Json<Vec<LogEntry>>> {
-        User::has_permissions(
-            &state.database,
-            user.clone(),
-            "item",
-            Some(&item_id),
-            &[Permission::Read],
-        )
-        .await
-        .ok_or(Error::from_status(StatusCode::FORBIDDEN))?;
+        user.check_policy("item", item_id.0.to_string().as_str(), Action::Read)
+            .await?;
 
         Ok(Json(
             LogEntry::find_by_resource(&state.database, "item", &item_id.0)
