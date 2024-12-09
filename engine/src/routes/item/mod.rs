@@ -62,17 +62,24 @@ impl ItemsApi {
     #[oai(path = "/item/owned", method = "get", tag = "ApiTags::Items")]
     async fn get_owned_items(
         &self,
-        auth: AuthToken,
+        user: AuthToken,
         state: Data<&Arc<AppState>>,
     ) -> Result<Json<Vec<Item>>> {
-        match auth.ok() {
-            Some(user) => Ok(Json(
-                Item::get_by_owner_id(&state.database, user.session.user_id)
-                    .await
-                    .unwrap(),
-            )),
-            None => Err(StatusCode::UNAUTHORIZED.into()),
-        }
+        User::has_permissions(
+            &state.database,
+            user.clone(),
+            "item",
+            None,
+            &[Permission::Read],
+        )
+        .await
+        .ok_or(Error::from_status(StatusCode::UNAUTHORIZED))?;
+
+        Ok(Json(
+            Item::get_by_owner_id(&state.database, user.ok().unwrap().session.user_id)
+                .await
+                .unwrap(),
+        ))
     }
 
     /// /item
@@ -81,14 +88,24 @@ impl ItemsApi {
     #[oai(path = "/item", method = "post", tag = "ApiTags::Items")]
     async fn create_item(
         &self,
-        auth: AuthToken,
+        user: AuthToken,
         state: Data<&Arc<AppState>>,
         item_id: Query<String>,
-    ) -> Json<Item> {
-        Json(
+    ) -> Result<Json<Item>> {
+        User::has_permissions(
+            &state.database,
+            user.clone(),
+            "item",
+            None,
+            &[Permission::Write],
+        )
+        .await
+        .ok_or(Error::from_status(StatusCode::UNAUTHORIZED))?;
+
+        Ok(Json(
             Item {
                 item_id: item_id.0,
-                owner_id: auth.ok().map(|user| user.session.user_id),
+                owner_id: user.ok().map(|user| user.session.user_id),
                 ..Default::default()
             }
             .insert(&state.database)
@@ -97,19 +114,27 @@ impl ItemsApi {
             .index_search(&state.search, &state.database)
             .await
             .unwrap(),
-        )
+        ))
     }
 
     /// /item/next
     ///
     /// Suggest next Item Id
     #[oai(path = "/item/next", method = "get", tag = "ApiTags::Items")]
-    async fn next_item_id(&self, state: Data<&Arc<AppState>>) -> Json<ItemIdResponse> {
+    async fn next_item_id(
+        &self,
+        user: AuthToken,
+        state: Data<&Arc<AppState>>,
+    ) -> Result<Json<ItemIdResponse>> {
+        User::has_permissions(&state.database, user, "item", None, &[Permission::Read])
+            .await
+            .ok_or(Error::from_status(StatusCode::UNAUTHORIZED))?;
+
         info!("Getting next item id");
 
-        Json(ItemIdResponse {
+        Ok(Json(ItemIdResponse {
             item_id: Item::next_id(&state).await.unwrap(),
-        })
+        }))
     }
 
     /// /item/:item_id
@@ -118,10 +143,20 @@ impl ItemsApi {
     #[oai(path = "/item/:item_id", method = "delete", tag = "ApiTags::Items")]
     async fn delete_item(
         &self,
-        auth: AuthToken,
+        user: AuthToken,
         state: Data<&Arc<AppState>>,
         item_id: Path<String>,
     ) -> Result<()> {
+        User::has_permissions(
+            &state.database,
+            user,
+            "item",
+            Some(&item_id),
+            &[Permission::Delete],
+        )
+        .await
+        .ok_or(Error::from_status(StatusCode::UNAUTHORIZED))?;
+
         let item = Item::get_by_id(&state.database, &item_id.0)
             .await
             .unwrap()
@@ -146,7 +181,7 @@ impl ItemsApi {
             &state.database,
             user,
             "item",
-            Some(&item_id.0),
+            Some(&item_id),
             &[Permission::Read],
         )
         .await
@@ -167,11 +202,21 @@ impl ItemsApi {
     #[oai(path = "/item/:item_id", method = "patch", tag = "ApiTags::Items")]
     async fn edit_item(
         &self,
-        auth: AuthToken,
+        user: AuthToken,
         state: Data<&Arc<AppState>>,
         item_id: Path<String>,
         data: Json<ItemUpdatePayload>,
     ) -> Result<()> {
+        User::has_permissions(
+            &state.database,
+            user.clone(),
+            "item",
+            Some(&item_id),
+            &[Permission::Write],
+        )
+        .await
+        .ok_or(Error::from_status(StatusCode::UNAUTHORIZED))?;
+
         Item::edit_by_id(&state.search, &state.database, &data.0, &item_id.0)
             .await
             .unwrap();
@@ -180,7 +225,7 @@ impl ItemsApi {
             &state.database,
             "item",
             &item_id.0,
-            auth.ok().unwrap().session.user_id,
+            user.ok().unwrap().session.user_id,
             "edit",
             &serde_json::to_string(&data.0).unwrap(),
         )
@@ -197,9 +242,19 @@ impl ItemsApi {
     async fn get_item_logs(
         &self,
         state: Data<&Arc<AppState>>,
-        auth: AuthToken,
+        user: AuthToken,
         item_id: Path<String>,
     ) -> Result<Json<Vec<LogEntry>>> {
+        User::has_permissions(
+            &state.database,
+            user.clone(),
+            "item",
+            Some(&item_id),
+            &[Permission::Read],
+        )
+        .await
+        .ok_or(Error::from_status(StatusCode::UNAUTHORIZED))?;
+
         Ok(Json(
             LogEntry::find_by_resource(&state.database, "item", &item_id.0)
                 .await

@@ -10,10 +10,12 @@ use reqwest::StatusCode;
 use super::hash::hash_session;
 use crate::{models::sessions::Session, state::AppState};
 
+#[derive(Clone)]
 pub struct ActiveUser {
     pub session: Session,
 }
 
+#[derive(Clone)]
 pub enum AuthToken {
     Active(ActiveUser),
     None,
