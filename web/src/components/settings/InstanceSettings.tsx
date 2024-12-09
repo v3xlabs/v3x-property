@@ -33,7 +33,7 @@ export const InstanceSettings = () => {
             }}
         >
             <h2>Instance Settings</h2>
-            <pre className="bg-black/5 p-4 rounded-lg">
+            <pre className="bg-black/5 p-4 rounded-lg text-wrap">
                 {JSON.stringify(instanceSettings, undefined, 2)}
             </pre>
             <div>

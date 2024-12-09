@@ -4,10 +4,12 @@ import { createFileRoute } from '@tanstack/react-router';
 import { useAuth } from '@/api/auth';
 import { BASE_URL } from '@/api/core';
 import { getInstanceSettings } from '@/api/instance_settings';
+import { useMe } from '@/api/me';
 import { SearchTaskTable } from '@/components/search_tasks/SearchTaskTable';
 import { InstanceSettings } from '@/components/settings/InstanceSettings';
 import { Button } from '@/components/ui/Button';
 import { UserApiKeysTable } from '@/components/user_api_keys/UserApiKeysTable';
+import { UserProfile } from '@/components/UserProfile';
 import { SCPage } from '@/layouts/SimpleCenterPage';
 import { queryClient } from '@/util/query';
 
@@ -16,7 +18,7 @@ export const Route = createFileRoute('/settings/')({
         await queryClient.ensureQueryData(getInstanceSettings);
     },
     component: () => {
-        const { token } = useAuth();
+        const { token, clearAuthToken } = useAuth();
         const { mutate: indexAllItems } = useMutation({
             mutationFn: async () => {
                 const response = await fetch(BASE_URL + 'search/reindex', {
@@ -29,13 +31,21 @@ export const Route = createFileRoute('/settings/')({
                 return response.json();
             },
         });
+        const { data: meData } = useMe();
 
         return (
             <SCPage title="Settings">
-                <div className="card">
-                    Hello /settings!
+                {meData && (
+                    <div className="card">
+                        <UserProfile user_id={meData.user_id} />
+                    </div>
+                )}
+                <div className="card flex flex-row gap-2">
                     <Button onClick={() => indexAllItems()}>
                         Index All Items
+                    </Button>
+                    <Button onClick={() => clearAuthToken()} variant="warning">
+                        Logout
                     </Button>
                 </div>
                 <div className="card">

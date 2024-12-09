@@ -3,7 +3,15 @@
 import { Link } from '@tanstack/react-router';
 import clsx from 'clsx';
 import { useState } from 'react';
-import { FiBox, FiLogOut, FiPlusCircle, FiSearch, FiTag } from 'react-icons/fi';
+import {
+    FiBox,
+    FiLogIn,
+    FiLogOut,
+    FiPlusCircle,
+    FiSearch,
+    FiSettings,
+    FiTag,
+} from 'react-icons/fi';
 
 import { useAuth } from '@/api/auth';
 import { BASE_URL } from '@/api/core';
@@ -52,6 +60,7 @@ export const Navbar = () => {
             name: 'Logs',
             icon: <FiLogOut />,
             slug: 'logs-navlink',
+            desktopOnly: true,
         },
     ];
 
@@ -62,9 +71,15 @@ export const Navbar = () => {
             className="w-full bg-white border-t md:border-b h-16 md:h-auto flex items-center justify-between md:justify-start fixed bottom-0 md:static"
         >
             <div className="flex md:hidden w-full overflow-x-auto">
-                <ul className="flex flex-row items-center justify-between w-full">
-                    {navLinks.map(({ path, name, icon, slug }) => (
-                        <li key={path} className="flex-1 text-center">
+                <ul className="grid grid-cols-5 w-full">
+                    {navLinks.map(({ path, name, icon, slug, desktopOnly }) => (
+                        <li
+                            key={path}
+                            className={clsx(
+                                'flex-1 text-center',
+                                desktopOnly && 'hidden md:block'
+                            )}
+                        >
                             <Link
                                 to={path}
                                 data-testid={slug}
@@ -75,6 +90,27 @@ export const Navbar = () => {
                             </Link>
                         </li>
                     ))}
+                    {meData ? (
+                        <li>
+                            <Link
+                                to="/settings"
+                                className="flex flex-col items-center justify-center py-2 hover:bg-black/5"
+                            >
+                                <FiSettings />
+                                <span className="text-xs">Settings</span>
+                            </Link>
+                        </li>
+                    ) : (
+                        <li>
+                            <Link
+                                to={login_here_url}
+                                className="flex flex-col items-center justify-center py-2 hover:bg-black/5"
+                            >
+                                <FiLogIn />
+                                <span className="text-xs">Login</span>
+                            </Link>
+                        </li>
+                    )}
                 </ul>
             </div>
             <div
