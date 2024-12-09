@@ -36,6 +36,8 @@ pnpm install
 pnpm dev
 ```
 
+You can then visit the frontend at [http://localhost:5173](http://localhost:5173) and the api docs at [http://localhost:3000/docs](http://localhost:3000/docs).
+
 ## Brainrot
 
 Every hosted instance has a FQDN url, for example `v3x.property` or `property.example.com`.
@@ -49,6 +51,8 @@ An instance keeps track of the state of all entities within it.
 To avoid having to maintain "yet another authentication system", we support OpenID Connect OAuth 2.0.
 This means you can use any OpenID Connect provider, such as [Keycloak](https://www.keycloak.org/), [Okta](https://www.okta.com/), [Auth0](https://auth0.com/), etc.
 Identity therefore is dis-coupled from the engine and can be ported cross instances.
+
+The development environment is configured using keycloak.
 
 ### Entity Identity
 
