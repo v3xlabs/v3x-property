@@ -254,6 +254,7 @@ impl Item {
 
         if let Some(search) = search {
             let search_item = item.into_search(db).await.unwrap();
+
             search.index_item(db, &search_item).await.unwrap();
         }
 

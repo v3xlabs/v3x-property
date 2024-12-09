@@ -129,14 +129,30 @@ impl Search {
         let batches = items.chunks(10);
 
         for batch in batches {
-            let x = self
+            info!("Indexing batch of {} items", batch.len());
+            // async iter through batch to convert to SearchableItem
+            let searchable_items = futures::future::join_all(
+                batch
+                    .iter()
+                    .map(|item| item.into_search(db))
+                    .collect::<Vec<_>>(),
+            )
+            .await;
+
+            // unwrap the SearchableItem
+            let searchable_items = searchable_items
+                .iter()
+                .map(|item| item.as_ref().unwrap())
+                .collect::<Vec<_>>();
+
+            let task = self
                 .client
                 .index("items")
-                .add_documents(batch, Some("item_id"))
+                .add_documents(&searchable_items, Some("item_id"))
                 .await
                 .unwrap();
 
-            SearchTask::new(db, x.task_uid, x.status.into())
+            SearchTask::new(db, task.task_uid, task.status.into())
                 .await
                 .unwrap();
         }
