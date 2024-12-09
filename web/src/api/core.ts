@@ -299,6 +299,10 @@ export const apiRequest = async <
         throw new ApiError('Token expired', 401);
     }
 
+    if (response.status === 403) {
+        throw new ApiError('Forbidden', 403);
+    }
+
     if (!response.ok) {
         throw ApiError.fromResponse(response);
     }

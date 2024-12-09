@@ -5,6 +5,7 @@ import clsx from 'clsx';
 import { FC } from 'react';
 import { match } from 'ts-pattern';
 
+import { ApiError } from '@/api/core';
 import { formatId, useInstanceSettings } from '@/api/instance_settings';
 import { ApiItemResponse, useItemById, useItemMedia } from '@/api/item';
 import { useMedia } from '@/api/media';
@@ -92,7 +93,7 @@ export const ItemPreviewHoverCard: FC<{
 const UNKNOWN_ITEM = 'Unknown Item';
 
 export const ItemPreview: FC<Properties> = ({ item_id, variant }) => {
-    const { data: item, isLoading, isError } = useItemById(item_id);
+    const { data: item, isLoading, isError, error } = useItemById(item_id);
     const { data: media } = useItemMedia(item_id);
     const { data: mediaData } = useMedia(media?.[0]);
     const { data: instanceSettings } = useInstanceSettings();
@@ -105,10 +106,14 @@ export const ItemPreview: FC<Properties> = ({ item_id, variant }) => {
             return link;
         }
 
+        if (!instanceSettings) {
+            return;
+        }
+
         return (
-            instanceSettings?.modules.storage.endpoint_url +
+            instanceSettings.modules.storage.endpoint_url +
             '/' +
-            instanceSettings?.modules.storage.bucket +
+            instanceSettings.modules.storage.bucket +
             '/' +
             link
         );
@@ -116,6 +121,14 @@ export const ItemPreview: FC<Properties> = ({ item_id, variant }) => {
 
     if (isLoading) {
         return <div>Loading...</div>;
+    }
+
+    if (isError && error instanceof ApiError && error.status === 403) {
+        return (
+            <div className="bg-red-50 px-2 py-0.5 border border-red-200 rounded-md">
+                Inaccessible Resource
+            </div>
+        );
     }
 
     return (

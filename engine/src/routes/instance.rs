@@ -34,7 +34,7 @@ impl InstanceApi {
             &[Permission::Read],
         )
         .await
-        .ok_or(Error::from_status(StatusCode::UNAUTHORIZED))?;
+        .ok_or(Error::from_status(StatusCode::FORBIDDEN))?;
 
         Ok(Json(InstanceSettings::load(&state).await))
     }
@@ -57,7 +57,7 @@ impl InstanceApi {
             &[Permission::Write],
         )
         .await
-        .ok_or(Error::from_status(StatusCode::UNAUTHORIZED))?;
+        .ok_or(Error::from_status(StatusCode::FORBIDDEN))?;
 
         InstanceSettings::update_instance_settings(&state.database, &settings).await;
         Ok(())

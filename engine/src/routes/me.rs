@@ -18,6 +18,8 @@ pub enum MeResponse {
     InternalError,
     #[oai(status = 401)]
     Unauthorized,
+    #[oai(status = 403)]
+    Forbidden,
 }
 
 // impl FromResidual<Result<Infallible, MeResponse>> for MeResponse {
@@ -46,12 +48,12 @@ impl MeApi {
     /// Get the current user
     #[oai(path = "/me", method = "get", tag = "ApiTags::User")]
     pub async fn me(&self, state: Data<&Arc<AppState>>, token: AuthToken) -> Result<MeResponse> {
-        let active_user = token.ok().ok_or(MeResponse::Unauthorized)?;
+        let active_user = token.ok().ok_or(MeResponse::Forbidden)?;
 
         let user_entry = UserEntry::find_by_user_id(active_user.session.user_id, &state.database)
             .await
-            .map_err(|_| MeResponse::Unauthorized)?
-            .ok_or(MeResponse::Unauthorized)?;
+            .map_err(|_| MeResponse::Forbidden)?
+            .ok_or(MeResponse::Forbidden)?;
         Ok(MeResponse::Ok(Json(User::from(user_entry))))
     }
 }

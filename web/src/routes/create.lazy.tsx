@@ -5,6 +5,7 @@ import { FiArrowRight } from 'react-icons/fi';
 import { isValidId } from '@/api/generate_id';
 import { formatId, useInstanceSettings } from '@/api/instance_settings';
 import { useCreateItem } from '@/api/item';
+import { useHasPolicy } from '@/api/policy';
 import { NewItemIdInput } from '@/components/input/NewItemIdInput';
 import { Button } from '@/components/ui/Button';
 import { SCPage } from '@/layouts/SimpleCenterPage';
@@ -13,6 +14,7 @@ const component = () => {
     const { data: instanceSettings } = useInstanceSettings();
     const navigate = useNavigate();
     const { mutateAsync: createItem } = useCreateItem();
+    const { ok: canCreateItem } = useHasPolicy('item', 'create', 'write');
 
     const { Field, Subscribe, handleSubmit } = useForm({
         defaultValues: {
@@ -32,6 +34,14 @@ const component = () => {
             });
         },
     });
+
+    if (!canCreateItem) {
+        return (
+            <div className="p-4">
+                You do not have permission to create items
+            </div>
+        );
+    }
 
     // const isDisabled = !state.isFormValid;
     // const formattedItemId = formatId(state.values.itemId, instanceSettings);

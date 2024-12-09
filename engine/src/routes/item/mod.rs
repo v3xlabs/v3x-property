@@ -73,7 +73,7 @@ impl ItemsApi {
             &[Permission::Read],
         )
         .await
-        .ok_or(Error::from_status(StatusCode::UNAUTHORIZED))?;
+        .ok_or(Error::from_status(StatusCode::FORBIDDEN))?;
 
         Ok(Json(
             Item::get_by_owner_id(&state.database, user.ok().unwrap().session.user_id)
@@ -100,7 +100,7 @@ impl ItemsApi {
             &[Permission::Write],
         )
         .await
-        .ok_or(Error::from_status(StatusCode::UNAUTHORIZED))?;
+        .ok_or(Error::from_status(StatusCode::FORBIDDEN))?;
 
         Ok(Json(
             Item {
@@ -128,7 +128,7 @@ impl ItemsApi {
     ) -> Result<Json<ItemIdResponse>> {
         User::has_permissions(&state.database, user, "item", None, &[Permission::Read])
             .await
-            .ok_or(Error::from_status(StatusCode::UNAUTHORIZED))?;
+            .ok_or(Error::from_status(StatusCode::FORBIDDEN))?;
 
         info!("Getting next item id");
 
@@ -155,7 +155,7 @@ impl ItemsApi {
             &[Permission::Delete],
         )
         .await
-        .ok_or(Error::from_status(StatusCode::UNAUTHORIZED))?;
+        .ok_or(Error::from_status(StatusCode::FORBIDDEN))?;
 
         let item = Item::get_by_id(&state.database, &item_id.0)
             .await
@@ -185,7 +185,7 @@ impl ItemsApi {
             &[Permission::Read],
         )
         .await
-        .ok_or(Error::from_status(StatusCode::UNAUTHORIZED))?;
+        .ok_or(Error::from_status(StatusCode::FORBIDDEN))?;
 
         let item = Item::get_by_id(&state.database, &item_id.0).await.unwrap();
 
@@ -215,7 +215,7 @@ impl ItemsApi {
             &[Permission::Write],
         )
         .await
-        .ok_or(Error::from_status(StatusCode::UNAUTHORIZED))?;
+        .ok_or(Error::from_status(StatusCode::FORBIDDEN))?;
 
         Item::edit_by_id(&state.search, &state.database, &data.0, &item_id.0)
             .await
@@ -253,7 +253,7 @@ impl ItemsApi {
             &[Permission::Read],
         )
         .await
-        .ok_or(Error::from_status(StatusCode::UNAUTHORIZED))?;
+        .ok_or(Error::from_status(StatusCode::FORBIDDEN))?;
 
         Ok(Json(
             LogEntry::find_by_resource(&state.database, "item", &item_id.0)

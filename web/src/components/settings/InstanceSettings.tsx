@@ -39,7 +39,6 @@ export const InstanceSettings = () => {
 
     return (
         <fieldset disabled={!canEditSettings}>
-            {canEditSettings ? 'Edit' : 'View'}
             <form
                 onSubmit={(event) => {
                     event.preventDefault();

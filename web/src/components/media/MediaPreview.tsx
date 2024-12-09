@@ -8,12 +8,12 @@ import { useDebouncedCallback } from 'use-debounce';
 
 import { useAuth } from '@/api/auth';
 import { BASE_URL } from '@/api/core';
+import { useInstanceSettings } from '@/api/instance_settings';
 import { useMedia } from '@/api/media';
 import { ErrorBoundary } from '@/components/ErrorBoundary';
 import { StlPreviewWindow } from '@/components/stl_preview/StlPreview';
 
 import { Button } from '../ui/Button';
-import { useInstanceSettings } from '@/api/instance_settings';
 
 export const MediaPreview: FC<{
     media_id?: number;
@@ -37,10 +37,14 @@ export const MediaPreview: FC<{
             return link;
         }
 
+        if (!instanceSettings) {
+            return;
+        }
+
         return (
-            instanceSettings?.modules.storage.endpoint_url +
+            instanceSettings.modules.storage.endpoint_url +
             '/' +
-            instanceSettings?.modules.storage.bucket +
+            instanceSettings.modules.storage.bucket +
             '/' +
             link
         );
