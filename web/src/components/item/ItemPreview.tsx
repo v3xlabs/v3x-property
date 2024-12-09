@@ -23,45 +23,52 @@ export const AvatarHolder: FC<{
     size?: 'compact' | 'default';
 }> = ({ image, initials, alt, size }) => {
     return (
-        <Avatar.Root
+        <div
             className={clsx(
-                'inline-flex items-center justify-center align-middle overflow-hidden select-none w-11 h-11 rounded-md bg-gray-300',
-                size === 'compact' && '!size-6'
+                size === 'compact' ? '!size-6' : 'w-11 h-11',
+                'aspect-square'
             )}
         >
-            {image && (
-                <Avatar.Image
-                    className={clsx(
-                        'w-full h-full object-cover',
-                        size === 'compact' && '!size-6'
-                    )}
-                    src={image}
-                    alt={alt || 'Unknown Item'}
-                />
-            )}
-            <Avatar.Fallback
+            <Avatar.Root
                 className={clsx(
-                    'w-full h-full flex items-center justify-center bg-gray-200 text-pink-500 text-base leading-none font-medium',
-                    size === 'compact' && '!text-[0.6em]'
+                    'inline-flex items-center justify-center align-middle overflow-hidden select-none w-full h-full rounded-md bg-gray-300 size-8'
                 )}
-                delayMs={600}
             >
-                {initials || 'X'}
-            </Avatar.Fallback>
-        </Avatar.Root>
+                {image && (
+                    <Avatar.Image
+                        className={clsx(
+                            'w-full h-full object-cover',
+                            size === 'compact' && '!size-6'
+                        )}
+                        src={image}
+                        alt={alt || 'Unknown Item'}
+                    />
+                )}
+                <Avatar.Fallback
+                    className={clsx(
+                        'w-full h-full flex items-center justify-center bg-gray-200 text-pink-500 text-base leading-none font-medium',
+                        size === 'compact' && '!text-[0.6em]'
+                    )}
+                    delayMs={600}
+                >
+                    {initials || 'X'}
+                </Avatar.Fallback>
+            </Avatar.Root>
+        </div>
     );
 };
 
 export const ItemPreviewHoverCard: FC<{
     item?: ApiItemResponse;
-}> = ({ item }) => {
+    mediaUrl?: string;
+}> = ({ item, mediaUrl }) => {
     const { data: instanceSettings } = useInstanceSettings();
     const formattedItemId = formatId(item?.item_id, instanceSettings);
 
     return (
         <HoverCard.Content className="HoverCardContent border" sideOffset={5}>
             <div className="flex flex-col gap-3">
-                <AvatarHolder image={item?.name} initials={''} />
+                <AvatarHolder image={mediaUrl} initials={''} />
                 <div className="flex flex-col gap-3">
                     <div>
                         <div className="Text bold">{item?.name}</div>
@@ -73,14 +80,14 @@ export const ItemPreviewHoverCard: FC<{
                                         UI. Free and open-source.
                                     </div> */}
                     <div className="flex gap-3">
-                        <div className="flex gap-1">
+                        {/* <div className="flex gap-1">
                             <div className="Text bold">0</div>{' '}
                             <div className="Text faded">Following</div>
                         </div>
                         <div className="flex gap-1">
                             <div className="Text bold">2,900</div>{' '}
                             <div className="Text faded">Followers</div>
-                        </div>
+                        </div> */}
                     </div>
                 </div>
             </div>
@@ -152,7 +159,7 @@ export const ItemPreview: FC<Properties> = ({ item_id, variant }) => {
                                 />
                             </Link>
                         </HoverCard.Trigger>
-                        <ItemPreviewHoverCard item={item!} />
+                        <ItemPreviewHoverCard item={item!} mediaUrl={mediaUrl} />
                     </HoverCard.Root>
                 ))
                 .with({ variant: 'compact' }, () => (
@@ -172,8 +179,8 @@ export const ItemPreview: FC<Properties> = ({ item_id, variant }) => {
                                     size="compact"
                                     alt={item?.name || UNKNOWN_ITEM}
                                 />
-                                <span className="flex gap-0.5 items-baseline justify-start">
-                                    <span className="Text !leading-[1.2em]">
+                                <span className="flex gap-0.5 items-baseline justify-start overflow-hidden">
+                                    <span className="Text text-ellipsis whitespace-nowrap">
                                         {item?.name || UNKNOWN_ITEM}
                                     </span>
                                     {/* TODO: Figure out why -z-10 is needed to prevent overlap with user preview in logs page */}
@@ -185,7 +192,7 @@ export const ItemPreview: FC<Properties> = ({ item_id, variant }) => {
                                 </span>
                             </Link>
                         </HoverCard.Trigger>
-                        <ItemPreviewHoverCard item={item!} />
+                        <ItemPreviewHoverCard item={item!} mediaUrl={mediaUrl}/>
                     </HoverCard.Root>
                 ))
                 .otherwise(() => (
@@ -204,19 +211,19 @@ export const ItemPreview: FC<Properties> = ({ item_id, variant }) => {
                                     initials={''}
                                     alt={item?.name || UNKNOWN_ITEM}
                                 />
-                                <div className="flex flex-col gap-1 justify-center">
-                                    <div className="Text !leading-[0.75em]">
+                                <div className="flex flex-col -space-y-1.5 justify-center overflow-hidden">
+                                    <div className="Text overflow-hidden text-ellipsis whitespace-nowrap">
                                         {item?.name || UNKNOWN_ITEM}
                                     </div>
                                     {formattedItemId && (
-                                        <div className="Text faded !leading-[0.75em]">
+                                        <div className="Text faded">
                                             #{formattedItemId}
                                         </div>
                                     )}
                                 </div>
                             </Link>
                         </HoverCard.Trigger>
-                        <ItemPreviewHoverCard item={item!} />
+                        <ItemPreviewHoverCard item={item!} mediaUrl={mediaUrl} />
                     </HoverCard.Root>
                 ))}
         </div>
