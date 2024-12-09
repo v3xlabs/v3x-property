@@ -239,8 +239,10 @@ impl Item {
         if let Some(fields) = &data.fields {
             for field in fields {
                 if field.value.is_null() {
+                    info!("Deleting field {} for item {}", field.definition_id, item_id);
                     ItemField::delete(db, item_id, &field.definition_id).await.unwrap();
                 } else {
+                    info!("Upserting field {} for item {}", field.definition_id, item_id);
                     ItemField::upsert(db, item_id, &field.definition_id, &field.value).await.unwrap();
                 }
             }
