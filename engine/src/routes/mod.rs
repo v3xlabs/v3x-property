@@ -1,6 +1,7 @@
 use std::{env, sync::Arc};
 
 use async_std::path::PathBuf;
+use fields::FieldsApi;
 use instance::InstanceApi;
 use item::{media::ItemMediaApi, ItemsApi};
 use logs::LogsApi;
@@ -31,6 +32,7 @@ pub mod product;
 pub mod search;
 pub mod sessions;
 pub mod users;
+pub mod fields;
 
 #[derive(Tags)]
 enum ApiTags {
@@ -40,6 +42,8 @@ enum ApiTags {
     Product,
     /// Media-related operations
     Media,
+    /// Fields-related operations
+    Fields,
     /// Logs-related operations
     Logs,
     /// Search-related operations
@@ -65,6 +69,8 @@ fn get_api() -> impl OpenApi {
         // Search
         SearchApi,
         SearchTaskApi,
+        // Fields
+        FieldsApi,
         // Logs
         LogsApi,
         // Me

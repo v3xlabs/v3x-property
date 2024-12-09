@@ -4,6 +4,7 @@ use chrono::{DateTime, Utc};
 use poem_openapi::{Enum, Object};
 use serde::{Deserialize, Serialize};
 use sqlx::{query, FromRow};
+use tracing::debug;
 
 use crate::{database::Database, models::user::user::User};
 
@@ -171,7 +172,7 @@ impl User {
         let user_id = user.unwrap_or(-1).to_string();
         let is_authed = user.is_some().to_string();
 
-        tracing::info!(
+        debug!(
             "Enumerating permissions for user: {:?} on resource: {:?} / {:?}",
             user_id,
             resource_type,

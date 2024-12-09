@@ -13,7 +13,7 @@ use tracing::info;
 use super::ApiTags;
 use crate::{
     auth::{middleware::AuthUser, permissions::Action},
-    models::{item::Item, log::LogEntry},
+    models::{item::{field::ItemField, Item}, log::LogEntry},
     state::AppState,
 };
 
@@ -194,6 +194,22 @@ impl ItemsApi {
         .unwrap();
 
         Ok(())
+    }
+
+    /// /item/:item_id/fields
+    ///
+    /// Get all fields for an Item by `item_id`
+    #[oai(path = "/item/:item_id/fields", method = "get", tag = "ApiTags::Items")]
+    async fn get_item_fields(
+        &self,
+        state: Data<&Arc<AppState>>,
+        user: AuthUser,
+        item_id: Path<String>,
+    ) -> Result<Json<Vec<ItemField>>> {
+        user.check_policy("item", item_id.0.to_string().as_str(), Action::Read)
+            .await?;
+
+        Ok(Json(ItemField::get_by_item_id(&state.database, &item_id.0).await.unwrap()))
     }
 
     /// /item/:item_id/logs

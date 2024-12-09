@@ -6,9 +6,13 @@ use sqlx::Type;
 #[sqlx(type_name = "text")]
 #[sqlx(rename_all = "lowercase")]
 pub enum FieldKind {
+    /// A string field
     String,
+    /// A number field
     Number,
+    /// A boolean field
     Boolean,
+    /// A JSON field
     Json,
 }
 
