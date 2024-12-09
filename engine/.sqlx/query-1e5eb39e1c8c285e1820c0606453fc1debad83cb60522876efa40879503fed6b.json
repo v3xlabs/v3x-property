@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "INSERT INTO field_definitions (kind, name) VALUES ($1, $2) RETURNING *",
+  "query": "UPDATE field_definitions SET name = $2, kind = $3, description = $4, placeholder = $5 WHERE definition_id = $1 RETURNING *",
   "describe": {
     "columns": [
       {
@@ -42,6 +42,9 @@
     "parameters": {
       "Left": [
         "Text",
+        "Text",
+        "Text",
+        "Text",
         "Text"
       ]
     },
@@ -55,5 +58,5 @@
       true
     ]
   },
-  "hash": "e0ea0e79f35d632eea5a1ed2ad18727d1c02dc6da3fd06625cf32d343dc423f3"
+  "hash": "1e5eb39e1c8c285e1820c0606453fc1debad83cb60522876efa40879503fed6b"
 }

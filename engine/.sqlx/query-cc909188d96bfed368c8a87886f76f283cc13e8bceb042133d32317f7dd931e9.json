@@ -1,0 +1,70 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "SELECT\n                item_fields.*,\n                field_definitions.name AS definition_name,\n                field_definitions.kind AS definition_kind,\n                field_definitions.description AS definition_description,\n                field_definitions.placeholder AS definition_placeholder\n            FROM item_fields\n            JOIN field_definitions ON item_fields.definition_id = field_definitions.definition_id\n            WHERE item_fields.item_id = $1",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "item_id",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 1,
+        "name": "definition_id",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 2,
+        "name": "value",
+        "type_info": "Jsonb"
+      },
+      {
+        "ordinal": 3,
+        "name": "created_at",
+        "type_info": "Timestamptz"
+      },
+      {
+        "ordinal": 4,
+        "name": "updated_at",
+        "type_info": "Timestamptz"
+      },
+      {
+        "ordinal": 5,
+        "name": "definition_name",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 6,
+        "name": "definition_kind",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 7,
+        "name": "definition_description",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 8,
+        "name": "definition_placeholder",
+        "type_info": "Text"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Text"
+      ]
+    },
+    "nullable": [
+      false,
+      false,
+      false,
+      true,
+      true,
+      false,
+      false,
+      true,
+      true
+    ]
+  },
+  "hash": "cc909188d96bfed368c8a87886f76f283cc13e8bceb042133d32317f7dd931e9"
+}
