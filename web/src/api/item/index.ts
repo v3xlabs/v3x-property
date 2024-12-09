@@ -84,6 +84,22 @@ export const useItemLogs = (item_id: string) => {
     return useQuery(getItemLogs(item_id));
 };
 
+export const getItemTags = (item_id: string) =>
+    queryOptions({
+        queryKey: ['item', item_id, 'tags'],
+        queryFn: async () => {
+            const response = await apiRequest('/item/{item_id}/tags', 'get', {
+                path: { item_id },
+            });
+
+            return response.data;
+        },
+    });
+
+export const useItemTags = (item_id: string) => {
+    return useQuery(getItemTags(item_id));
+};
+
 // Create item
 // This endpoint provisions the desired item_id with a placeholder item
 export const useCreateItem = () => {

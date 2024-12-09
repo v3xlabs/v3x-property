@@ -18,7 +18,7 @@ use crate::{
     models::{
         field::kind::FieldKind,
         item::{field::ItemField, Item},
-        log::LogEntry,
+        log::LogEntry, tags::Tag,
     },
     state::AppState,
 };
@@ -242,6 +242,22 @@ impl ItemsApi {
                 .await
                 .unwrap(),
         ))
+    }
+
+    /// /item/:item_id/tags
+    ///
+    /// Get all tags for an Item by `item_id`
+    #[oai(path = "/item/:item_id/tags", method = "get", tag = "ApiTags::Items")]
+    async fn get_item_tags(
+        &self,
+        state: Data<&Arc<AppState>>,
+        user: AuthUser,
+        item_id: Path<String>,
+    ) -> Result<Json<Vec<Tag>>> {
+        user.check_policy("item", item_id.0.to_string().as_str(), Action::Read)
+            .await?;
+
+        Ok(Json(Tag::get_by_item_id(&state.database, &item_id.0).await.unwrap()))
     }
 
     /// /item/:item_id/logs

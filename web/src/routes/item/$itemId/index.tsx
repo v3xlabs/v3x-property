@@ -11,10 +11,11 @@ import {
 import { useEffect } from 'react';
 
 import { formatId, getInstanceSettings } from '@/api/instance_settings';
-import { getItemById, getItemMedia } from '@/api/item';
+import { getItemById, getItemMedia, getItemTags } from '@/api/item';
 import { getPolicy } from '@/api/policy';
 import { ItemLogSection } from '@/components/logs/ItemLogSection';
 import { MediaGallery } from '@/components/media/MediaGallery';
+import { Tag } from '@/components/Tag';
 import { Button } from '@/components/ui/Button';
 import { UserProfile } from '@/components/UserProfile';
 import { SCPage } from '@/layouts/SimpleCenterPage';
@@ -49,6 +50,7 @@ export const Route = createFileRoute('/item/$itemId/')({
         return Promise.all([
             queryClient.ensureQueryData(getItemById(params.itemId)),
             queryClient.ensureQueryData(getItemMedia(params.itemId)),
+            queryClient.ensureQueryData(getItemTags(params.itemId)),
         ]);
     },
     component: () => {
@@ -56,6 +58,7 @@ export const Route = createFileRoute('/item/$itemId/')({
 
         const item = useSuspenseQuery(getItemById(itemId));
         const media = useSuspenseQuery(getItemMedia(itemId));
+        const { data: tags } = useSuspenseQuery(getItemTags(itemId));
 
         return (
             <SCPage
@@ -82,6 +85,14 @@ export const Route = createFileRoute('/item/$itemId/')({
                     </div>
                     <div>
                         <p>{item.data?.product_id}</p>
+                    </div>
+                    <div>
+                        <h3>Tags</h3>
+                        <div className="flex flex-wrap gap-2">
+                            {tags?.map((tag) => (
+                                <Tag key={tag.tag_id} tag={tag} />
+                            ))}
+                        </div>
                     </div>
                 </div>
                 <ItemLogSection item_id={itemId} />

@@ -249,6 +249,46 @@ export type paths = {
         patch?: never;
         trace?: never;
     };
+    "/item/{item_id}/tags": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * /item/:item_id/tags
+         * @description Get all tags for an Item by `item_id`
+         */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    item_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json; charset=utf-8": components["schemas"]["Tag"][];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/item/{item_id}/logs": {
         parameters: {
             query?: never;

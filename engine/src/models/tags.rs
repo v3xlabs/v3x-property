@@ -26,6 +26,12 @@ impl Tag {
             .await
     }
 
+    pub async fn get_by_item_id(db: &Database, item_id: &str) -> Result<Vec<Tag>, sqlx::Error> {
+        query_as!(Tag, "SELECT t.* FROM tags t JOIN items_to_tags it ON t.tag_id = it.tag_id WHERE it.item_id = $1", item_id)
+            .fetch_all(&db.pool)
+            .await
+    }
+
     pub async fn delete(db: &Database, tag_id: i32) -> Result<Tag, sqlx::Error> {
         query_as!(Tag, "DELETE FROM tags WHERE tag_id = $1 RETURNING *", tag_id)
             .fetch_one(&db.pool)
