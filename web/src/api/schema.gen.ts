@@ -1943,6 +1943,7 @@ export type components = {
             owner_id?: number;
             /** Format: int32 */
             location_id?: number;
+            tags?: components["schemas"]["SearchableItemTag"][];
             fields?: components["schemas"]["SearchableItemField"][];
             /** Format: date-time */
             created_at?: string;
@@ -1953,6 +1954,10 @@ export type components = {
         SearchableItemField: {
             definition_id: string;
             value: unknown;
+        };
+        SearchableItemTag: {
+            tag_id: string;
+            name: string;
         };
         SearchableItemVectors: {
             ollama: components["schemas"]["SearchableItemVectorsOllama"];

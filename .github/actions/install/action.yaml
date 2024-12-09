@@ -17,8 +17,9 @@ runs:
       with:
         node-version: 21
         cache: pnpm
+        cache-dependency-path: 'web'
+
         # cache: ''
-        # cache-dependency-path: 'web'
 
     - name: Install dependencies
       run: cd web && pnpm install
