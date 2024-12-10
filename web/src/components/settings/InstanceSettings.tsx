@@ -10,6 +10,7 @@ import { useHasPolicy } from '@/api/policy';
 
 import { BaseInput } from '../input/BaseInput';
 import { Button } from '../ui/Button';
+import * as Dropdown from '../ui/Dropdown';
 
 export const InstanceSettings = () => {
     const { data: instanceSettings } = useSuspenseQuery(getInstanceSettings);
@@ -56,16 +57,41 @@ export const InstanceSettings = () => {
                         children={(field) => {
                             return (
                                 <>
-                                    {/* @ts-ignore */}
-                                    <select {...field.props}>
-                                        {['upper', 'lower'].map((value) => {
-                                            return (
-                                                <option value={value}>
-                                                    {value}
-                                                </option>
-                                            );
-                                        })}
-                                    </select>
+                                    <Dropdown.Root>
+                                        <Dropdown.Trigger asChild>
+                                            <Button variant="default">
+                                                {field.state.value}
+                                            </Button>
+                                        </Dropdown.Trigger>
+                                        <Dropdown.Content className="w-56">
+                                            <Dropdown.Label>
+                                                ID Casing Preference
+                                            </Dropdown.Label>
+                                            <Dropdown.Separator />
+                                            <Dropdown.RadioGroup
+                                                value={field.state.value}
+                                                onValueChange={(value) =>
+                                                    field.handleChange(
+                                                        value as
+                                                            | 'upper'
+                                                            | 'lower'
+                                                    )
+                                                }
+                                            >
+                                                {['upper', 'lower'].map(
+                                                    (value) => {
+                                                        return (
+                                                            <Dropdown.RadioItem
+                                                                value={value}
+                                                            >
+                                                                {value}
+                                                            </Dropdown.RadioItem>
+                                                        );
+                                                    }
+                                                )}
+                                            </Dropdown.RadioGroup>
+                                        </Dropdown.Content>
+                                    </Dropdown.Root>
                                 </>
                             );
                         }}

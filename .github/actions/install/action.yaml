@@ -19,8 +19,6 @@ runs:
         cache: pnpm
         cache-dependency-path: 'web'
 
-        # cache: ''
-
     - name: Install dependencies
       run: cd web && pnpm install
       shell: bash
