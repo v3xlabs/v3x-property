@@ -18,7 +18,7 @@ export const Route = createLazyFileRoute('/items/')({
                 width="2xl"
                 suffix={
                     <div className="flex justify-end items-center gap-2">
-                        <Button variant="primary" size="icon" asChild>
+                        <Button variant="default" size="icon" asChild>
                             <Link to="/create">
                                 <FaPlus />
                             </Link>

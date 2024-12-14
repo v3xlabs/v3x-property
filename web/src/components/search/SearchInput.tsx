@@ -7,7 +7,7 @@ import { BaseInput } from '@/components/input/BaseInput';
 import { ItemPreviewSearch } from '../item/ItemPreviewSearch';
 import { Button } from '../ui/Button';
 
-export const SearchInput = () => {
+export const SearchInput = ({ variant }: { variant: 'full' | 'large' }) => {
     const [query, setQuery] = useState('');
     const [debounced] = useDebounce(query, 200);
     const { data: searchResults } = useSearch(debounced);
@@ -40,7 +40,10 @@ export const SearchInput = () => {
                 <div className="w-full space-y-2" data-testid="search-results">
                     {searchResults.map((result) => (
                         <div key={result.item_id}>
-                            <ItemPreviewSearch item={result} />
+                            <ItemPreviewSearch
+                                item={result}
+                                variant={variant}
+                            />
                         </div>
                     ))}
                 </div>

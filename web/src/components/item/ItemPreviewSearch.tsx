@@ -2,10 +2,16 @@ import { SearchableItem } from '@/api/search';
 
 import { ItemPreview } from './ItemPreview';
 
-export const ItemPreviewSearch = ({ item }: { item: SearchableItem }) => {
+export const ItemPreviewSearch = ({
+    item,
+    variant,
+}: {
+    item: SearchableItem;
+    variant: 'full' | 'large';
+}) => {
     return (
         <div className="card no-padding">
-            <ItemPreview item_id={item.item_id.toString()} />
+            <ItemPreview item_id={item.item_id.toString()} variant={variant} />
         </div>
     );
 };

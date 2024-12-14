@@ -27,7 +27,7 @@ export const BaseInput = ({
     const id = useId();
 
     return (
-        <div className="space-y-2">
+        <div className="space-y-2 w-full">
             {label && <Label htmlFor={id}>{label}</Label>}
             <div
                 className={clsx(
