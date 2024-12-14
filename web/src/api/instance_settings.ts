@@ -64,3 +64,18 @@ export const formatId = (
 
     return formatIdCasing(trimmedId, instanceSettings?.id_casing_preference);
 };
+
+export const useInstanceStatistics = () => {
+    return useQuery({
+        queryKey: ['instance_statistics'],
+        queryFn: async () => {
+            const response = await apiRequest(
+                '/instance/statistics',
+                'get',
+                {}
+            );
+
+            return response.data;
+        },
+    });
+};

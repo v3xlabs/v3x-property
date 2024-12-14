@@ -1631,6 +1631,44 @@ export type paths = {
         patch?: never;
         trace?: never;
     };
+    "/instance/statistics": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * /instance/statistics
+         * @description Get the instance statistics
+         */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json; charset=utf-8": components["schemas"]["InstanceStatistics"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/login": {
         parameters: {
             query?: never;
@@ -1798,6 +1836,16 @@ export type components = {
             id_casing_preference: components["schemas"]["IdCasingPreference"];
             /** Format: int64 */
             last_item_id: number;
+        };
+        InstanceStatistics: {
+            /** Format: int64 */
+            user_count: number;
+            /** Format: int64 */
+            item_count: number;
+            /** Format: int64 */
+            media_count: number;
+            /** Format: int64 */
+            log_count: number;
         };
         Item: {
             item_id: string;

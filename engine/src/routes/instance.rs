@@ -9,7 +9,7 @@ use crate::{
         middleware::AuthUser,
         permissions::Action,
     },
-    models::settings::{InstanceSettings, InstanceSettingsConfigurable},
+    models::settings::{statistics::InstanceStatistics, InstanceSettings, InstanceSettingsConfigurable},
     state::AppState,
 };
 pub struct InstanceApi;
@@ -46,5 +46,13 @@ impl InstanceApi {
 
         InstanceSettings::update_instance_settings(&state.database, &settings).await;
         Ok(())
+    }
+
+    /// /instance/statistics
+    /// 
+    /// Get the instance statistics
+    #[oai(path = "/instance/statistics", method = "get", tag = "ApiTags::Instance")]
+    pub async fn statistics(&self, state: Data<&Arc<AppState>>) -> Result<Json<InstanceStatistics>> {
+        Ok(Json(InstanceStatistics::load(&state).await))
     }
 }

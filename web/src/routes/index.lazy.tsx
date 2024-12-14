@@ -1,26 +1,47 @@
-import { createLazyFileRoute } from '@tanstack/react-router';
+import { createLazyFileRoute, Link } from '@tanstack/react-router';
+import { FiArrowRight } from 'react-icons/fi';
 
-import { ItemPreview } from '@/components/item/ItemPreview';
-import { UserProfile } from '@/components/UserProfile';
+import { useInstanceStatistics } from '@/api/instance_settings';
+import { Button } from '@/components/ui/Button';
 import { SCPage } from '@/layouts/SimpleCenterPage';
 
 const component = () => {
+    const { data: statistics } = useInstanceStatistics();
+
     return (
-        <SCPage title="Home">
-            <div className="card">
-                <div className="w-full flex items-center justify-center gap-4">
-                    {/* <StlPreview stlUrl="/test.stl" /> */}
+        <SCPage title="Overview">
+            <div className="card flex justify-stretch no-padding md:divide-y-0 divide-y md:divide-x flex-col md:flex-row">
+                <div className="gap-2 grid grid-cols-1 sm:grid-cols-3 grow p-5">
+                    {[
+                        ['Items', statistics?.item_count],
+                        ['Products', 0],
+                        ['Media', statistics?.media_count],
+                        ['Logs', statistics?.log_count],
+                        ['Users', statistics?.user_count],
+                    ].map(([title, value]) => (
+                        <div>
+                            <b>{title}</b>
+                            <p className="font-mono">{value}</p>
+                        </div>
+                    ))}
                 </div>
-            </div>
-            <div className="card">
-                <div className="w-full flex items-center justify-center gap-4 flex-wrap">
-                    <UserProfile user_id={1} variant="full" />
-                    <UserProfile user_id={2} variant="full" />
-                    <UserProfile user_id={2} variant="compact" />
-                    <UserProfile user_id={2} variant="avatar" />
-                </div>
-                <div className="w-full flex items-center justify-center gap-4">
-                    <ItemPreview item_id="1" />
+                <div className="w-full md:w-1/3 md:max-w-[33%]">
+                    <ul className="grid grid-cols-1 grid-rows-3 h-full divide-y">
+                        {[
+                            ['Create an Item', '/items/create'],
+                            ['Search for an Item', '/items/search'],
+                            ['Adjust your settings', '/settings'],
+                        ].map(([title, href]) => (
+                            <li key={title}>
+                                <Button variant="link" asChild>
+                                    <Link to={href} className="p-4 block">
+                                        <span>{title}</span>
+                                        <FiArrowRight />
+                                    </Link>
+                                </Button>
+                            </li>
+                        ))}
+                    </ul>
                 </div>
             </div>
         </SCPage>

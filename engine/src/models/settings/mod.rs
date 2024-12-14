@@ -13,6 +13,7 @@ use sqlx::{
 use crate::{database::Database, state::AppState};
 
 mod modules;
+pub mod statistics;
 
 build_info::build_info!(fn build_info);
 
