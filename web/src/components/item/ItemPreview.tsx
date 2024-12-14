@@ -56,7 +56,7 @@ export const AvatarHolder: FC<{
                         'w-full h-full flex items-center justify-center bg-gray-200 text-pink-500 text-base leading-none font-medium',
                         size === 'compact' && '!text-[0.6em]'
                     )}
-                    delayMs={600}
+                    delayMs={0}
                 >
                     <img
                         className={clsx(
@@ -82,7 +82,7 @@ export const ItemPreviewHoverCard: FC<{
     return (
         <HoverCard.Content className="HoverCardContent border" sideOffset={5}>
             <div className="flex flex-col gap-3">
-                <AvatarHolder image={mediaUrl} />
+                <AvatarHolder image={mediaUrl} key={`media-${item?.item_id}`} />
                 <div className="flex flex-col gap-3">
                     <div>
                         <div className="Text bold">{item?.name}</div>
@@ -171,6 +171,7 @@ export const ItemPreview: FC<Properties> = ({ item_id, variant }) => {
                                 <AvatarHolder
                                     image={mediaUrl}
                                     alt={item?.name || UNKNOWN_ITEM}
+                                    key={`media-${item?.item_id}`}
                                 />
                             </Link>
                         </HoverCard.Trigger>
@@ -195,6 +196,7 @@ export const ItemPreview: FC<Properties> = ({ item_id, variant }) => {
                                     image={mediaUrl}
                                     size="compact"
                                     alt={item?.name || UNKNOWN_ITEM}
+                                    key={`media-${item?.item_id}`}
                                 />
                                 <span className="flex gap-0.5 items-baseline justify-start overflow-hidden">
                                     <span className="Text text-ellipsis whitespace-nowrap">
@@ -228,6 +230,7 @@ export const ItemPreview: FC<Properties> = ({ item_id, variant }) => {
                             image={mediaUrl}
                             alt={item?.name || UNKNOWN_ITEM}
                             size="large"
+                            key={`media-${item?.item_id}`}
                         />
                         <div className="flex flex-col -space-y-1.5 justify-center overflow-hidden grow py-4">
                             <div className="text-base overflow-hidden text-ellipsis whitespace-nowrap">
@@ -263,6 +266,7 @@ export const ItemPreview: FC<Properties> = ({ item_id, variant }) => {
                                 <AvatarHolder
                                     image={mediaUrl}
                                     alt={item?.name || UNKNOWN_ITEM}
+                                    key={`media-${item?.item_id}`}
                                 />
                                 <div className="flex flex-col -space-y-1.5 justify-center overflow-hidden">
                                     <div className="Text overflow-hidden text-ellipsis whitespace-nowrap">
