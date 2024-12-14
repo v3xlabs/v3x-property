@@ -24,6 +24,12 @@ import { queryClient } from '@/util/query';
 export const Route = createFileRoute('/item/$itemId/')({
     // if item_id is not formatId(item_id, instanceSettings), redirect to the formatted item_id
     loader: async ({ params }) => {
+        console.log('params', params);
+
+        if (params.itemId == '') {
+            return redirect({ to: '/items' });
+        }
+
         // Ensure instance settings are loaded
         const instanceSettings = await queryClient.ensureQueryData(
             getInstanceSettings

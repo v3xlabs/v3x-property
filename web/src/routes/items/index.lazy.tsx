@@ -1,6 +1,6 @@
-import { createLazyFileRoute } from '@tanstack/react-router';
+import { createLazyFileRoute, Link } from '@tanstack/react-router';
 import { useState } from 'react';
-import { FaBox, FaTableCellsLarge } from 'react-icons/fa6';
+import { FaBox, FaPlus, FaTableCellsLarge } from 'react-icons/fa6';
 
 import { AllOwnedItems } from '@/components/owned_elements';
 import { Button } from '@/components/ui/Button';
@@ -18,6 +18,11 @@ export const Route = createLazyFileRoute('/items/')({
                 width="2xl"
                 suffix={
                     <div className="flex justify-end items-center gap-2">
+                        <Button variant="primary" size="icon" asChild>
+                            <Link to="/create">
+                                <FaPlus />
+                            </Link>
+                        </Button>
                         {(
                             [
                                 ['full', <FaBox />],
@@ -28,7 +33,7 @@ export const Route = createLazyFileRoute('/items/')({
                                 key={variant}
                                 variant={
                                     variant === active_variant
-                                        ? 'default'
+                                        ? 'primary'
                                         : 'secondary'
                                 }
                                 size="icon"
