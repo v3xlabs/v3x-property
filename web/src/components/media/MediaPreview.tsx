@@ -122,6 +122,7 @@ export const MediaPreview: FC<{
                     'jpg',
                     'image/jpeg',
                     'image/gif',
+                    'gif',
                     () => <ImagePreview media_id={media_id} url={mediaUrl} />
                 )
                 .with('mp4', 'video/mp4', () => (
