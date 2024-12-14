@@ -144,7 +144,9 @@ export const UserProfile: FC<Properties> = ({ user_id, variant }) => {
                                     size="compact"
                                 />
                                 <span className="Text !leading-[0.75em]">
-                                    {user?.name || UNKNOWN_USER}
+                                    {user?.first_name ||
+                                        user?.name ||
+                                        UNKNOWN_USER}
                                 </span>
                             </Link>
                         </HoverCard.Trigger>

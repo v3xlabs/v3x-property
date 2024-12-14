@@ -1998,6 +1998,8 @@ export type components = {
             name: string;
             /** Format: url */
             picture?: string;
+            first_name?: string;
+            last_name?: string;
         };
         UserApiKey: {
             /** Format: int32 */

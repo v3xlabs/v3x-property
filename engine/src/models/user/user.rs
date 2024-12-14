@@ -13,6 +13,8 @@ pub struct User {
     pub oauth_sub: String,
     pub name: String,
     pub picture: Option<Url>,
+    pub first_name: Option<String>,
+    pub last_name: Option<String>,
 }
 
 impl From<UserEntry> for User {
@@ -26,6 +28,9 @@ impl From<UserEntry> for User {
                 .or(user.oauth_data.name.clone())
                 .unwrap_or("Unknown".to_string()),
             picture: user.oauth_data.picture.clone(),
+            first_name: user.oauth_data.given_name.clone(),
+            last_name: user.oauth_data.family_name.clone(),
         }
     }
 }
+
