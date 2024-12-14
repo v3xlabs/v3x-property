@@ -10,23 +10,29 @@ import { formatId, useInstanceSettings } from '@/api/instance_settings';
 import { ApiItemResponse, useItemById, useItemMedia } from '@/api/item';
 import { useMedia } from '@/api/media';
 
+import { UserProfile } from '../UserProfile';
+
 const UNKNOWN_ITEM = 'Unknown Item';
 
 type Properties = {
     item_id: string;
-    variant?: 'avatar' | 'full' | 'compact';
+    variant?: 'avatar' | 'full' | 'compact' | 'large';
     image_url?: string;
 };
 
 export const AvatarHolder: FC<{
     image?: string;
     alt?: string;
-    size?: 'compact' | 'default';
+    size?: 'compact' | 'default' | 'large';
 }> = ({ image, alt, size }) => {
     return (
         <div
             className={clsx(
-                size === 'compact' ? '!size-6' : 'w-11 h-11',
+                {
+                    compact: 'size-6',
+                    default: 'w-11 h-11',
+                    large: 'size-32',
+                }[size ?? 'default'],
                 'aspect-square'
             )}
         >
@@ -208,6 +214,40 @@ export const ItemPreview: FC<Properties> = ({ item_id, variant }) => {
                             mediaUrl={mediaUrl}
                         />
                     </HoverCard.Root>
+                ))
+                .with({ variant: 'large' }, () => (
+                    <Link
+                        to={`/item/${formattedItemId}`}
+                        className={clsx(
+                            'p-2 border cursor-pointer rounded-md flex items-start gap-4 hover:outline outline-1 outline-offset-1 outline-neutral-200',
+                            isError && 'bg-red-50'
+                        )}
+                        data-testid="item-preview-full"
+                    >
+                        <AvatarHolder
+                            image={mediaUrl}
+                            alt={item?.name || UNKNOWN_ITEM}
+                            size="large"
+                        />
+                        <div className="flex flex-col -space-y-1.5 justify-center overflow-hidden grow py-4">
+                            <div className="text-base overflow-hidden text-ellipsis whitespace-nowrap">
+                                {item?.name || UNKNOWN_ITEM}
+                            </div>
+                            {formattedItemId && (
+                                <div className="text-sm">
+                                    #{formattedItemId}
+                                </div>
+                            )}
+                        </div>
+                        <div className="h-full flex">
+                            {item?.owner_id && (
+                                <UserProfile
+                                    user_id={item.owner_id}
+                                    variant="compact"
+                                />
+                            )}
+                        </div>
+                    </Link>
                 ))
                 .otherwise(() => (
                     <HoverCard.Root>

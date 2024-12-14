@@ -20,7 +20,7 @@ export const SCPage: FC<SCPageProperties> = ({
     return (
         <div
             className={cn(
-                'p-2 mt-8 mx-auto w-full space-y-4 pb-64',
+                'p-2 mt-8 mx-auto w-full space-y-4 pb-64 2xl:max-w-7xl',
                 width === 'xl' && 'max-w-xl',
                 width === '2xl' && 'max-w-2xl',
                 width === '3xl' && 'max-w-3xl',
