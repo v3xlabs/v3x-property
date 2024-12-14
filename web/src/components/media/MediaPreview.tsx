@@ -42,7 +42,7 @@ export const BareMediaPreview: FC<{
     })();
 
     return (
-        <div className="relative bg-neutral-100 w-full aspect-video">
+        <div className="relative bg-neutral-100 w-full aspect-video rounded-md">
             {match(media?.kind)
                 .with(
                     'webp',
