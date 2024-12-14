@@ -38,8 +38,8 @@ export const MediaGallery: FC<{
                     </div>
                 )}
                 <Dialog.Portal>
-                    <Dialog.Overlay className="fixed inset-0 bg-black bg-opacity-50" />
-                    <Dialog.Content className="fixed inset-0 bg-white rounded-lg shadow-lg max-w-6xl mx-auto my-8 h-min">
+                    <Dialog.Overlay className="fixed inset-0 bg-black bg-opacity-50 z-10" />
+                    <Dialog.Content className="fixed inset-0 bg-white rounded-lg shadow-lg max-w-6xl mx-auto my-8 h-min z-10">
                         <Dialog.DialogTitle className="text-center font-medium text-xl overflow-hidden p-2">
                             {useMedia(mediaId).data?.description}
                         </Dialog.DialogTitle>
