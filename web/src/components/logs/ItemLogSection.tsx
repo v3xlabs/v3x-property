@@ -5,6 +5,10 @@ import { ItemLogEntry } from './ItemLogEntry';
 export const ItemLogSection = ({ item_id }: { item_id: string }) => {
     const { data: logs } = useItemLogs(item_id);
 
+    if (logs?.length === 0) {
+        return;
+    }
+
     return (
         <div>
             <h2 className="h2">Logs</h2>

@@ -13,6 +13,7 @@ import { useEffect } from 'react';
 import { formatId, getInstanceSettings } from '@/api/instance_settings';
 import { getItemById, getItemMedia, getItemTags } from '@/api/item';
 import { getPolicy } from '@/api/policy';
+import { ItemFields } from '@/components/item/ItemFields';
 import { ItemLogSection } from '@/components/logs/ItemLogSection';
 import { MediaGallery } from '@/components/media/MediaGallery';
 import { Tag } from '@/components/Tag';
@@ -89,17 +90,17 @@ export const Route = createFileRoute('/item/$itemId/')({
                             </div>
                         )}
                     </div>
-                    <div>
-                        <p>{item.data?.product_id}</p>
-                    </div>
-                    <div>
-                        <h3>Tags</h3>
-                        <div className="flex flex-wrap gap-2">
-                            {tags?.map((tag) => (
-                                <Tag key={tag.tag_id} tag={tag} />
-                            ))}
+                    <ItemFields item_id={itemId} />
+                    {tags && tags.length > 0 && (
+                        <div className="p-4">
+                            <h3>Tags</h3>
+                            <div className="flex flex-wrap gap-2">
+                                {tags?.map((tag) => (
+                                    <Tag key={tag.tag_id} tag={tag} />
+                                ))}
+                            </div>
                         </div>
-                    </div>
+                    )}
                 </div>
                 <ItemLogSection item_id={itemId} />
             </SCPage>
