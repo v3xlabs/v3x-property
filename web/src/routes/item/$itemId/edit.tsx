@@ -369,38 +369,40 @@ export const Route = createFileRoute('/item/$itemId/edit')({
                                                     }
                                                 </Field>
                                             ))}
-                                        <AddField
-                                            existingFields={
-                                                field.state.value
-                                                    .filter(
-                                                        (itemField) =>
-                                                            itemField.value !==
-                                                            EMPTY_VALUE
-                                                    )
-                                                    .map(
-                                                        (itemField) =>
-                                                            itemField.definition_id
-                                                    ) ?? []
-                                            }
-                                            onSelect={(fieldDefinition) => {
-                                                field.handleChange([
-                                                    ...field.state.value.filter(
-                                                        (itemField) =>
-                                                            itemField.definition_id !==
-                                                            fieldDefinition.definition_id
-                                                    ),
-                                                    {
-                                                        definition_id:
-                                                            fieldDefinition.definition_id,
-                                                        value: '',
-                                                        definition_name:
-                                                            fieldDefinition.name,
-                                                        definition_kind:
-                                                            fieldDefinition.kind,
-                                                    },
-                                                ]);
-                                            }}
-                                        />
+                                        <div className="flex justify-end">
+                                            <AddField
+                                                existingFields={
+                                                    field.state.value
+                                                        .filter(
+                                                            (itemField) =>
+                                                                itemField.value !==
+                                                                EMPTY_VALUE
+                                                        )
+                                                        .map(
+                                                            (itemField) =>
+                                                                itemField.definition_id
+                                                        ) ?? []
+                                                }
+                                                onSelect={(fieldDefinition) => {
+                                                    field.handleChange([
+                                                        ...field.state.value.filter(
+                                                            (itemField) =>
+                                                                itemField.definition_id !==
+                                                                fieldDefinition.definition_id
+                                                        ),
+                                                        {
+                                                            definition_id:
+                                                                fieldDefinition.definition_id,
+                                                            value: '',
+                                                            definition_name:
+                                                                fieldDefinition.name,
+                                                            definition_kind:
+                                                                fieldDefinition.kind,
+                                                        },
+                                                    ]);
+                                                }}
+                                            />
+                                        </div>
                                     </>
                                 )}
                             </Field>

@@ -40,6 +40,9 @@ impl Search {
             if let Some(intelligence) = intelligence {
                 let x = intelligence
                     .ollama
+                    .as_ref()
+                    .unwrap()
+                    .ollama
                     .pull_model(EMBEDDINGS_MODEL.to_string(), false)
                     .await
                     .unwrap();
@@ -72,6 +75,9 @@ impl Search {
                             "ollama": {
                                 "source": "ollama",
                                 "url": intelligence
+                                    .ollama
+                                    .as_ref()
+                                    .unwrap()
                                     .ollama
                                     .url()
                                     .join("/api/embeddings")
