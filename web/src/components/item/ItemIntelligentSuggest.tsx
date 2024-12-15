@@ -1,4 +1,5 @@
 import { FC } from 'react';
+import { HiOutlineSparkles } from 'react-icons/hi2';
 
 import { useItemSuggestion } from '@/api/item/intelligence';
 
@@ -23,7 +24,10 @@ export const ItemIntelligentSuggest: FC<{ itemId: string }> = ({ itemId }) => {
                         }
                     }}
                 >
-                    <Button type="button">Suggest</Button>
+                    <Button type="button">
+                        <HiOutlineSparkles />
+                        Suggest
+                    </Button>
                 </PopoverTrigger>
                 <AgentDecoder conversation={data?.contents} />
             </Popover>

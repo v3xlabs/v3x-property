@@ -1,5 +1,6 @@
 import { FC } from 'react';
 import { LuFunctionSquare } from 'react-icons/lu';
+import { SiGooglegemini } from 'react-icons/si';
 import { match } from 'ts-pattern';
 
 import { PopoverContent } from '../ui/Popover';
@@ -24,8 +25,9 @@ export const AgentDecoder: FC<{ conversation?: string[] }> = ({
                                 event: 'hello',
                             },
                             () => (
-                                <div className="py-4 px-2">
-                                    Initiating Chat...
+                                <div className="py-4 px-2 flex gap-2 items-center">
+                                    Chatting with <b>Gemini</b>{' '}
+                                    <SiGooglegemini />
                                 </div>
                             )
                         )
