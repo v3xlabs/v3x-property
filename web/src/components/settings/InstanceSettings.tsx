@@ -13,7 +13,7 @@ import { Button } from '../ui/Button';
 import * as Dropdown from '../ui/Dropdown';
 
 export const InstanceSettings = () => {
-    const { data: instanceSettings } = useSuspenseQuery(getInstanceSettings);
+    const { data: instanceSettings } = useSuspenseQuery(getInstanceSettings());
     const { ok: canEditSettings } = useHasPolicy(
         'instance',
         'settings',

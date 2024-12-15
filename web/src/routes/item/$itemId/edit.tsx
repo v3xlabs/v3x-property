@@ -163,7 +163,7 @@ export const Route = createFileRoute('/item/$itemId/edit')({
     loader: async ({ params }) => {
         // Ensure instance settings are loaded
         const instanceSettings = await queryClient.ensureQueryData(
-            getInstanceSettings
+            getInstanceSettings()
         );
 
         const formattedItemId = formatId(params.itemId, instanceSettings);
@@ -189,6 +189,10 @@ export const Route = createFileRoute('/item/$itemId/edit')({
         const { data: media } = useSuspenseQuery(getItemMedia(itemId));
         const { mutateAsync: editItem } = useEditItem();
         const { data: itemFields } = useSuspenseQuery(getItemFields(itemId));
+        const { data: instanceSettings } = useSuspenseQuery(
+            getInstanceSettings()
+        );
+
         const navigate = useNavigate();
 
         const defaultValue = fromItemToForm(
@@ -227,7 +231,7 @@ export const Route = createFileRoute('/item/$itemId/edit')({
                         value:
                             field.value === EMPTY_VALUE || field.value === ''
                                 ? // eslint-disable-next-line unicorn/no-null
-                                  null
+                                null
                                 : field.value,
                     })),
                 };
@@ -355,7 +359,7 @@ export const Route = createFileRoute('/item/$itemId/edit')({
                                                 >
                                                     {(subField) =>
                                                         subField.state.value !==
-                                                            EMPTY_VALUE && (
+                                                        EMPTY_VALUE && (
                                                             <BaseInput
                                                                 label={
                                                                     value.definition_name
@@ -429,7 +433,10 @@ export const Route = createFileRoute('/item/$itemId/edit')({
                         </div>
                     </div>
                     <div className="flex gap-2 justify-end">
-                        <ItemIntelligentSuggest itemId={item.item_id} />
+                        {(instanceSettings.modules.intelligence?.gemini ||
+                            instanceSettings.modules.intelligence?.ollama) && (
+                                <ItemIntelligentSuggest itemId={item.item_id} />
+                            )}
                         <Button variant="secondary" size="sm" asChild>
                             <Link to="/item/$itemId" params={{ itemId }}>
                                 Cancel

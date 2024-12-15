@@ -19,12 +19,13 @@ import { queryClient } from '@/util/query';
 
 export const Route = createFileRoute('/settings/')({
     loader: async () => {
-        await queryClient.ensureQueryData(getInstanceSettings);
+        await queryClient.ensureQueryData(getInstanceSettings());
     },
     component: () => {
         const { token, clearAuthToken } = useAuth();
-        const { data: instanceSettings } =
-            useSuspenseQuery(getInstanceSettings);
+        const { data: instanceSettings } = useSuspenseQuery(
+            getInstanceSettings()
+        );
         const { mutate: indexAllItems } = useMutation({
             mutationFn: async () => {
                 const response = await fetch(BASE_URL + 'search/reindex', {
@@ -84,33 +85,43 @@ export const Route = createFileRoute('/settings/')({
                     </div>
                 )}
                 {instanceSettings.modules.storage && (
-                    <div className="card">
-                        <h2 className="font-bold">Storage</h2>
-                        <ul>
-                            {(
-                                [
+                    <div className="card flex flex-col justify-between md:flex-row gap-2">
+                        <div>
+                            <h2 className="font-bold">Storage</h2>
+                            <ul>
+                                {(
                                     [
-                                        'Endpoint',
-                                        instanceSettings.modules.storage
-                                            .endpoint_url,
-                                        undefined,
-                                    ],
-                                    [
-                                        'Bucket',
-                                        instanceSettings.modules.storage.bucket,
-                                        <FaBucket />,
-                                    ],
-                                ] as const
-                            ).map(([key, value, icon]) => (
-                                <li key={key} className="gap-2 flex">
-                                    <span className="font-bold">{key}</span>
-                                    <span className="flex items-center gap-0.5">
-                                        {icon}
-                                        <span>{value}</span>
-                                    </span>
-                                </li>
-                            ))}
-                        </ul>
+                                        [
+                                            'Endpoint',
+                                            instanceSettings.modules.storage
+                                                .endpoint_url,
+                                            undefined,
+                                        ],
+                                        [
+                                            'Bucket',
+                                            instanceSettings.modules.storage
+                                                .bucket,
+                                            <FaBucket />,
+                                        ],
+                                    ] as const
+                                ).map(([key, value, icon]) => (
+                                    <li key={key} className="gap-2 flex">
+                                        <span className="font-bold">{key}</span>
+                                        <span className="flex items-center gap-0.5">
+                                            {icon}
+                                            <span>{value}</span>
+                                        </span>
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
+                        <div className="md:max-w-md text-sm w-fit text-end text-neutral-500">
+                            To setup storage you need to specify{' '}
+                            <code>S3_ENDPOINT_URL</code>,{' '}
+                            <code>S3_BUCKET_NAME</code>,{' '}
+                            <code>S3_ACCESS_KEY</code>, and{' '}
+                            <code>S3_SECRET_KEY</code>
+                        </div>
                     </div>
                 )}{' '}
                 <BuildDetails />

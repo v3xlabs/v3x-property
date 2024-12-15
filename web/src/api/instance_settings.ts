@@ -9,18 +9,19 @@ export type InstanceSettings = ApiRequest<
     'get'
 >['response']['data'];
 
-export const getInstanceSettings = queryOptions({
-    queryKey: ['instance_settings'],
-    queryFn: async () => {
-        const response = await apiRequest('/instance/settings', 'get', {});
+export const getInstanceSettings = () =>
+    queryOptions({
+        queryKey: ['instance', 'settings'],
+        queryFn: async () => {
+            const response = await apiRequest('/instance/settings', 'get', {});
 
-        return response.data;
-    },
-    enabled: !!useAuth.getState().token,
-});
+            return response.data;
+        },
+        enabled: !!useAuth.getState().token,
+    });
 
 export const useInstanceSettings = () => {
-    return useQuery(getInstanceSettings);
+    return useQuery(getInstanceSettings());
 };
 
 export type ConfigurableInstanceSettings = ApiRequest<
