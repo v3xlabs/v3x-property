@@ -31,6 +31,28 @@
     @apply min-h-screen flex flex-col;
 }
 
+/* Add this to your CSS file */
+/* For Webkit browsers (Chrome, Safari, etc.) */
+::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: hsl(var(--muted) / 0.5);
+}
+
+::-webkit-scrollbar-thumb {
+    background: hsl(var(--muted-foreground) / 0.5);
+    border-radius: 100px;
+    border: 3px solid transparent; /* Add space around the thumb */
+    background-clip: padding-box;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: hsl(var(--muted-foreground) / 0.7);
+}
+
 .btn {
     @apply bg-white text-neutral-800 border border-solid border-neutral-200 px-3 py-1 h-fit hover:cursor-pointer hover:bg-neutral-50 rounded-md focus:outline focus:outline-2 outline-offset-2 outline-blue-500;
     @apply disabled:bg-neutral-100 disabled:text-neutral-400 disabled:border-neutral-200 disabled:hover:bg-neutral-100 disabled:cursor-not-allowed;

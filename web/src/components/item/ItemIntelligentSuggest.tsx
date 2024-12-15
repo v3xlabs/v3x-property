@@ -8,24 +8,28 @@ import { Button } from '../ui/Button';
 import { Popover, PopoverTrigger } from '../ui/Popover';
 
 export const ItemIntelligentSuggest: FC<{ itemId: string }> = ({ itemId }) => {
-    const { mutate, data, isIdle, status } = useItemSuggestion({ itemId });
+    const { mutate, data, isIdle, status, isPending } = useItemSuggestion({
+        itemId,
+    });
 
     return (
         <div>
-            <Popover defaultOpen={!isIdle}>
-                <PopoverTrigger
-                    asChild
-                    onClick={() => {
-                        // if () {
-                        // }
-                        if (!['loading', 'success'].includes(status)) {
-                            console.log('CLICKED');
-                            mutate();
-                        }
-                    }}
-                >
+            <Popover
+                defaultOpen={!isIdle}
+                onOpenChange={(open) => {
+                    if (open && !['loading'].includes(status)) {
+                        console.log('CLICKED');
+                        mutate();
+                    }
+                }}
+            >
+                <PopoverTrigger asChild>
                     <Button type="button">
-                        <HiOutlineSparkles />
+                        <HiOutlineSparkles
+                            className={
+                                data?.status == 'loading' ? 'animate-hop' : ''
+                            }
+                        />
                         Suggest
                     </Button>
                 </PopoverTrigger>

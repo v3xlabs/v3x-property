@@ -270,7 +270,7 @@ async fn test_gemini_structured_content() {
         }],
     };
 
-    let body = GeminiStructuredContentRequest::from(&conversation);
+    let body = GeminiStructuredContentRequest::from_conversation(&conversation, &[]);
 
     // output the serde_json to string of conversation
     let x = serde_json::to_string(&body).unwrap();

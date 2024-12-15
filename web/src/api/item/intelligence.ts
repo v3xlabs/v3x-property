@@ -3,7 +3,7 @@ import { useMutation, useQuery } from '@tanstack/react-query';
 import { queryClient } from '@/util/query';
 
 type SuggestionResponseEventPayload = {
-    status: 'loading' | 'success';
+    status: 'idle' | 'loading' | 'success';
     contents: string[];
 };
 
@@ -12,7 +12,7 @@ export const useItemSuggestion = ({ itemId }: { itemId: string }) => {
         queryKey: ['item', '{item_id}', itemId, 'intelligence', 'suggest'],
         queryFn: async () => {
             return {
-                status: 'loading',
+                status: 'idle',
                 contents: [],
             } as SuggestionResponseEventPayload;
         },
@@ -51,17 +51,26 @@ export const useItemSuggestion = ({ itemId }: { itemId: string }) => {
                 queryClient.setQueryData(
                     ['item', '{item_id}', itemId, 'intelligence', 'suggest'],
                     (oldData: SuggestionResponseEventPayload) =>
-                    ({
-                        ...oldData,
-                        status: 'success',
-                        contents: [...oldData.contents, event.data],
-                    } as SuggestionResponseEventPayload)
+                        ({
+                            ...oldData,
+                            status: 'loading',
+                            contents: [...oldData.contents, event.data],
+                        } as SuggestionResponseEventPayload)
                 );
             });
 
             response.addEventListener('error', (event) => {
                 console.log('ERROR', event);
                 response.close();
+                queryClient.setQueryData(
+                    ['item', '{item_id}', itemId, 'intelligence', 'suggest'],
+                    (oldData: SuggestionResponseEventPayload) =>
+                        ({
+                            ...oldData,
+                            status: 'success',
+                            contents: [...oldData.contents],
+                        } as unknown as SuggestionResponseEventPayload)
+                );
             });
 
             response.addEventListener('open', (event) => {

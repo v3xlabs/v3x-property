@@ -1,17 +1,16 @@
 use std::{sync::Arc, time::Duration};
 
 use crate::{
-    modules::intelligence::{
+    models::item::Item, modules::intelligence::{
         structured::actor::{Actor, ActorEvent},
         tasks::ingress_product::IngressProductTask,
-    },
-    state::AppState,
+    }, state::AppState
 };
 use async_std::task;
 use futures::{stream::BoxStream, Stream, StreamExt};
 use poem::web::sse::SSE;
 use poem::web::Data;
-use poem_openapi::{param::Path, payload::{EventStream, Json}, Object, OpenApi};
+use poem_openapi::{param::Path, payload::{EventStream, Json}, types::ToJSON, Object, OpenApi};
 
 use super::ApiTags;
 
@@ -37,15 +36,17 @@ impl ItemIntelligenceApi {
         state: Data<&Arc<AppState>>,
         item_id: Path<String>,
     ) -> EventStream<BoxStream<'static, ActorEvent>> {
-        // EventStream::new(x)
+        let item = Item::get_by_id(&state.database, item_id.0.as_str()).await.unwrap().unwrap();
+
+        let query = item.into_search(&state.database).await.unwrap();
+        let query = query.to_json_string();
+
         let x = IngressProductTask {
-            query: "Apple Watch Series 9".to_string(),
+            query,
         }
         .run(state.0)
         .await
         .unwrap();
-
-        tracing::info!("BOO");
 
         EventStream::new(x)
     }

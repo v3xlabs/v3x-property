@@ -1,14 +1,6 @@
 use serde::{Deserialize, Serialize};
-use serde_json::json;
 
-use crate::modules::intelligence::{
-    gemini::structured::{
-        GeminiStructuredContentRequestPart, GeminiStructuredContentRequestPartPart,
-        GeminiStructuredContentResponseCandidateContentPartFunctionResponse,
-        GeminiStructuredContentResponseCandidateContentPartFunctionResponseResponse,
-    },
-    structured::{ConversationMessage, ConversationMessagePart},
-};
+use crate::modules::intelligence::structured::{ConversationMessage, ConversationMessagePart};
 
 use super::{
     SmartAction, SmartActionDefinition, SmartActionParameters, SmartActionParametersProperties,
@@ -22,9 +14,20 @@ pub struct SearchUPCEANDatabaseTask {
 
 impl SmartAction for SearchUPCEANDatabaseTask {
     async fn execute(&self) -> Result<ConversationMessage, anyhow::Error> {
-        let html = search_upcitemdb(self.upc.as_str()).await?;
+        let upc = self
+            .upc
+            .strip_prefix("\"")
+            .unwrap()
+            .strip_suffix("\"")
+            .unwrap();
 
-        tracing::info!("html: {}", html);
+        if !upc.chars().all(|c| c.is_digit(10)) || upc.len() > 20 {
+            return Err(anyhow::anyhow!("Barcode is not valid"));
+        }
+
+        let html = search_upcitemdb(upc).await?;
+
+        tracing::info!("html: {} {}", upc, html);
 
         Ok(ConversationMessage {
             role: "user".to_string(),

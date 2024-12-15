@@ -1,13 +1,16 @@
 use crate::{
     modules::intelligence::{
-        actions::{kagi::SearchKagiTask, ldjson::ExtractLDJsonTask, upcitemdb::SearchUPCEANDatabaseTask, SmartAction, SmartActionType},
+        actions::{
+            kagi::SearchKagiTask, ldjson::ExtractLDJsonTask, upcitemdb::SearchUPCEANDatabaseTask,
+            SmartAction, SmartActionType,
+        },
         structured::ConversationMessagePart,
         Intelligence,
     },
     state::AppState,
 };
 
-use super::{CalculatedResponse, Conversation};
+use super::{CalculatedResponse, Conversation, ConversationMessage};
 
 use async_stream::stream;
 use async_trait::async_trait;
@@ -123,16 +126,31 @@ pub trait Actor: Send + Sync + Sized {
                                             query: function_args.to_string(),
                                         };
 
-                                        let result = extract_ldjson_body.execute().await.unwrap();
+                                        if let Ok(result) = extract_ldjson_body.execute().await {
+                                            let event = ActorEvent {
+                                                event: "function_response".to_string(),
+                                                data: serde_json::to_value(&result).unwrap(),
+                                            };
+                                            yield event;
 
-                                        let event = ActorEvent {
-                                            event: "function_response".to_string(),
-                                            data: serde_json::to_value(&result).unwrap(),
-                                        };
+                                            conversation.messages.push(result);
+                                        }
+                                        else {
+                                            let message = ConversationMessage {
+                                                role: "user".to_string(),
+                                                parts: vec![ConversationMessagePart::Text(
+                                                    "Failed to extract LD+JSON".to_string(),
+                                                )],
+                                            };
 
-                                        yield event;
+                                            let event = ActorEvent {
+                                                event: "function_response".to_string(),
+                                                data: serde_json::to_value(&message).unwrap(),
+                                            };
+                                            yield event;
 
-                                        conversation.messages.push(result);
+                                            conversation.messages.push(message);
+                                        }
                                     },
                                     "search_upc_database" => {
                                         let search_upc_database_body = SearchUPCEANDatabaseTask {
@@ -154,12 +172,21 @@ pub trait Actor: Send + Sync + Sized {
                                         warn!("unknown function call: {}", function_name);
                                     }
                                 }
+                            },
+                            ConversationMessagePart::Text(part) => {
+                                info!("Reached conclusion {}", part);
+                                break;
                             }
                             _ => {}
                         }
                     }
                 }
             }
+
+            yield ActorEvent {
+                event: "conversation_complete".to_string(),
+                data: Value::String("conversation_complete".to_string()),
+            };
         })
     }
 }
