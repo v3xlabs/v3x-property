@@ -38,6 +38,19 @@ export default {
                     foreground: 'hsl(var(--card-foreground))',
                 },
             },
+            animation: {
+                hop: 'hop 0.6s ease-in-out infinite',
+            },
+            keyframes: {
+                hop: {
+                    '0%, 100%': {
+                        transform: 'translateY(0) rotate3d(0, 1, 0, 0deg)',
+                    },
+                    '50%': {
+                        transform: 'translateY(-2px) rotate3d(0, 1, 0, 180deg)',
+                    },
+                },
+            },
         },
     },
     plugins: [require('tailwindcss-animate')],

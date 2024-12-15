@@ -24,6 +24,7 @@ use crate::{
 };
 
 pub mod media;
+pub mod intelligence;
 
 pub struct ItemsApi;
 

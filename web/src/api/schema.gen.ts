@@ -369,6 +369,46 @@ export type paths = {
         patch?: never;
         trace?: never;
     };
+    "/item/{item_id}/intelligence/suggest": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * /item/:item_id/intelligence
+         * @description Leverage intelligence to complete your item and product data
+         */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    item_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/event-stream": components["schemas"]["Event"][];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/product": {
         parameters: {
             query?: never;
@@ -1793,6 +1833,9 @@ export type components = {
             key: components["schemas"]["UserApiKey"];
             token: string;
         };
+        Event: {
+            event: string;
+        };
         FieldDefinition: {
             definition_id: string;
             kind: components["schemas"]["FieldKind"] & unknown;
@@ -1809,6 +1852,29 @@ export type components = {
         };
         /** @enum {string} */
         FieldKind: "String" | "Number" | "Boolean" | "Json";
+        GeminiModel: {
+            name?: string;
+            base_model_id?: string;
+            version?: string;
+            display_name?: string;
+            description?: string;
+            /** Format: uint32 */
+            input_token_limit?: number;
+            /** Format: uint32 */
+            _output_token_limit?: number;
+            supported_generation_methods?: string[];
+            /** Format: float */
+            _temperature?: number;
+            /** Format: float */
+            _max_temperature?: number;
+            /** Format: float */
+            _top_p?: number;
+            /** Format: uint32 */
+            _top_k?: number;
+        };
+        GeminiStatus: {
+            models: components["schemas"]["GeminiModel"][];
+        };
         /** @enum {string} */
         IdCasingPreference: "upper" | "lower";
         InstanceModuleStorageStatus: {
@@ -1817,7 +1883,7 @@ export type components = {
         };
         InstanceModulesStatus: {
             search: boolean;
-            intelligence: boolean;
+            intelligence?: components["schemas"]["IntelligenceStatus"];
             storage: components["schemas"]["InstanceModuleStorageStatus"];
         };
         InstanceSettings: {
@@ -1846,6 +1912,10 @@ export type components = {
             media_count: number;
             /** Format: int64 */
             log_count: number;
+        };
+        IntelligenceStatus: {
+            ollama?: components["schemas"]["OllamaStatus"];
+            gemini?: components["schemas"]["GeminiStatus"];
         };
         Item: {
             item_id: string;
@@ -1935,6 +2005,9 @@ export type components = {
             created_at?: string;
             /** Format: date-time */
             updated_at?: string;
+        };
+        OllamaStatus: {
+            models: string[];
         };
         Product: {
             /** Format: int32 */

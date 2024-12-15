@@ -21,6 +21,7 @@ import {
     useEditItem,
 } from '@/api/item';
 import { BaseInput } from '@/components/input/BaseInput';
+import { ItemIntelligentSuggest } from '@/components/item/ItemIntelligentSuggest';
 import { EditMediaGallery } from '@/components/media/EditMediaGallery';
 import * as AlertDialog from '@/components/ui/AlertDialog';
 import { Button } from '@/components/ui/Button';
@@ -207,7 +208,7 @@ export const Route = createFileRoute('/item/$itemId/edit')({
                         value:
                             field.value === EMPTY_VALUE || field.value === ''
                                 ? // eslint-disable-next-line unicorn/no-null
-                                  null
+                                null
                                 : field.value,
                     })),
                 };
@@ -335,7 +336,7 @@ export const Route = createFileRoute('/item/$itemId/edit')({
                                                 >
                                                     {(subField) =>
                                                         subField.state.value !==
-                                                            EMPTY_VALUE && (
+                                                        EMPTY_VALUE && (
                                                             <BaseInput
                                                                 label={
                                                                     value.definition_name
@@ -369,44 +370,47 @@ export const Route = createFileRoute('/item/$itemId/edit')({
                                                     }
                                                 </Field>
                                             ))}
-                                        <AddField
-                                            existingFields={
-                                                field.state.value
-                                                    .filter(
-                                                        (itemField) =>
-                                                            itemField.value !==
-                                                            EMPTY_VALUE
-                                                    )
-                                                    .map(
-                                                        (itemField) =>
-                                                            itemField.definition_id
-                                                    ) ?? []
-                                            }
-                                            onSelect={(fieldDefinition) => {
-                                                field.handleChange([
-                                                    ...field.state.value.filter(
-                                                        (itemField) =>
-                                                            itemField.definition_id !==
-                                                            fieldDefinition.definition_id
-                                                    ),
-                                                    {
-                                                        definition_id:
-                                                            fieldDefinition.definition_id,
-                                                        value: '',
-                                                        definition_name:
-                                                            fieldDefinition.name,
-                                                        definition_kind:
-                                                            fieldDefinition.kind,
-                                                    },
-                                                ]);
-                                            }}
-                                        />
+                                        <div className="flex justify-end">
+                                            <AddField
+                                                existingFields={
+                                                    field.state.value
+                                                        .filter(
+                                                            (itemField) =>
+                                                                itemField.value !==
+                                                                EMPTY_VALUE
+                                                        )
+                                                        .map(
+                                                            (itemField) =>
+                                                                itemField.definition_id
+                                                        ) ?? []
+                                                }
+                                                onSelect={(fieldDefinition) => {
+                                                    field.handleChange([
+                                                        ...field.state.value.filter(
+                                                            (itemField) =>
+                                                                itemField.definition_id !==
+                                                                fieldDefinition.definition_id
+                                                        ),
+                                                        {
+                                                            definition_id:
+                                                                fieldDefinition.definition_id,
+                                                            value: '',
+                                                            definition_name:
+                                                                fieldDefinition.name,
+                                                            definition_kind:
+                                                                fieldDefinition.kind,
+                                                        },
+                                                    ]);
+                                                }}
+                                            />
+                                        </div>
                                     </>
                                 )}
                             </Field>
                         </div>
                     </div>
                     <div className="flex gap-2 justify-end">
+                        <ItemIntelligentSuggest itemId={item.item_id} />
                         <Button variant="secondary" size="sm" asChild>
                             <Link to="/item/$itemId" params={{ itemId }}>
                                 Cancel

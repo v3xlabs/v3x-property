@@ -10,7 +10,7 @@ export const BuildDetails = () => {
 
     return (
         <div className="card space-y-2">
-            <h2>Build Details</h2>
+            <h2 className="font-bold">Build Details</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
                 <div>
                     <a href={github_link} className="link" target="_blank">

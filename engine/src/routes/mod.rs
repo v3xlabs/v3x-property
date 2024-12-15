@@ -3,7 +3,7 @@ use std::{env, sync::Arc};
 use async_std::path::PathBuf;
 use fields::FieldsApi;
 use instance::InstanceApi;
-use item::{media::ItemMediaApi, ItemsApi};
+use item::{intelligence::ItemIntelligenceApi, media::ItemMediaApi, ItemsApi};
 use logs::LogsApi;
 use me::MeApi;
 use media::MediaApi;
@@ -64,7 +64,7 @@ enum ApiTags {
 fn get_api() -> impl OpenApi {
     (
         // Items
-        (ItemsApi, ItemMediaApi),
+        (ItemsApi, ItemMediaApi, ItemIntelligenceApi),
         // Product
         ProductApi,
         // Media
