@@ -45,6 +45,8 @@ impl ItemIntelligenceApi {
         .await
         .unwrap();
 
+        tracing::info!("BOO");
+
         EventStream::new(x)
     }
 }

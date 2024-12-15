@@ -1,6 +1,9 @@
-use crate::{modules::intelligence::{
-    actions::SmartActionType, structured::ConversationMessagePart, Intelligence,
-}, state::AppState};
+use crate::{
+    modules::intelligence::{
+        actions::SmartActionType, structured::ConversationMessagePart, Intelligence,
+    },
+    state::AppState,
+};
 
 use super::{CalculatedResponse, Conversation};
 
@@ -12,13 +15,14 @@ use futures::{
 };
 use poem_openapi::{payload::Json, Object};
 use serde::{Deserialize, Serialize};
+use serde_json::Value;
 use std::{pin::Pin, sync::Arc};
 use tracing::{info, warn};
 
 #[derive(Debug, Serialize, Deserialize, Object)]
 pub struct ActorEvent {
     pub event: String,
-    pub data: String,
+    pub data: Value,
 }
 
 #[async_trait]
@@ -42,6 +46,11 @@ pub trait Actor: Send + Sync + Sized {
         Self: 'static,
     {
         Box::pin(async_stream::stream! {
+            yield ActorEvent {
+                event: "hello".to_string(),
+                data: Value::String("starting".to_string()),
+            };
+
             let mut conversation = conversation.clone();
             #[allow(clippy::await_holding_refcell_ref)]
             loop {
@@ -77,8 +86,8 @@ pub trait Actor: Send + Sync + Sized {
                     }
 
                     let event = ActorEvent {
-                        event: "candidate".to_string(),
-                        data: serde_json::to_string(first_candidate).unwrap(),
+                        event: "conversation_message".to_string(),
+                        data: serde_json::to_value(first_candidate).unwrap(),
                     };
                     // yield Ok(Json(event));
                     yield event;

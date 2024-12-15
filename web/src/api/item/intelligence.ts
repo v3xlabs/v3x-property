@@ -24,6 +24,13 @@ export const useItemSuggestion = ({ itemId }: { itemId: string }) => {
         // mutationKey: ['item', '{item_id}', itemId, 'intelligence', 'suggest'],
         mutationFn: async () => {
             console.log('MUTATION');
+            queryClient.setQueryData(
+                ['item', '{item_id}', itemId, 'intelligence', 'suggest'],
+                {
+                    status: 'loading',
+                    contents: [],
+                }
+            );
             // Open a request using apiRequest to /api/item/:item_id/intelligence/suggest
             // const response = await apiRequest(
             //     '/item/{item_id}/intelligence/suggest',
@@ -44,11 +51,11 @@ export const useItemSuggestion = ({ itemId }: { itemId: string }) => {
                 queryClient.setQueryData(
                     ['item', '{item_id}', itemId, 'intelligence', 'suggest'],
                     (oldData: SuggestionResponseEventPayload) =>
-                        ({
-                            ...oldData,
-                            status: 'success',
-                            contents: [...oldData.contents, event.data],
-                        } as SuggestionResponseEventPayload)
+                    ({
+                        ...oldData,
+                        status: 'success',
+                        contents: [...oldData.contents, event.data],
+                    } as SuggestionResponseEventPayload)
                 );
             });
 

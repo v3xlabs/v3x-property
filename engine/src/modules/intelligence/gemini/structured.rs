@@ -107,8 +107,18 @@ impl From<&ConversationMessagePart> for GeminiStructuredContentRequestPartPart {
                 function_response: None,
                 text: Some(text.clone()),
             },
+            ConversationMessagePart::FunctionCall(name, args) => GeminiStructuredContentRequestPartPart {
+                function_call: Some(GeminiStructuredContentResponseCandidateContentPartFunctionCall {
+                    name: name.clone(),
+                    args: GeminiStructuredContentResponseCandidateContentPartFunctionCallArgs {
+                        query: serde_json::to_string(args).unwrap(),
+                    },
+                }),
+                function_response: None,
+                text: None,
+            },
             // TODO: Implement the rest
-            _ => panic!("Unsupported message part type"),
+            part => panic!("Unsupported message part type {:?}", part),
         }
     }
 }

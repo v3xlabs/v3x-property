@@ -70,6 +70,10 @@ a {
     all: unset;
 }
 
+.pre {
+    @apply bg-neutral-100 rounded-md p-2;
+}
+
 .HoverCardContent {
     border-radius: 6px;
     padding: 20px;
