@@ -9,6 +9,7 @@ import {
     useRouter,
 } from '@tanstack/react-router';
 import { useEffect } from 'react';
+import { FiEdit } from 'react-icons/fi';
 
 import { formatId, getInstanceSettings } from '@/api/instance_settings';
 import { getItemById, getItemMedia, getItemTags } from '@/api/item';
@@ -73,7 +74,7 @@ export const Route = createFileRoute('/item/$itemId/')({
                 suffix={
                     <Button asChild>
                         <Link to="/item/$itemId/edit" params={{ itemId }}>
-                            Edit
+                            <FiEdit />
                         </Link>
                     </Button>
                 }
@@ -85,7 +86,7 @@ export const Route = createFileRoute('/item/$itemId/')({
                     <div className="p-4">
                         {item.data?.owner_id && (
                             <div>
-                                <h3>Owner</h3>
+                                <h3 className="font-bold">Owner</h3>
                                 <UserProfile user_id={item.data.owner_id} />
                             </div>
                         )}

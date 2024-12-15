@@ -28,8 +28,8 @@ const component = () => {
                 <div className="w-full md:w-1/3 md:max-w-[33%]">
                     <ul className="grid grid-cols-1 grid-rows-3 h-full divide-y">
                         {[
-                            ['Create an Item', '/items/create'],
-                            ['Search for an Item', '/items/search'],
+                            ['Create an Item', '/create'],
+                            ['Search for an Item', '/search'],
                             ['Adjust your settings', '/settings'],
                         ].map(([title, href]) => (
                             <li key={title}>
