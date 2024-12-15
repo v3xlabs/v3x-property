@@ -3,9 +3,11 @@ import * as HoverCard from '@radix-ui/react-hover-card';
 import { Link } from '@tanstack/react-router';
 import clsx from 'clsx';
 import { FC } from 'react';
+import { FaAmazon, FaBarcode } from 'react-icons/fa6';
 import { match } from 'ts-pattern';
 
 import { ApiError } from '@/api/core';
+import { useItemFields } from '@/api/fields/item';
 import { formatId, useInstanceSettings } from '@/api/instance_settings';
 import { ApiItemResponse, useItemById, useItemMedia } from '@/api/item';
 import { useMedia } from '@/api/media';
@@ -108,6 +110,73 @@ export const ItemPreviewHoverCard: FC<{
 
             <HoverCard.Arrow className="HoverCardArrow" />
         </HoverCard.Content>
+    );
+};
+
+const ItemPreviewLarge: FC<{
+    item?: ApiItemResponse;
+    isError?: boolean;
+    mediaUrl?: string;
+    formattedItemId?: string;
+}> = ({ item, isError, mediaUrl, formattedItemId }) => {
+    const { data: fields } = useItemFields(item?.item_id);
+
+    const logos = fields?.map((field) => {
+        return match(field)
+            .with(
+                { definition_id: 'upc' },
+                { definition_id: 'ean' },
+                { definition_id: 'gtin' },
+                (_) => {
+                    return (
+                        <div className="border rounded-md p-1">
+                            <FaBarcode />
+                        </div>
+                    );
+                }
+            )
+            .with({ definition_id: 'asin' }, (_) => {
+                return (
+                    <div className="border rounded-md p-1">
+                        <FaAmazon />
+                    </div>
+                );
+            })
+            .otherwise(() => <></>);
+    });
+
+    return (
+        <Link
+            to={`/item/${formattedItemId}`}
+            className={clsx(
+                'p-2 border cursor-pointer rounded-md flex items-start gap-4 hover:outline outline-1 outline-offset-1 outline-neutral-200',
+                isError && 'bg-red-50'
+            )}
+            data-testid="item-preview-full"
+        >
+            <AvatarHolder
+                image={mediaUrl}
+                alt={item?.name || UNKNOWN_ITEM}
+                size="large"
+                key={`media-${item?.item_id}`}
+            />
+            <div className="flex flex-col -space-y-1.5 justify-center overflow-hidden grow py-4">
+                <div className="text-base overflow-hidden text-ellipsis whitespace-nowrap">
+                    {item?.name || UNKNOWN_ITEM}
+                </div>
+                {formattedItemId && (
+                    <div className="text-sm">#{formattedItemId}</div>
+                )}
+                {logos && logos.length > 0 && (
+                    <ul className="flex items-center gap-2 py-2">{logos}</ul>
+                )}
+            </div>
+            <div className="h-full flex">
+                {item?.owner_id && (
+                    <UserProfile user_id={item.owner_id} variant="compact" />
+                )}
+            </div>
+        </Link>
     );
 };
 
@@ -218,39 +287,12 @@ export const ItemPreview: FC<Properties> = ({ item_id, variant }) => {
                     </HoverCard.Root>
                 ))
                 .with({ variant: 'large' }, () => (
-                    <Link
-                        to={`/item/${formattedItemId}`}
-                        className={clsx(
-                            'p-2 border cursor-pointer rounded-md flex items-start gap-4 hover:outline outline-1 outline-offset-1 outline-neutral-200',
-                            isError && 'bg-red-50'
-                        )}
-                        data-testid="item-preview-full"
-                    >
-                        <AvatarHolder
-                            image={mediaUrl}
-                            alt={item?.name || UNKNOWN_ITEM}
-                            size="large"
-                            key={`media-${item?.item_id}`}
-                        />
-                        <div className="flex flex-col -space-y-1.5 justify-center overflow-hidden grow py-4">
-                            <div className="text-base overflow-hidden text-ellipsis whitespace-nowrap">
-                                {item?.name || UNKNOWN_ITEM}
-                            </div>
-                            {formattedItemId && (
-                                <div className="text-sm">
-                                    #{formattedItemId}
-                                </div>
-                            )}
-                        </div>
-                        <div className="h-full flex">
-                            {item?.owner_id && (
-                                <UserProfile
-                                    user_id={item.owner_id}
-                                    variant="compact"
-                                />
-                            )}
-                        </div>
-                    </Link>
+                    <ItemPreviewLarge
+                        item={item}
+                        isError={isError}
+                        mediaUrl={mediaUrl}
+                        formattedItemId={formattedItemId}
+                    />
                 ))
                 .otherwise(() => (
                     <HoverCard.Root>

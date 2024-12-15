@@ -7,10 +7,14 @@ export type ItemField = ApiRequest<
     'get'
 >['response']['data'][number];
 
-export const getItemFields = (itemId: string) =>
+export const getItemFields = (itemId?: string) =>
     queryOptions({
         queryKey: ['fields', 'item', itemId],
         queryFn: async () => {
+            if (!itemId) {
+                return;
+            }
+
             const response = await apiRequest('/item/{item_id}/fields', 'get', {
                 path: {
                     item_id: itemId,
@@ -20,8 +24,9 @@ export const getItemFields = (itemId: string) =>
             return response.data;
         },
         retry: false,
+        enabled: !!itemId,
     });
 
-export const useItemFields = (itemId: string) => {
+export const useItemFields = (itemId?: string) => {
     return useQuery(getItemFields(itemId));
 };
