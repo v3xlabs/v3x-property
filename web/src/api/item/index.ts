@@ -7,6 +7,8 @@ import {
     UseQueryOptions,
 } from '@tanstack/react-query';
 
+import { queryClient } from '@/util/query';
+
 import { useAuth } from '../auth';
 import { apiRequest, BASE_URL, getHttp } from '../core';
 import { paths } from '../schema.gen';
@@ -74,7 +76,7 @@ export type ApiLogResponse =
 export const getItemLogs = (
     item_id: string
 ): UseQueryOptions<ApiLogResponse> => ({
-    queryKey: ['item', item_id, 'logs'],
+    queryKey: ['item', '{item_id}', item_id, 'logs'],
     queryFn: getHttp('/api/item/' + item_id + '/logs', {
         auth: 'include',
     }),
@@ -162,6 +164,28 @@ export const useEditItem = () => {
                 },
                 body: JSON.stringify(data),
             });
+
+            if (response.ok) {
+                await queryClient.invalidateQueries({
+                    queryKey: ['item', '{item_id}', item_id],
+                });
+
+                if (data.media && data.media.length > 0) {
+                    await queryClient.invalidateQueries({
+                        queryKey: ['item', '{item_id}', item_id, 'media'],
+                    });
+                }
+
+                if (data.fields && data.fields.length > 0) {
+                    await queryClient.invalidateQueries({
+                        queryKey: ['item', '{item_id}', item_id, 'fields'],
+                    });
+                }
+
+                await queryClient.invalidateQueries({
+                    queryKey: ['item', '{item_id}', item_id, 'logs'],
+                });
+            }
 
             return response.ok;
         },

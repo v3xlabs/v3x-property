@@ -22,12 +22,17 @@ import {
 } from '@/api/item';
 import { BaseInput } from '@/components/input/BaseInput';
 import { EditMediaGallery } from '@/components/media/EditMediaGallery';
-import { EditItemForm } from '@/components/media/upload/t';
 import * as AlertDialog from '@/components/ui/AlertDialog';
 import { Button } from '@/components/ui/Button';
 import * as Command from '@/components/ui/Command';
 import * as Popover from '@/components/ui/Popover';
 import { SCPage } from '@/layouts/SimpleCenterPage';
+import {
+    fromItemToForm,
+    isEmptyDiff,
+    itemDiff,
+    ItemUpdatePayload,
+} from '@/util/item';
 import { queryClient } from '@/util/query';
 
 const EMPTY_VALUE = '$$EMPTY$$';
@@ -166,18 +171,41 @@ export const Route = createFileRoute('/item/$itemId/edit')({
         const { data: itemFields } = useSuspenseQuery(getItemFields(itemId));
         const navigate = useNavigate();
 
-        const { Field, Subscribe, handleSubmit } = useForm<EditItemForm>({
-            defaultValues: {
-                name: item.name ?? '',
-                media:
-                    media?.map((media_id) => ({
-                        status: 'existing-media',
-                        media_id,
-                    })) ?? [],
-                fields: itemFields,
+        const defaultValue = fromItemToForm(
+            item,
+            itemFields as { definition_id: string; value: string }[],
+            media
+        );
+
+        const { Field, Subscribe, handleSubmit } = useForm<ItemUpdatePayload>({
+            // TODO: Fix this ts-ignore
+            // @ts-ignore
+            defaultValues: defaultValue,
+            validators: {
+                onSubmit: ({ value }) => {
+                    const isEmpty = isEmptyDiff(itemDiff(value, defaultValue));
+
+                    return isEmpty ? 'No changes made' : undefined;
+                },
+            },
+            onSubmitInvalid: () => {
+                toast.error('No changes to save');
             },
             onSubmit: async ({ value }) => {
                 console.log('FORM SUBMIT', value);
+
+                const diff = itemDiff(value, defaultValue);
+
+                console.log('DIFF', diff);
+
+                const isEmpty = isEmptyDiff(diff);
+
+                if (isEmpty) {
+                    toast.error('Really no changes to save');
+
+                    return 'no-changes';
+                }
+
                 const toastId = `item-edit-${itemId}`;
 
                 toast.loading('Saving item...', {
@@ -190,12 +218,12 @@ export const Route = createFileRoute('/item/$itemId/edit')({
                         data: {
                             name: value.name,
                             media: value.media
-                                .filter((m) => m.media_id !== undefined)
+                                ?.filter((m) => m.media_id !== undefined)
                                 .map((m) => ({
                                     status: m.status,
                                     media_id: m.media_id!,
                                 })),
-                            fields: value.fields.map((field) => ({
+                            fields: value.fields?.map((field) => ({
                                 definition_id: field.definition_id,
                                 value:
                                     field.value === EMPTY_VALUE ||
@@ -210,9 +238,6 @@ export const Route = createFileRoute('/item/$itemId/edit')({
                         onSuccess: async (data, variables, context) => {
                             toast.success('Item saved', {
                                 id: toastId,
-                            });
-                            await queryClient.invalidateQueries({
-                                queryKey: ['item', '{item_id}', itemId],
                             });
                             navigate({
                                 to: '/item/$itemId',
@@ -245,7 +270,7 @@ export const Route = createFileRoute('/item/$itemId/edit')({
                             name="media"
                             validators={{
                                 onChange: ({ value }) => {
-                                    return value.every((m) => m.media_id)
+                                    return value?.every((m) => m.media_id)
                                         ? undefined
                                         : 'Not all items have finished uploading';
                                 },

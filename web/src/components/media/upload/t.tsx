@@ -1,5 +1,3 @@
-import { ItemField } from '@/api/fields/item';
-
 export type AttachedMedia =
     | {
           status: 'existing-media' | 'removed-media';
@@ -12,9 +10,3 @@ export type AttachedMedia =
           kind?: string;
           blob?: string;
       };
-
-export type EditItemForm = {
-    name: string;
-    media: AttachedMedia[];
-    fields: Omit<ItemField, 'created_at' | 'updated_at' | 'item_id'>[];
-};
