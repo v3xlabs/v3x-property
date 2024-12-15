@@ -1,11 +1,11 @@
 use serde::{Deserialize, Serialize};
 use serde_json::json;
 
-use crate::modules::intelligence::gemini::structured::{
+use crate::modules::intelligence::{gemini::structured::{
     GeminiStructuredContentRequestPart, GeminiStructuredContentRequestPartPart,
     GeminiStructuredContentResponseCandidateContentPartFunctionResponse,
     GeminiStructuredContentResponseCandidateContentPartFunctionResponseResponse,
-};
+}, structured::{ConversationMessage, ConversationMessagePart}};
 
 use super::{
     SmartAction, SmartActionDefinition, SmartActionParameters, SmartActionParametersProperties,
@@ -18,30 +18,37 @@ pub struct SearchKagiTask {
 }
 
 impl SmartAction for SearchKagiTask {
-    async fn execute(&self) -> Result<GeminiStructuredContentRequestPart, anyhow::Error> {
+    async fn execute(&self) -> Result<ConversationMessage, anyhow::Error> {
         let html = search_kagi(self.query.as_str()).await?;
 
         tracing::info!("html: {}", html);
-
-        Ok(GeminiStructuredContentRequestPart {
+        Ok(ConversationMessage {
             role: "user".to_string(),
-            parts: vec![GeminiStructuredContentRequestPartPart {
-                // text: html,
-                text: None,
-                function_call: None,
-                function_response: Some(
-                    GeminiStructuredContentResponseCandidateContentPartFunctionResponse {
-                        name: "search_kagi".to_string(),
-                        response: GeminiStructuredContentResponseCandidateContentPartFunctionResponseResponse {
-                            name: "search_kagi".to_string(),
-                            content: json!({
-                                "html": html,
-                            }),
-                        },
-                    },
-                ),
-            }],
+            parts: vec![ConversationMessagePart::FunctionResponse(
+                "search_kagi".to_string(),
+                serde_json::Value::String(html),
+            )],
         })
+
+        // Ok(GeminiStructuredContentRequestPart {
+        //     role: "user".to_string(),
+        //     parts: vec![GeminiStructuredContentRequestPartPart {
+        //         // text: html,
+        //         text: None,
+        //         function_call: None,
+        //         function_response: Some(
+        //             GeminiStructuredContentResponseCandidateContentPartFunctionResponse {
+        //                 name: "search_kagi".to_string(),
+        //                 response: GeminiStructuredContentResponseCandidateContentPartFunctionResponseResponse {
+        //                     name: "search_kagi".to_string(),
+        //                     content: json!({
+        //                         "html": html,
+        //                     }),
+        //                 },
+        //             },
+        //         ),
+        //     }],
+        // })
     }
 
     fn as_definition() -> SmartActionDefinition {

@@ -2,11 +2,11 @@ use scraper::Selector;
 use serde::{Deserialize, Serialize};
 use serde_json::json;
 
-use crate::modules::intelligence::gemini::structured::{
+use crate::modules::intelligence::{gemini::structured::{
     GeminiStructuredContentRequestPart, GeminiStructuredContentRequestPartPart,
     GeminiStructuredContentResponseCandidateContentPartFunctionResponse,
     GeminiStructuredContentResponseCandidateContentPartFunctionResponseResponse,
-};
+}, structured::{ConversationMessage, ConversationMessagePart}};
 
 use super::{
     SmartAction, SmartActionDefinition, SmartActionParameters, SmartActionParametersProperties,
@@ -19,29 +19,20 @@ pub struct ExtractLDJsonTask {
 }
 
 impl SmartAction for ExtractLDJsonTask {
-    async fn execute(&self) -> Result<GeminiStructuredContentRequestPart, anyhow::Error> {
+    async fn execute(&self) -> Result<ConversationMessage, anyhow::Error> {
         let html = extract_ldjson(self.query.as_str()).await?;
 
         tracing::info!("html: {}", html);
 
-        Ok(GeminiStructuredContentRequestPart {
-            role: "user".to_string(),
-            parts: vec![GeminiStructuredContentRequestPartPart {
-                text: None,
-                function_call: None,
-                function_response: Some(
-                    GeminiStructuredContentResponseCandidateContentPartFunctionResponse {
-                        name: "extract_ldjson".to_string(),
-                        response: GeminiStructuredContentResponseCandidateContentPartFunctionResponseResponse {
-                            name: "extract_ldjson".to_string(),
-                            content: json!({
-                                "html": html,
-                            }),
-                        },
-                    },
-                ),
-            }],
-        })
+        Ok(
+            ConversationMessage {
+                role: "user".to_string(),
+                parts: vec![ConversationMessagePart::FunctionResponse(
+                    "extract_ldjson".to_string(),
+                    serde_json::Value::String(html),
+                )],
+            }
+        )
     }
 
     fn as_definition() -> SmartActionDefinition {

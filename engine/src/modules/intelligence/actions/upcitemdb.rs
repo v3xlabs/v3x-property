@@ -1,8 +1,13 @@
 use serde::{Deserialize, Serialize};
 use serde_json::json;
 
-use crate::modules::intelligence::gemini::structured::{
-    GeminiStructuredContentRequestPart, GeminiStructuredContentRequestPartPart, GeminiStructuredContentResponseCandidateContentPartFunctionResponse, GeminiStructuredContentResponseCandidateContentPartFunctionResponseResponse,
+use crate::modules::intelligence::{
+    gemini::structured::{
+        GeminiStructuredContentRequestPart, GeminiStructuredContentRequestPartPart,
+        GeminiStructuredContentResponseCandidateContentPartFunctionResponse,
+        GeminiStructuredContentResponseCandidateContentPartFunctionResponseResponse,
+    },
+    structured::{ConversationMessage, ConversationMessagePart},
 };
 
 use super::{
@@ -16,28 +21,17 @@ pub struct SearchUPCEANDatabaseTask {
 }
 
 impl SmartAction for SearchUPCEANDatabaseTask {
-    async fn execute(&self) -> Result<GeminiStructuredContentRequestPart, anyhow::Error> {
+    async fn execute(&self) -> Result<ConversationMessage, anyhow::Error> {
         let html = search_upcitemdb(self.upc.as_str()).await?;
 
         tracing::info!("html: {}", html);
 
-        Ok(GeminiStructuredContentRequestPart {
+        Ok(ConversationMessage {
             role: "user".to_string(),
-            parts: vec![GeminiStructuredContentRequestPartPart {
-                text: None,
-                function_call: None,
-                function_response: Some(
-                    GeminiStructuredContentResponseCandidateContentPartFunctionResponse {
-                        name: "search_upcitemdb".to_string(),
-                        response: GeminiStructuredContentResponseCandidateContentPartFunctionResponseResponse {
-                            name: "search_upcitemdb".to_string(),
-                            content: json!({
-                                "html": html,
-                            }),
-                        },
-                    },
-                ),
-            }],
+            parts: vec![ConversationMessagePart::FunctionResponse(
+                "search_upcitemdb".to_string(),
+                serde_json::Value::String(html),
+            )],
         })
     }
 

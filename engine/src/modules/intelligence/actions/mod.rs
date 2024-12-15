@@ -7,9 +7,9 @@ use rand::Rng as _;
 use serde::{Deserialize, Serialize};
 use upcitemdb::SearchUPCEANDatabaseTask;
 
-use super::gemini::structured::{
+use super::{gemini::structured::{
     GeminiStructuredContentRequestPart, GeminiStructuredContentRequestPartPart,
-};
+}, structured::ConversationMessage};
 
 pub enum SmartActionType {
     SearchUPCEAN,
@@ -28,7 +28,7 @@ impl SmartActionType {
 }
 
 pub trait SmartAction: Sized {
-    async fn execute(&self) -> Result<GeminiStructuredContentRequestPart, anyhow::Error>;
+    async fn execute(&self) -> Result<ConversationMessage, anyhow::Error>;
     fn as_definition() -> SmartActionDefinition;
 }
 

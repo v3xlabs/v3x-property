@@ -117,8 +117,17 @@ impl From<&ConversationMessagePart> for GeminiStructuredContentRequestPartPart {
                 function_response: None,
                 text: None,
             },
-            // TODO: Implement the rest
-            part => panic!("Unsupported message part type {:?}", part),
+            ConversationMessagePart::FunctionResponse(name, content) => GeminiStructuredContentRequestPartPart {
+                function_call: None,
+                function_response: Some(GeminiStructuredContentResponseCandidateContentPartFunctionResponse {
+                    name: name.clone(),
+                    response: GeminiStructuredContentResponseCandidateContentPartFunctionResponseResponse {
+                        name: name.clone(),
+                        content: content.clone(),
+                    },
+                }),
+                text: None,
+            },
         }
     }
 }

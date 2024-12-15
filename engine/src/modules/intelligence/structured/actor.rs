@@ -1,6 +1,8 @@
 use crate::{
     modules::intelligence::{
-        actions::SmartActionType, structured::ConversationMessagePart, Intelligence,
+        actions::{kagi::SearchKagiTask, ldjson::ExtractLDJsonTask, upcitemdb::SearchUPCEANDatabaseTask, SmartAction, SmartActionType},
+        structured::ConversationMessagePart,
+        Intelligence,
     },
     state::AppState,
 };
@@ -98,6 +100,60 @@ pub trait Actor: Send + Sync + Sized {
                         match part {
                             ConversationMessagePart::FunctionCall(function_name, function_args) => {
                                 warn!("FUNCTION CALLINGGG");
+                                let function_name = function_name.to_string();
+                                match function_name.as_str() {
+                                    "search_kagi" => {
+                                        let search_kagi_body = SearchKagiTask {
+                                            query: function_args.to_string(),
+                                        };
+
+                                        let result = search_kagi_body.execute().await.unwrap();
+
+                                        let event = ActorEvent {
+                                            event: "function_response".to_string(),
+                                            data: serde_json::to_value(&result).unwrap(),
+                                        };
+
+                                        yield event;
+
+                                        conversation.messages.push(result);
+                                    },
+                                    "extract_ldjson" => {
+                                        let extract_ldjson_body = ExtractLDJsonTask {
+                                            query: function_args.to_string(),
+                                        };
+
+                                        let result = extract_ldjson_body.execute().await.unwrap();
+
+                                        let event = ActorEvent {
+                                            event: "function_response".to_string(),
+                                            data: serde_json::to_value(&result).unwrap(),
+                                        };
+
+                                        yield event;
+
+                                        conversation.messages.push(result);
+                                    },
+                                    "search_upc_database" => {
+                                        let search_upc_database_body = SearchUPCEANDatabaseTask {
+                                            upc: function_args.to_string(),
+                                        };
+
+                                        let result = search_upc_database_body.execute().await.unwrap();
+
+                                        let event = ActorEvent {
+                                            event: "function_response".to_string(),
+                                            data: serde_json::to_value(&result).unwrap(),
+                                        };
+
+                                        yield event;
+
+                                        conversation.messages.push(result);
+                                    },
+                                    _ => {
+                                        warn!("unknown function call: {}", function_name);
+                                    }
+                                }
                             }
                             _ => {}
                         }
