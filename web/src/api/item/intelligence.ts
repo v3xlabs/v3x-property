@@ -8,20 +8,13 @@ type SuggestionResponseEventPayload = {
 };
 
 export const useItemSuggestion = ({ itemId }: { itemId: string }) => {
-    const { data } = useQuery({
+    const { data } = useQuery<SuggestionResponseEventPayload>({
         queryKey: ['item', '{item_id}', itemId, 'intelligence', 'suggest'],
-        queryFn: async () => {
-            return {
-                status: 'idle',
-                contents: [],
-            } as SuggestionResponseEventPayload;
-        },
     });
 
     console.log('DATA', data);
 
     const mutation = useMutation({
-        // mutationKey: ['item', '{item_id}', itemId, 'intelligence', 'suggest'],
         mutationFn: async () => {
             console.log('MUTATION');
             queryClient.setQueryData(
@@ -31,6 +24,8 @@ export const useItemSuggestion = ({ itemId }: { itemId: string }) => {
                     contents: [],
                 }
             );
+
+            // TODO: Maybe update someday
             // Open a request using apiRequest to /api/item/:item_id/intelligence/suggest
             // const response = await apiRequest(
             //     '/item/{item_id}/intelligence/suggest',
@@ -39,6 +34,7 @@ export const useItemSuggestion = ({ itemId }: { itemId: string }) => {
             //         path: { item_id: itemId },
             //     }
             // );
+
             const response = new EventSource(
                 `/api/item/${itemId}/intelligence/suggest`,
                 {

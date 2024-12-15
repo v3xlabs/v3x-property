@@ -1,6 +1,8 @@
 import { FC, useEffect, useRef } from 'react';
+import { FiLoader } from 'react-icons/fi';
 import { SiGooglegemini } from 'react-icons/si';
 import { TbFunctionFilled } from 'react-icons/tb';
+import { TfiReload } from 'react-icons/tfi';
 import { match } from 'ts-pattern';
 
 import { Button, ButtonProperties } from '../ui/Button';
@@ -41,24 +43,31 @@ export const ExpandableTextModal: FC<{
     text: string | object;
     label: string;
     variant?: ButtonProperties['variant'];
-}> = ({ text, label, variant = 'default' }) => {
+    buttonWidth?: string;
+}> = ({ text, label, variant = 'default', buttonWidth = 'w-fit' }) => {
     return (
         <Dialog>
-            <DialogTrigger asChild>
-                <Button variant={variant} size="sm">
-                    {label}
-                </Button>
-            </DialogTrigger>
+            <div className={buttonWidth}>
+                <DialogTrigger asChild>
+                    <Button
+                        variant={variant}
+                        size="sm"
+                        style={{ width: '100%' }}
+                    >
+                        {label}
+                    </Button>
+                </DialogTrigger>
+            </div>
             <DialogContent className="max-h-[800px] w-full">
                 <DialogHeader>
-                    <DialogTitle>Some Title Here</DialogTitle>
+                    <DialogTitle>Output</DialogTitle>
                     <DialogDescription>
-                        Perhaps a lorem ipsum could be here
+                        This is what the agent has output
                     </DialogDescription>
                 </DialogHeader>
                 <div className="w-full overflow-x-hidden">
                     <div className="max-h-[500px] max-w-full w-full">
-                        <pre className="pre text-wrap p-0.5 overflow-y-auto overflow-x-auto w-full max-w-full">
+                        <pre className="pre border text-wrap p-0.5 overflow-y-auto overflow-x-auto w-full max-w-full">
                             {text instanceof Object
                                 ? JSON.stringify(text, undefined, 2)
                                 : text}
@@ -73,9 +82,10 @@ export const ExpandableTextModal: FC<{
     );
 };
 
-export const AgentDecoder: FC<{ conversation?: string[] }> = ({
-    conversation,
-}) => {
+export const AgentDecoder: FC<{
+    conversation?: string[];
+    onReThinkSteps?: () => void;
+}> = ({ conversation, onReThinkSteps }) => {
     const lastReference = useRef<HTMLLIElement>(null);
 
     useEffect(() => {
@@ -87,7 +97,7 @@ export const AgentDecoder: FC<{ conversation?: string[] }> = ({
 
     return (
         <PopoverContent className="max-h-[60vh] overflow-y-auto">
-            <ul className="divide-y">
+            <ul className="">
                 {conversation?.map((entry, index, total) => {
                     const isLast = index === total.length - 1;
                     const message: AgentEvent = JSON.parse(entry);
@@ -121,15 +131,24 @@ export const AgentDecoder: FC<{ conversation?: string[] }> = ({
                                             message.data.parts[0].content;
 
                                         return (
-                                            <div className="py-4 px-2 space-y-2">
-                                                <div className="flex items-center gap-2">
-                                                    <TbFunctionFilled />
-                                                    <div>{functionCall}</div>
+                                            <>
+                                                <div className="py-4 px-2 space-y-2">
+                                                    <div className="flex items-center gap-2">
+                                                        <TbFunctionFilled />
+                                                        <div>
+                                                            {functionCall}
+                                                        </div>
+                                                    </div>
+                                                    <pre className="pre text-wrap p-0.5 break-words">
+                                                        {query}
+                                                    </pre>
                                                 </div>
-                                                <pre className="pre text-wrap p-0.5 break-words">
-                                                    {query}
-                                                </pre>
-                                            </div>
+                                                {isLast && (
+                                                    <div className="flex items-center justify-center">
+                                                        <FiLoader className="animate-spin" />
+                                                    </div>
+                                                )}
+                                            </>
                                         );
                                     }
                                 )
@@ -149,7 +168,9 @@ export const AgentDecoder: FC<{ conversation?: string[] }> = ({
                                                   );
 
                                         return (
-                                            <div className={'py-4 px-2'}>
+                                            <div
+                                                className={'py-4 px-2 border-b'}
+                                            >
                                                 <ExpandableTextModal
                                                     text={text}
                                                     label="Function Response"
@@ -185,10 +206,11 @@ export const AgentDecoder: FC<{ conversation?: string[] }> = ({
                                         //     JSON.parse(attemptedExtraction)['name'];
 
                                         return (
-                                            <div className="pre text-wrap p-0.5">
+                                            <div className="flex items-center justify-center p-0.5 py-1 my-2">
                                                 <ExpandableTextModal
                                                     text={attemptedExtraction}
-                                                    label={name ?? 'Results'}
+                                                    label={name ?? '📄 Results'}
+                                                    buttonWidth="w-full"
                                                     // label={x}
                                                 />
                                             </div>
@@ -201,12 +223,29 @@ export const AgentDecoder: FC<{ conversation?: string[] }> = ({
                                     },
                                     () => {
                                         return (
-                                            <div className="flex items-center justify-stretch py-0.5 gap-0.5">
-                                                <div className="grow h-0.5 bg-border w-full"></div>
-                                                <div className="italic text-center break-inside-avoid text-nowrap">
-                                                    Intelligence Complete
+                                            <div className="pt-2">
+                                                <div className="flex items-center justify-stretch py-0.5 gap-0.5">
+                                                    <div className="grow h-0.5 bg-border w-full"></div>
+                                                    <div className="italic text-center break-inside-avoid text-nowrap">
+                                                        Intelligence Complete
+                                                    </div>
+                                                    <div className="grow h-0.5 bg-border w-full"></div>
                                                 </div>
-                                                <div className="grow h-0.5 bg-border w-full"></div>
+                                                {onReThinkSteps && (
+                                                    <div className="mx-auto w-full flex justify-center">
+                                                        <Button
+                                                            variant="ghost"
+                                                            onClick={
+                                                                onReThinkSteps
+                                                            }
+                                                        >
+                                                            <TfiReload />
+                                                            <span>
+                                                                Re-think steps
+                                                            </span>
+                                                        </Button>
+                                                    </div>
+                                                )}
                                             </div>
                                         );
                                     }

@@ -17,7 +17,7 @@ export const ItemIntelligentSuggest: FC<{ itemId: string }> = ({ itemId }) => {
             <Popover
                 defaultOpen={!isIdle}
                 onOpenChange={(open) => {
-                    if (open && !['loading'].includes(status)) {
+                    if (open && status == 'idle') {
                         console.log('CLICKED');
                         mutate();
                     }
@@ -33,7 +33,12 @@ export const ItemIntelligentSuggest: FC<{ itemId: string }> = ({ itemId }) => {
                         Suggest
                     </Button>
                 </PopoverTrigger>
-                <AgentDecoder conversation={data?.contents} />
+                <AgentDecoder
+                    conversation={data?.contents}
+                    onReThinkSteps={() => {
+                        mutate();
+                    }}
+                />
             </Popover>
         </div>
     );
