@@ -10,9 +10,11 @@ import { ApiLogEntry } from '../ItemLogEntry';
 const FieldInfo = ({
     definition_id,
     value,
+    removed,
 }: {
     definition_id: string;
     value?: string;
+    removed?: string;
 }) => {
     const { data: fieldDefinitions } = useFieldDefinitions();
 
@@ -21,7 +23,7 @@ const FieldInfo = ({
     );
 
     return (
-        <div>
+        <div className={removed ? 'text-red-500' : ''}>
             <div className="font-bold">
                 {fieldDefinition?.name ?? definition_id}
             </div>
@@ -136,7 +138,7 @@ export const ItemEditLogData: FC<{ log: ApiLogEntry }> = ({ log }) => {
                                     const fieldSchema = z.array(
                                         z.object({
                                             definition_id: z.string(),
-                                            value: z.string().optional(),
+                                            value: z.string().nullable(),
                                         })
                                     );
 
@@ -165,7 +167,11 @@ export const ItemEditLogData: FC<{ log: ApiLogEntry }> = ({ log }) => {
                                                             definition_id={
                                                                 definition_id
                                                             }
-                                                            value={value}
+                                                            value={value ?? ''}
+                                                            removed={
+                                                                value ==
+                                                                undefined
+                                                            }
                                                         />
                                                     </li>
                                                 )
