@@ -1,12 +1,12 @@
 import TimeAgo from 'javascript-time-ago';
 import en from 'javascript-time-ago/locale/en';
-import { useMemo } from 'react';
 import { match } from 'ts-pattern';
 
 import { ApiLogResponse } from '@/api/item';
 import { UserProfile } from '@/components/UserProfile';
 
 import { ItemPreview } from '../item/ItemPreview';
+import { ItemEditLogData } from './data/ItemEditLogData';
 
 export type ApiLogEntry = ApiLogResponse[number];
 
@@ -21,13 +21,6 @@ export const ItemLogEntry = ({
     view?: 'global' | 'local';
 }) => {
     const created_ago = timeAgo.format(new Date(log.created_at));
-    const log_data = useMemo(() => {
-        try {
-            return JSON.parse(log.data);
-        } catch {
-            return log.data;
-        }
-    }, [log.data]);
 
     return (
         <li className="block pt-2 first:pt-0 space-y-2">
@@ -71,28 +64,7 @@ export const ItemLogEntry = ({
                 </div>
             </div>
             {match({ action: log.action })
-                .with({ action: 'edit' }, () => (
-                    <div className="card no-padding p-2 w-full">
-                        <ul>
-                            {Object.entries(log_data)
-                                .filter(
-                                    ([_, b]) =>
-                                        (Array.isArray(b) && b.length > 0) ||
-                                        (!Array.isArray(b) && b != undefined)
-                                )
-                                .map(([key, value], index) => (
-                                    <li key={key} className="space-x-2">
-                                        <span className="font-bold">{key}</span>
-                                        <span>
-                                            {value instanceof Object
-                                                ? JSON.stringify(value)
-                                                : (value as string)}
-                                        </span>
-                                    </li>
-                                ))}
-                        </ul>
-                    </div>
-                ))
+                .with({ action: 'edit' }, () => <ItemEditLogData log={log} />)
                 .otherwise(() => (
                     <></>
                 ))}

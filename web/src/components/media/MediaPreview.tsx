@@ -16,6 +16,7 @@ import { StlPreviewWindow } from '@/components/stl_preview/StlPreview';
 import { Button } from '../ui/Button';
 
 export const MediaPreview: FC<{
+    variant?: 'small' | 'default';
     media_id?: number;
     url?: string;
     name?: string;
@@ -23,7 +24,16 @@ export const MediaPreview: FC<{
     status?: string;
     update_media_id?: (_media_id: number) => void;
     delete_media?: (_media_id: number) => void;
-}> = ({ media_id, url, name, kind, status, update_media_id, delete_media }) => {
+}> = ({
+    variant = 'default',
+    media_id,
+    url,
+    name,
+    kind,
+    status,
+    update_media_id,
+    delete_media,
+}) => {
     const { data: instanceSettings } = useInstanceSettings();
     const { data: media } = useMedia(media_id);
 

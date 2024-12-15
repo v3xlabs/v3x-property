@@ -194,7 +194,25 @@ export const Route = createFileRoute('/item/$itemId/edit')({
             onSubmit: async ({ value }) => {
                 console.log('FORM SUBMIT', value);
 
-                const diff = itemDiff(value, defaultValue);
+                const payload = {
+                    name: value.name,
+                    media: value.media
+                        ?.filter((m) => m.media_id !== undefined)
+                        .map((m) => ({
+                            status: m.status,
+                            media_id: m.media_id!,
+                        })),
+                    fields: value.fields?.map((field) => ({
+                        definition_id: field.definition_id,
+                        value:
+                            field.value === EMPTY_VALUE || field.value === ''
+                                ? // eslint-disable-next-line unicorn/no-null
+                                  null
+                                : field.value,
+                    })),
+                };
+
+                const diff = itemDiff(payload, defaultValue);
 
                 console.log('DIFF', diff);
 
@@ -215,24 +233,7 @@ export const Route = createFileRoute('/item/$itemId/edit')({
                 await editItem(
                     {
                         item_id: itemId,
-                        data: {
-                            name: value.name,
-                            media: value.media
-                                ?.filter((m) => m.media_id !== undefined)
-                                .map((m) => ({
-                                    status: m.status,
-                                    media_id: m.media_id!,
-                                })),
-                            fields: value.fields?.map((field) => ({
-                                definition_id: field.definition_id,
-                                value:
-                                    field.value === EMPTY_VALUE ||
-                                    field.value === ''
-                                        ? // eslint-disable-next-line unicorn/no-null
-                                          null
-                                        : field.value,
-                            })),
-                        },
+                        data: diff,
                     },
                     {
                         onSuccess: async (data, variables, context) => {
