@@ -11,7 +11,7 @@ export const Route = createFileRoute('/$itemId')({
         }
 
         const instanceSettings = await queryClient.ensureQueryData(
-            getInstanceSettings
+            getInstanceSettings()
         );
         const formattedItemId = formatId(params.itemId, instanceSettings);
 
