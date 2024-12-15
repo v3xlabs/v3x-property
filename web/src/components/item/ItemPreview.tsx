@@ -22,11 +22,29 @@ type Properties = {
     image_url?: string;
 };
 
+export const deriveRandomHue = (item_id?: string) => {
+    if (!item_id) {
+        return;
+    }
+
+    // Use a non-linear transformation to spread out sequential numbers
+    const hash = item_id.split('').reduce((accumulator, char, index) => {
+        const charCode = char.codePointAt(0) ?? 0;
+
+        // Use prime numbers and position-based multipliers to add more entropy
+        return accumulator + ((charCode * 31 ** index) % 997);
+    }, 0);
+
+    // Add a final transformation to spread the values more evenly
+    return (hash * 17 + 359) % 360;
+};
+
 export const AvatarHolder: FC<{
     image?: string;
     alt?: string;
     size?: 'compact' | 'default' | 'large';
-}> = ({ image, alt, size }) => {
+    randomHue?: number;
+}> = ({ image, alt, size, randomHue }) => {
     return (
         <div
             className={clsx(
@@ -67,6 +85,13 @@ export const AvatarHolder: FC<{
                         )}
                         src="/default_cube.webp"
                         alt={alt || UNKNOWN_ITEM}
+                        style={
+                            randomHue
+                                ? {
+                                      filter: `sepia(100%) hue-rotate(${randomHue}deg)`,
+                                  }
+                                : undefined
+                        }
                     />
                 </Avatar.Fallback>
             </Avatar.Root>
@@ -80,11 +105,16 @@ export const ItemPreviewHoverCard: FC<{
 }> = ({ item, mediaUrl }) => {
     const { data: instanceSettings } = useInstanceSettings();
     const formattedItemId = formatId(item?.item_id, instanceSettings);
+    const randomHue = deriveRandomHue(item?.item_id);
 
     return (
         <HoverCard.Content className="HoverCardContent border" sideOffset={5}>
             <div className="flex flex-col gap-3">
-                <AvatarHolder image={mediaUrl} key={`media-${item?.item_id}`} />
+                <AvatarHolder
+                    image={mediaUrl}
+                    key={`media-${item?.item_id}`}
+                    randomHue={randomHue}
+                />
                 <div className="flex flex-col gap-3">
                     <div>
                         <div className="Text bold">{item?.name}</div>
@@ -120,7 +150,7 @@ const ItemPreviewLarge: FC<{
     formattedItemId?: string;
 }> = ({ item, isError, mediaUrl, formattedItemId }) => {
     const { data: fields } = useItemFields(item?.item_id);
-
+    const randomHue = deriveRandomHue(item?.item_id);
     const logos = fields?.map((field) => {
         return match(field)
             .with(
@@ -159,6 +189,7 @@ const ItemPreviewLarge: FC<{
                 alt={item?.name || UNKNOWN_ITEM}
                 size="large"
                 key={`media-${item?.item_id}`}
+                randomHue={randomHue}
             />
             <div className="flex flex-col -space-y-1.5 justify-center overflow-hidden grow py-4">
                 <div className="text-base overflow-hidden text-ellipsis whitespace-nowrap">
@@ -186,7 +217,7 @@ export const ItemPreview: FC<Properties> = ({ item_id, variant }) => {
     const { data: mediaData } = useMedia(media?.[0]);
     const { data: instanceSettings } = useInstanceSettings();
     const formattedItemId = formatId(item?.item_id, instanceSettings);
-
+    const randomHue = deriveRandomHue(item?.item_id);
     const mediaUrl = (() => {
         const link = mediaData?.url;
 
@@ -241,6 +272,7 @@ export const ItemPreview: FC<Properties> = ({ item_id, variant }) => {
                                     image={mediaUrl}
                                     alt={item?.name || UNKNOWN_ITEM}
                                     key={`media-${item?.item_id}`}
+                                    randomHue={randomHue}
                                 />
                             </Link>
                         </HoverCard.Trigger>
@@ -266,6 +298,7 @@ export const ItemPreview: FC<Properties> = ({ item_id, variant }) => {
                                     size="compact"
                                     alt={item?.name || UNKNOWN_ITEM}
                                     key={`media-${item?.item_id}`}
+                                    randomHue={randomHue}
                                 />
                                 <span className="flex gap-0.5 items-baseline justify-start overflow-hidden">
                                     <span className="Text text-ellipsis whitespace-nowrap">
@@ -309,6 +342,7 @@ export const ItemPreview: FC<Properties> = ({ item_id, variant }) => {
                                     image={mediaUrl}
                                     alt={item?.name || UNKNOWN_ITEM}
                                     key={`media-${item?.item_id}`}
+                                    randomHue={randomHue}
                                 />
                                 <div className="flex flex-col -space-y-1.5 justify-center overflow-hidden">
                                     <div className="Text overflow-hidden text-ellipsis whitespace-nowrap">
