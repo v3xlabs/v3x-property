@@ -2,7 +2,7 @@ import * as Avatar from '@radix-ui/react-avatar';
 import * as HoverCard from '@radix-ui/react-hover-card';
 import { Link } from '@tanstack/react-router';
 import clsx from 'clsx';
-import { FC } from 'react';
+import { FC, Fragment } from 'react';
 import { FaAmazon, FaBarcode } from 'react-icons/fa6';
 import { match } from 'ts-pattern';
 
@@ -40,11 +40,12 @@ export const deriveRandomHue = (item_id?: string) => {
 };
 
 export const AvatarHolder: FC<{
+    item_id?: string;
     image?: string;
     alt?: string;
     size?: 'compact' | 'default' | 'large';
     randomHue?: number;
-}> = ({ image, alt, size, randomHue }) => {
+}> = ({ item_id, image, alt, size, randomHue }) => {
     return (
         <div
             className={clsx(
@@ -111,6 +112,7 @@ export const ItemPreviewHoverCard: FC<{
         <HoverCard.Content className="HoverCardContent border" sideOffset={5}>
             <div className="flex flex-col gap-3">
                 <AvatarHolder
+                    item_id={item?.item_id}
                     image={mediaUrl}
                     key={`media-${item?.item_id}`}
                     randomHue={randomHue}
@@ -159,7 +161,10 @@ const ItemPreviewLarge: FC<{
                 { definition_id: 'gtin' },
                 (_) => {
                     return (
-                        <div className="border rounded-md p-1">
+                        <div
+                            className="border rounded-md p-1"
+                            key={field.definition_id}
+                        >
                             <FaBarcode />
                         </div>
                     );
@@ -167,12 +172,17 @@ const ItemPreviewLarge: FC<{
             )
             .with({ definition_id: 'asin' }, (_) => {
                 return (
-                    <div className="border rounded-md p-1">
+                    <div
+                        className="border rounded-md p-1"
+                        key={field.definition_id}
+                    >
                         <FaAmazon />
                     </div>
                 );
             })
-            .otherwise(() => <></>);
+            .otherwise((field) => (
+                <Fragment key={field.definition_id}></Fragment>
+            ));
     });
 
     return (
@@ -185,6 +195,7 @@ const ItemPreviewLarge: FC<{
             data-testid="item-preview-full"
         >
             <AvatarHolder
+                item_id={item?.item_id}
                 image={mediaUrl}
                 alt={item?.name || UNKNOWN_ITEM}
                 size="large"
@@ -269,6 +280,7 @@ export const ItemPreview: FC<Properties> = ({ item_id, variant }) => {
                                 data-testid="item-preview-avatar"
                             >
                                 <AvatarHolder
+                                    item_id={item?.item_id}
                                     image={mediaUrl}
                                     alt={item?.name || UNKNOWN_ITEM}
                                     key={`media-${item?.item_id}`}
@@ -294,6 +306,7 @@ export const ItemPreview: FC<Properties> = ({ item_id, variant }) => {
                                 data-testid="item-preview-compact"
                             >
                                 <AvatarHolder
+                                    item_id={item?.item_id}
                                     image={mediaUrl}
                                     size="compact"
                                     alt={item?.name || UNKNOWN_ITEM}

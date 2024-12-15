@@ -13,7 +13,7 @@ export const AllOwnedItems: FC<{ variant: 'full' | 'large' }> = ({
         <div className="space-y-4">
             <div className="gap-2 grid grid-cols-1 2xl:grid-cols-2">
                 {data?.map((item) => (
-                    <div className="card no-padding">
+                    <div className="card no-padding" key={item.item_id}>
                         <ItemPreview item_id={item.item_id} variant={variant} />
                     </div>
                 ))}
