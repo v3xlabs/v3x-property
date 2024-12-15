@@ -91,6 +91,7 @@ const AddField = (properties: {
 }) => {
     const { data: fieldsDefinitions } = useSuspenseQuery(getFieldDefinitions());
     const [open, setOpen] = useState(false);
+    const [search, setSearch] = useState('');
 
     return (
         <Popover.Root open={open} onOpenChange={setOpen}>
@@ -108,7 +109,11 @@ const AddField = (properties: {
             </Popover.Trigger>
             <Popover.Content className="w-[200px] p-0">
                 <Command.Root>
-                    <Command.Input placeholder="Search fields..." />
+                    <Command.Input
+                        placeholder="Search fields..."
+                        value={search}
+                        onValueChange={(event) => setSearch(event)}
+                    />
                     <Command.List>
                         <Command.Empty>No more fields</Command.Empty>
                         <Command.Group>
@@ -131,6 +136,20 @@ const AddField = (properties: {
                                         {field.name}
                                     </Command.Item>
                                 ))}
+                            {search.length > 0 &&
+                                /^[\dA-Za-z]+$/.test(search) && (
+                                    <Command.Item
+                                        value={`custom-${search}`}
+                                        onSelect={() => {
+                                            properties.onSelect({
+                                                definition_id: search,
+                                            } as any);
+                                            setOpen(false);
+                                        }}
+                                    >
+                                        Create '{search}'
+                                    </Command.Item>
+                                )}
                         </Command.Group>
                     </Command.List>
                 </Command.Root>
@@ -208,7 +227,7 @@ export const Route = createFileRoute('/item/$itemId/edit')({
                         value:
                             field.value === EMPTY_VALUE || field.value === ''
                                 ? // eslint-disable-next-line unicorn/no-null
-                                null
+                                  null
                                 : field.value,
                     })),
                 };
@@ -336,7 +355,7 @@ export const Route = createFileRoute('/item/$itemId/edit')({
                                                 >
                                                     {(subField) =>
                                                         subField.state.value !==
-                                                        EMPTY_VALUE && (
+                                                            EMPTY_VALUE && (
                                                             <BaseInput
                                                                 label={
                                                                     value.definition_name
