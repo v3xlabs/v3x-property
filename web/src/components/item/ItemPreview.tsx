@@ -83,7 +83,7 @@ export const AvatarHolder: FC<{
                             'w-full h-full object-cover',
                             size === 'compact' && '!size-6'
                         )}
-                        src="/default_cube.webp"
+                        src="/default_cube2.webp"
                         alt={alt || UNKNOWN_ITEM}
                         style={
                             randomHue
