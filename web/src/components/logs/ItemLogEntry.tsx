@@ -1,5 +1,6 @@
 import TimeAgo from 'javascript-time-ago';
 import en from 'javascript-time-ago/locale/en';
+import { useMemo } from 'react';
 import { match } from 'ts-pattern';
 
 import { ApiLogResponse } from '@/api/item';
@@ -20,10 +21,16 @@ export const ItemLogEntry = ({
     view?: 'global' | 'local';
 }) => {
     const created_ago = timeAgo.format(new Date(log.created_at));
-    const log_data = JSON.parse(log.data);
+    const log_data = useMemo(() => {
+        try {
+            return JSON.parse(log.data);
+        } catch {
+            return log.data;
+        }
+    }, [log.data]);
 
     return (
-        <li className="block pt-2 first:pt-0">
+        <li className="block pt-2 first:pt-0 space-y-2">
             <div className="flex flex-row-reverse justify-between">
                 <div>
                     {view === 'global' && (
@@ -32,6 +39,9 @@ export const ItemLogEntry = ({
                             variant="compact"
                         />
                     )}
+                    <div className="text-sm text-gray-500 text-end">
+                        {created_ago}
+                    </div>
                 </div>
                 <div className="flex flex-col w-full gap-2">
                     <div className="flex justify-between items-start">
@@ -57,43 +67,35 @@ export const ItemLogEntry = ({
                                 ))
                                 .otherwise(() => log.action)}
                         </div>
-                        <div className="text-sm text-gray-500">
-                            {created_ago}
-                        </div>
                     </div>
-                    {match({ action: log.action })
-                        .with({ action: 'edit' }, () => (
-                            <div className="card no-padding p-2 w-full">
-                                <ul>
-                                    {Object.entries(log_data)
-                                        .filter(
-                                            ([_, b]) =>
-                                                (Array.isArray(b) &&
-                                                    b.length > 0) ||
-                                                (!Array.isArray(b) &&
-                                                    b != undefined)
-                                        )
-                                        .map(([key, value], index) => (
-                                            <li key={key} className="space-x-2">
-                                                <span className="font-bold">
-                                                    {key}
-                                                </span>
-                                                <span>{value as any}</span>
-                                            </li>
-                                        ))}
-                                </ul>
-                            </div>
-                        ))
-                        .otherwise(() => (
-                            <></>
-                        ))}
                 </div>
             </div>
-            {!['create', 'edit'].includes(log.action) && (
-                <div>
-                    <UserProfile user_id={log.user_id} />
-                </div>
-            )}
+            {match({ action: log.action })
+                .with({ action: 'edit' }, () => (
+                    <div className="card no-padding p-2 w-full">
+                        <ul>
+                            {Object.entries(log_data)
+                                .filter(
+                                    ([_, b]) =>
+                                        (Array.isArray(b) && b.length > 0) ||
+                                        (!Array.isArray(b) && b != undefined)
+                                )
+                                .map(([key, value], index) => (
+                                    <li key={key} className="space-x-2">
+                                        <span className="font-bold">{key}</span>
+                                        <span>
+                                            {value instanceof Object
+                                                ? JSON.stringify(value)
+                                                : (value as string)}
+                                        </span>
+                                    </li>
+                                ))}
+                        </ul>
+                    </div>
+                ))
+                .otherwise(() => (
+                    <></>
+                ))}
         </li>
     );
 };
