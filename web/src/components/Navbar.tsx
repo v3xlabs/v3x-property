@@ -68,7 +68,7 @@ export const Navbar = () => {
         <nav
             role="navigation"
             aria-label="Main"
-            className="w-full bg-white border-t md:border-b h-16 md:h-auto flex items-center justify-between md:justify-start fixed bottom-0 md:sticky md:top-0 md:z-50"
+            className="w-full bg-white border-t md:border-b h-16 md:h-auto flex items-center justify-between md:justify-start fixed bottom-0 md:sticky md:top-0 z-10"
         >
             <div className="flex md:hidden w-full overflow-x-auto">
                 <ul className="grid grid-cols-5 w-full">
