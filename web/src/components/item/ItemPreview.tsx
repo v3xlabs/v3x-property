@@ -192,7 +192,7 @@ const ItemPreviewLarge: FC<{
                 'p-2 border cursor-pointer rounded-md flex items-start gap-4 hover:outline outline-1 outline-offset-1 outline-neutral-200',
                 isError && 'bg-red-50'
             )}
-            data-testid="item-preview-full"
+            data-testid="item-preview-large"
         >
             <AvatarHolder
                 item_id={item?.item_id}

@@ -63,7 +63,7 @@ test.describe.serial('item flows', () => {
 
         await expect(page.getByTestId('search-results')).toBeVisible();
 
-        await page.getByTestId('item-preview-full').first().click();
+        await page.getByTestId('item-preview-large').first().click();
 
         await expect(page.locator('h1')).toHaveText(DEFAULT_ITEM_NAME);
     });
@@ -73,7 +73,11 @@ test.describe.serial('item flows', () => {
 
         await page.getByRole('link', { name: 'Items' }).click();
 
-        await page.getByTestId('item-preview-full').first().click();
+        const preview = await page.getByTestId('item-preview-large').first();
+
+        expect(preview).toBeVisible();
+
+        await preview.click();
 
         await page.getByRole('link', { name: 'Edit' }).click();
         await page.getByRole('button', { name: 'Delete Item' }).click();

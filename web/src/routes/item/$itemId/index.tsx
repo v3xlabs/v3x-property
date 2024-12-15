@@ -73,7 +73,11 @@ export const Route = createFileRoute('/item/$itemId/')({
                 title={(item.data && item.data.name) || `Item ${itemId}`}
                 suffix={
                     <Button asChild>
-                        <Link to="/item/$itemId/edit" params={{ itemId }}>
+                        <Link
+                            to="/item/$itemId/edit"
+                            params={{ itemId }}
+                            aria-label="Edit"
+                        >
                             <FiEdit />
                         </Link>
                     </Button>
