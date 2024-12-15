@@ -13,37 +13,36 @@ use crate::modules::intelligence::{
 
 pub struct OllamaActor {}
 
-impl Actor for OllamaActor {
-    async fn calculate(
-        &self,
-        intelligence: &crate::modules::intelligence::Intelligence,
-        conversation: &crate::modules::intelligence::structured::Conversation,
-        tasks: &[SmartActionType],
-    ) -> Result<crate::modules::intelligence::structured::CalculatedResponse, anyhow::Error> {
-        // let body: Ollama
-        info!("Calculating response");
-        let request = ChatMessageRequest::new(
-            "qwen2.5:3b".to_string(),
-            // conversation
-            //     .messages
-            //     .iter()
-            //     .map(|m| {
-            //         let x: ChatMessage = m.into();
-            //         x
-            //     })
-            //     .collect(),
-            vec![],
-        );
-        info!("Request: {:?}", request);
+// impl Actor for OllamaActor {
+//     async fn calculate(
+//         intelligence: &crate::modules::intelligence::Intelligence,
+//         conversation: &crate::modules::intelligence::structured::Conversation,
+//         tasks: &[SmartActionType],
+//     ) -> Result<crate::modules::intelligence::structured::CalculatedResponse, anyhow::Error> {
+//         // let body: Ollama
+//         info!("Calculating response");
+//         let request = ChatMessageRequest::new(
+//             "qwen2.5:3b".to_string(),
+//             // conversation
+//             //     .messages
+//             //     .iter()
+//             //     .map(|m| {
+//             //         let x: ChatMessage = m.into();
+//             //         x
+//             //     })
+//             //     .collect(),
+//             vec![],
+//         );
+//         info!("Request: {:?}", request);
 
-        let ollama = intelligence.ollama.as_ref().unwrap();
+//         let ollama = intelligence.ollama.as_ref().unwrap();
 
-        // ollama.ollama.send_chat_messages(request)
-        // let response = ollama.ollama.send_chat_messages(request).await.unwrap();
+//         // ollama.ollama.send_chat_messages(request)
+//         // let response = ollama.ollama.send_chat_messages(request).await.unwrap();
 
-        todo!()
-    }
-}
+//         todo!()
+//     }
+// }
 
 impl From<ConversationMessage> for ChatMessage {
     fn from(value: ConversationMessage) -> Self {

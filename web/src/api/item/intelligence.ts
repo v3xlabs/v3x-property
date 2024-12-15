@@ -1,11 +1,29 @@
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 
 import { queryClient } from '@/util/query';
 
+type SuggestionResponseEventPayload = {
+    status: 'loading' | 'success';
+    contents: string[];
+};
+
 export const useItemSuggestion = ({ itemId }: { itemId: string }) => {
-    return useMutation({
-        mutationKey: ['item', '{item_id}', itemId, 'intelligence', 'suggest'],
+    const { data } = useQuery({
+        queryKey: ['item', '{item_id}', itemId, 'intelligence', 'suggest'],
+        queryFn: async () => {
+            return {
+                status: 'loading',
+                contents: [],
+            } as SuggestionResponseEventPayload;
+        },
+    });
+
+    console.log('DATA', data);
+
+    const mutation = useMutation({
+        // mutationKey: ['item', '{item_id}', itemId, 'intelligence', 'suggest'],
         mutationFn: async () => {
+            console.log('MUTATION');
             // Open a request using apiRequest to /api/item/:item_id/intelligence/suggest
             // const response = await apiRequest(
             //     '/item/{item_id}/intelligence/suggest',
@@ -25,21 +43,18 @@ export const useItemSuggestion = ({ itemId }: { itemId: string }) => {
                 console.log('EVENT', event.data);
                 queryClient.setQueryData(
                     ['item', '{item_id}', itemId, 'intelligence', 'suggest'],
-                    event.data
+                    (oldData: SuggestionResponseEventPayload) =>
+                        ({
+                            ...oldData,
+                            status: 'success',
+                            contents: [...oldData.contents, event.data],
+                        } as SuggestionResponseEventPayload)
                 );
-                queryClient.invalidateQueries({
-                    queryKey: [
-                        'item',
-                        '{item_id}',
-                        itemId,
-                        'intelligence',
-                        'suggest',
-                    ],
-                });
             });
 
             response.addEventListener('error', (event) => {
                 console.log('ERROR', event);
+                response.close();
             });
 
             response.addEventListener('open', (event) => {
@@ -48,5 +63,11 @@ export const useItemSuggestion = ({ itemId }: { itemId: string }) => {
 
             return response;
         },
+        retry: false,
+        onError: (error) => {
+            console.log('ERRORz', error);
+        },
     });
+
+    return { ...mutation, data };
 };

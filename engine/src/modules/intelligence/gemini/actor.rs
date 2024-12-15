@@ -1,6 +1,7 @@
+use async_trait::async_trait;
+use serde_json::{json, Value};
 use std::{fs::File, ops::Deref, sync::Arc};
 use tracing::{debug, info};
-use serde_json::{json, Value};
 
 use crate::{
     modules::intelligence::{
@@ -22,25 +23,11 @@ use crate::{
     state::AppState,
 };
 
-use super::structured::{
-    GeminiStructuredContentRequest, GeminiStructuredContentRequestPart,
-    GeminiStructuredContentRequestPartPart,
-};
+use super::structured::{GeminiStructuredContentRequest, GeminiStructuredContentRequestPart};
 
-pub struct GeminiActor {
-    system: Option<GeminiStructuredContentRequestPart>,
-    contents: Vec<GeminiStructuredContentRequestPart>,
-}
+pub struct GeminiActor;
 
 impl GeminiActor {
-    pub async fn init(
-        state: &Arc<AppState>,
-        system: Option<GeminiStructuredContentRequestPart>,
-        contents: Vec<GeminiStructuredContentRequestPart>,
-    ) -> Result<Self, anyhow::Error> {
-        Ok(Self { system, contents })
-    }
-
     // pub async fn prompt(
     //     &mut self,
     //     state: &Arc<AppState>,
@@ -212,6 +199,7 @@ impl GeminiActor {
     // }
 }
 
+#[async_trait]
 impl Actor for GeminiActor {
     async fn calculate(
         &self,
@@ -247,10 +235,11 @@ impl Actor for GeminiActor {
 
         let raw_response: Value = response.json().await?;
 
-        let response: GeminiStructuredContentResponse = serde_json::from_value(raw_response.clone()).unwrap();
- 
+        let response: GeminiStructuredContentResponse =
+            serde_json::from_value(raw_response.clone()).unwrap();
+
         info!("response: {:?}", response);
- 
+
         info!("raw_response: {:?}", raw_response);
 
         info!("body: {:?}", body);

@@ -1,10 +1,12 @@
-use std::sync::Arc;
+use std::{ops::Deref, sync::Arc};
 
+use futures::stream::BoxStream;
+use poem_openapi::payload::Json;
 use serde_json::{json, Value};
 use tracing::info;
 
 use super::super::gemini::structured::*;
-use crate::{modules::intelligence::{actions::{kagi::SearchKagiTask, SmartActionType}, gemini::actor::GeminiActor, ollama::actor::OllamaActor, structured::{actor::Actor, strategy::Strategy, Conversation, ConversationMessage, ConversationMessagePart}}, state::AppState};
+use crate::{modules::intelligence::{actions::{kagi::SearchKagiTask, SmartActionType}, gemini::actor::GeminiActor, ollama::actor::OllamaActor, structured::{actor::{Actor, ActorEvent}, strategy::Strategy, Conversation, ConversationMessage, ConversationMessagePart}}, state::AppState};
 
 pub struct IngressProductTask {
     pub query: String,
@@ -13,7 +15,7 @@ pub struct IngressProductTask {
 pub const SYSTEM_PROMPT: &str = include_str!("ingress_product.prompt.md");
 
 impl IngressProductTask {
-    pub async fn run(&self, state: &Arc<AppState>) -> Result<(), anyhow::Error> {
+    pub async fn run<'a>(&self, state: &Arc<AppState>) -> Result<BoxStream<'a, ActorEvent>, anyhow::Error> {
         // let gemini = state
         //     .intelligence
         //     .as_ref()
@@ -23,7 +25,7 @@ impl IngressProductTask {
         //     .unwrap();
 
         // let mut actor = OllamaActor {};
-        let mut actor = GeminiActor::init(state, None, vec![]).await?;
+        let mut actor = GeminiActor {};
 
         // let mut actor = GeminiActor::init(
         //     state,
@@ -70,11 +72,12 @@ impl IngressProductTask {
             SmartActionType::ExtractLDJSON,
         ];
 
-        let x = actor.prompt(state.intelligence.as_ref().unwrap(), &mut conversation, &tasks).await?;
+        let x = actor.prompt(state.clone(), conversation, tasks);
 
-        info!("response: {:?}", x);
+        return Ok(x);
+        // info!("response: {:?}", x);
 
-        todo!();
+        // todo!();
         // let response = gemini
         //     .structured_content::<Value>(&GeminiStructuredContentRequest {
         //         contents: vec![GeminiStructuredContentRequestPart {
@@ -129,6 +132,6 @@ impl IngressProductTask {
 
         // info!("response: {}", serde_json::to_string_pretty(&response)?);
 
-        Ok(())
+        // Ok(())
     }
 }
