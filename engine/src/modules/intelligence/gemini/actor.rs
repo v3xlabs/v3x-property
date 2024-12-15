@@ -2,11 +2,10 @@ use async_trait::async_trait;
 use serde_json::Value;
 
 use crate::modules::intelligence::{
-        actions::SmartActionType,
-        gemini::structured::GeminiStructuredContentResponse,
-        structured::{actor::Actor, CalculatedResponse, Conversation},
-        Intelligence,
-    };
+    gemini::structured::GeminiStructuredContentResponse,
+    structured::{actor::Actor, strategy::StrategyConfig, CalculatedResponse, Conversation},
+    Intelligence,
+};
 
 use super::structured::GeminiStructuredContentRequest;
 
@@ -190,9 +189,9 @@ impl Actor for GeminiActor {
         &self,
         intelligence: &Intelligence,
         conversation: &Conversation,
-        tasks: &[SmartActionType],
+        strategy: &StrategyConfig,
     ) -> Result<CalculatedResponse, anyhow::Error> {
-        let body = GeminiStructuredContentRequest::from_conversation(conversation, tasks);
+        let body = GeminiStructuredContentRequest::from_conversation(conversation, strategy);
 
         let client = reqwest::Client::new();
         let api_key = intelligence.gemini.as_ref().unwrap().api_key.as_str();

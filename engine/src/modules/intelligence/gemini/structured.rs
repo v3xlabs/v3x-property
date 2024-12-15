@@ -2,8 +2,11 @@ use serde::{Deserialize, Serialize};
 use serde_json::Value;
 
 use crate::modules::intelligence::{
-    actions::{SmartActionDefinition, SmartActionType},
-    structured::{CalculatedResponse, Conversation, ConversationMessage, ConversationMessagePart},
+    actions::SmartActionDefinition,
+    structured::{
+        strategy::{FunctionMode, StrategyConfig}, CalculatedResponse, Conversation, ConversationMessage,
+        ConversationMessagePart,
+    },
 };
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
@@ -22,7 +25,7 @@ pub struct GeminiStructuredContentRequest {
 }
 
 impl GeminiStructuredContentRequest {
-    pub fn from_conversation(value: &Conversation, tasks: &[SmartActionType]) -> Self {
+    pub fn from_conversation(value: &Conversation, strategy: &StrategyConfig) -> Self {
         GeminiStructuredContentRequest {
             contents: value
                 .messages
@@ -33,14 +36,26 @@ impl GeminiStructuredContentRequest {
                 .system_instruction
                 .as_ref()
                 .map(|x| GeminiStructuredContentRequestPart::from(&x[0])),
-            tools: if !tasks.is_empty() {
+            tools: if !strategy.tasks.is_empty() {
                 Some(GeminiStructuredContentRequestTool {
-                    function_declarations: tasks.iter().map(|x| x.as_definition()).collect(),
+                    function_declarations: strategy
+                        .tasks
+                        .iter()
+                        .map(|x| x.as_definition())
+                        .collect(),
                 })
             } else {
                 None
             },
-            tool_config: None,
+            tool_config: match strategy.allowed_functions.is_some() || strategy.function_mode.is_some() {
+                true => Some(GeminiStructuredContentRequestToolConfig {
+                    function_calling_config: GeminiStructuredContentRequestToolConfigFunctionCallingConfig {
+                        allowed_function_names: strategy.allowed_functions.clone(),
+                        mode: serde_json::to_string(strategy.function_mode.as_ref().unwrap_or(&FunctionMode::Auto)).unwrap()
+                    }
+                }),
+                false => None,
+            },
             generation_config: None,
         }
     }

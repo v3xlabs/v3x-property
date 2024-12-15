@@ -53,6 +53,10 @@ impl SmartAction for SearchUPCEANDatabaseTask {
             },
         }
     }
+
+    fn name() -> String {
+        "search_upc_database".to_string()
+    }
 }
 
 pub async fn search_upcitemdb(upc: &str) -> Result<String, anyhow::Error> {

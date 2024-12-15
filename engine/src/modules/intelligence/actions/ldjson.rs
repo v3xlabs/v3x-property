@@ -45,6 +45,10 @@ impl SmartAction for ExtractLDJsonTask {
             },
         }
     }
+
+    fn name() -> String {
+        "extract_ldjson".to_string()
+    }
 }
 
 pub async fn extract_ldjson(url: &str) -> Result<String, anyhow::Error> {

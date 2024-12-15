@@ -48,7 +48,7 @@ impl IngressProductTask {
             SmartActionType::ExtractLDJSON,
         ];
 
-        let x = actor.prompt(state.clone(), conversation, tasks);
+        let x = actor.prompt(state.clone(), conversation);
 
         Ok(x)
     }

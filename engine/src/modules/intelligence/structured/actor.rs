@@ -2,7 +2,7 @@ use crate::{
     modules::intelligence::{
         actions::{
             kagi::SearchKagiTask, ldjson::ExtractLDJsonTask, upcitemdb::SearchUPCEANDatabaseTask,
-            SmartAction, SmartActionType,
+            SmartAction,
         },
         structured::ConversationMessagePart,
         Intelligence,
@@ -12,6 +12,7 @@ use crate::{
 
 use super::{CalculatedResponse, Conversation, ConversationMessage};
 
+use super::strategy::StrategyConfig;
 use async_trait::async_trait;
 use futures::stream::BoxStream;
 use poem_openapi::Object;
@@ -32,7 +33,7 @@ pub trait Actor: Send + Sync + Sized {
         &self,
         intelligence: &Intelligence,
         conversation: &Conversation,
-        tasks: &[SmartActionType],
+        strategy: &StrategyConfig,
     ) -> Result<CalculatedResponse, anyhow::Error>
     where
         Self: Send;
@@ -41,7 +42,6 @@ pub trait Actor: Send + Sync + Sized {
         self,
         state: Arc<AppState>,
         conversation: Conversation,
-        tasks: Vec<SmartActionType>,
     ) -> BoxStream<'static, ActorEvent>
     where
         Self: 'static,
@@ -64,7 +64,7 @@ pub trait Actor: Send + Sync + Sized {
                     }
                 };
 
-                let response = match self.calculate(intelligence, &conversation, &tasks).await {
+                let response = match self.calculate(intelligence, &conversation, &strategy).await {
                     Ok(response) => response,
                     Err(e) => {
                         // yield Err("Calculation failed".to_string());
@@ -96,6 +96,8 @@ pub trait Actor: Send + Sync + Sized {
                     conversation.messages.push(first_candidate.clone());
 
                     if let Some(part) = first_candidate.parts.first() {
+                        // TODO: verify part is a permitted function to call
+
                         match part {
                             ConversationMessagePart::FunctionCall(function_name, function_args) => {
                                 warn!("FUNCTION CALLINGGG");

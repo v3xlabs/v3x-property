@@ -42,6 +42,10 @@ impl SmartAction for SearchKagiTask {
             },
         }
     }
+
+    fn name() -> String {
+        "search_kagi".to_string()
+    }
 }
 
 #[derive(Debug, Serialize, Deserialize, Clone)]

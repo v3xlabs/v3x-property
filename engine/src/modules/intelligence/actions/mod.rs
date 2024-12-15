@@ -6,6 +6,7 @@ use upcitemdb::SearchUPCEANDatabaseTask;
 
 use super::structured::ConversationMessage;
 
+#[derive(Debug, Serialize, Deserialize, Clone)]
 pub enum SmartActionType {
     SearchUPCEAN,
     SearchKagi,
@@ -25,6 +26,7 @@ impl SmartActionType {
 pub trait SmartAction: Sized {
     async fn execute(&self) -> Result<ConversationMessage, anyhow::Error>;
     fn as_definition() -> SmartActionDefinition;
+    fn name() -> String;
 }
 
 #[derive(Debug, Serialize, Deserialize, Clone)]

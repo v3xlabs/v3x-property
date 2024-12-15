@@ -1,5 +1,5 @@
 import { FC, useEffect, useRef } from 'react';
-import { FiLoader } from 'react-icons/fi';
+import { RxPaperPlane } from 'react-icons/rx';
 import { SiGooglegemini } from 'react-icons/si';
 import { TbFunctionFilled } from 'react-icons/tb';
 import { TfiReload } from 'react-icons/tfi';
@@ -143,11 +143,6 @@ export const AgentDecoder: FC<{
                                                         {query}
                                                     </pre>
                                                 </div>
-                                                {isLast && (
-                                                    <div className="flex items-center justify-center">
-                                                        <FiLoader className="animate-spin" />
-                                                    </div>
-                                                )}
                                             </>
                                         );
                                     }
@@ -262,6 +257,24 @@ export const AgentDecoder: FC<{
                                         </pre>
                                     </div>
                                 ))}
+
+                            {isLast &&
+                                match({
+                                    type: message.data?.parts?.[0]?.type,
+                                })
+                                    .with(
+                                        { type: 'function_call' },
+                                        { type: 'function_response' },
+                                        () => (
+                                            <div className="flex items-center justify-center gap-2">
+                                                <RxPaperPlane />
+                                                <div className="text-sm">
+                                                    Generating...
+                                                </div>
+                                            </div>
+                                        )
+                                    )
+                                    .otherwise(() => <></>)}
                         </li>
                     );
                 })}
