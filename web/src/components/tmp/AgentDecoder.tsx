@@ -266,7 +266,7 @@ export const AgentDecoder: FC<{
                                         { type: 'function_call' },
                                         { type: 'function_response' },
                                         () => (
-                                            <div className="flex items-center justify-center gap-2">
+                                            <div className="flex items-center justify-center gap-2 mt-2 pt-1">
                                                 <RxPaperPlane />
                                                 <div className="text-sm">
                                                     Generating...
