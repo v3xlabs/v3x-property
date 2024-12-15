@@ -396,7 +396,7 @@ export type paths = {
                         [name: string]: unknown;
                     };
                     content: {
-                        "text/event-stream": components["schemas"]["Event"][];
+                        "text/event-stream": components["schemas"]["ActorEvent"][];
                     };
                 };
             };
@@ -1818,6 +1818,10 @@ export type components = {
     schemas: {
         /** @enum {string} */
         Action: "read" | "write" | "delete";
+        ActorEvent: {
+            event: string;
+            data: unknown;
+        };
         BuildDetails: {
             git_hash?: string;
             version: string;
@@ -1832,9 +1836,6 @@ export type components = {
         CreateKeyResponse: {
             key: components["schemas"]["UserApiKey"];
             token: string;
-        };
-        Event: {
-            event: string;
         };
         FieldDefinition: {
             definition_id: string;
@@ -1852,28 +1853,8 @@ export type components = {
         };
         /** @enum {string} */
         FieldKind: "String" | "Number" | "Boolean" | "Json";
-        GeminiModel: {
-            name?: string;
-            base_model_id?: string;
-            version?: string;
-            display_name?: string;
-            description?: string;
-            /** Format: uint32 */
-            input_token_limit?: number;
-            /** Format: uint32 */
-            _output_token_limit?: number;
-            supported_generation_methods?: string[];
-            /** Format: float */
-            _temperature?: number;
-            /** Format: float */
-            _max_temperature?: number;
-            /** Format: float */
-            _top_p?: number;
-            /** Format: uint32 */
-            _top_k?: number;
-        };
         GeminiStatus: {
-            models: components["schemas"]["GeminiModel"][];
+            models: string[];
         };
         /** @enum {string} */
         IdCasingPreference: "upper" | "lower";
