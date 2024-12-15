@@ -6033,6 +6033,7 @@ dependencies = [
  "anyhow",
  "async-h1",
  "async-std",
+ "async-stream",
  "async-tls 0.11.0",
  "aws-config",
  "aws-sdk-s3",
