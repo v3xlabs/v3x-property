@@ -318,6 +318,12 @@ export const Route = createFileRoute('/item/$itemId/edit')({
                                                                 onChange={
                                                                     subField.handleChange
                                                                 }
+                                                                description={
+                                                                    value.definition_description
+                                                                }
+                                                                placeholder={
+                                                                    value.definition_placeholder
+                                                                }
                                                                 suffix={
                                                                     <Button
                                                                         variant="ghost"

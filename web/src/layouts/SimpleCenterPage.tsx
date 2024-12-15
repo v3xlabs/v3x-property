@@ -1,7 +1,8 @@
 import type { ClassValue } from 'clsx';
-import { FC, PropsWithChildren, ReactNode } from 'react';
+import { FC, PropsWithChildren, ReactNode, useEffect } from 'react';
 
 import { cn } from '@/util/style';
+import { getTitle } from '@/util/title';
 
 export type SCPageProperties = PropsWithChildren<{
     title: string;
@@ -17,6 +18,10 @@ export const SCPage: FC<SCPageProperties> = ({
     suffix,
     className,
 }) => {
+    useEffect(() => {
+        document.title = getTitle(title);
+    }, [title]);
+
     return (
         <div
             className={cn(
