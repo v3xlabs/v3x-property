@@ -6,7 +6,10 @@ use ollama_rs::generation::{
 };
 use tracing::info;
 
-use crate::modules::intelligence::structured::{actor::Actor, ConversationMessage};
+use crate::modules::intelligence::{
+    actions::SmartActionType,
+    structured::{actor::Actor, ConversationMessage, ConversationMessagePart},
+};
 
 pub struct OllamaActor {}
 
@@ -15,6 +18,7 @@ impl Actor for OllamaActor {
         &self,
         intelligence: &crate::modules::intelligence::Intelligence,
         conversation: &crate::modules::intelligence::structured::Conversation,
+        tasks: &[SmartActionType],
     ) -> Result<crate::modules::intelligence::structured::CalculatedResponse, anyhow::Error> {
         // let body: Ollama
         info!("Calculating response");
@@ -28,7 +32,7 @@ impl Actor for OllamaActor {
             //         x
             //     })
             //     .collect(),
-            vec![]
+            vec![],
         );
         info!("Request: {:?}", request);
 
@@ -53,7 +57,15 @@ impl From<ConversationMessage> for ChatMessage {
             content: value
                 .parts
                 .iter()
-                .map(|p| p.to_string())
+                .map(|p| match p {
+                    ConversationMessagePart::Text(text) => text.clone(),
+                    ConversationMessagePart::FunctionCall(function_name, function_args) => {
+                        format!("{}: {}", function_name, function_args)
+                    }
+                    ConversationMessagePart::FunctionResponse(function_name, function_response) => {
+                        format!("{}: {}", function_name, function_response)
+                    }
+                })
                 .collect::<Vec<String>>()
                 .join("\n"),
             images: None,

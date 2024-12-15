@@ -1,14 +1,33 @@
 use std::{thread::sleep, time::Duration};
 
 use headless_chrome::{browser::tab::point::Point, types::Bounds, Browser};
+use kagi::SearchKagiTask;
+use ldjson::ExtractLDJsonTask;
 use rand::Rng as _;
 use serde::{Deserialize, Serialize};
+use upcitemdb::SearchUPCEANDatabaseTask;
 
 use super::gemini::structured::{
     GeminiStructuredContentRequestPart, GeminiStructuredContentRequestPartPart,
 };
 
-pub trait SmartAction {
+pub enum SmartActionType {
+    SearchUPCEAN,
+    SearchKagi,
+    ExtractLDJSON,
+}
+
+impl SmartActionType {
+    pub fn as_definition(&self) -> SmartActionDefinition {
+        match self {
+            SmartActionType::SearchUPCEAN => SearchUPCEANDatabaseTask::as_definition(),
+            SmartActionType::SearchKagi => SearchKagiTask::as_definition(),
+            SmartActionType::ExtractLDJSON => ExtractLDJsonTask::as_definition(),
+        }
+    }
+}
+
+pub trait SmartAction: Sized {
     async fn execute(&self) -> Result<GeminiStructuredContentRequestPart, anyhow::Error>;
     fn as_definition() -> SmartActionDefinition;
 }

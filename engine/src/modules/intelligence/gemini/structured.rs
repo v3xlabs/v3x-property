@@ -4,7 +4,7 @@ use serde_json::Value;
 use crate::modules::{
     self,
     intelligence::{
-        actions::SmartActionDefinition,
+        actions::{SmartActionDefinition, SmartActionType},
         structured::{
             strategy::Strategy, CalculatedResponse, Conversation, ConversationMessage,
             ConversationMessagePart,
@@ -27,8 +27,8 @@ pub struct GeminiStructuredContentRequest {
     pub generation_config: Option<GeminiStructuredContentGenerationConfig>,
 }
 
-impl From<&Conversation> for GeminiStructuredContentRequest {
-    fn from(value: &Conversation) -> Self {
+impl GeminiStructuredContentRequest {
+    pub fn from_conversation(value: &Conversation, tasks: &[SmartActionType]) -> Self {
         GeminiStructuredContentRequest {
             contents: value
                 .messages
@@ -39,7 +39,13 @@ impl From<&Conversation> for GeminiStructuredContentRequest {
                 .system_instruction
                 .as_ref()
                 .map(|x| GeminiStructuredContentRequestPart::from(&x[0])),
-            tools: None,
+            tools: if tasks.len() > 0 {
+                Some(GeminiStructuredContentRequestTool {
+                    function_declarations: tasks.iter().map(|x| x.as_definition()).collect(),
+                })
+            } else {
+                None
+            },
             tool_config: None,
             generation_config: None,
         }
@@ -111,6 +117,10 @@ impl From<&GeminiStructuredContentRequestPartPart> for ConversationMessagePart {
     fn from(value: &GeminiStructuredContentRequestPartPart) -> Self {
         if let Some(text) = value.text.clone() {
             ConversationMessagePart::Text(text)
+        } else if let Some(function_call) = value.function_call.clone() {
+            ConversationMessagePart::FunctionCall(function_call.name, Value::String(function_call.args.query))
+        } else if let Some(function_response) = value.function_response.clone() {
+            ConversationMessagePart::FunctionResponse(function_response.name, function_response.response.content)
         } else {
             panic!("Unsupported GeminiStructuredContentRequestPartPart type");
         }

@@ -4,7 +4,7 @@ use serde_json::{json, Value};
 use tracing::info;
 
 use super::super::gemini::structured::*;
-use crate::{modules::intelligence::{gemini::actor::GeminiActor, ollama::actor::OllamaActor, structured::{actor::Actor, strategy::Strategy, Conversation, ConversationMessage, ConversationMessagePart}}, state::AppState};
+use crate::{modules::intelligence::{actions::{kagi::SearchKagiTask, SmartActionType}, gemini::actor::GeminiActor, ollama::actor::OllamaActor, structured::{actor::Actor, strategy::Strategy, Conversation, ConversationMessage, ConversationMessagePart}}, state::AppState};
 
 pub struct IngressProductTask {
     pub query: String,
@@ -22,8 +22,8 @@ impl IngressProductTask {
         //     .as_ref()
         //     .unwrap();
 
-        let mut actor = OllamaActor {};
-        // let mut actor = GeminiActor::init(state, None, vec![]).await?;
+        // let mut actor = OllamaActor {};
+        let mut actor = GeminiActor::init(state, None, vec![]).await?;
 
         // let mut actor = GeminiActor::init(
         //     state,
@@ -64,7 +64,13 @@ impl IngressProductTask {
             }]),
         };
 
-        let x = actor.prompt(state.intelligence.as_ref().unwrap(), &mut conversation).await?;
+        let tasks = vec![
+            SmartActionType::SearchUPCEAN,
+            SmartActionType::SearchKagi,
+            SmartActionType::ExtractLDJSON,
+        ];
+
+        let x = actor.prompt(state.intelligence.as_ref().unwrap(), &mut conversation, &tasks).await?;
 
         info!("response: {:?}", x);
 

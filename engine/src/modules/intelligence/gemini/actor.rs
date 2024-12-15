@@ -6,7 +6,7 @@ use crate::{
     modules::intelligence::{
         actions::{
             kagi::SearchKagiTask, ldjson::ExtractLDJsonTask, upcitemdb::SearchUPCEANDatabaseTask,
-            SmartAction,
+            SmartAction, SmartActionType,
         },
         gemini::structured::{
             GeminiStructuredContentGenerationConfig, GeminiStructuredContentRequestTool,
@@ -217,6 +217,7 @@ impl Actor for GeminiActor {
         &self,
         intelligence: &Intelligence,
         conversation: &Conversation,
+        tasks: &[SmartActionType],
     ) -> Result<CalculatedResponse, anyhow::Error> {
         // let gemini_body = GeminiStructuredContentRequest {
         //     contents: conversation.messages.into(),
@@ -233,7 +234,7 @@ impl Actor for GeminiActor {
         //     tools: None,
         // };
 
-        let body: GeminiStructuredContentRequest = conversation.into();
+        let body = GeminiStructuredContentRequest::from_conversation(conversation, tasks);
 
         let client = reqwest::Client::new();
         let api_key = intelligence.gemini.as_ref().unwrap().api_key.as_str();
