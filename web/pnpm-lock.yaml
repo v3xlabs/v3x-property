@@ -140,6 +140,9 @@ importers:
       vite:
         specifier: ^5.2.10
         version: 5.2.10(@types/node@22.10.1)
+      zod:
+        specifier: ^3.24.1
+        version: 3.24.1
       zustand:
         specifier: ^4.5.4
         version: 4.5.4(@types/react@18.3.3)(react@18.3.1)
@@ -3306,8 +3309,8 @@ packages:
     resolution: {integrity: sha512-rVksvsnNCdJ/ohGc6xgPwyN8eheCxsiLM8mxuE/t/mOVqJewPuO1miLpTHQiRgTKCLexL4MeAFVagts7HmNZ2Q==}
     engines: {node: '>=10'}
 
-  zod@3.23.8:
-    resolution: {integrity: sha512-XBx9AXhXktjUqnepgTiE5flcKIYWi/rme0Eaj+5Y0lftuGBq+jyRu/md4WnuxqgP1ubdpNCsYEYPxrzVHD8d6g==}
+  zod@3.24.1:
+    resolution: {integrity: sha512-muH7gBL9sI1nciMZV67X5fTKKBLtwpZ5VBp1vsOQzj1MhrBZ4wlVCm3gedKZWLp0Oyel8sIGfeiz54Su+OVT+A==}
 
   zustand@3.7.2:
     resolution: {integrity: sha512-PIJDIZKtokhof+9+60cpockVOq05sJzHCriyvaLBmEJixseQ1a5Kdov6fWZfWOu5SK9c+FhH1jU0tntLxRJYMA==}
@@ -4323,7 +4326,7 @@ snapshots:
   '@tanstack/router-generator@1.45.7':
     dependencies:
       prettier: 3.3.3
-      zod: 3.23.8
+      zod: 3.24.1
 
   '@tanstack/router-plugin@1.45.13(vite@5.2.10(@types/node@22.10.1))':
     dependencies:
@@ -4343,7 +4346,7 @@ snapshots:
       babel-dead-code-elimination: 1.0.6
       chokidar: 3.6.0
       unplugin: 1.12.0
-      zod: 3.23.8
+      zod: 3.24.1
     optionalDependencies:
       vite: 5.2.10(@types/node@22.10.1)
     transitivePeerDependencies:
@@ -6637,7 +6640,7 @@ snapshots:
 
   yocto-queue@0.1.0: {}
 
-  zod@3.23.8: {}
+  zod@3.24.1: {}
 
   zustand@3.7.2(react@18.3.1):
     optionalDependencies:
