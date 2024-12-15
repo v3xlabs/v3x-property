@@ -79,6 +79,8 @@ pub async fn extract_ldjson(url: &str) -> Result<String, anyhow::Error> {
 #[async_std::test]
 async fn test_ldjson() {
     dotenvy::dotenv().ok();
-    let result = extract_ldjson("https://www.anker.com/eu-en/products/a1289").await;
+    // https://tweakers.net/pricewatch/1855004/anker-737-power-bank-powercore-24k.html
+    let result = extract_ldjson("https://tweakers.net/pricewatch/1855004/anker-737-power-bank-powercore-24k.html").await;
+    // let result = extract_ldjson("https://www.anker.com/eu-en/products/a1289").await;
     println!("result: {}", result.unwrap());
 }

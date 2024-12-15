@@ -141,7 +141,8 @@ export const AgentDecoder: FC<{ conversation?: string[] }> = ({
                                             <div className="py-4 px-2">
                                                 <ExpandableTextModal
                                                     text={JSON.stringify(
-                                                        message.data,
+                                                        message.data.parts[0]
+                                                            .content[1],
                                                         undefined,
                                                         2
                                                     )}

@@ -15,6 +15,7 @@ Do not hesitate to call `search_upc` with the upc number.
 Once you have identified the product, you can perform a web search using `search_kagi` with the product name and "specifications" or "information" as a suffix. You will receive a summary of search results aswell as a list of references to sources with links.
 Think carefully about the kagi search query as it must be specific enough to retrieve product information we are looking for.
 Kagi search is an LLM powered search engine so you can provide it a short query to optimize for results.
+You should include specifics about the urls you are looking for in the query.
 Keep your query to 2 to 3 sentences please.
 If you think it might be worth to add words to the query, do so.
 If the query is too short or obscure, do not search it.
@@ -28,7 +29,7 @@ Feel free to extract ldjson from 2 to 3 pages in a session.
 If it is a tech related item you should attempt to add "tweakers pricewatch" to the `search_kagi` query and extract ldjson data from the tweakers.net website mentioned in the references of the search results. When encountering a tweakers urls as a reference, you should always attempt to extract ldjson data from the page.
 This site is a dutch tech website and often has very detailed specifications.
 The tweakers pricewatch page generally has images so if you are still in need of images you can attempt so earch for them.
-An example of a pricewatch url is https://tweakers.net/pricewatch/1858898/device-name-here/specificaties/
+An example of a pricewatch url is https://tweakers.net/pricewatch/1858898/anker-737-power-bank-powercore-24k.html
 
 When extracting images it is important to extract images from all previous input received and extract images from the ldjson data, search results, etc. Images are to be included in the json response under the `images` field.
 
@@ -54,6 +55,54 @@ Prioritize the following fields (if available):
     * For electronics: battery_capacity, ports (USB-A, USB-C, etc.), dimensions (in cm and inches), weight (in kg and lbs), display_type, resolution, processor, memory (RAM, storage), operating_system
     * For batteries: battery_technology, battery_capacity, output_power, charging_time, input_voltage, output_voltage
     * For other products: adapt fields to be relevant to the product category.
+
+**Example JSON Output**
+
+```json
+{
+  "@type": "Product",
+  "@id": "https://tweakers.net/pricewatch/1855004/anker-737-power-bank-powercore-24k.html#Product-1855004",
+  "name": "Anker 737 Power Bank (PowerCore 24K)",
+  "@context": "https://schema.org",
+  "url": "https://tweakers.net/pricewatch/1855004/anker-737-power-bank-powercore-24k.html",
+  "brand": {
+    "@type": "Brand",
+    "name": "Anker",
+    "url": "https://tweakers.net/merk/2742/anker/"
+  },
+  "image": [
+    "https://tweakers.net/ext/i/2005317900.webp",
+    "https://tweakers.net/ext/i/2005565422.jpeg",
+    "https://tweakers.net/ext/i/2006644124.jpeg",
+    "https://tweakers.net/ext/i/2006644126.jpeg",
+    "https://tweakers.net/ext/i/2006644128.jpeg",
+    "https://tweakers.net/ext/i/2006644130.jpeg",
+    "https://tweakers.net/ext/i/2006644132.jpeg",
+    "https://tweakers.net/ext/i/2006644134.jpeg",
+    "https://tweakers.net/ext/i/2006644136.jpeg"
+  ],
+  "gtin13": [
+    "0194644098728"
+  ],
+  "mpn": [
+    "a1289",
+    "A1289011"
+  ],
+  "description": "1x USB A, 2x USB type-C",
+  "aggregateRating": {
+    "@type": "AggregateRating",
+    "ratingValue": 3.5,
+    "ratingCount": 4
+  },
+  "offers": {
+    "@type": "AggregateOffer",
+    "lowPrice": 84,
+    "highPrice": 153,
+    "offerCount": 15,
+    "priceCurrency": "EUR"
+  }
+}
+```
 
 **Example JSON Output (for an Anker battery bank):**
 
