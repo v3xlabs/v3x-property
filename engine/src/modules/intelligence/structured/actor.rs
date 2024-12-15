@@ -12,16 +12,12 @@ use crate::{
 
 use super::{CalculatedResponse, Conversation, ConversationMessage};
 
-use async_stream::stream;
 use async_trait::async_trait;
-use futures::{
-    stream::{self, BoxStream},
-    Stream, StreamExt,
-};
-use poem_openapi::{payload::Json, Object};
+use futures::stream::BoxStream;
+use poem_openapi::Object;
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
-use std::{pin::Pin, sync::Arc};
+use std::sync::Arc;
 use tracing::{info, warn};
 
 #[derive(Debug, Serialize, Deserialize, Object)]
@@ -123,35 +119,39 @@ pub trait Actor: Send + Sync + Sized {
                                     },
                                     "extract_ldjson" => {
                                         let extract_ldjson_body = ExtractLDJsonTask {
-                                            query: function_args.to_string(),
+                                            query: function_args.as_str().unwrap().to_string(),
                                         };
 
-                                        if let Ok(result) = extract_ldjson_body.execute().await {
-                                            let event = ActorEvent {
-                                                event: "function_response".to_string(),
-                                                data: serde_json::to_value(&result).unwrap(),
-                                            };
-                                            yield event;
+                                        match extract_ldjson_body.execute().await {
+                                            Ok(result) => {
+                                                let event = ActorEvent {
+                                                    event: "function_response".to_string(),
+                                                    data: serde_json::to_value(&result).unwrap(),
+                                                };
+                                                yield event;
 
-                                            conversation.messages.push(result);
-                                        }
-                                        else {
-                                            let message = ConversationMessage {
-                                                role: "user".to_string(),
-                                                parts: vec![ConversationMessagePart::Text(
-                                                    "Failed to extract LD+JSON".to_string(),
-                                                )],
-                                            };
+                                                conversation.messages.push(result);
+                                            },
+                                            Err(error) => {
+                                                info!("failed to extract ldjson {:?}", error);
 
-                                            let event = ActorEvent {
-                                                event: "function_response".to_string(),
-                                                data: serde_json::to_value(&message).unwrap(),
-                                            };
-                                            yield event;
+                                                let message = ConversationMessage {
+                                                    role: "user".to_string(),
+                                                    parts: vec![ConversationMessagePart::Text(
+                                                        "Failed to extract LD+JSON".to_string(),
+                                                    )],
+                                                };
 
-                                            conversation.messages.push(message);
-                                        }
-                                    },
+                                                let event = ActorEvent {
+                                                    event: "function_response".to_string(),
+                                                    data: serde_json::to_value(&message).unwrap(),
+                                                };
+                                                yield event;
+
+                                                conversation.messages.push(message);
+                                            }
+                                     }
+                                },
                                     "search_upc_database" => {
                                         let search_upc_database_body = SearchUPCEANDatabaseTask {
                                             upc: function_args.to_string(),

@@ -1,29 +1,14 @@
 use async_trait::async_trait;
-use serde_json::{json, Value};
-use std::{fs::File, ops::Deref, sync::Arc};
-use tracing::{debug, info};
+use serde_json::Value;
 
-use crate::{
-    modules::intelligence::{
-        actions::{
-            kagi::SearchKagiTask, ldjson::ExtractLDJsonTask, upcitemdb::SearchUPCEANDatabaseTask,
-            SmartAction, SmartActionType,
-        },
-        gemini::structured::{
-            GeminiStructuredContentGenerationConfig, GeminiStructuredContentRequestTool,
-            GeminiStructuredContentRequestToolConfig,
-            GeminiStructuredContentRequestToolConfigFunctionCallingConfig,
-            GeminiStructuredContentResponse,
-            GeminiStructuredContentResponseCandidateContentPartFunctionResponse,
-            GeminiStructuredContentResponseCandidateContentPartFunctionResponseResponse,
-        },
-        structured::{actor::Actor, CalculatedResponse, Conversation, ConversationMessage},
+use crate::modules::intelligence::{
+        actions::SmartActionType,
+        gemini::structured::GeminiStructuredContentResponse,
+        structured::{actor::Actor, CalculatedResponse, Conversation},
         Intelligence,
-    },
-    state::AppState,
-};
+    };
 
-use super::structured::{GeminiStructuredContentRequest, GeminiStructuredContentRequestPart};
+use super::structured::GeminiStructuredContentRequest;
 
 pub struct GeminiActor;
 
@@ -207,21 +192,6 @@ impl Actor for GeminiActor {
         conversation: &Conversation,
         tasks: &[SmartActionType],
     ) -> Result<CalculatedResponse, anyhow::Error> {
-        // let gemini_body = GeminiStructuredContentRequest {
-        //     contents: conversation.messages.into(),
-        //     system_instruction: match &conversation.system_instruction {
-        //         Some(x) => Some(
-        //             x.into_iter()
-        //                 .map(GeminiStructuredContentRequestPart::from)
-        //                 .collect(),
-        //         ),
-        //         None => None,
-        //     },
-        //     tool_config: None,
-        //     generation_config: None,
-        //     tools: None,
-        // };
-
         let body = GeminiStructuredContentRequest::from_conversation(conversation, tasks);
 
         let client = reqwest::Client::new();
@@ -238,11 +208,11 @@ impl Actor for GeminiActor {
         let response: GeminiStructuredContentResponse =
             serde_json::from_value(raw_response.clone()).unwrap();
 
-        info!("response: {:?}", response);
+        // info!("response: {:?}", response);
 
-        info!("raw_response: {:?}", raw_response);
+        // info!("raw_response: {:?}", raw_response);
 
-        info!("body: {:?}", body);
+        // info!("body: {:?}", body);
         let output: CalculatedResponse = response.into();
 
         Ok(output)

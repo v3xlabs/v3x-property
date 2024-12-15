@@ -1,11 +1,7 @@
 use serde::{Deserialize, Serialize};
 use serde_json::json;
 
-use crate::modules::intelligence::{gemini::structured::{
-    GeminiStructuredContentRequestPart, GeminiStructuredContentRequestPartPart,
-    GeminiStructuredContentResponseCandidateContentPartFunctionResponse,
-    GeminiStructuredContentResponseCandidateContentPartFunctionResponseResponse,
-}, structured::{ConversationMessage, ConversationMessagePart}};
+use crate::modules::intelligence::structured::{ConversationMessage, ConversationMessagePart};
 
 use super::{
     SmartAction, SmartActionDefinition, SmartActionParameters, SmartActionParametersProperties,
@@ -29,26 +25,6 @@ impl SmartAction for SearchKagiTask {
                 serde_json::Value::String(html),
             )],
         })
-
-        // Ok(GeminiStructuredContentRequestPart {
-        //     role: "user".to_string(),
-        //     parts: vec![GeminiStructuredContentRequestPartPart {
-        //         // text: html,
-        //         text: None,
-        //         function_call: None,
-        //         function_response: Some(
-        //             GeminiStructuredContentResponseCandidateContentPartFunctionResponse {
-        //                 name: "search_kagi".to_string(),
-        //                 response: GeminiStructuredContentResponseCandidateContentPartFunctionResponseResponse {
-        //                     name: "search_kagi".to_string(),
-        //                     content: json!({
-        //                         "html": html,
-        //                     }),
-        //                 },
-        //             },
-        //         ),
-        //     }],
-        // })
     }
 
     fn as_definition() -> SmartActionDefinition {
@@ -70,7 +46,6 @@ impl SmartAction for SearchKagiTask {
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct KagiResponse {
-    // meta: Option<KagiMeta>,
     data: KagiData,
 }
 

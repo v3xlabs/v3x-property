@@ -1,9 +1,9 @@
 import { FC, useEffect, useRef } from 'react';
-import { LuFunctionSquare } from 'react-icons/lu';
 import { SiGooglegemini } from 'react-icons/si';
+import { TbFunctionFilled } from 'react-icons/tb';
 import { match } from 'ts-pattern';
 
-import { Button } from '../ui/Button';
+import { Button, ButtonProperties } from '../ui/Button';
 import {
     Dialog,
     DialogContent,
@@ -40,11 +40,12 @@ export const attemptExtractMdJson = (text: string) => {
 export const ExpandableTextModal: FC<{
     text: string | object;
     label: string;
-}> = ({ text, label }) => {
+    variant?: ButtonProperties['variant'];
+}> = ({ text, label, variant = 'default' }) => {
     return (
         <Dialog>
             <DialogTrigger asChild>
-                <Button variant="default" size="sm">
+                <Button variant={variant} size="sm">
                     {label}
                 </Button>
             </DialogTrigger>
@@ -122,7 +123,7 @@ export const AgentDecoder: FC<{ conversation?: string[] }> = ({
                                         return (
                                             <div className="py-4 px-2 space-y-2">
                                                 <div className="flex items-center gap-2">
-                                                    <LuFunctionSquare />
+                                                    <TbFunctionFilled />
                                                     <div>{functionCall}</div>
                                                 </div>
                                                 <pre className="pre text-wrap p-0.5 break-words">
@@ -137,16 +138,27 @@ export const AgentDecoder: FC<{ conversation?: string[] }> = ({
                                         event: 'function_response',
                                     },
                                     () => {
+                                        const text =
+                                            message.data.parts[0].type == 'text'
+                                                ? message.data.parts[0].content
+                                                : JSON.stringify(
+                                                      message.data.parts[0]
+                                                          .content[1],
+                                                      undefined,
+                                                      2
+                                                  );
+
                                         return (
-                                            <div className="py-4 px-2">
+                                            <div className={'py-4 px-2'}>
                                                 <ExpandableTextModal
-                                                    text={JSON.stringify(
-                                                        message.data.parts[0]
-                                                            .content[1],
-                                                        undefined,
-                                                        2
-                                                    )}
+                                                    text={text}
                                                     label="Function Response"
+                                                    variant={
+                                                        message.data.parts[0]
+                                                            .type == 'text'
+                                                            ? 'warning'
+                                                            : 'default'
+                                                    }
                                                 />
                                             </div>
                                         );

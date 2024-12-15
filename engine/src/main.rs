@@ -1,6 +1,4 @@
-use std::sync::Arc;
 
-use modules::intelligence::tasks::ingress_product::IngressProductTask;
 use terminal_banner::Banner;
 use tracing::info;
 

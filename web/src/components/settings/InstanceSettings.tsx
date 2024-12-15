@@ -48,9 +48,9 @@ export const InstanceSettings = () => {
                 className="space-y-4"
             >
                 <h2>Instance Settings</h2>
-                <pre className="bg-black/5 p-4 rounded-lg text-wrap">
+                {/* <pre className="bg-black/5 p-4 rounded-lg text-wrap">
                     {JSON.stringify(instanceSettings.modules, undefined, 2)}
-                </pre>
+                </pre> */}
                 <div>
                     <Field
                         name="id_casing_preference"

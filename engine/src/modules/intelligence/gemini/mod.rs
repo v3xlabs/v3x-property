@@ -10,7 +10,7 @@ pub mod actor;
 pub struct Gemini {
     api_key: String,
 
-    pub available_models: Vec<GeminiModel>,
+    pub available_models: Vec<String>,
 }
 
 #[derive(Debug, Serialize, Deserialize, Object, Clone)]
@@ -47,7 +47,7 @@ impl Gemini {
     pub async fn new(api_key: String) -> Result<Self, anyhow::Error> {
         info!("Gemini Module Initialized");
 
-        let available_models = Gemini::list_models(&api_key).await?;
+        let available_models: Vec<String> = Gemini::list_models(&api_key).await?.iter().filter_map(|m| m.name.clone()).collect();
 
         Ok(Self {
             api_key,
@@ -93,5 +93,5 @@ impl Gemini {
 
 #[derive(Serialize, Deserialize, Object)]
 pub struct GeminiStatus {
-    pub models: Vec<GeminiModel>,
+    pub models: Vec<String>,
 }

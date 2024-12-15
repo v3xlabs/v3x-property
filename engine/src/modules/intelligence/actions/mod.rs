@@ -1,15 +1,10 @@
-use std::{thread::sleep, time::Duration};
 
-use headless_chrome::{browser::tab::point::Point, types::Bounds, Browser};
 use kagi::SearchKagiTask;
 use ldjson::ExtractLDJsonTask;
-use rand::Rng as _;
 use serde::{Deserialize, Serialize};
 use upcitemdb::SearchUPCEANDatabaseTask;
 
-use super::{gemini::structured::{
-    GeminiStructuredContentRequestPart, GeminiStructuredContentRequestPartPart,
-}, structured::ConversationMessage};
+use super::structured::ConversationMessage;
 
 pub enum SmartActionType {
     SearchUPCEAN,

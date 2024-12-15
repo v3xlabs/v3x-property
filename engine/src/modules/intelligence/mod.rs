@@ -26,7 +26,7 @@ impl Intelligence {
         let ollama = Ollama::guess().await?;
         let gemini = Gemini::guess().await?;
 
-        Ok(Self::new(Some(ollama), Some(gemini)).await?)
+        Self::new(Some(ollama), Some(gemini)).await
     }
 
     pub async fn status(&self) -> Result<IntelligenceStatus, anyhow::Error> {

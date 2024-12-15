@@ -1,16 +1,14 @@
-use std::{sync::Arc, time::Duration};
+use std::sync::Arc;
 
 use crate::{
     models::item::Item, modules::intelligence::{
-        structured::actor::{Actor, ActorEvent},
+        structured::actor::ActorEvent,
         tasks::ingress_product::IngressProductTask,
     }, state::AppState
 };
-use async_std::task;
-use futures::{stream::BoxStream, Stream, StreamExt};
-use poem::web::sse::SSE;
+use futures::{stream::BoxStream, StreamExt};
 use poem::web::Data;
-use poem_openapi::{param::Path, payload::{EventStream, Json}, types::ToJSON, Object, OpenApi};
+use poem_openapi::{param::Path, payload::EventStream, types::{ToJSON, ToYAML}, Object, OpenApi};
 
 use super::ApiTags;
 
@@ -39,7 +37,7 @@ impl ItemIntelligenceApi {
         let item = Item::get_by_id(&state.database, item_id.0.as_str()).await.unwrap().unwrap();
 
         let query = item.into_search(&state.database).await.unwrap();
-        let query = query.to_json_string();
+        let query = query.to_yaml_string();
 
         let x = IngressProductTask {
             query,

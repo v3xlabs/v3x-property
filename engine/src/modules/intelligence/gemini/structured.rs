@@ -1,15 +1,9 @@
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
 
-use crate::modules::{
-    self,
-    intelligence::{
-        actions::{SmartActionDefinition, SmartActionType},
-        structured::{
-            strategy::Strategy, CalculatedResponse, Conversation, ConversationMessage,
-            ConversationMessagePart,
-        },
-    },
+use crate::modules::intelligence::{
+    actions::{SmartActionDefinition, SmartActionType},
+    structured::{CalculatedResponse, Conversation, ConversationMessage, ConversationMessagePart},
 };
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
@@ -32,14 +26,14 @@ impl GeminiStructuredContentRequest {
         GeminiStructuredContentRequest {
             contents: value
                 .messages
-                .iter() // TODO: into_iter vs iter?
+                .iter()
                 .map(GeminiStructuredContentRequestPart::from)
                 .collect(),
             system_instruction: value
                 .system_instruction
                 .as_ref()
                 .map(|x| GeminiStructuredContentRequestPart::from(&x[0])),
-            tools: if tasks.len() > 0 {
+            tools: if !tasks.is_empty() {
                 Some(GeminiStructuredContentRequestTool {
                     function_declarations: tasks.iter().map(|x| x.as_definition()).collect(),
                 })
@@ -137,9 +131,15 @@ impl From<&GeminiStructuredContentRequestPartPart> for ConversationMessagePart {
         if let Some(text) = value.text.clone() {
             ConversationMessagePart::Text(text)
         } else if let Some(function_call) = value.function_call.clone() {
-            ConversationMessagePart::FunctionCall(function_call.name, Value::String(function_call.args.query))
+            ConversationMessagePart::FunctionCall(
+                function_call.name,
+                Value::String(function_call.args.query),
+            )
         } else if let Some(function_response) = value.function_response.clone() {
-            ConversationMessagePart::FunctionResponse(function_response.name, function_response.response.content)
+            ConversationMessagePart::FunctionResponse(
+                function_response.name,
+                function_response.response.content,
+            )
         } else {
             panic!("Unsupported GeminiStructuredContentRequestPartPart type");
         }
@@ -237,32 +237,11 @@ pub struct GeminiStructuredContentResponseCandidateContentPartFunctionCallArgs {
     pub query: String,
 }
 
-// impl Gemini {
-//     pub async fn structured_content<T: DeserializeOwned>(
-//         &self,
-//         query: &GeminiStructuredContentRequest,
-//     ) -> Result<T, anyhow::Error> {
-//         let client = reqwest::Client::new();
-
-//         let response = client
-//         .post("https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent")
-//         .query(&[("key", &self.api_key)])
-//         .json(query)
-//         .send()
-//         .await?;
-
-//         // let x = response.text().await?;
-//         let x: T = response.json().await.unwrap();
-
-//         Ok(x)
-//     }
-// }
-
 #[async_std::test]
 async fn test_gemini_structured_content() {
     let conversation = Conversation {
         index: 0,
-        strategy: Strategy::Basic,
+        strategy: crate::modules::intelligence::structured::strategy::Strategy::Basic,
         system_instruction: None,
         messages: vec![ConversationMessage {
             role: "user".to_string(),

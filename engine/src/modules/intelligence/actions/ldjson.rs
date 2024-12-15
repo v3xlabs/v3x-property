@@ -1,12 +1,8 @@
 use scraper::Selector;
 use serde::{Deserialize, Serialize};
-use serde_json::json;
+use tracing::info;
 
-use crate::modules::intelligence::{gemini::structured::{
-    GeminiStructuredContentRequestPart, GeminiStructuredContentRequestPartPart,
-    GeminiStructuredContentResponseCandidateContentPartFunctionResponse,
-    GeminiStructuredContentResponseCandidateContentPartFunctionResponseResponse,
-}, structured::{ConversationMessage, ConversationMessagePart}};
+use crate::modules::intelligence::structured::{ConversationMessage, ConversationMessagePart};
 
 use super::{
     SmartAction, SmartActionDefinition, SmartActionParameters, SmartActionParametersProperties,
@@ -20,19 +16,18 @@ pub struct ExtractLDJsonTask {
 
 impl SmartAction for ExtractLDJsonTask {
     async fn execute(&self) -> Result<ConversationMessage, anyhow::Error> {
+        info!("extracting ldjson from {}", self.query);
         let html = extract_ldjson(self.query.as_str()).await?;
 
         tracing::info!("html: {}", html);
 
-        Ok(
-            ConversationMessage {
-                role: "user".to_string(),
-                parts: vec![ConversationMessagePart::FunctionResponse(
-                    "extract_ldjson".to_string(),
-                    serde_json::Value::String(html),
-                )],
-            }
-        )
+        Ok(ConversationMessage {
+            role: "user".to_string(),
+            parts: vec![ConversationMessagePart::FunctionResponse(
+                "extract_ldjson".to_string(),
+                serde_json::Value::String(html),
+            )],
+        })
     }
 
     fn as_definition() -> SmartActionDefinition {
@@ -80,7 +75,11 @@ pub async fn extract_ldjson(url: &str) -> Result<String, anyhow::Error> {
 async fn test_ldjson() {
     dotenvy::dotenv().ok();
     // https://tweakers.net/pricewatch/1855004/anker-737-power-bank-powercore-24k.html
-    let result = extract_ldjson("https://tweakers.net/pricewatch/1855004/anker-737-power-bank-powercore-24k.html").await;
+    let result = extract_ldjson(
+        // "https://tweakers.net/pricewatch/1855004/anker-737-power-bank-powercore-24k.html",
+        "https://tweakers.net/pricewatch/1855004/anker-737-power-bank-powercore-24k/specificaties/",
+    )
+    .await;
     // let result = extract_ldjson("https://www.anker.com/eu-en/products/a1289").await;
     println!("result: {}", result.unwrap());
 }

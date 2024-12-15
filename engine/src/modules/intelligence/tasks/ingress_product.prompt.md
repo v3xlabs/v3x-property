@@ -16,6 +16,7 @@ Once you have identified the product, you can perform a web search using `search
 Think carefully about the kagi search query as it must be specific enough to retrieve product information we are looking for.
 Kagi search is an LLM powered search engine so you can provide it a short query to optimize for results.
 You should include specifics about the urls you are looking for in the query.
+When searching kagi avoid wrapping your text in quotes or escaped quotes.
 Keep your query to 2 to 3 sentences please.
 If you think it might be worth to add words to the query, do so.
 If the query is too short or obscure, do not search it.

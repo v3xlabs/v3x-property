@@ -1,15 +1,7 @@
-use std::ops::Deref;
 
-use ollama_rs::generation::{
-    chat::{request::ChatMessageRequest, ChatMessage, MessageRole},
-    completion::request::GenerationRequest,
-};
-use tracing::info;
+use ollama_rs::generation::chat::{ChatMessage, MessageRole};
 
-use crate::modules::intelligence::{
-    actions::SmartActionType,
-    structured::{actor::Actor, ConversationMessage, ConversationMessagePart},
-};
+use crate::modules::intelligence::structured::{ConversationMessage, ConversationMessagePart};
 
 pub struct OllamaActor {}
 
