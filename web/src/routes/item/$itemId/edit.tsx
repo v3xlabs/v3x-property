@@ -11,7 +11,7 @@ import { FC, useState } from 'react';
 import { FaPlus, FaTrash } from 'react-icons/fa6';
 import { toast } from 'sonner';
 
-import { FieldDefinition, getFieldDefinitions } from '@/api/fields/indes';
+import { FieldDefinition, getFieldDefinitions } from '@/api/fields';
 import { getItemFields } from '@/api/fields/item';
 import { formatId, getInstanceSettings } from '@/api/instance_settings';
 import {
@@ -231,7 +231,7 @@ export const Route = createFileRoute('/item/$itemId/edit')({
                         value:
                             field.value === EMPTY_VALUE || field.value === ''
                                 ? // eslint-disable-next-line unicorn/no-null
-                                null
+                                  null
                                 : field.value,
                     })),
                 };
@@ -359,7 +359,7 @@ export const Route = createFileRoute('/item/$itemId/edit')({
                                                 >
                                                     {(subField) =>
                                                         subField.state.value !==
-                                                        EMPTY_VALUE && (
+                                                            EMPTY_VALUE && (
                                                             <BaseInput
                                                                 label={
                                                                     value.definition_name
@@ -435,8 +435,8 @@ export const Route = createFileRoute('/item/$itemId/edit')({
                     <div className="flex gap-2 justify-end">
                         {(instanceSettings.modules.intelligence?.gemini ||
                             instanceSettings.modules.intelligence?.ollama) && (
-                                <ItemIntelligentSuggest itemId={item.item_id} />
-                            )}
+                            <ItemIntelligentSuggest itemId={item.item_id} />
+                        )}
                         <Button variant="secondary" size="sm" asChild>
                             <Link to="/item/$itemId" params={{ itemId }}>
                                 Cancel

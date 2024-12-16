@@ -22,15 +22,15 @@ function Measurements({ geometry }: { geometry: THREE.BufferGeometry }) {
             // Create lines and labels for each dimension with different colors and thickness
             const lineMaterials = [
                 new THREE.LineBasicMaterial({
-                    color: 0xFF_00_00,
+                    color: 0xff_00_00,
                     linewidth: 2,
                 }), // Red for width
                 new THREE.LineBasicMaterial({
-                    color: 0x00_FF_00,
+                    color: 0x00_ff_00,
                     linewidth: 2,
                 }), // Green for height
                 new THREE.LineBasicMaterial({
-                    color: 0x00_00_FF,
+                    color: 0x00_00_ff,
                     linewidth: 2,
                 }), // Blue for depth
             ];
@@ -68,7 +68,7 @@ function Measurements({ geometry }: { geometry: THREE.BufferGeometry }) {
                 // Create a background plane
                 const backgroundGeometry = new THREE.PlaneGeometry(12, 6);
                 const backgroundMaterial = new THREE.MeshBasicMaterial({
-                    color: 0xFF_FF_FF,
+                    color: 0xff_ff_ff,
                     opacity: 0.5,
                     transparent: true,
                     depthTest: false,
@@ -328,3 +328,5 @@ export const StlPreviewWindow = ({ stlUrl }: { stlUrl?: string }) => {
         </div>
     );
 };
+
+export default StlPreviewWindow;

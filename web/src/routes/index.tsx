@@ -1,11 +1,11 @@
-import { createLazyFileRoute, Link } from '@tanstack/react-router';
+import { createFileRoute, Link } from '@tanstack/react-router';
 import { FiArrowRight } from 'react-icons/fi';
 
 import { useInstanceStatistics } from '@/api/instance_settings';
 import { Button } from '@/components/ui/Button';
 import { SCPage } from '@/layouts/SimpleCenterPage';
 
-const component = () => {
+const Page = () => {
     const { data: statistics } = useInstanceStatistics();
 
     return (
@@ -48,6 +48,6 @@ const component = () => {
     );
 };
 
-export const Route = createLazyFileRoute('/')({
-    component,
+export const Route = createFileRoute('/')({
+    component: Page,
 });

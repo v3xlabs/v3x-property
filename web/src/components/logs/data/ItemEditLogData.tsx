@@ -2,7 +2,7 @@ import { FC, useMemo } from 'react';
 import { match } from 'ts-pattern';
 import { z } from 'zod';
 
-import { useFieldDefinitions } from '@/api/fields/indes';
+import { useFieldDefinitions } from '@/api/fields';
 import { MediaPreview } from '@/components/media/MediaPreview';
 
 import { ApiLogEntry } from '../ItemLogEntry';

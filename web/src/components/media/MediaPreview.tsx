@@ -11,9 +11,9 @@ import { BASE_URL } from '@/api/core';
 import { useInstanceSettings } from '@/api/instance_settings';
 import { useMedia } from '@/api/media';
 import { ErrorBoundary } from '@/components/ErrorBoundary';
-import { StlPreviewWindow } from '@/components/stl_preview/StlPreview';
 
 import { Button } from '../ui/Button';
+import { lazy } from 'react';
 
 export const MediaPreview: FC<{
     variant?: 'small' | 'default';
@@ -217,6 +217,10 @@ export const ImagePreview: FC<{ media_id?: number; url?: string }> = ({
     );
 };
 
+const LazyStlPreviewWindow = lazy(
+    () => import('@/components/stl_preview/StlPreview')
+);
+
 export const StlPreview: FC<{ media_id?: number; url?: string }> = ({
     media_id,
     url,
@@ -226,7 +230,7 @@ export const StlPreview: FC<{ media_id?: number; url?: string }> = ({
     return (
         <ErrorBoundary>
             <Suspense fallback={<div>Loading...</div>}>
-                <StlPreviewWindow stlUrl={url ?? media?.url} />
+                <LazyStlPreviewWindow stlUrl={url ?? media?.url} />
             </Suspense>
         </ErrorBoundary>
     );
