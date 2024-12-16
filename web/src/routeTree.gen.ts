@@ -23,6 +23,7 @@ import { Route as ProductsIndexImport } from './routes/products/index'
 import { Route as LogsIndexImport } from './routes/logs/index'
 import { Route as ItemsIndexImport } from './routes/items/index'
 import { Route as UserUserIdImport } from './routes/user/$userId'
+import { Route as SettingsFieldsIndexImport } from './routes/settings/fields/index'
 import { Route as ItemItemIdIndexImport } from './routes/item/$itemId/index'
 import { Route as ItemItemIdEditImport } from './routes/item/$itemId/edit'
 
@@ -97,6 +98,12 @@ const ItemsIndexRoute = ItemsIndexImport.update({
 const UserUserIdRoute = UserUserIdImport.update({
   id: '/user/$userId',
   path: '/user/$userId',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const SettingsFieldsIndexRoute = SettingsFieldsIndexImport.update({
+  id: '/settings/fields/',
+  path: '/settings/fields/',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -214,6 +221,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ItemItemIdIndexImport
       parentRoute: typeof rootRoute
     }
+    '/settings/fields/': {
+      id: '/settings/fields/'
+      path: '/settings/fields'
+      fullPath: '/settings/fields'
+      preLoaderRoute: typeof SettingsFieldsIndexImport
+      parentRoute: typeof rootRoute
+    }
   }
 }
 
@@ -234,6 +248,7 @@ export interface FileRoutesByFullPath {
   '/settings': typeof SettingsIndexRoute
   '/item/$itemId/edit': typeof ItemItemIdEditRoute
   '/item/$itemId': typeof ItemItemIdIndexRoute
+  '/settings/fields': typeof SettingsFieldsIndexRoute
 }
 
 export interface FileRoutesByTo {
@@ -251,6 +266,7 @@ export interface FileRoutesByTo {
   '/settings': typeof SettingsIndexRoute
   '/item/$itemId/edit': typeof ItemItemIdEditRoute
   '/item/$itemId': typeof ItemItemIdIndexRoute
+  '/settings/fields': typeof SettingsFieldsIndexRoute
 }
 
 export interface FileRoutesById {
@@ -269,6 +285,7 @@ export interface FileRoutesById {
   '/settings/': typeof SettingsIndexRoute
   '/item/$itemId/edit': typeof ItemItemIdEditRoute
   '/item/$itemId/': typeof ItemItemIdIndexRoute
+  '/settings/fields/': typeof SettingsFieldsIndexRoute
 }
 
 export interface FileRouteTypes {
@@ -288,6 +305,7 @@ export interface FileRouteTypes {
     | '/settings'
     | '/item/$itemId/edit'
     | '/item/$itemId'
+    | '/settings/fields'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -304,6 +322,7 @@ export interface FileRouteTypes {
     | '/settings'
     | '/item/$itemId/edit'
     | '/item/$itemId'
+    | '/settings/fields'
   id:
     | '__root__'
     | '/'
@@ -320,6 +339,7 @@ export interface FileRouteTypes {
     | '/settings/'
     | '/item/$itemId/edit'
     | '/item/$itemId/'
+    | '/settings/fields/'
   fileRoutesById: FileRoutesById
 }
 
@@ -338,6 +358,7 @@ export interface RootRouteChildren {
   SettingsIndexRoute: typeof SettingsIndexRoute
   ItemItemIdEditRoute: typeof ItemItemIdEditRoute
   ItemItemIdIndexRoute: typeof ItemItemIdIndexRoute
+  SettingsFieldsIndexRoute: typeof SettingsFieldsIndexRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
@@ -355,6 +376,7 @@ const rootRouteChildren: RootRouteChildren = {
   SettingsIndexRoute: SettingsIndexRoute,
   ItemItemIdEditRoute: ItemItemIdEditRoute,
   ItemItemIdIndexRoute: ItemItemIdIndexRoute,
+  SettingsFieldsIndexRoute: SettingsFieldsIndexRoute,
 }
 
 export const routeTree = rootRoute
@@ -380,7 +402,8 @@ export const routeTree = rootRoute
         "/search/",
         "/settings/",
         "/item/$itemId/edit",
-        "/item/$itemId/"
+        "/item/$itemId/",
+        "/settings/fields/"
       ]
     },
     "/": {
@@ -424,6 +447,9 @@ export const routeTree = rootRoute
     },
     "/item/$itemId/": {
       "filePath": "item/$itemId/index.tsx"
+    },
+    "/settings/fields/": {
+      "filePath": "settings/fields/index.tsx"
     }
   }
 }

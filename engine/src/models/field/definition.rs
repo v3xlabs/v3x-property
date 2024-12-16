@@ -17,6 +17,8 @@ pub struct FieldDefinition {
     pub description: Option<String>,
     /// Placeholder text for the field
     pub placeholder: Option<String>,
+    /// Icon for the field
+    pub icon: Option<String>,
     pub created_at: Option<DateTime<Utc>>,
     pub updated_at: Option<DateTime<Utc>>,
 }
@@ -29,15 +31,17 @@ impl FieldDefinition {
         kind: &FieldKind,
         description: Option<&str>,
         placeholder: Option<&str>,
+        icon: Option<&str>,
     ) -> Result<FieldDefinition, sqlx::Error> {
         query_as!(
             FieldDefinition,
-            "INSERT INTO field_definitions (definition_id, kind, name, description, placeholder) VALUES ($1, $2, $3, $4, $5) RETURNING *",
+            "INSERT INTO field_definitions (definition_id, kind, name, description, placeholder, icon) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *",
             definition_id,
             kind.to_string(),
             name,
             description,
-            placeholder
+            placeholder,
+            icon
         )
         .fetch_one(&db.pool)
         .await
@@ -65,15 +69,17 @@ impl FieldDefinition {
         kind: &FieldKind,
         description: Option<&str>,
         placeholder: Option<&str>,
+        icon: Option<&str>,
     ) -> Result<FieldDefinition, sqlx::Error> {
         query_as!(
             FieldDefinition,
-            "UPDATE field_definitions SET name = $2, kind = $3, description = $4, placeholder = $5 WHERE definition_id = $1 RETURNING *",
+            "UPDATE field_definitions SET name = $2, kind = $3, description = $4, placeholder = $5, icon = $6 WHERE definition_id = $1 RETURNING *",
             definition_id,
             name,
             kind.to_string(),
             description,
-            placeholder
+            placeholder,
+            icon
         )
         .fetch_one(&db.pool)
         .await

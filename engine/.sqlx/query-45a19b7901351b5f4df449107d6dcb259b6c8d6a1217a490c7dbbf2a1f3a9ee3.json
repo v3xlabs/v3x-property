@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "SELECT * FROM field_definitions",
+  "query": "SELECT * FROM field_definitions WHERE definition_id = $1",
   "describe": {
     "columns": [
       {
@@ -45,7 +45,9 @@
       }
     ],
     "parameters": {
-      "Left": []
+      "Left": [
+        "Text"
+      ]
     },
     "nullable": [
       false,
@@ -58,5 +60,5 @@
       true
     ]
   },
-  "hash": "853fdd63afef6164a2772878b0f691f1ea9bb1f5fd539337f8e2eb9371190347"
+  "hash": "45a19b7901351b5f4df449107d6dcb259b6c8d6a1217a490c7dbbf2a1f3a9ee3"
 }

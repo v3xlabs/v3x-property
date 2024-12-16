@@ -65,6 +65,7 @@ impl FieldsApi {
             &payload.kind,
             payload.description.as_deref(),
             payload.placeholder.as_deref(),
+            payload.icon.as_deref(),
         )
         .await
         .map_err(HttpError::from)
@@ -102,6 +103,7 @@ impl FieldsApi {
             &payload.kind,
             payload.description.as_deref(),
             payload.placeholder.as_deref(),
+            payload.icon.as_deref(),
         )
         .await
         .map_err(HttpError::from)

@@ -5,7 +5,7 @@ import { Input } from '@/components/ui/Input';
 import { Label } from '@/components/ui/Label';
 
 export type BaseInputProperties = {
-    label?: string;
+    label?: ReactNode;
     suffix?: ReactNode;
     onChange?: (_value: string) => void;
     errorMessage?: string;

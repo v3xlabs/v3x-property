@@ -35,6 +35,7 @@ import {
     ItemUpdatePayload,
 } from '@/util/item';
 import { queryClient } from '@/util/query';
+import { DynamicIcon } from '@/components/DynamicIcon';
 
 const EMPTY_VALUE = '$$EMPTY$$';
 
@@ -133,6 +134,12 @@ const AddField = (properties: {
                                             setOpen(false);
                                         }}
                                     >
+                                        {field.icon && (
+                                            <DynamicIcon
+                                                icon={field.icon}
+                                                className="size-4 aspect-square"
+                                            />
+                                        )}
                                         {field.name}
                                     </Command.Item>
                                 ))}

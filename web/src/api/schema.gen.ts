@@ -1829,6 +1829,8 @@ export type components = {
             description?: string;
             /** @description Placeholder text for the field */
             placeholder?: string;
+            /** @description Icon for the field */
+            icon?: string;
             /** Format: date-time */
             created_at?: string;
             /** Format: date-time */
