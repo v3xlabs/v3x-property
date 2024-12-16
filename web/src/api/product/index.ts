@@ -11,7 +11,7 @@ import { useAuth } from '../auth';
 import { apiRequest, BASE_URL, getHttp } from '../core';
 import { paths } from '../schema.gen';
 
-export const getProducts = () =>
+export const getProducts = (token: string | undefined) =>
     queryOptions({
         queryKey: ['products'],
         queryFn: async () => {
@@ -19,9 +19,14 @@ export const getProducts = () =>
 
             return response.data;
         },
+        enabled: !!token,
     });
 
-export const useProducts = () => useQuery(getProducts());
+export const useProducts = () => {
+    const { token } = useAuth();
+
+    return useQuery(getProducts(token));
+};
 
 export const getProductsSlim = () =>
     queryOptions({

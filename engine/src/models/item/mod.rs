@@ -91,7 +91,7 @@ impl Item {
         database: &Database,
         owner_id: i32,
     ) -> Result<Vec<Item>, sqlx::Error> {
-        query_as!(Item, "SELECT * FROM items WHERE owner_id = $1", owner_id)
+        query_as!(Item, "SELECT * FROM items WHERE owner_id = $1 ORDER BY updated_at DESC", owner_id)
             .fetch_all(&database.pool)
             .await
     }
@@ -262,6 +262,14 @@ impl Item {
                 }
             }
         }
+
+        // bump updated_at field
+        query!(
+            "UPDATE items SET updated_at = NOW() WHERE item_id = $1",
+            item_id
+        )
+        .execute(&mut *tx)
+        .await?;
 
         tx.commit().await?;
 

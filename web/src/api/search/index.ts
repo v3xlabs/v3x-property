@@ -1,6 +1,7 @@
 import { queryOptions, useQuery } from '@tanstack/react-query';
 
 import { ApiRequest, apiRequest } from '../core';
+import { useAuth } from '../auth';
 
 export type SearchableItem = ApiRequest<
     '/search',
@@ -9,7 +10,7 @@ export type SearchableItem = ApiRequest<
 
 export type SearchApiResponse = SearchableItem[];
 
-export const getSearch = (query: string) =>
+export const getSearch = (query: string, token: string | undefined) =>
     queryOptions({
         queryKey: ['search', query],
         queryFn: async () => {
@@ -21,6 +22,11 @@ export const getSearch = (query: string) =>
 
             return response.data;
         },
+        enabled: !!token,
     });
 
-export const useSearch = (query: string) => useQuery(getSearch(query));
+export const useSearch = (query: string) => {
+    const { token } = useAuth();
+
+    return useQuery(getSearch(query, token));
+};

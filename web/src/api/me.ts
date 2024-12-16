@@ -5,7 +5,7 @@ import { ApiRequest, apiRequest } from './core';
 
 export type ApiMeResponse = ApiRequest<'/me', 'get'>['response']['data'];
 
-export const getMe = () =>
+export const getMe = (authToken: string | undefined) =>
     queryOptions({
         queryKey: ['me'],
         queryFn: async () => {
@@ -13,7 +13,11 @@ export const getMe = () =>
 
             return response.data;
         },
-        enabled: !!useAuth.getState().token,
+        enabled: !!authToken,
     });
 
-export const useMe = () => useQuery(getMe());
+export const useMe = () => {
+    const { token } = useAuth();
+
+    return useQuery(getMe(token));
+};

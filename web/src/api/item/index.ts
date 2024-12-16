@@ -40,7 +40,7 @@ export const useItemById = (item_id: string) => {
     return useQuery(getItemById(item_id));
 };
 
-export const getOwnedItems = () =>
+export const getOwnedItems = (token: string | undefined) =>
     queryOptions({
         queryKey: ['item', 'owned'],
         queryFn: async () => {
@@ -48,10 +48,13 @@ export const getOwnedItems = () =>
 
             return response.data;
         },
+        enabled: !!token,
     });
 
 export const useOwnedItems = () => {
-    return useQuery(getOwnedItems());
+    const { token } = useAuth();
+
+    return useQuery(getOwnedItems(token));
 };
 
 export const getItemMedia = (item_id: string) =>

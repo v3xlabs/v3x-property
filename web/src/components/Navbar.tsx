@@ -2,15 +2,18 @@
 /* eslint-disable no-undef */
 import { Link } from '@tanstack/react-router';
 import clsx from 'clsx';
-import { useState } from 'react';
 import {
     FiBox,
+    FiChevronDown,
+    FiImage,
     FiLogIn,
     FiLogOut,
+    FiMoreHorizontal,
     FiPlusCircle,
     FiSearch,
     FiSettings,
     FiTag,
+    FiUsers,
 } from 'react-icons/fi';
 
 import { useAuth } from '@/api/auth';
@@ -18,129 +21,176 @@ import { BASE_URL } from '@/api/core';
 import { useMe } from '@/api/me';
 import * as DropdownMenu from '@/components/ui/Dropdown';
 
+import { Button } from './ui/Button';
 import { AvatarHolder, getInitials } from './UserProfile';
 
 const LOGIN_URL = BASE_URL + 'login';
 
+const navLinks = [
+    {
+        path: '/items',
+        name: 'Items',
+        icon: <FiBox />,
+        slug: 'items-navlink',
+    },
+    {
+        path: '/products',
+        name: 'Products',
+        icon: <FiTag />,
+        slug: 'products-navlink',
+    },
+    {
+        path: '/search',
+        name: 'Search',
+        icon: <FiSearch />,
+        slug: 'search-navlink',
+    },
+    {
+        path: '/create',
+        name: 'Create',
+        icon: <FiPlusCircle />,
+        slug: 'create-navlink',
+    },
+] as const;
+
+const navLinks2 = [
+    {
+        path: '/tags/',
+        name: 'Tags',
+        icon: <FiTag />,
+        slug: 'tags-navlink',
+    },
+    {
+        path: '/settings/fields',
+        name: 'Fields',
+        icon: <FiTag />,
+        slug: 'fields-navlink',
+    },
+    {
+        path: '/media/',
+        name: 'Media',
+        icon: <FiImage />,
+        slug: 'media-navlink',
+    },
+    {
+        path: '/logs/',
+        name: 'Logs',
+        icon: <FiLogOut />,
+        slug: 'logs-navlink',
+    },
+    {
+        path: '/users/',
+        name: 'Users',
+        icon: <FiUsers />,
+        slug: 'users-navlink',
+    },
+    {
+        path: '/settings',
+        name: 'Settings',
+        icon: <FiSettings />,
+        slug: 'settings-navlink',
+    },
+] as const;
+
 export const Navbar = () => {
     const { token, clearAuthToken } = useAuth();
-    const { data: meData, isLoading: isVerifyingAuth } = useMe();
-    const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+    const { data: meData } = useMe();
 
     const login_here_url =
         LOGIN_URL + '?redirect=' + encodeURIComponent(window.location.href);
-
-    const navLinks = [
-        {
-            path: '/items',
-            name: 'Items',
-            icon: <FiBox />,
-            slug: 'items-navlink',
-        },
-        {
-            path: '/products',
-            name: 'Products',
-            icon: <FiTag />,
-            slug: 'products-navlink',
-        },
-        {
-            path: '/search',
-            name: 'Search',
-            icon: <FiSearch />,
-            slug: 'search-navlink',
-        },
-        {
-            path: '/create',
-            name: 'Create',
-            icon: <FiPlusCircle />,
-            slug: 'create-navlink',
-        },
-        {
-            path: '/logs/',
-            name: 'Logs',
-            icon: <FiLogOut />,
-            slug: 'logs-navlink',
-            desktopOnly: true,
-        },
-    ];
 
     return (
         <nav
             role="navigation"
             aria-label="Main"
-            className="w-full bg-white border-t md:border-b h-16 md:h-auto flex items-center justify-between md:justify-start fixed bottom-0 md:sticky md:top-0 z-10"
+            className="w-full bg-white border-t md:border-b h-16 md:h-9 flex items-center justify-between fixed bottom-0 md:sticky md:top-0 z-10"
         >
-            <div className="flex md:hidden w-full overflow-x-auto">
-                <ul className="grid grid-cols-5 w-full">
-                    {navLinks.map(({ path, name, icon, slug, desktopOnly }) => (
+            <Link
+                to="/"
+                className="hidden md:flex font-semibold cursor-pointer text-base px-4 hover:bg-black/10 border-b md:border-r h-auto items-center"
+            >
+                v3x.property
+            </Link>
+            <div className="flex w-full md:w-fit overflow-x-auto h-full">
+                <ul className="grid grid-cols-5 w-full h-full md:gap-2">
+                    {navLinks.map(({ path, name, icon, slug }) => (
                         <li
                             key={path}
-                            className={clsx(
-                                'flex-1 text-center',
-                                desktopOnly && 'hidden md:block'
-                            )}
+                            className={clsx('flex-1 text-center h-full')}
                         >
                             <Link
                                 to={path}
                                 data-testid={slug}
-                                className="flex flex-col items-center justify-center py-2 hover:bg-black/5"
+                                className="flex cursor-pointer md:gap-1 h-full md:[&.active]:bg-black/10 flex-col md:flex-row items-center justify-center hover:bg-black/5 md:px-1"
                             >
                                 {icon}
-                                <span className="text-xs">{name}</span>
+                                <span className="text-xs md:text-base">
+                                    {name}
+                                </span>
                             </Link>
                         </li>
                     ))}
-                    {meData ? (
-                        <li>
-                            <Link
-                                to="/settings"
-                                className="flex flex-col items-center justify-center py-2 hover:bg-black/5"
+                    <DropdownMenu.Root>
+                        <DropdownMenu.Trigger asChild>
+                            <button
+                                className="flex flex-col md:flex-row md:gap-1 items-center justify-center hover:bg-black/5"
+                                data-testid="more-dropdown-trigger"
                             >
-                                <FiSettings />
-                                <span className="text-xs">Settings</span>
-                            </Link>
-                        </li>
-                    ) : (
-                        <li>
-                            <Link
-                                to={login_here_url}
-                                className="flex flex-col items-center justify-center py-2 hover:bg-black/5"
-                            >
-                                <FiLogIn />
-                                <span className="text-xs">Login</span>
-                            </Link>
-                        </li>
-                    )}
+                                <FiMoreHorizontal className="block md:hidden" />
+                                <span className="text-xs md:text-base">
+                                    More
+                                </span>
+                                <FiChevronDown className="hidden md:block" />
+                            </button>
+                        </DropdownMenu.Trigger>
+                        <DropdownMenu.Content sideOffset={5}>
+                            {navLinks2.map(({ path, name, icon, slug }) => (
+                                <DropdownMenu.Item asChild key={path}>
+                                    <Link
+                                        to={path}
+                                        data-testid={slug}
+                                        className="flex items-center justify-start py-2 hover:bg-black/5 rounded-md"
+                                    >
+                                        {icon}
+                                        <span className="text-xs">{name}</span>
+                                    </Link>
+                                </DropdownMenu.Item>
+                            ))}
+                            <DropdownMenu.Separator />
+                            {meData ? (
+                                <DropdownMenu.Item asChild>
+                                    <Button
+                                        onClick={() => clearAuthToken()}
+                                        className="flex items-center justify-center py-2 hover:bg-black/5"
+                                        variant="ghost"
+                                    >
+                                        <FiLogOut />
+                                        <span className="text-xs">Logout</span>
+                                    </Button>
+                                </DropdownMenu.Item>
+                            ) : (
+                                <>
+                                    <DropdownMenu.Item asChild>
+                                        <Link
+                                            to={login_here_url}
+                                            className="flex items-center justify-center py-2 hover:bg-black/5"
+                                        >
+                                            <FiLogIn />
+                                            <span className="text-xs">
+                                                Login
+                                            </span>
+                                        </Link>
+                                    </DropdownMenu.Item>
+                                </>
+                            )}
+                        </DropdownMenu.Content>
+                    </DropdownMenu.Root>
                 </ul>
             </div>
-            <div
-                className={clsx(
-                    'hidden md:flex md:items-center md:justify-between w-full'
-                )}
-            >
-                <Link
-                    to="/"
-                    className="font-semibold cursor-pointer text-base px-4 hover:bg-black/10 border-b md:border-r h-full flex items-center"
-                >
-                    v3x.property
-                </Link>
-                <ul className="h-full flex flex-row items-center space-x-2">
-                    {navLinks.map(({ path, name, icon, slug }) => (
-                        <li key={path}>
-                            <Link
-                                to={path}
-                                data-testid={slug}
-                                className="flex items-center space-x-1 [&.active]:bg-black/10 hover:bg-black/5 py-1 px-2 cursor-pointer"
-                            >
-                                {icon}
-                                <span>{name}</span>
-                            </Link>
-                        </li>
-                    ))}
-                </ul>
-                <div className="flex items-center gap-2">
+            <div className="h-full">
+                <div className="h-full items-center gap-2 hidden md:flex">
                     {token && meData && (
-                        <div className="h-full border-t md:border-l">
+                        <div className="h-full md:border-l">
                             <DropdownMenu.Root>
                                 <DropdownMenu.Trigger asChild>
                                     <button
