@@ -269,7 +269,12 @@ export const AgentDecoder: FC<{
                                             <div className="flex items-center justify-center gap-2 mt-2 pt-1">
                                                 <RxPaperPlane />
                                                 <div className="text-sm">
-                                                    Generating...
+                                                    Generating
+                                                    <span className="loading-dots">
+                                                        <span>.</span>
+                                                        <span>.</span>
+                                                        <span>.</span>
+                                                    </span>
                                                 </div>
                                             </div>
                                         )
