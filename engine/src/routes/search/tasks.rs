@@ -9,6 +9,7 @@ use tracing::info;
 use super::ApiTags;
 use crate::auth::middleware::AuthUser;
 use crate::auth::permissions::Action;
+use crate::routes::error::HttpError;
 use crate::{models::search::SearchTask, state::AppState};
 
 pub struct SearchTaskApi;
@@ -26,9 +27,11 @@ impl SearchTaskApi {
     ) -> Result<Json<Vec<SearchTask>>> {
         user.check_policy("search", None, Action::Read).await?;
 
-        let tasks = SearchTask::find_all(&state.database).await.unwrap();
-
-        Ok(Json(tasks))
+        SearchTask::find_all(&state.database)
+            .await
+            .map(Json)
+            .map_err(HttpError::from)
+            .map_err(poem::Error::from)
     }
 
     /// /search/tasks/:task_id
@@ -54,7 +57,7 @@ impl SearchTaskApi {
                 search
                     .refresh_task(&state.database, task_id.0)
                     .await
-                    .unwrap(),
+                    .map_err(HttpError::from)?,
             )),
             None => Err(Error::from_status(StatusCode::METHOD_NOT_ALLOWED)),
         }

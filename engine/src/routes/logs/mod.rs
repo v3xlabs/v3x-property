@@ -3,7 +3,7 @@ use std::sync::Arc;
 use poem::{web::Data, Result};
 use poem_openapi::{payload::Json, OpenApi};
 
-use super::ApiTags;
+use super::{error::HttpError, ApiTags};
 use crate::{
     auth::{middleware::AuthUser, permissions::Action},
     models::log::LogEntry,
@@ -25,6 +25,10 @@ impl LogsApi {
     ) -> Result<Json<Vec<LogEntry>>> {
         user.check_policy("log", None, Action::Read).await?;
 
-        Ok(Json(LogEntry::get_all(&state.database).await.unwrap()))
+        LogEntry::get_all(&state.database)
+            .await
+            .map(Json)
+            .map_err(HttpError::from)
+            .map_err(poem::Error::from)
     }
 }

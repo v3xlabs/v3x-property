@@ -12,19 +12,20 @@ use serde::{Deserialize, Serialize};
 use sqlx::prelude::FromRow;
 use tracing::info;
 
-use super::ApiTags;
+use super::{error::HttpError, ApiTags};
 use crate::{
     auth::{middleware::AuthUser, permissions::Action},
     models::{
         field::kind::FieldKind,
         item::{field::ItemField, Item},
-        log::LogEntry, tags::Tag,
+        log::LogEntry,
+        tags::Tag,
     },
     state::AppState,
 };
 
-pub mod media;
 pub mod intelligence;
+pub mod media;
 
 pub struct ItemsApi;
 
@@ -99,7 +100,7 @@ impl ItemsApi {
         Ok(Json(
             Item::get_by_owner_id(&state.database, user.user_id().unwrap())
                 .await
-                .unwrap(),
+                .map_err(HttpError::from)?,
         ))
     }
 
@@ -115,19 +116,24 @@ impl ItemsApi {
     ) -> Result<Json<Item>> {
         user.check_policy("item", None, Action::Write).await?;
 
-        Ok(Json(
-            Item {
+        Item::get_by_id(&state.database, &item_id.0)
+            .await
+            .map_err(HttpError::from)?
+            .map_or_else(|| Ok(()), |_| Err(HttpError::AlreadyExists))?;
+
+        Item {
                 item_id: item_id.0,
                 owner_id: user.user_id(),
                 ..Default::default()
             }
             .insert(&state.database)
             .await
-            .unwrap()
+            .map_err(HttpError::from)?
             .index_search(&state.search, &state.database)
             .await
-            .unwrap(),
-        ))
+            .map_err(HttpError::from)
+            .map_err(poem::Error::from)
+            .map(Json)
     }
 
     /// /item/next
@@ -144,7 +150,7 @@ impl ItemsApi {
         info!("Getting next item id");
 
         Ok(Json(ItemIdResponse {
-            item_id: Item::next_id(&state).await.unwrap(),
+            item_id: Item::next_id(&state).await.map_err(HttpError::from)?,
         }))
     }
 
@@ -161,14 +167,14 @@ impl ItemsApi {
         user.check_policy("item", item_id.0.to_string().as_str(), Action::Delete)
             .await?;
 
-        let item = Item::get_by_id(&state.database, &item_id.0)
+        Item::get_by_id(&state.database, &item_id.0)
             .await
-            .unwrap()
-            .unwrap();
-
-        item.delete(&state.search, &state.database).await.unwrap();
-
-        Ok(())
+            .map_err(HttpError::from)?
+            .ok_or(HttpError::NotFound)?
+            .delete(&state.search, &state.database)
+            .await
+            .map_err(HttpError::from)
+            .map_err(poem::Error::from)
     }
 
     /// /item/:item_id
@@ -184,12 +190,12 @@ impl ItemsApi {
         user.check_policy("item", item_id.0.to_string().as_str(), Action::Read)
             .await?;
 
-        let item = Item::get_by_id(&state.database, &item_id.0).await.unwrap();
-
-        match item {
-            Some(item) => Ok(Json(item)),
-            None => Err(StatusCode::NOT_FOUND.into()),
-        }
+        Item::get_by_id(&state.database, &item_id.0)
+            .await
+            .map_err(HttpError::from)?
+            .map(Json)
+            .ok_or(HttpError::NotFound)
+            .map_err(poem::Error::from)
     }
 
     /// /item/:item_id
@@ -207,9 +213,14 @@ impl ItemsApi {
         user.check_policy("item", item_id.0.to_string().as_str(), Action::Write)
             .await?;
 
+        Item::get_by_id(&state.database, &item_id.0)
+            .await
+            .map_err(HttpError::from)?
+            .ok_or(HttpError::NotFound)?;
+
         Item::edit_by_id(&state.search, &state.database, &data.0, &item_id.0)
             .await
-            .unwrap();
+            .map_err(HttpError::from)?;
 
         LogEntry::new(
             &state.database,
@@ -220,9 +231,9 @@ impl ItemsApi {
             &serde_json::to_string(&data.0).unwrap(),
         )
         .await
-        .unwrap();
-
-        Ok(())
+        .map_err(HttpError::from)
+        .map_err(poem::Error::from)
+        .map(|_| ())
     }
 
     /// /item/:item_id/fields
@@ -238,11 +249,11 @@ impl ItemsApi {
         user.check_policy("item", item_id.0.to_string().as_str(), Action::Read)
             .await?;
 
-        Ok(Json(
-            ItemField::get_by_item_id_with_definitions(&state.database, &item_id.0)
-                .await
-                .unwrap(),
-        ))
+        ItemField::get_by_item_id_with_definitions(&state.database, &item_id.0)
+            .await
+            .map(Json)
+            .map_err(HttpError::from)
+            .map_err(poem::Error::from)
     }
 
     /// /item/:item_id/tags
@@ -258,7 +269,11 @@ impl ItemsApi {
         user.check_policy("item", item_id.0.to_string().as_str(), Action::Read)
             .await?;
 
-        Ok(Json(Tag::get_by_item_id(&state.database, &item_id.0).await.unwrap()))
+        Tag::get_by_item_id(&state.database, &item_id.0)
+            .await
+            .map(Json)
+            .map_err(HttpError::from)
+            .map_err(poem::Error::from)
     }
 
     /// /item/:item_id/logs
@@ -274,10 +289,10 @@ impl ItemsApi {
         user.check_policy("item", item_id.0.to_string().as_str(), Action::Read)
             .await?;
 
-        Ok(Json(
-            LogEntry::find_by_resource(&state.database, "item", &item_id.0)
-                .await
-                .unwrap(),
-        ))
+        LogEntry::find_by_resource(&state.database, "item", &item_id.0)
+            .await
+            .map(Json)
+            .map_err(HttpError::from)
+            .map_err(poem::Error::from)
     }
 }

@@ -5,13 +5,12 @@ use poem_openapi::{param::Path, payload::Json, OpenApi};
 use reqwest::StatusCode;
 use tracing::info;
 
-use super::ApiTags;
+use super::{error::HttpError, ApiTags};
 use crate::{
     auth::{middleware::AuthUser, permissions::Action},
     models::sessions::Session,
     state::AppState,
 };
-// pub mod delete;
 
 pub struct SessionsApi;
 
@@ -30,11 +29,11 @@ impl SessionsApi {
             .user_id()
             .ok_or(Error::from_status(StatusCode::UNAUTHORIZED))?;
 
-        Ok(Json(
-            Session::get_by_user_id(&state.database, active_user)
-                .await
-                .unwrap(),
-        ))
+        Session::get_by_user_id(&state.database, active_user)
+            .await
+            .map(Json)
+            .map_err(HttpError::from)
+            .map_err(poem::Error::from)
     }
 
     /// /sessions/:session_id
@@ -55,18 +54,12 @@ impl SessionsApi {
         auth.check_policy("user", user_id.to_string().as_str(), Action::Write)
             .await?;
 
-        match auth {
-            AuthUser::User(active_user, _) => {
-                info!("Deleting session {:?}", session_id.0);
+        info!("Deleting session {:?}", session_id.0);
 
-                let sessions = Session::invalidate_by_id(&state.database, user_id, &session_id.0)
-                    .await
-                    .unwrap();
-
-                Ok(Json(sessions))
-            }
-            _ => Ok(Json(vec![])),
-            // _ => Error::from_string("Not Authenticated", StatusCode::UNAUTHORIZED).into_response(),
-        }
+        Session::invalidate_by_id(&state.database, user_id, &session_id.0)
+            .await
+            .map(Json)
+            .map_err(HttpError::from)
+            .map_err(poem::Error::from)
     }
 }

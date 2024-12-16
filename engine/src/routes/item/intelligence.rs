@@ -1,14 +1,16 @@
 use std::sync::Arc;
 
 use crate::{
-    models::item::Item, modules::intelligence::{
-        structured::actor::ActorEvent,
-        tasks::ingress_product::IngressProductTask,
-    }, state::AppState
+    models::item::Item,
+    modules::intelligence::{
+        structured::actor::ActorEvent, tasks::ingress_product::IngressProductTask,
+    },
+    routes::error::HttpError,
+    state::AppState,
 };
-use futures::{stream::BoxStream, StreamExt};
-use poem::web::Data;
-use poem_openapi::{param::Path, payload::EventStream, types::{ToJSON, ToYAML}, Object, OpenApi};
+use futures::stream::BoxStream;
+use poem::{web::Data, Result};
+use poem_openapi::{param::Path, payload::EventStream, types::ToYAML, Object, OpenApi};
 
 use super::ApiTags;
 
@@ -33,19 +35,23 @@ impl ItemIntelligenceApi {
         &self,
         state: Data<&Arc<AppState>>,
         item_id: Path<String>,
-    ) -> EventStream<BoxStream<'static, ActorEvent>> {
-        let item = Item::get_by_id(&state.database, item_id.0.as_str()).await.unwrap().unwrap();
+    ) -> Result<EventStream<BoxStream<'static, ActorEvent>>> {
+        let item = Item::get_by_id(&state.database, item_id.0.as_str())
+            .await
+            .map_err(HttpError::from)?
+            .ok_or(HttpError::NotFound)?;
 
-        let query = item.into_search(&state.database).await.unwrap();
+        let query = item
+            .into_search(&state.database)
+            .await
+            .map_err(HttpError::from)?;
         let query = query.to_yaml_string();
 
-        let x = IngressProductTask {
-            query,
-        }
-        .run(state.0)
-        .await
-        .unwrap();
-
-        EventStream::new(x)
+        IngressProductTask { query }
+            .run(state.0)
+            .await
+            .map(EventStream::new)
+            .map_err(HttpError::from)
+            .map_err(poem::Error::from)
     }
 }

@@ -4,7 +4,7 @@ use poem::{web::Data, Result};
 use poem_openapi::{param::Path, payload::Json, Object, OpenApi};
 use serde::{Deserialize, Serialize};
 
-use super::ApiTags;
+use super::{error::HttpError, ApiTags};
 use crate::{
     auth::{middleware::AuthUser, permissions::Action},
     models::field::{definition::FieldDefinition, kind::FieldKind},
@@ -34,9 +34,11 @@ impl FieldsApi {
     ) -> Result<Json<Vec<FieldDefinition>>> {
         user.check_policy("field", None, Action::Read).await?;
 
-        Ok(Json(
-            FieldDefinition::get_all(&state.database).await.unwrap(),
-        ))
+        FieldDefinition::get_all(&state.database)
+            .await
+            .map_err(HttpError::from)
+            .map(Json)
+            .map_err(poem::Error::from)
     }
 
     /// /field/definitions
@@ -51,18 +53,23 @@ impl FieldsApi {
     ) -> Result<Json<FieldDefinition>> {
         user.check_policy("field", None, Action::Write).await?;
 
-        Ok(Json(
-            FieldDefinition::new(
-                &state.database,
-                &payload.definition_id,
-                &payload.name,
-                &payload.kind,
-                payload.description.as_deref(),
-                payload.placeholder.as_deref(),
-            )
+        FieldDefinition::get_by_definition_id(&state.database, &payload.definition_id)
             .await
-            .unwrap(),
-        ))
+            .map_err(HttpError::from)?
+            .ok_or(HttpError::AlreadyExists)?;
+
+        FieldDefinition::new(
+            &state.database,
+            &payload.definition_id,
+            &payload.name,
+            &payload.kind,
+            payload.description.as_deref(),
+            payload.placeholder.as_deref(),
+        )
+        .await
+        .map_err(HttpError::from)
+        .map(Json)
+        .map_err(poem::Error::from)
     }
 
     /// /fields/definitions/:id
@@ -82,17 +89,23 @@ impl FieldsApi {
     ) -> Result<Json<FieldDefinition>> {
         user.check_policy("field", None, Action::Write).await?;
 
-        Ok(Json(
-            FieldDefinition::update(
-                &state.database,
-                &definition_id,
-                &payload.name,
-                &payload.kind,
-                payload.description.as_deref(),
-                payload.placeholder.as_deref(),
-            )
+        // Ensure field exists
+        FieldDefinition::get_by_definition_id(&state.database, &definition_id)
             .await
-            .unwrap(),
-        ))
+            .map_err(HttpError::from)?
+            .ok_or(HttpError::NotFound)?;
+
+        FieldDefinition::update(
+            &state.database,
+            &definition_id,
+            &payload.name,
+            &payload.kind,
+            payload.description.as_deref(),
+            payload.placeholder.as_deref(),
+        )
+        .await
+        .map_err(HttpError::from)
+        .map(Json)
+        .map_err(poem::Error::from)
     }
 }

@@ -4,7 +4,7 @@ use poem::{web::Data, Error, Result};
 use poem_openapi::{param::Path, payload::Json, OpenApi};
 use reqwest::StatusCode;
 
-use super::ApiTags;
+use super::{error::HttpError, ApiTags};
 use crate::{
     auth::middleware::AuthUser,
     models::user::{user::User, userentry::UserEntry},
@@ -36,13 +36,11 @@ impl UserApi {
             return Err(Error::from_status(StatusCode::FORBIDDEN));
         }
 
-        let user = UserEntry::find_by_user_id(user_id.0, &state.database)
+        UserEntry::find_by_user_id(user_id.0, &state.database)
             .await
-            .unwrap();
-
-        Ok(Json(
-            user.ok_or(poem::Error::from_status(StatusCode::NOT_FOUND))?
-                .into(),
-        ))
+            .map_err(HttpError::from)?
+            .ok_or(Error::from_status(StatusCode::NOT_FOUND))
+            .map(|user| Json(user.into()))
+            .map_err(poem::Error::from)
     }
 }

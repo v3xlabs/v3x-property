@@ -49,6 +49,15 @@ impl FieldDefinition {
             .await
     }
 
+    pub async fn get_by_definition_id(
+        db: &Database,
+        definition_id: &str,
+    ) -> Result<Option<FieldDefinition>, sqlx::Error> {
+        query_as!(FieldDefinition, "SELECT * FROM field_definitions WHERE definition_id = $1", definition_id)
+            .fetch_optional(&db.pool)
+            .await
+    }
+
     pub async fn update(
         db: &Database,
         definition_id: &str,

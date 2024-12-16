@@ -133,12 +133,17 @@ impl Item {
     }
 
     /// Shorthand for triggering a search index update.
-    pub async fn index_search(&self, search: &Option<Search>, db: &Database) -> Result<Self, ()> {
+    pub async fn index_search(
+        &self,
+        search: &Option<Search>,
+        db: &Database,
+    ) -> Result<Self, anyhow::Error> {
         match search {
             Some(search) => {
                 search
                     .index_item(db, &self.into_search(db).await.unwrap())
-                    .await;
+                    .await
+                    .unwrap();
                 Ok(self.to_owned())
             }
             None => Ok(self.to_owned()),
@@ -239,11 +244,21 @@ impl Item {
         if let Some(fields) = &data.fields {
             for field in fields {
                 if field.value.is_null() {
-                    info!("Deleting field {} for item {}", field.definition_id, item_id);
-                    ItemField::delete(db, item_id, &field.definition_id).await.unwrap();
+                    info!(
+                        "Deleting field {} for item {}",
+                        field.definition_id, item_id
+                    );
+                    ItemField::delete(db, item_id, &field.definition_id)
+                        .await
+                        .unwrap();
                 } else {
-                    info!("Upserting field {} for item {}", field.definition_id, item_id);
-                    ItemField::upsert(db, item_id, &field.definition_id, &field.value).await.unwrap();
+                    info!(
+                        "Upserting field {} for item {}",
+                        field.definition_id, item_id
+                    );
+                    ItemField::upsert(db, item_id, &field.definition_id, &field.value)
+                        .await
+                        .unwrap();
                 }
             }
         }

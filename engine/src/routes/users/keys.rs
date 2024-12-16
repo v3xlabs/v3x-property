@@ -11,6 +11,7 @@ use serde::{Deserialize, Serialize};
 use super::super::ApiTags;
 use crate::auth::middleware::AuthUser;
 use crate::models::keys::UserApiKey;
+use crate::routes::error::HttpError;
 use crate::state::AppState;
 
 pub struct UserKeysApi;
@@ -51,7 +52,7 @@ impl UserKeysApi {
         let (key, token) =
             UserApiKey::new(&state.database, user_id.0, &body.name, &body.permissions)
                 .await
-                .unwrap();
+                .map_err(HttpError::from)?;
 
         Ok(Json(CreateKeyResponse { key, token }))
     }
@@ -74,11 +75,11 @@ impl UserKeysApi {
             return Err(Error::from_status(StatusCode::FORBIDDEN));
         }
 
-        Ok(Json(
-            UserApiKey::find_by_user_id(user_id.0, &state.database)
-                .await
-                .unwrap(),
-        ))
+        UserApiKey::find_by_user_id(user_id.0, &state.database)
+            .await
+            .map(Json)
+            .map_err(HttpError::from)
+            .map_err(poem::Error::from)
     }
 
     /// /user/:user_id/keys/:token_id
@@ -106,8 +107,7 @@ impl UserKeysApi {
 
         UserApiKey::delete_by_token_id(token_id.0, &state.database)
             .await
-            .unwrap();
-        // StatusCode::NO_CONTENT
-        Ok(())
+            .map_err(HttpError::from)
+            .map_err(poem::Error::from)
     }
 }

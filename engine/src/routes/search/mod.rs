@@ -6,6 +6,7 @@ use poem_openapi::param::Query;
 use poem_openapi::{payload::Json, OpenApi};
 use tracing::info;
 
+use super::error::HttpError;
 use super::ApiTags;
 use crate::auth::middleware::AuthUser;
 use crate::auth::permissions::Action;
@@ -15,13 +16,6 @@ use crate::state::AppState;
 pub mod tasks;
 
 pub struct SearchApi;
-
-// #[derive(Debug, Serialize, Deserialize, Object)]
-// pub struct SearchResult {
-//     pub id: i64,
-//     pub title: String,
-//     pub description: String,
-// }
 
 #[OpenApi]
 impl SearchApi {
@@ -35,7 +29,6 @@ impl SearchApi {
         state: Data<&Arc<AppState>>,
         query: Query<String>,
     ) -> Result<Json<Vec<SearchableItem>>> {
-        // TODO: chance to search
         user.check_policy("search", None, Action::Read).await?;
 
         let search = state.search.as_ref().unwrap();
@@ -49,7 +42,7 @@ impl SearchApi {
             // .with_hybrid("ollama", 0.9)
             .execute::<SearchableItem>()
             .await
-            .unwrap();
+            .map_err(HttpError::from)?;
 
         let results = tasks.hits.iter().map(|r| r.result.clone()).collect();
 
@@ -76,8 +69,7 @@ impl SearchApi {
             .unwrap()
             .index_all_items(&state.database)
             .await
-            .unwrap();
-
-        Ok(())
+            .map_err(HttpError::from)
+            .map_err(poem::Error::from)
     }
 }

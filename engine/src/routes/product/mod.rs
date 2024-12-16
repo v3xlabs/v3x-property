@@ -9,7 +9,7 @@ use poem_openapi::{
 use reqwest::StatusCode;
 use serde::{Deserialize, Serialize};
 
-use super::ApiTags;
+use super::{error::HttpError, ApiTags};
 use crate::{
     auth::{middleware::AuthUser, permissions::Action},
     models::{
@@ -66,7 +66,11 @@ impl ProductApi {
     ) -> Result<Json<Vec<Product>>> {
         user.check_policy("product", None, Action::Read).await?;
 
-        Ok(Json(Product::get_all(&state.database).await.unwrap()))
+        Ok(Json(
+            Product::get_all(&state.database)
+                .await
+                .map_err(HttpError::from)?,
+        ))
     }
 
     /// /product/slim
@@ -81,7 +85,9 @@ impl ProductApi {
         user.check_policy("product", None, Action::Read).await?;
 
         Ok(Json(
-            Product::get_products_slim(&state.database).await.unwrap(),
+            Product::get_products_slim(&state.database)
+                .await
+                .map_err(HttpError::from)?,
         ))
     }
 
@@ -98,16 +104,12 @@ impl ProductApi {
         user.check_policy("product", None, Action::Write).await?;
 
         Ok(Json(
-            Product::new(
-                &state.database,
-                user.user_id(),
-                name.0,
-            )
-            .await
-            .unwrap()
-            .index_search(&state.search, &state.database)
-            .await
-            .unwrap(),
+            Product::new(&state.database, user.user_id(), name.0)
+                .await
+                .map_err(HttpError::from)?
+                .index_search(&state.search, &state.database)
+                .await
+                .map_err(HttpError::from)?,
         ))
     }
 
@@ -130,13 +132,13 @@ impl ProductApi {
 
         let product = Product::get_by_id(&state.database, product_id.0)
             .await
-            .unwrap()
-            .unwrap();
+            .map_err(HttpError::from)?
+            .ok_or(HttpError::NotFound)?;
 
         product
             .delete(&state.search, &state.database)
             .await
-            .unwrap();
+            .map_err(HttpError::from)?;
 
         Ok(())
     }
@@ -160,12 +162,10 @@ impl ProductApi {
 
         let product = Product::get_by_id(&state.database, product_id.0)
             .await
-            .unwrap();
+            .map_err(HttpError::from)?
+            .ok_or(HttpError::NotFound)?;
 
-        match product {
-            Some(item) => Ok(Json(item)),
-            None => Err(StatusCode::NOT_FOUND.into()),
-        }
+        Ok(Json(product))
     }
 
     /// /item/:item_id
@@ -189,13 +189,13 @@ impl ProductApi {
 
         let product = Product::get_by_id(&state.database, product_id.0)
             .await
-            .unwrap()
-            .unwrap();
+            .map_err(HttpError::from)?
+            .ok_or(HttpError::NotFound)?;
 
         product
             .edit_by_id(&state.search, &state.database, &data.0)
             .await
-            .unwrap();
+            .map_err(HttpError::from)?;
 
         LogEntry::new(
             &state.database,
@@ -206,7 +206,7 @@ impl ProductApi {
             &serde_json::to_string(&data.0).unwrap(),
         )
         .await
-        .unwrap();
+        .map_err(HttpError::from)?;
 
         Ok(())
     }
@@ -230,7 +230,7 @@ impl ProductApi {
 
         let media = ProductMedia::get_by_product_id(&state.database, &product_id.0)
             .await
-            .unwrap();
+            .map_err(HttpError::from)?;
 
         Ok(Json(media.iter().map(|m| m.media_id).collect()))
     }
@@ -255,7 +255,7 @@ impl ProductApi {
         Ok(Json(
             LogEntry::find_by_resource(&state.database, "product", &product_id.0.to_string())
                 .await
-                .unwrap(),
+                .map_err(HttpError::from)?,
         ))
     }
 }

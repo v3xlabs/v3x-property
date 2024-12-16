@@ -12,7 +12,7 @@ use poem_openapi::{
 use reqwest::StatusCode;
 use serde::{Deserialize, Serialize};
 
-use super::ApiTags;
+use super::{error::HttpError, ApiTags};
 use crate::{
     auth::{middleware::AuthUser, permissions::Action},
     models::media::{LinkedItem, Media},
@@ -39,7 +39,11 @@ impl MediaApi {
     ) -> Result<Json<Vec<Media>>> {
         user.check_policy("media", None, Action::Read).await?;
 
-        Ok(Json(Media::get_all(&state.database).await.unwrap()))
+        Ok(Json(
+            Media::get_all(&state.database)
+                .await
+                .map_err(HttpError::from)?,
+        ))
     }
 
     /// /media/unassigned
@@ -73,21 +77,17 @@ impl MediaApi {
         let file = upload.next_field().await.unwrap().unwrap();
         let tempfile = file.bytes().await.unwrap();
 
-        // info!("File: {:?}", tempfile);
-
-        // upload using minio
-
         let url = state
             .storage
-            .upload(&name.0, &kind.0, tempfile.into())
+            .upload(&name.0, &kind.0, tempfile)
             .await
             .unwrap();
 
-        Ok(Json(
-            Media::new(&state.database, name.0, url, kind.0)
-                .await
-                .unwrap(),
-        ))
+        Media::new(&state.database, name.0, url, kind.0)
+            .await
+            .map(Json)
+            .map_err(HttpError::from)
+            .map_err(poem::Error::from)
     }
 
     /// /media/:media_id
@@ -105,11 +105,9 @@ impl MediaApi {
 
         Media::get_by_id(&state.database, media_id.0)
             .await
-            .or(Err(poem::Error::from_status(
-                StatusCode::INTERNAL_SERVER_ERROR,
-            )))?
-            .ok_or(poem::Error::from_status(StatusCode::NOT_FOUND))
+            .map_err(HttpError::from)?
             .map(Json)
+            .ok_or(HttpError::NotFound.into())
     }
 
     /// /media/:media_id/items
@@ -129,11 +127,11 @@ impl MediaApi {
         user.check_policy("media", media_id.0.to_string().as_str(), Action::Read)
             .await?;
 
-        Ok(Json(
-            Media::get_linked_items(&state.database, media_id.0)
-                .await
-                .unwrap(),
-        ))
+        Media::get_linked_items(&state.database, media_id.0)
+            .await
+            .map(Json)
+            .map_err(HttpError::from)
+            .map_err(poem::Error::from)
     }
 
     /// /media/:media_id
@@ -151,12 +149,11 @@ impl MediaApi {
 
         Media::get_by_id(&state.database, media_id.0)
             .await
-            .unwrap()
-            .unwrap()
+            .map_err(HttpError::from)?
+            .ok_or(HttpError::NotFound)?
             .delete(&state.database)
             .await
-            .unwrap();
-
-        Ok(())
+            .map_err(HttpError::from)
+            .map_err(poem::Error::from)
     }
 }

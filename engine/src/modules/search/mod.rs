@@ -113,23 +113,24 @@ impl Search {
             .map_err(anyhow::Error::from)
     }
 
-    pub async fn index_item(&self, db: &Database, item: &SearchableItem) -> Result<(), ()> {
+    pub async fn index_item(
+        &self,
+        db: &Database,
+        item: &SearchableItem,
+    ) -> Result<(), sqlx::Error> {
         let x = self
             .client
             .index("items")
             .add_documents(&[item], Some("item_id"))
-            .await
-            .unwrap();
+            .await.unwrap();
 
-        SearchTask::new(db, x.task_uid, x.status.into())
-            .await
-            .unwrap();
+        SearchTask::new(db, x.task_uid, x.status.into()).await?;
 
         Ok(())
     }
 
-    pub async fn index_all_items(&self, db: &Database) -> Result<(), ()> {
-        let items = Item::get_all(db).await.unwrap();
+    pub async fn index_all_items(&self, db: &Database) -> Result<(), sqlx::Error> {
+        let items = Item::get_all(db).await?;
 
         // batch by 10 (artificial TODO: implement sql paging)
         let batches = items.chunks(10);
@@ -155,12 +156,10 @@ impl Search {
                 .client
                 .index("items")
                 .add_documents(&searchable_items, Some("item_id"))
-                .await
-                .unwrap();
+                .await.unwrap();
 
             SearchTask::new(db, task.task_uid, task.status.into())
-                .await
-                .unwrap();
+                .await?;
         }
 
         Ok(())

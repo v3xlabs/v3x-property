@@ -35,6 +35,7 @@ pub mod search;
 pub mod sessions;
 pub mod tags;
 pub mod users;
+pub mod error;
 
 #[derive(Tags)]
 enum ApiTags {

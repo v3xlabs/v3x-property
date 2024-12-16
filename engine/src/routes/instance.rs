@@ -3,7 +3,7 @@ use std::sync::Arc;
 use poem::{web::Data, Result};
 use poem_openapi::{payload::Json, OpenApi};
 
-use super::ApiTags;
+use super::{error::HttpError, ApiTags};
 use crate::{
     auth::{
         middleware::AuthUser,
@@ -44,7 +44,9 @@ impl InstanceApi {
         user.check_policy("instance", "settings", Action::Write)
             .await?;
 
-        InstanceSettings::update_instance_settings(&state.database, &settings).await;
+        InstanceSettings::update_instance_settings(&state.database, &settings)
+            .await;
+
         Ok(())
     }
 

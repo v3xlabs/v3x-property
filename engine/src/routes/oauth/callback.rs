@@ -15,6 +15,7 @@ use super::super::ApiTags;
 use crate::{
     auth::hash::hash_session,
     models::{sessions::Session, user::userentry::UserEntry},
+    routes::error::HttpError,
     state::AppState,
 };
 
@@ -69,7 +70,7 @@ impl CallbackApi {
         // Now we must verify the user information, decide wether they deserve access, and if so return a token.
         let user = UserEntry::upsert(&oauth_userinfo, None, &app_state.database)
             .await
-            .unwrap();
+            .map_err(HttpError::from)?;
 
         let user_agent = headers.get("user-agent").unwrap().to_str().unwrap();
         let user_ip = ip.0.unwrap();
@@ -85,7 +86,7 @@ impl CallbackApi {
             &user_ip.into(),
         )
         .await
-        .unwrap();
+        .map_err(HttpError::from)?;
 
         info!("Issued session token for user {}", user.user_id);
 

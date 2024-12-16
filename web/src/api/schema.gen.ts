@@ -1177,6 +1177,7 @@ export type paths = {
         /**
          * /tags
          * @description Create a new tag
+         *     Multiple tags with the same name can exist
          */
         post: {
             parameters: {
@@ -1312,24 +1313,6 @@ export type paths = {
                     content: {
                         "application/json; charset=utf-8": components["schemas"]["User"];
                     };
-                };
-                401: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content?: never;
-                };
-                403: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content?: never;
-                };
-                500: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content?: never;
                 };
             };
         };

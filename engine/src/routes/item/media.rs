@@ -9,6 +9,7 @@ use poem_openapi::OpenApi;
 use crate::auth::middleware::AuthUser;
 use crate::auth::permissions::Action;
 use crate::models::item::media::ItemMedia;
+use crate::routes::error::HttpError;
 use crate::routes::ApiTags;
 use crate::state::AppState;
 
@@ -29,10 +30,11 @@ impl ItemMediaApi {
         user.check_policy("item", item_id.0.to_string().as_str(), Action::Read)
             .await?;
 
-        let media = ItemMedia::get_by_item_id(&state.database, &item_id.0)
+        ItemMedia::get_by_item_id(&state.database, &item_id.0)
             .await
-            .unwrap();
-
-        Ok(Json(media.iter().map(|m| m.media_id).collect()))
+            .map_err(HttpError::from)
+            .map(|media| media.iter().map(|m| m.media_id).collect())
+            .map(Json)
+            .map_err(poem::Error::from)
     }
 }
