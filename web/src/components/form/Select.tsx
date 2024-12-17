@@ -80,7 +80,7 @@ export const FieldSelect = ({
         count,
         getScrollElement: () => parentReference.current,
         estimateSize: () => 35,
-        overscan: 50,
+        overscan: 5,
         paddingStart: 4,
         paddingEnd: 4,
         enabled: open && count > 0,
