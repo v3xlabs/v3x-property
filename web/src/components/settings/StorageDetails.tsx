@@ -20,7 +20,7 @@ export const StorageDetails = () => {
             <div className="card flex flex-col justify-between md:flex-row gap-4">
                 <div className="w-full space-y-2">
                     <h2 className="font-bold">S3-Compatible Object Storage</h2>
-                    <p>Somethin gosmethin</p>
+                    <p>Your media is stored in S3-compatible object storage.</p>
                     <ul className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         {(
                             [
