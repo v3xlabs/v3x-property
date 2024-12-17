@@ -56,15 +56,13 @@ jobs:
         run: |
           if [[ ${{ github.ref }} =~ ^refs/tags/v[0-9]+\.[0-9]+\.[0-9]+.*$ ]]; then
             echo "Release tag detected, using tag version: ${{ github.ref }}"
-            # remove version from Cargo.toml
-            sed -i '/version =/d' engine/Cargo.toml
-            echo "version = \"${{ github.ref }}\"" > engine/Cargo.toml
+            # update the version in Cargo.toml
+            sed -i "s/^version = .*/version = \"${{ github.ref }}\"/" engine/Cargo.toml
           else
             echo "No release tag detected, using version from Cargo.toml: ${{ github.ref }}"
             version=$(grep -oP '(?<=version = ")[^"]+' engine/Cargo.toml)
-            # remove version from Cargo.toml
-            sed -i '/version =/d' engine/Cargo.toml
-            echo "version = \"${version}-alpha\"" > engine/Cargo.toml
+            # update the version in Cargo.toml
+            sed -i "s/^version = .*/version = \"${version}-alpha\"/" engine/Cargo.toml
           fi
 
       # 🔨 Build our static binary
