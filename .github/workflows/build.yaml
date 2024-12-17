@@ -61,7 +61,7 @@ jobs:
           else
             echo "No release tag detected, using version from Cargo.toml"
             # parse version from Cargo.toml using regex
-            version=$(grep -oP 'version = "([^"]+)"' engine/Cargo.toml | sed 's/^version = "\(.*\)"$/\1/')
+            version=$(grep -oP 'version = "([^"]+?)"' engine/Cargo.toml | sed 's/^version = "\(.*\)"$/\1/')
             echo "Current version: $version"
             sed -i "s/^version = .*/version = \"${version}-alpha\"/" engine/Cargo.toml
           fi
