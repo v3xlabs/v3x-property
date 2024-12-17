@@ -3,6 +3,8 @@ import clsx from 'clsx';
 import { ReactNode, useEffect, useMemo, useRef, useState } from 'react';
 import { useId } from 'react';
 import { FaArrowsUpDown } from 'react-icons/fa6';
+import { FiChevronRight } from 'react-icons/fi';
+import { match } from 'ts-pattern';
 
 import { Button } from '../ui/Button';
 import * as Command from '../ui/Command';
@@ -15,6 +17,8 @@ export type FieldOption = {
     label: string | ReactNode;
     value: string;
     icon?: (_properties: { selected: boolean }) => ReactNode;
+    group?: boolean;
+    back?: boolean;
 };
 
 export const FieldSelect = ({
@@ -26,13 +30,15 @@ export const FieldSelect = ({
     errorMessage,
     emptyMessage,
     placeholder,
+    onSearch,
     justifyBetween = false,
     suffix,
     searchFn,
     popoverWidth = '200px',
 }: {
     value: string;
-    onChange?: (_value: string) => void;
+    onChange?: (_value: string) => boolean;
+    onSearch?: (_search: string) => void;
     label?: string;
     options: FieldOption[];
 
@@ -82,6 +88,7 @@ export const FieldSelect = ({
 
     useEffect(() => {
         rowVirtualizer.scrollToOffset(0);
+        onSearch?.(search);
     }, [search]);
 
     useEffect(() => {
@@ -116,7 +123,7 @@ export const FieldSelect = ({
                                 ? options.find(
                                       (option) => option.value === value
                                   )?.label
-                                : placeholder || 'Select an option...'}
+                                : 'Select an option...'}
                             <FaArrowsUpDown className="opacity-50" />
                         </Button>
                     </Popover.Trigger>
@@ -152,59 +159,100 @@ export const FieldSelect = ({
                                     >
                                         {rowVirtualizer
                                             .getVirtualItems()
-                                            .map((virtualRow) => (
-                                                <Command.Item
-                                                    key={
-                                                        filteredOptions[
-                                                            virtualRow.index
-                                                        ].value
-                                                    }
-                                                    value={
-                                                        filteredOptions[
-                                                            virtualRow.index
-                                                        ].value
-                                                    }
-                                                    onSelect={(
-                                                        currentValue
-                                                    ) => {
-                                                        onChange?.(
-                                                            currentValue ===
-                                                                value
-                                                                ? ''
-                                                                : currentValue
-                                                        );
-                                                        setOpen(false);
-                                                    }}
-                                                    className={clsx(
-                                                        'absolute top-0 left-0 w-full',
-                                                        justifyBetween &&
-                                                            'flex justify-between items-center'
-                                                    )}
-                                                    style={{
-                                                        height: `${virtualRow.size}px`,
-                                                        transform: `translateY(${virtualRow.start}px)`,
-                                                    }}
-                                                >
-                                                    {
-                                                        filteredOptions[
-                                                            virtualRow.index
-                                                        ].label
-                                                    }
-                                                    {filteredOptions[
+                                            .map((virtualRow) => {
+                                                const option =
+                                                    filteredOptions[
                                                         virtualRow.index
-                                                    ].icon &&
-                                                        filteredOptions[
-                                                            virtualRow.index
-                                                        ].icon?.({
-                                                            selected:
-                                                                value ===
-                                                                filteredOptions[
-                                                                    virtualRow
-                                                                        .index
-                                                                ].value,
-                                                        })}
-                                                </Command.Item>
-                                            ))}
+                                                    ];
+
+                                                return (
+                                                    <Command.Item
+                                                        key={option.value}
+                                                        value={option.value}
+                                                        onSelect={(
+                                                            currentValue
+                                                        ) => {
+                                                            const result =
+                                                                onChange?.(
+                                                                    currentValue ===
+                                                                        value
+                                                                        ? ''
+                                                                        : currentValue
+                                                                );
+
+                                                            if (result) {
+                                                                setOpen(false);
+                                                            }
+                                                        }}
+                                                        className={clsx(
+                                                            'absolute top-0 left-0 w-full',
+                                                            justifyBetween &&
+                                                                !option.back &&
+                                                                'flex justify-between items-center'
+                                                        )}
+                                                        style={{
+                                                            height: `${virtualRow.size}px`,
+                                                            transform: `translateY(${virtualRow.start}px)`,
+                                                        }}
+                                                    >
+                                                        {match(option)
+                                                            .with(
+                                                                { group: true },
+                                                                () => (
+                                                                    <>
+                                                                        <div className="flex items-center gap-2">
+                                                                            {option.icon &&
+                                                                                option.icon?.(
+                                                                                    {
+                                                                                        selected:
+                                                                                            value ===
+                                                                                            option.value,
+                                                                                    }
+                                                                                )}
+                                                                            {
+                                                                                option.label
+                                                                            }
+                                                                        </div>
+                                                                        <FiChevronRight />
+                                                                    </>
+                                                                )
+                                                            )
+                                                            .with(
+                                                                { back: true },
+                                                                () => (
+                                                                    <>
+                                                                        {option.icon &&
+                                                                            option.icon?.(
+                                                                                {
+                                                                                    selected:
+                                                                                        value ===
+                                                                                        option.value,
+                                                                                }
+                                                                            )}
+                                                                        {
+                                                                            option.label
+                                                                        }
+                                                                    </>
+                                                                )
+                                                            )
+                                                            .otherwise(() => (
+                                                                <>
+                                                                    {
+                                                                        option.label
+                                                                    }
+                                                                    {option.icon &&
+                                                                        option.icon?.(
+                                                                            {
+                                                                                selected:
+                                                                                    value ===
+                                                                                    option.value,
+                                                                            }
+                                                                        )}
+                                                                </>
+                                                            ))}
+                                                    </Command.Item>
+                                                );
+                                            })}
                                     </div>
                                 </div>
                             </Command.List>
