@@ -193,7 +193,7 @@ jobs:
   # 🐳 Final job: Merge multi-arch digests into a single artifact
   docker-merge:
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/master'
+    if: github.ref == 'refs/heads/master' || startsWith(github.ref, 'refs/tags/v')
     permissions:
       contents: read
       packages: write
