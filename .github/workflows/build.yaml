@@ -49,6 +49,24 @@ jobs:
       - name: Install cross
         run: cargo install cross
 
+      # Update version number in engine/Cargo.toml
+      # If tag is a release use that
+      # Otherwise use the version number in the engine/Cargo.toml and append it with -alpha
+      - name: Update version number
+        run: |
+          if [[ ${{ github.ref }} =~ ^refs/tags/v[0-9]+\.[0-9]+\.[0-9]+.*$ ]]; then
+            echo "Release tag detected, using tag version: ${{ github.ref }}"
+            # remove version from Cargo.toml
+            sed -i '/version =/d' engine/Cargo.toml
+            echo "version = \"${{ github.ref }}\"" > engine/Cargo.toml
+          else
+            echo "No release tag detected, using version from Cargo.toml: ${{ github.ref }}"
+            version=$(grep -oP '(?<=version = ")[^"]+' engine/Cargo.toml)
+            # remove version from Cargo.toml
+            sed -i '/version =/d' engine/Cargo.toml
+            echo "version = \"${version}-alpha\"" > engine/Cargo.toml
+          fi
+
       # 🔨 Build our static binary
       - name: Build Rust binary
         working-directory: ./engine
