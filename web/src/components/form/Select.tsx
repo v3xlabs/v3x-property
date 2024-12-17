@@ -1,8 +1,8 @@
-import { ReactNode, useState } from 'react';
+import { useVirtualizer } from '@tanstack/react-virtual';
+import clsx from 'clsx';
+import { ReactNode, useEffect, useMemo, useRef, useState } from 'react';
 import { useId } from 'react';
-import { FaArrowsUpDown, FaCheck } from 'react-icons/fa6';
-
-import { cn } from '@/util/style';
+import { FaArrowsUpDown } from 'react-icons/fa6';
 
 import { Button } from '../ui/Button';
 import * as Command from '../ui/Command';
@@ -26,6 +26,9 @@ export const FieldSelect = ({
     errorMessage,
     emptyMessage,
     placeholder,
+    justifyBetween = false,
+    suffix,
+    searchFn,
 }: {
     value: string;
     onChange?: (_value: string) => void;
@@ -36,93 +39,180 @@ export const FieldSelect = ({
     errorMessage?: string;
     emptyMessage?: string;
     placeholder?: string;
+    justifyBetween?: boolean;
+    suffix?: ReactNode;
+
+    searchFn?: (_search: string) => FieldOption[];
 }) => {
     const [open, setOpen] = useState(false);
     const id = useId();
 
+    // The scrollable element for your list
+    const parentReference = useRef<HTMLDivElement>(null);
+
+    const [search, setSearch] = useState('');
+    const [nonce, setNonce] = useState(0);
+
+    const filteredOptions = useMemo(() => {
+        console.log('nonce', nonce);
+
+        if (search == '') return options;
+
+        if (searchFn) {
+            return searchFn(search);
+        }
+
+        return options.filter((option) =>
+            option.value.toLowerCase().includes(search.toLowerCase())
+        );
+    }, [options, search, nonce]);
+
+    const count = filteredOptions.length;
+    // The virtualizer
+    const rowVirtualizer = useVirtualizer({
+        count,
+        getScrollElement: () => parentReference.current,
+        estimateSize: () => 35,
+        overscan: 50,
+        paddingStart: 4,
+        paddingEnd: 4,
+        enabled: open && count > 0,
+    });
+
+    useEffect(() => {
+        rowVirtualizer.scrollToOffset(0);
+    }, [search]);
+
+    useEffect(() => {
+        if (open) {
+            const z = setTimeout(() => {
+                setNonce(nonce + 1);
+            }, 100);
+
+            return () => clearTimeout(z);
+        }
+    }, [open]);
+
     return (
-        <>
+        <div className="space-y-2 w-full">
             {label && <Label htmlFor={id}>{label}</Label>}
-            {/* <div
-                className={cx(
-                    'flex items-stretch justify-start gap-2',
-                    width === 'full' && 'w-full'
+            <div
+                className={clsx(
+                    'flex items-stretch justify-start gap-2'
+                    // width === 'full' && 'w-full'
                 )}
             >
-                <div className={width === 'full' ? 'grow' : ''}>
-                    <Input
-                        type={type || 'text'}
-                        id={id}
-                        className={cx(className, width === 'full' && 'w-full')}
-                        onChange={(event) => onChange?.(event.target.value)}
-                        {...rest}
-                    />
-                </div>
-            </div> */}
-            <Popover.Root open={open} onOpenChange={setOpen}>
-                <Popover.Trigger asChild>
-                    <Button
-                        variant="default"
-                        type="button"
-                        role="combobox"
-                        aria-expanded={open}
-                        className="w-[200px] justify-between"
-                    >
-                        {value
-                            ? options.find((option) => option.value === value)
-                                  ?.label
-                            : placeholder || 'Select an option...'}
-                        <FaArrowsUpDown className="opacity-50" />
-                    </Button>
-                </Popover.Trigger>
-                <Popover.Content className="w-[200px] p-0">
-                    <Command.Root>
-                        <Command.Input placeholder={placeholder} />
-                        <Command.List>
-                            <Command.Empty>
-                                {emptyMessage || 'No options found.'}
-                            </Command.Empty>
-                            <Command.Group>
-                                {options.map((option) => (
-                                    <Command.Item
-                                        key={option.value}
-                                        value={option.value}
-                                        onSelect={(currentValue) => {
-                                            onChange?.(
-                                                currentValue === value
-                                                    ? ''
-                                                    : currentValue
-                                            );
-                                            setOpen(false);
+                <Popover.Root open={open} onOpenChange={setOpen}>
+                    <Popover.Trigger asChild>
+                        <Button
+                            variant="default"
+                            type="button"
+                            role="combobox"
+                            aria-expanded={open}
+                            className="w-[200px] justify-between"
+                        >
+                            {value
+                                ? options.find(
+                                      (option) => option.value === value
+                                  )?.label
+                                : placeholder || 'Select an option...'}
+                            <FaArrowsUpDown className="opacity-50" />
+                        </Button>
+                    </Popover.Trigger>
+                    <Popover.Content className="w-[200px] p-0">
+                        <Command.Root shouldFilter={false}>
+                            <Command.Input
+                                placeholder={placeholder}
+                                onValueChange={(value) => {
+                                    const search = value.trim().toLowerCase();
+
+                                    setSearch(search);
+                                }}
+                            />
+                            <Command.List>
+                                {rowVirtualizer.getVirtualItems().length ===
+                                    0 && (
+                                    <Command.Empty>
+                                        {emptyMessage || 'No options found.'}
+                                    </Command.Empty>
+                                )}
+                                <div
+                                    ref={parentReference}
+                                    className="max-h-[200px] overflow-y-auto w-full"
+                                >
+                                    <div
+                                        className="w-full relative"
+                                        style={{
+                                            height: `${rowVirtualizer.getTotalSize()}px`,
                                         }}
                                     >
-                                        {option.label}
-                                        {option.icon ? (
-                                            option.icon({
-                                                selected:
-                                                    value === option.value,
-                                            })
-                                        ) : (
-                                            <FaCheck
-                                                className={cn(
-                                                    'ml-auto',
-                                                    value === option.value
-                                                        ? 'opacity-100'
-                                                        : 'opacity-0'
-                                                )}
-                                            />
-                                        )}
-                                    </Command.Item>
-                                ))}
-                            </Command.Group>
-                        </Command.List>
-                    </Command.Root>
-                </Popover.Content>
-            </Popover.Root>
+                                        {rowVirtualizer
+                                            .getVirtualItems()
+                                            .map((virtualRow) => (
+                                                <Command.Item
+                                                    key={
+                                                        filteredOptions[
+                                                            virtualRow.index
+                                                        ].value
+                                                    }
+                                                    value={
+                                                        filteredOptions[
+                                                            virtualRow.index
+                                                        ].value
+                                                    }
+                                                    onSelect={(
+                                                        currentValue
+                                                    ) => {
+                                                        onChange?.(
+                                                            currentValue ===
+                                                                value
+                                                                ? ''
+                                                                : currentValue
+                                                        );
+                                                        setOpen(false);
+                                                    }}
+                                                    className={clsx(
+                                                        'absolute top-0 left-0 w-full',
+                                                        justifyBetween &&
+                                                            'flex justify-between items-center'
+                                                    )}
+                                                    style={{
+                                                        height: `${virtualRow.size}px`,
+                                                        transform: `translateY(${virtualRow.start}px)`,
+                                                    }}
+                                                >
+                                                    {
+                                                        filteredOptions[
+                                                            virtualRow.index
+                                                        ].label
+                                                    }
+                                                    {filteredOptions[
+                                                        virtualRow.index
+                                                    ].icon &&
+                                                        filteredOptions[
+                                                            virtualRow.index
+                                                        ].icon?.({
+                                                            selected:
+                                                                value ===
+                                                                filteredOptions[
+                                                                    virtualRow
+                                                                        .index
+                                                                ].value,
+                                                        })}
+                                                </Command.Item>
+                                            ))}
+                                    </div>
+                                </div>
+                            </Command.List>
+                        </Command.Root>
+                    </Popover.Content>
+                </Popover.Root>
+                {suffix}
+            </div>
             {errorMessage && <p className="text-red-500">{errorMessage}</p>}
             {description && (
                 <p className="text-sm text-neutral-500">{description}</p>
             )}
-        </>
+        </div>
     );
 };

@@ -14,6 +14,7 @@ import {
 import { DynamicIcon } from '@/components/DynamicIcon';
 import { FieldSelect } from '@/components/form/Select';
 import { BaseInput } from '@/components/input/BaseInput';
+import { IconInput } from '@/components/input/IconInput';
 import { Button } from '@/components/ui/Button';
 import * as Dialog from '@/components/ui/Dialog';
 import { SCPage } from '@/layouts/SimpleCenterPage';
@@ -186,7 +187,7 @@ const FieldDefinitionEditor = ({
             <form.Field
                 name="icon"
                 validators={{
-                    onBlur: ({ value }) => {
+                    onChange: ({ value }) => {
                         setPreviewIcon(value);
 
                         // eslint-disable-next-line unicorn/no-useless-undefined
@@ -195,18 +196,9 @@ const FieldDefinitionEditor = ({
                 }}
             >
                 {(field) => (
-                    <BaseInput
-                        label="Icon"
-                        name="icon"
-                        value={field.state.value}
+                    <IconInput
+                        value={field.state.value || ''}
                         onChange={field.handleChange}
-                        onBlur={field.handleBlur}
-                        suffix={
-                            <DynamicIcon
-                                icon={previewIcon ?? ''}
-                                className="size-6 aspect-square my-auto"
-                            />
-                        }
                         errorMessage={field.state.meta.errors.join(', ')}
                     />
                 )}
@@ -242,7 +234,10 @@ const RouteComponent = () => {
         <SCPage title="Field Definitions">
             <div className="card">
                 {data.map((field) => (
-                    <div className="flex gap-2 items-center hover:bg-gray-50 p-2 rounded-md">
+                    <div
+                        className="flex gap-2 items-center hover:bg-gray-50 p-2 rounded-md"
+                        key={field.definition_id}
+                    >
                         {field.icon && (
                             <DynamicIcon
                                 icon={field.icon}

@@ -36,6 +36,19 @@ export const DynamicIcon = ({
                     {...properties}
                 />
             ))
+            // if it starts with feather:
+            .with(P.string.startsWith('feather:'), (icon) => (
+                <SvgMask
+                    src={`https://cdn.jsdelivr.net/gh/feathericons/feather@4.29.2/icons/${icon.replace(
+                        'feather:feather/',
+                        ''
+                    )}.svg`}
+                    {...properties}
+                />
+            ))
+            .with(P.string.startsWith('https://'), (icon) => (
+                <SvgMask src={icon} {...properties} />
+            ))
             .otherwise(() => <div>{icon}</div>)
     );
 };
