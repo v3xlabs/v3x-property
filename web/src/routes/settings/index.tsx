@@ -12,6 +12,7 @@ import { SearchTaskTable } from '@/components/search_tasks/SearchTaskTable';
 import { BuildDetails } from '@/components/settings/BuildDetails';
 import { InstanceSettings } from '@/components/settings/InstanceSettings';
 import { Button } from '@/components/ui/Button';
+import { Tooltip } from '@/components/ui/Tooltip';
 import { UserApiKeysTable } from '@/components/user_api_keys/UserApiKeysTable';
 import { UserProfile } from '@/components/UserProfile';
 import { SCPage } from '@/layouts/SimpleCenterPage';
@@ -70,6 +71,26 @@ export const Route = createFileRoute('/settings/')({
                                     <div className="font-bold flex items-center gap-2">
                                         <SiGooglegemini />
                                         Gemini
+                                        <Tooltip>
+                                            <div className="space-y-2 pt-2">
+                                                <div className="flex items-center gap-2">
+                                                    <SiGooglegemini />
+                                                    <span>Gemini</span>
+                                                </div>
+                                                <p>
+                                                    Gemini is a large language
+                                                    model.
+                                                </p>
+                                                <p className="text-sm text-neutral-500">
+                                                    You can enable gemini by
+                                                    setting the{' '}
+                                                    <code className="code">
+                                                        GEMINI_API_KEY
+                                                    </code>{' '}
+                                                    via environment variables.
+                                                </p>
+                                            </div>
+                                        </Tooltip>
                                     </div>
                                 </div>
                             )}
@@ -78,6 +99,26 @@ export const Route = createFileRoute('/settings/')({
                                     <div className="font-bold flex items-center gap-2">
                                         <SiOllama />
                                         Ollama
+                                        <Tooltip>
+                                            <div className="space-y-2 pt-2">
+                                                <div className="flex items-center gap-2">
+                                                    <SiOllama />
+                                                    <span>Ollama</span>
+                                                </div>
+                                                <p>
+                                                    Ollama is a large language
+                                                    model.
+                                                </p>
+                                                <p className="text-sm text-neutral-500 font-normal">
+                                                    You can enable ollama by
+                                                    setting the{' '}
+                                                    <code className="code">
+                                                        OLLAMA_API_KEY
+                                                    </code>{' '}
+                                                    via environment variables.
+                                                </p>
+                                            </div>
+                                        </Tooltip>
                                     </div>
                                 </div>
                             )}

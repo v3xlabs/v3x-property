@@ -1,9 +1,25 @@
 import * as TooltipPrimitive from '@radix-ui/react-tooltip';
+import { FC, PropsWithChildren, ReactNode } from 'react';
+import { FiInfo } from 'react-icons/fi';
 
-export const Tooltip = TooltipPrimitive.Provider;
-export const TooltipRoot = TooltipPrimitive.Root;
-
-export const TooltipTrigger = TooltipPrimitive.Trigger;
-export const TooltipPortal = TooltipPrimitive.Portal;
-export const TooltipContent = TooltipPrimitive.Content;
-export const TooltipArrow = TooltipPrimitive.Arrow;
+export const Tooltip: FC<PropsWithChildren<{ trigger?: ReactNode }>> = ({
+    trigger,
+    children,
+}) => {
+    return (
+        <TooltipPrimitive.TooltipProvider>
+            <TooltipPrimitive.Tooltip>
+                <TooltipPrimitive.TooltipTrigger>
+                    {trigger || <FiInfo />}
+                </TooltipPrimitive.TooltipTrigger>
+                <TooltipPrimitive.TooltipContent
+                    className="TooltipContent border drop-shadow-sm max-w-sm"
+                    sideOffset={5}
+                >
+                    {children}
+                    <TooltipPrimitive.TooltipArrow className="TooltipArrow" />
+                </TooltipPrimitive.TooltipContent>
+            </TooltipPrimitive.Tooltip>
+        </TooltipPrimitive.TooltipProvider>
+    );
+};

@@ -11,6 +11,7 @@ import { useHasPolicy } from '@/api/policy';
 import { BaseInput } from '../input/BaseInput';
 import { Button } from '../ui/Button';
 import * as Dropdown from '../ui/Dropdown';
+import { Label } from '../ui/Label';
 
 export const InstanceSettings = () => {
     const { data: instanceSettings } = useSuspenseQuery(getInstanceSettings());
@@ -47,7 +48,7 @@ export const InstanceSettings = () => {
                 }}
                 className="space-y-4"
             >
-                <h2>Instance Settings</h2>
+                <h2 className="font-bold">Instance Settings</h2>
                 {/* <pre className="bg-black/5 p-4 rounded-lg text-wrap">
                     {JSON.stringify(instanceSettings.modules, undefined, 2)}
                 </pre> */}
@@ -56,43 +57,57 @@ export const InstanceSettings = () => {
                         name="id_casing_preference"
                         children={(field) => {
                             return (
-                                <>
-                                    <Dropdown.Root>
-                                        <Dropdown.Trigger asChild>
-                                            <Button variant="default">
-                                                {field.state.value}
-                                            </Button>
-                                        </Dropdown.Trigger>
-                                        <Dropdown.Content className="w-56">
-                                            <Dropdown.Label>
-                                                ID Casing Preference
-                                            </Dropdown.Label>
-                                            <Dropdown.Separator />
-                                            <Dropdown.RadioGroup
-                                                value={field.state.value}
-                                                onValueChange={(value) =>
-                                                    field.handleChange(
-                                                        value as
-                                                            | 'upper'
-                                                            | 'lower'
-                                                    )
-                                                }
-                                            >
-                                                {['upper', 'lower'].map(
-                                                    (value) => {
-                                                        return (
-                                                            <Dropdown.RadioItem
-                                                                value={value}
-                                                            >
-                                                                {value}
-                                                            </Dropdown.RadioItem>
-                                                        );
+                                <div className="space-y-2">
+                                    <Label htmlFor="id_casing_preference">
+                                        ID Casing Preference
+                                    </Label>
+                                    <div>
+                                        <Dropdown.Root>
+                                            <Dropdown.Trigger asChild>
+                                                <Button variant="default">
+                                                    {field.state.value}
+                                                </Button>
+                                            </Dropdown.Trigger>
+                                            <Dropdown.Content className="w-56">
+                                                <Dropdown.Label>
+                                                    ID Casing Preference
+                                                </Dropdown.Label>
+                                                <Dropdown.Separator />
+                                                <Dropdown.RadioGroup
+                                                    value={field.state.value}
+                                                    onValueChange={(value) =>
+                                                        field.handleChange(
+                                                            value as
+                                                                | 'upper'
+                                                                | 'lower'
+                                                        )
                                                     }
-                                                )}
-                                            </Dropdown.RadioGroup>
-                                        </Dropdown.Content>
-                                    </Dropdown.Root>
-                                </>
+                                                >
+                                                    {['upper', 'lower'].map(
+                                                        (value) => {
+                                                            return (
+                                                                <Dropdown.RadioItem
+                                                                    value={
+                                                                        value
+                                                                    }
+                                                                >
+                                                                    {value}
+                                                                </Dropdown.RadioItem>
+                                                            );
+                                                        }
+                                                    )}
+                                                </Dropdown.RadioGroup>
+                                            </Dropdown.Content>
+                                        </Dropdown.Root>
+                                    </div>
+                                    <p className="text-sm text-neutral-500">
+                                        This setting controls the
+                                        capitalization-correction for items in
+                                        your database. With "Upper" selected,
+                                        the item ID "ab123" will be corrected to
+                                        "AB123".
+                                    </p>
+                                </div>
                             );
                         }}
                     />
