@@ -210,7 +210,7 @@ export const Navbar = () => {
                                     </button>
                                 </DropdownMenu.Trigger>
 
-                                <DropdownMenu.Content>
+                                <DropdownMenu.Content align="end">
                                     <DropdownMenu.Item asChild>
                                         <Link to="/sessions">Sessions</Link>
                                     </DropdownMenu.Item>
