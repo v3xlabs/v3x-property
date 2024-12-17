@@ -130,6 +130,9 @@ export const FieldSelect = ({
                     <Popover.Content
                         className="p-0"
                         style={{ width: popoverWidth }}
+                        onWheel={(event) => {
+                            event.stopPropagation();
+                        }}
                     >
                         <Command.Root shouldFilter={false}>
                             <Command.Input
