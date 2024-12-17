@@ -108,7 +108,7 @@ const DropdownMenuContent = forwardRef<
                 'min-w-[8rem] p-1',
 
                 // Visual & Borders
-                'overflow-hidden rounded-md border shadow-md',
+                'overflow-hidden rounded-md border',
 
                 // Colors & Background
                 'bg-popover text-popover-foreground',

@@ -133,7 +133,9 @@ export const Navbar = () => {
                     <DropdownMenu.Root>
                         <DropdownMenu.Trigger asChild>
                             <button
-                                className="flex flex-col md:flex-row md:gap-1 items-center justify-center hover:bg-black/5"
+                                className={
+                                    'flex flex-col md:flex-row md:gap-1 items-center justify-center hover:bg-black/5 aria-expanded:bg-black/5'
+                                }
                                 data-testid="more-dropdown-trigger"
                             >
                                 <FiMoreHorizontal className="block md:hidden" />
@@ -143,29 +145,29 @@ export const Navbar = () => {
                                 <FiChevronDown className="hidden md:block" />
                             </button>
                         </DropdownMenu.Trigger>
-                        <DropdownMenu.Content sideOffset={5}>
+                        <DropdownMenu.Content>
                             {navLinks2.map(({ path, name, icon, slug }) => (
                                 <DropdownMenu.Item asChild key={path}>
                                     <Link
                                         to={path}
                                         data-testid={slug}
-                                        className="flex items-center justify-start py-2 hover:bg-black/5 rounded-md"
+                                        className="flex items-center justify-start py-2.5 cursor-pointer hover:bg-black/5 rounded-md"
                                     >
                                         {icon}
-                                        <span className="text-xs">{name}</span>
+                                        <span className="text-sm">{name}</span>
                                     </Link>
                                 </DropdownMenu.Item>
                             ))}
-                            <DropdownMenu.Separator />
+                            <DropdownMenu.Separator className="md:hidden" />
                             {meData ? (
                                 <DropdownMenu.Item asChild>
                                     <Button
                                         onClick={() => clearAuthToken()}
-                                        className="flex items-center justify-center py-2 hover:bg-black/5"
+                                        className="flex items-center justify-start py-2 hover:bg-black/5 w-full md:hidden"
                                         variant="ghost"
                                     >
                                         <FiLogOut />
-                                        <span className="text-xs">Logout</span>
+                                        <span className="text-sm">Logout</span>
                                     </Button>
                                 </DropdownMenu.Item>
                             ) : (
@@ -176,7 +178,7 @@ export const Navbar = () => {
                                             className="flex items-center justify-center py-2 hover:bg-black/5"
                                         >
                                             <FiLogIn />
-                                            <span className="text-xs">
+                                            <span className="text-sm">
                                                 Login
                                             </span>
                                         </Link>
@@ -208,7 +210,7 @@ export const Navbar = () => {
                                     </button>
                                 </DropdownMenu.Trigger>
 
-                                <DropdownMenu.Content sideOffset={5}>
+                                <DropdownMenu.Content>
                                     <DropdownMenu.Item asChild>
                                         <Link to="/sessions">Sessions</Link>
                                     </DropdownMenu.Item>
