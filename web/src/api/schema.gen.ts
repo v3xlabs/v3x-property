@@ -1695,6 +1695,82 @@ export type paths = {
         patch?: never;
         trace?: never;
     };
+    "/instance/statistics/storage": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * /instance/storage
+         * @description Get the instance storage statistics
+         */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json; charset=utf-8": components["schemas"]["StorageStatistics"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/instance/version": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * /instance/version
+         * @description Get the instance version & potentially available updates
+         */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json; charset=utf-8": components["schemas"]["VersionSettings"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/login": {
         parameters: {
             query?: never;
@@ -2069,6 +2145,12 @@ export type components = {
             /** Format: date-time */
             updated_at?: string;
         };
+        StorageStatistics: {
+            /** Format: uint64 */
+            bucket_file_count: number;
+            /** Format: uint64 */
+            bucket_disk_size: number;
+        };
         Tag: {
             /** Format: int32 */
             tag_id: number;
@@ -2099,6 +2181,11 @@ export type components = {
             name: string;
             token: string;
             permissions: string;
+        };
+        VersionSettings: {
+            version: string;
+            latest: string;
+            update_available: boolean;
         };
     };
     responses: never;

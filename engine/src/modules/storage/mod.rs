@@ -2,6 +2,7 @@ use s3::creds::Credentials;
 use s3::Bucket;
 use s3::Region;
 use std::env;
+use tracing::info;
 use uuid::Uuid;
 
 pub struct Storage {
@@ -75,5 +76,26 @@ impl Storage {
         // }
 
         Ok(())
+    }
+
+    // Gets the total bucket size in bytes and the total number of files in the bucket
+    pub async fn stat_bucket(&self) -> Result<(u64, u64), anyhow::Error> {
+        let bucket_size = self.bucket.list("".to_string(), None).await?;
+
+        let mut total_files = 0;
+        let mut total_size = 0;
+
+        for object in bucket_size {
+            // let size = object.size;
+            // let file_count += 1;
+            for content in object.contents {
+                let size = content.size;
+
+                total_size += size;
+            }
+            total_files += 1;
+        }
+
+        Ok((total_files, total_size))
     }
 }

@@ -5,11 +5,12 @@ use poem_openapi::{payload::Json, OpenApi};
 
 use super::{error::HttpError, ApiTags};
 use crate::{
-    auth::{
-        middleware::AuthUser,
-        permissions::Action,
+    auth::{middleware::AuthUser, permissions::Action},
+    models::settings::{
+        statistics::{InstanceStatistics, StorageStatistics},
+        version::VersionSettings,
+        InstanceSettings, InstanceSettingsConfigurable,
     },
-    models::settings::{statistics::InstanceStatistics, InstanceSettings, InstanceSettingsConfigurable},
     state::AppState,
 };
 pub struct InstanceApi;
@@ -44,17 +45,43 @@ impl InstanceApi {
         user.check_policy("instance", "settings", Action::Write)
             .await?;
 
-        InstanceSettings::update_instance_settings(&state.database, &settings)
-            .await;
+        InstanceSettings::update_instance_settings(&state.database, &settings).await;
 
         Ok(())
     }
 
     /// /instance/statistics
-    /// 
+    ///
     /// Get the instance statistics
-    #[oai(path = "/instance/statistics", method = "get", tag = "ApiTags::Instance")]
-    pub async fn statistics(&self, state: Data<&Arc<AppState>>) -> Result<Json<InstanceStatistics>> {
+    #[oai(
+        path = "/instance/statistics",
+        method = "get",
+        tag = "ApiTags::Instance"
+    )]
+    pub async fn statistics(
+        &self,
+        state: Data<&Arc<AppState>>,
+    ) -> Result<Json<InstanceStatistics>> {
         Ok(Json(InstanceStatistics::load(&state).await))
+    }
+
+    /// /instance/storage
+    ///
+    /// Get the instance storage statistics
+    #[oai(
+        path = "/instance/statistics/storage",
+        method = "get",
+        tag = "ApiTags::Instance"
+    )]
+    pub async fn storage(&self, state: Data<&Arc<AppState>>) -> Result<Json<StorageStatistics>> {
+        Ok(Json(StorageStatistics::load(&state).await))
+    }
+
+    /// /instance/version
+    ///
+    /// Get the instance version & potentially available updates
+    #[oai(path = "/instance/version", method = "get", tag = "ApiTags::Instance")]
+    pub async fn version(&self) -> Result<Json<VersionSettings>> {
+        Ok(Json(VersionSettings::load().await?))
     }
 }

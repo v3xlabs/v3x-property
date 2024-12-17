@@ -41,6 +41,7 @@ export const InstanceSettings = () => {
 
     return (
         <fieldset disabled={!canEditSettings}>
+            <h2 className="h2">Instance Settings</h2>
             <form
                 onSubmit={(event) => {
                     event.preventDefault();
@@ -48,16 +49,15 @@ export const InstanceSettings = () => {
                 }}
                 className="space-y-4"
             >
-                <h2 className="font-bold">Instance Settings</h2>
                 {/* <pre className="bg-black/5 p-4 rounded-lg text-wrap">
                     {JSON.stringify(instanceSettings.modules, undefined, 2)}
                 </pre> */}
-                <div>
+                <div className="space-y-4 md:grid md:grid-cols-2 md:gap-4 md:space-y-0">
                     <Field
                         name="id_casing_preference"
                         children={(field) => {
                             return (
-                                <div className="space-y-2">
+                                <div className="space-y-2 card">
                                     <Label htmlFor="id_casing_preference">
                                         ID Casing Preference
                                     </Label>
@@ -111,38 +111,42 @@ export const InstanceSettings = () => {
                             );
                         }}
                     />
-                </div>
-                <Field
-                    name="last_item_id"
-                    children={(field) => {
-                        return (
-                            <BaseInput
-                                id="last_item_id"
-                                label="Last Item ID"
-                                value={field.state.value}
-                                type="number"
-                                onChange={(value) =>
-                                    field.handleChange(Number(value))
-                                }
-                                errorMessage={field.state.meta.errors.join(
-                                    ', '
-                                )}
-                                description="The last item ID is used to generate new item identifiers, this field is automatically updated when you create a new item."
-                            />
-                        );
-                    }}
-                />
-                {canEditSettings && (
-                    <Subscribe>
-                        {({ isValid }) => {
+                    <Field
+                        name="last_item_id"
+                        children={(field) => {
                             return (
-                                <Button type="submit" disabled={!isValid}>
-                                    Save
-                                </Button>
+                                <div className="card">
+                                    <BaseInput
+                                        id="last_item_id"
+                                        label="Last Item ID"
+                                        value={field.state.value}
+                                        type="number"
+                                        onChange={(value) =>
+                                            field.handleChange(Number(value))
+                                        }
+                                        errorMessage={field.state.meta.errors.join(
+                                            ', '
+                                        )}
+                                        description="The last item ID is used to generate new item identifiers, this field is automatically updated when you create a new item."
+                                    />
+                                </div>
                             );
                         }}
-                    </Subscribe>
-                )}
+                    />
+                </div>
+                <div className="flex justify-end">
+                    {canEditSettings && (
+                        <Subscribe>
+                            {({ isValid }) => {
+                                return (
+                                    <Button type="submit" disabled={!isValid}>
+                                        Save
+                                    </Button>
+                                );
+                            }}
+                        </Subscribe>
+                    )}
+                </div>
             </form>
         </fieldset>
     );

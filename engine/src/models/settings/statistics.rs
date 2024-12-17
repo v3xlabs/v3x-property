@@ -34,3 +34,23 @@ impl InstanceStatistics {
         }
     }
 }
+
+#[derive(Serialize, Deserialize, Object)]
+pub struct StorageStatistics {
+    pub bucket_file_count: u64,
+    pub bucket_disk_size: u64,
+}
+
+impl StorageStatistics {
+    pub async fn load(state: &Arc<AppState>) -> Self {
+        // query s3 to get total bucket size in bytes and store in bucket_disk_size
+        // also list total files in bucket and store in bucket_file_count
+        // state.storage.stat
+        let storage = state.storage.stat_bucket().await.unwrap();
+
+        StorageStatistics {
+            bucket_file_count: storage.0,
+            bucket_disk_size: storage.1,
+        }
+    }
+}

@@ -1,6 +1,6 @@
 [package]
 name = "v3x-property-engine"
-version = "0.0.1"
+version = "0.0.3"
 edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
@@ -80,6 +80,7 @@ rand = "0.8.5"
 async-stream = "0.3.6"
 futures-core = "0.3.31"
 async-trait = "0.1.83"
+semver = { version = "1.0.24", features = ["serde"] }
 
 [dependencies.uuid]
 version = "1.10.0"

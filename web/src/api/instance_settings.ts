@@ -80,3 +80,29 @@ export const useInstanceStatistics = () => {
         },
     });
 };
+
+export const useInstanceStorageStatistics = () => {
+    return useQuery({
+        queryKey: ['instance_storage_statistics'],
+        queryFn: async () => {
+            const response = await apiRequest(
+                '/instance/statistics/storage',
+                'get',
+                {}
+            );
+
+            return response.data;
+        },
+    });
+};
+
+export const useInstanceVersion = () => {
+    return useQuery({
+        queryKey: ['instance_version'],
+        queryFn: async () => {
+            const response = await apiRequest('/instance/version', 'get', {});
+
+            return response.data;
+        },
+    });
+};

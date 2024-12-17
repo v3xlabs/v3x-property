@@ -1106,7 +1106,7 @@ checksum = "8b6fa54101dfbd88efc3981859e92c3d47c729ff54d5df73ec36505c337e5c5e"
 dependencies = [
  "chrono",
  "derive_more 1.0.0",
- "semver 1.0.23",
+ "semver 1.0.24",
  "serde",
 ]
 
@@ -1206,7 +1206,7 @@ checksum = "2d886547e41f740c616ae73108f6eb70afe6d940c7bc697cb30f13daec073037"
 dependencies = [
  "camino",
  "cargo-platform",
- "semver 1.0.23",
+ "semver 1.0.24",
  "serde",
  "serde_json",
  "thiserror 1.0.69",
@@ -4367,7 +4367,7 @@ version = "0.4.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "bfa0f585226d2e68097d4f95d113b15b83a82e819ab25717ec0590d9584ef366"
 dependencies = [
- "semver 1.0.23",
+ "semver 1.0.24",
 ]
 
 [[package]]
@@ -4660,9 +4660,9 @@ dependencies = [
 
 [[package]]
 name = "semver"
-version = "1.0.23"
+version = "1.0.24"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "61697e0a1c7e512e84a621326239844a24d8207b4669b41bc18b32ea5cbf988b"
+checksum = "3cb6eb87a131f756572d7fb904f6e7b68633f09cca868c5df1c4b8d1a694bbba"
 dependencies = [
  "serde",
 ]
@@ -6028,7 +6028,7 @@ dependencies = [
 
 [[package]]
 name = "v3x-property-engine"
-version = "0.0.1"
+version = "0.0.3"
 dependencies = [
  "anyhow",
  "async-h1",
@@ -6061,6 +6061,7 @@ dependencies = [
  "rust-s3",
  "rustls 0.23.19",
  "scraper",
+ "semver 1.0.24",
  "serde",
  "serde_json",
  "serde_repr",
