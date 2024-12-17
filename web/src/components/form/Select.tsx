@@ -95,7 +95,7 @@ export const FieldSelect = ({
         if (open) {
             const z = setTimeout(() => {
                 setNonce(nonce + 1);
-            }, 100);
+            }, 10);
 
             return () => clearTimeout(z);
         }
