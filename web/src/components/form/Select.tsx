@@ -29,6 +29,7 @@ export const FieldSelect = ({
     justifyBetween = false,
     suffix,
     searchFn,
+    popoverWidth = '200px',
 }: {
     value: string;
     onChange?: (_value: string) => void;
@@ -41,7 +42,7 @@ export const FieldSelect = ({
     placeholder?: string;
     justifyBetween?: boolean;
     suffix?: ReactNode;
-
+    popoverWidth?: string;
     searchFn?: (_search: string) => FieldOption[];
 }) => {
     const [open, setOpen] = useState(false);
@@ -109,7 +110,7 @@ export const FieldSelect = ({
                             type="button"
                             role="combobox"
                             aria-expanded={open}
-                            className="w-[200px] justify-between"
+                            className="justify-between"
                         >
                             {value
                                 ? options.find(
@@ -119,7 +120,10 @@ export const FieldSelect = ({
                             <FaArrowsUpDown className="opacity-50" />
                         </Button>
                     </Popover.Trigger>
-                    <Popover.Content className="w-[200px] p-0">
+                    <Popover.Content
+                        className="p-0"
+                        style={{ width: popoverWidth }}
+                    >
                         <Command.Root shouldFilter={false}>
                             <Command.Input
                                 placeholder={placeholder}

@@ -66,6 +66,7 @@ export const IconInput = ({
                     className="size-6 aspect-square my-auto"
                 />
             }
+            popoverWidth="420"
             errorMessage={errorMessage}
             options={iconDataOptions}
             searchFn={(search) => {
