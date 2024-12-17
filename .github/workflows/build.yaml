@@ -54,16 +54,15 @@ jobs:
       # Otherwise use the version number in the engine/Cargo.toml and append it with -alpha
       - name: Update version number
         run: |
-          if [[ ${{ github.ref }} =~ ^refs/tags/v[0-9]+\.[0-9]+\.[0-9]+.*$ ]]; then
-            # Extract version number from tag (remove refs/tags/v prefix)
+          if [[ "${{ github.ref }}" =~ ^refs/tags/v[0-9]+\.[0-9]+\.[0-9]+.*$ ]]; then
             VERSION=${GITHUB_REF#refs/tags/v}
             echo "Release tag detected, using version: $VERSION"
-            # update the version in Cargo.toml
             sed -i "s/^version = .*/version = \"${VERSION}\"/" engine/Cargo.toml
           else
             echo "No release tag detected, using version from Cargo.toml"
-            version=$(grep -oP '(?<=version = ")[^"]+' engine/Cargo.toml)
-            # update the version in Cargo.toml
+            # parse version from Cargo.toml using regex
+            version=$(grep -oP 'version = "([^"]+)"' engine/Cargo.toml | sed 's/^version = "\(.*\)"$/\1/')
+            echo "Current version: $version"
             sed -i "s/^version = .*/version = \"${version}-alpha\"/" engine/Cargo.toml
           fi
 
