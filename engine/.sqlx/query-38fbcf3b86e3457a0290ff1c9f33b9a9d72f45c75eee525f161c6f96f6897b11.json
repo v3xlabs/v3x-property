@@ -1,0 +1,14 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "UPDATE items SET updated_at = NOW() WHERE item_id = $1",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Text"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "38fbcf3b86e3457a0290ff1c9f33b9a9d72f45c75eee525f161c6f96f6897b11"
+}

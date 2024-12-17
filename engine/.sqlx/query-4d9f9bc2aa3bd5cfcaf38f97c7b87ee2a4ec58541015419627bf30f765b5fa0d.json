@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "SELECT * FROM items WHERE owner_id = $1",
+  "query": "SELECT * FROM items WHERE owner_id = $1 ORDER BY updated_at DESC",
   "describe": {
     "columns": [
       {
@@ -54,5 +54,5 @@
       true
     ]
   },
-  "hash": "eba69551c9c6402d4a0155e949eac92be3d4c65b2ace7bdae79d23485b1b0c4f"
+  "hash": "4d9f9bc2aa3bd5cfcaf38f97c7b87ee2a4ec58541015419627bf30f765b5fa0d"
 }
