@@ -92,8 +92,8 @@ impl Storage {
                 let size = content.size;
 
                 total_size += size;
+                total_files += 1;
             }
-            total_files += 1;
         }
 
         Ok((total_files, total_size))
