@@ -3,8 +3,12 @@
 use std::sync::Arc;
 
 use brother_ql_rs::printer::ThermalPrinter;
-use poem::{get, handler, listener::TcpListener, middleware::Cors, EndpointExt as _, Route, Server};
-use poem_openapi::{payload::Html, OpenApi, OpenApiService};
+use poem::{
+    get, handler, listener::TcpListener, middleware::Cors, EndpointExt as _, Route, Server,
+};
+use poem_openapi::{payload::Html, Object, OpenApi, OpenApiService};
+use reqwest::Client;
+use serde::{Deserialize, Serialize};
 use state::AppState;
 use tracing::info;
 
@@ -12,6 +16,12 @@ use crate::{
     label::Label,
     template::{LabelPrintable, LabelTemplate},
 };
+
+#[derive(Debug, Serialize, Deserialize)]
+pub struct OperatorHeartbeatPayload {
+    pub operator_id: String,
+    pub operator_endpoint: String,
+}
 
 pub mod label;
 pub mod state;
@@ -27,8 +37,10 @@ async fn main() {
 
     info!("Starting v3x-property local-operator");
 
+    let token = std::env::var("PAT_TOKEN").unwrap();
+
     let api_service =
-        OpenApiService::new(get_api(), "Hello World", "1.0").server("http://localhost:3000/api");
+        OpenApiService::new(get_api(), "Hello World", "1.0").server("http://localhost:3001/api");
 
     let spec = api_service.spec_endpoint();
 
@@ -45,8 +57,28 @@ async fn main() {
 
     let listener = TcpListener::bind("0.0.0.0:3001");
 
-    Server::new(listener).run(app).await.unwrap();
+    let _ = futures::future::join(
+        async {
+            // send an http request
+            let client = Client::new();
 
+            let body = OperatorHeartbeatPayload {
+                operator_id: "local-printer".to_string(),
+                operator_endpoint: "http://localhost:3001".to_string(),
+            };
+
+            let response = client
+                .post("http://localhost:3000/api/operators")
+                .json(&body)
+                .header("Authorization", format!("Bearer {}", token))
+                .send()
+                .await
+                .unwrap();
+            info!("Response: {:?}", response);
+        },
+        Server::new(listener).run(app),
+    )
+    .await;
     // println!("Hello, world!");
 
     // let label = Label::new(1);
@@ -72,7 +104,6 @@ async fn main() {
     // println!("Printer: {:?}", printer.current_label().unwrap());
     // println!("Printer: {:?}", printer.get_status().unwrap());
 }
-
 
 #[handler]
 async fn get_openapi_docs() -> Html<&'static str> {
