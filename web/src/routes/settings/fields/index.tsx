@@ -604,7 +604,7 @@ const RouteComponent = () => {
                     />
                 </Dialog.Content>
             </Dialog.Root>
-        </SCPage>
+        </SidePage>
     );
 };
 
