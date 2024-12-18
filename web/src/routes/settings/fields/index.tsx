@@ -428,6 +428,9 @@ const RouteComponent = () => {
             columnHelper.accessor('definition_id', {
                 header: 'Definition ID',
             }),
+            columnHelper.accessor('name', {
+                header: 'Name',
+            }),
         ],
         data,
         getCoreRowModel: getCoreRowModel(),
@@ -493,6 +496,7 @@ const RouteComponent = () => {
                                             })
                                                 .with({ type: 'icon' }, () => (
                                                     <IconInput
+                                                        label={''}
                                                         value={
                                                             cell.getValue()[
                                                                 'icon'
@@ -508,7 +512,7 @@ const RouteComponent = () => {
                                                     />
                                                 ))
                                                 .with(
-                                                    { type: 'definition_id' },
+                                                    { type: 'name' },
                                                     ({ type }) => (
                                                         // <form.Field
                                                         //     name="definition_id"
@@ -524,7 +528,7 @@ const RouteComponent = () => {
                                                         // >
                                                         //     {(field) => (
                                                         <BaseInput
-                                                            name="definition_id"
+                                                            name="name"
                                                             value={
                                                                 cell.getValue()
                                                                 // field.state.value
