@@ -7,7 +7,26 @@ edition = "2021"
 
 [dependencies]
 anyhow = "1.0.82"
+async-std = { version = "1.13.0", features = ["attributes", "tokio1"] }
 brother-ql-rs = "0.2.1"
+dotenvy = "0.15.7"
 image = "0.25.1"
 printpdf = { version = "0.7.0", features = ["image"] }
 qrcode = "0.14.0"
+tracing = "0.1.41"
+thiserror = "2.0.3"
+tracing-subscriber = "0.3.19"
+poem = { version = "3.0.4", git = "https://github.com/poem-web/poem", branch = "master", features = [
+    "rustls",
+    "sse",
+] }
+poem-openapi = { version = "5", git = "https://github.com/poem-web/poem", branch = "master", features = [
+    "chrono",
+    "uuid",
+    "sqlx",
+    "url",
+    "email",
+    "email_address",
+    "redoc",
+    "static-files",
+] }
