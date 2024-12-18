@@ -112,7 +112,7 @@ export const Navbar = () => {
                 v3x.property
             </Link>
             <div className="flex w-full md:w-fit overflow-x-auto h-full">
-                <ul className="grid grid-cols-5 w-full h-full md:gap-2">
+                <ul className="grid grid-cols-5 w-full h-full md:gap-2 md:flex">
                     {navLinks.map(({ path, name, icon, slug }) => (
                         <li
                             key={path}
@@ -121,7 +121,7 @@ export const Navbar = () => {
                             <Link
                                 to={path}
                                 data-testid={slug}
-                                className="flex cursor-pointer md:gap-1 h-full md:[&.active]:bg-black/10 flex-col md:flex-row items-center justify-center hover:bg-black/5 md:px-1"
+                                className="flex cursor-pointer md:px-2 md:gap-1 h-full md:[&.active]:bg-black/10 flex-col md:flex-row items-center justify-center hover:bg-black/5"
                             >
                                 {icon}
                                 <span className="text-xs md:text-base">
@@ -134,7 +134,7 @@ export const Navbar = () => {
                         <DropdownMenu.Trigger asChild>
                             <button
                                 className={
-                                    'flex flex-col md:flex-row md:gap-1 items-center justify-center hover:bg-black/5 aria-expanded:bg-black/5'
+                                    'flex flex-col md:flex-row md:px-2 md:gap-1 items-center justify-center hover:bg-black/5 aria-expanded:bg-black/5'
                                 }
                                 data-testid="more-dropdown-trigger"
                             >
