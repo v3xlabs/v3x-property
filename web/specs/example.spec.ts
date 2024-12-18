@@ -29,6 +29,10 @@ test.describe.serial('item flows', () => {
 
         await page.waitForTimeout(500);
 
+        const itemId = await page
+            .getByTestId('new-item-id-input')
+            .textContent();
+
         const newItemIdInput = await page
             .getByTestId('new-item-id-input')
             .inputValue();
@@ -46,8 +50,11 @@ test.describe.serial('item flows', () => {
 
         await page.getByRole('button', { name: 'Save' }).click();
 
+        // wait till navigated to /item/:itemId
+        await page.waitForURL(WEB_URL + '/item/' + itemId);
+
         h1 = await page.locator('h1');
-        await expect(h1).toHaveText(DEFAULT_ITEM_NAME);
+        await expect(h1).toHaveText(DEFAULT_ITEM_NAME, { timeout: 5000 });
     });
 
     test('search item', async () => {

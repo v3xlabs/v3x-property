@@ -20,6 +20,7 @@ import {
     useDeleteItem,
     useEditItem,
 } from '@/api/item';
+import { DynamicIcon } from '@/components/DynamicIcon';
 import { BaseInput } from '@/components/input/BaseInput';
 import { ItemIntelligentSuggest } from '@/components/item/ItemIntelligentSuggest';
 import { EditMediaGallery } from '@/components/media/EditMediaGallery';
@@ -35,7 +36,6 @@ import {
     ItemUpdatePayload,
 } from '@/util/item';
 import { queryClient } from '@/util/query';
-import { DynamicIcon } from '@/components/DynamicIcon';
 
 const EMPTY_VALUE = '$$EMPTY$$';
 
@@ -194,7 +194,14 @@ export const Route = createFileRoute('/item/$itemId/edit')({
         const { itemId } = useParams({ from: '/item/$itemId/edit' });
         const { data: item } = useSuspenseQuery(getItemById(itemId));
         const { data: media } = useSuspenseQuery(getItemMedia(itemId));
-        const { mutateAsync: editItem } = useEditItem();
+        const { mutateAsync: editItem } = useEditItem({
+            onSuccess: async (data, variables, context) => {
+                navigate({
+                    to: '/item/$itemId',
+                    params: { itemId },
+                });
+            },
+        });
         const { data: itemFields } = useSuspenseQuery(getItemFields(itemId));
         const { data: instanceSettings } = useSuspenseQuery(
             getInstanceSettings()
@@ -267,13 +274,9 @@ export const Route = createFileRoute('/item/$itemId/edit')({
                         data: diff,
                     },
                     {
-                        onSuccess: async (data, variables, context) => {
+                        onSuccess: () => {
                             toast.success('Item saved', {
                                 id: toastId,
-                            });
-                            navigate({
-                                to: '/item/$itemId',
-                                params: { itemId },
                             });
                         },
                         onError(error, variables, context) {

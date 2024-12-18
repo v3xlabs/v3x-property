@@ -33,12 +33,12 @@ export const SettingsNav = () => {
                         'Instance',
                         [
                             ['/settings/search', 'Search', <LuSearch />],
+                            ['/settings/storage', 'Storage', <LuHardDrive />],
                             [
                                 '/settings/intelligence',
                                 'Intelligence',
                                 <LuBrain />,
                             ],
-                            ['/settings/storage', 'Storage', <LuHardDrive />],
                         ],
                     ],
                     [

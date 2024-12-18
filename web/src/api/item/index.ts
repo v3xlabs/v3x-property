@@ -150,8 +150,18 @@ export const useDeleteItem = (
 };
 
 // Edit item
-export const useEditItem = () => {
+export const useEditItem = (
+    properties: UseMutationOptions<
+        boolean,
+        Error,
+        {
+            item_id: string;
+            data: paths['/item/{item_id}']['patch']['requestBody']['content']['application/json; charset=utf-8'];
+        }
+    >
+) => {
     return useMutation({
+        ...properties,
         mutationFn: async ({
             item_id,
             data,
