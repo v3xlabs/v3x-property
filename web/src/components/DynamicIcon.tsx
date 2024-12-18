@@ -47,7 +47,7 @@ export const DynamicIcon = ({
                 />
             ))
             .with(P.string.startsWith('https://'), (icon) => (
-                <SvgMask src={icon} {...properties} />
+                <img src={icon} {...properties} alt={icon} />
             ))
             .otherwise(() => <div>{icon}</div>)
     );

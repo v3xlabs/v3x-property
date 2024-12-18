@@ -57,7 +57,7 @@ export const FieldSelect = ({
     // The scrollable element for your list
     const parentReference = useRef<HTMLDivElement>(null);
 
-    const [search, setSearch] = useState('');
+    const [search, setSearch] = useState(value);
     const [nonce, setNonce] = useState(0);
 
     const filteredOptions = useMemo(() => {
@@ -137,6 +137,7 @@ export const FieldSelect = ({
                         <Command.Root shouldFilter={false}>
                             <Command.Input
                                 placeholder={placeholder}
+                                value={search}
                                 onValueChange={(value) => {
                                     const search = value.trim().toLowerCase();
 

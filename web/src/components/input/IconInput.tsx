@@ -1,5 +1,5 @@
 import Fuse from 'fuse.js';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { FaFontAwesome } from 'react-icons/fa6';
 import { FiCornerLeftUp, FiFeather } from 'react-icons/fi';
 
@@ -22,7 +22,7 @@ export const IconInput = ({
     onChange: (_value: string) => void;
     errorMessage?: string;
 }) => {
-    const [search, setSearch] = useState<string>('');
+    const [search, setSearch] = useState<string>(value);
     const [category, setCategory] = useState<string | null>();
 
     // TODO: add {enabled: false} to the Fa and Feather icons to prevent queries from loading until icon interacted
@@ -96,6 +96,10 @@ export const IconInput = ({
         },
     ];
 
+    useEffect(() => {
+        setSearch(value);
+    }, [value]);
+
     return (
         <FieldSelect
             label="Icon"
@@ -140,10 +144,20 @@ export const IconInput = ({
             searchFn={(search) => {
                 const x = fuse.search(search);
 
-                return x
+                const r = x
                     .sort((a, b) => (a.score || 0) - (b.score || 0))
                     .filter((result) => result.score ?? 0 > 0.5)
                     .map((result) => result.item);
+
+                // If less then 5 results show custom option
+                if (r.length < 5) {
+                    r.push({
+                        label: 'Custom Icon: "' + search + '"',
+                        value: search,
+                    });
+                }
+
+                return r;
             }}
         />
     );
