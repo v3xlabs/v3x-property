@@ -11,7 +11,6 @@
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root'
-import { Route as SessionsImport } from './routes/sessions'
 import { Route as DebugImport } from './routes/debug'
 import { Route as CreateImport } from './routes/create'
 import { Route as AboutImport } from './routes/about'
@@ -23,17 +22,17 @@ import { Route as ProductsIndexImport } from './routes/products/index'
 import { Route as LogsIndexImport } from './routes/logs/index'
 import { Route as ItemsIndexImport } from './routes/items/index'
 import { Route as UserUserIdImport } from './routes/user/$userId'
+import { Route as SettingsStorageImport } from './routes/settings/storage'
+import { Route as SettingsSessionsImport } from './routes/settings/sessions'
+import { Route as SettingsSearchImport } from './routes/settings/search'
+import { Route as SettingsPatImport } from './routes/settings/pat'
+import { Route as SettingsIntelligenceImport } from './routes/settings/intelligence'
+import { Route as SettingsBuildImport } from './routes/settings/build'
 import { Route as SettingsFieldsIndexImport } from './routes/settings/fields/index'
 import { Route as ItemItemIdIndexImport } from './routes/item/$itemId/index'
 import { Route as ItemItemIdEditImport } from './routes/item/$itemId/edit'
 
 // Create/Update Routes
-
-const SessionsRoute = SessionsImport.update({
-  id: '/sessions',
-  path: '/sessions',
-  getParentRoute: () => rootRoute,
-} as any)
 
 const DebugRoute = DebugImport.update({
   id: '/debug',
@@ -101,6 +100,42 @@ const UserUserIdRoute = UserUserIdImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
+const SettingsStorageRoute = SettingsStorageImport.update({
+  id: '/settings/storage',
+  path: '/settings/storage',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const SettingsSessionsRoute = SettingsSessionsImport.update({
+  id: '/settings/sessions',
+  path: '/settings/sessions',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const SettingsSearchRoute = SettingsSearchImport.update({
+  id: '/settings/search',
+  path: '/settings/search',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const SettingsPatRoute = SettingsPatImport.update({
+  id: '/settings/pat',
+  path: '/settings/pat',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const SettingsIntelligenceRoute = SettingsIntelligenceImport.update({
+  id: '/settings/intelligence',
+  path: '/settings/intelligence',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const SettingsBuildRoute = SettingsBuildImport.update({
+  id: '/settings/build',
+  path: '/settings/build',
+  getParentRoute: () => rootRoute,
+} as any)
+
 const SettingsFieldsIndexRoute = SettingsFieldsIndexImport.update({
   id: '/settings/fields/',
   path: '/settings/fields/',
@@ -158,11 +193,46 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DebugImport
       parentRoute: typeof rootRoute
     }
-    '/sessions': {
-      id: '/sessions'
-      path: '/sessions'
-      fullPath: '/sessions'
-      preLoaderRoute: typeof SessionsImport
+    '/settings/build': {
+      id: '/settings/build'
+      path: '/settings/build'
+      fullPath: '/settings/build'
+      preLoaderRoute: typeof SettingsBuildImport
+      parentRoute: typeof rootRoute
+    }
+    '/settings/intelligence': {
+      id: '/settings/intelligence'
+      path: '/settings/intelligence'
+      fullPath: '/settings/intelligence'
+      preLoaderRoute: typeof SettingsIntelligenceImport
+      parentRoute: typeof rootRoute
+    }
+    '/settings/pat': {
+      id: '/settings/pat'
+      path: '/settings/pat'
+      fullPath: '/settings/pat'
+      preLoaderRoute: typeof SettingsPatImport
+      parentRoute: typeof rootRoute
+    }
+    '/settings/search': {
+      id: '/settings/search'
+      path: '/settings/search'
+      fullPath: '/settings/search'
+      preLoaderRoute: typeof SettingsSearchImport
+      parentRoute: typeof rootRoute
+    }
+    '/settings/sessions': {
+      id: '/settings/sessions'
+      path: '/settings/sessions'
+      fullPath: '/settings/sessions'
+      preLoaderRoute: typeof SettingsSessionsImport
+      parentRoute: typeof rootRoute
+    }
+    '/settings/storage': {
+      id: '/settings/storage'
+      path: '/settings/storage'
+      fullPath: '/settings/storage'
+      preLoaderRoute: typeof SettingsStorageImport
       parentRoute: typeof rootRoute
     }
     '/user/$userId': {
@@ -239,7 +309,12 @@ export interface FileRoutesByFullPath {
   '/about': typeof AboutRoute
   '/create': typeof CreateRoute
   '/debug': typeof DebugRoute
-  '/sessions': typeof SessionsRoute
+  '/settings/build': typeof SettingsBuildRoute
+  '/settings/intelligence': typeof SettingsIntelligenceRoute
+  '/settings/pat': typeof SettingsPatRoute
+  '/settings/search': typeof SettingsSearchRoute
+  '/settings/sessions': typeof SettingsSessionsRoute
+  '/settings/storage': typeof SettingsStorageRoute
   '/user/$userId': typeof UserUserIdRoute
   '/items': typeof ItemsIndexRoute
   '/logs': typeof LogsIndexRoute
@@ -257,7 +332,12 @@ export interface FileRoutesByTo {
   '/about': typeof AboutRoute
   '/create': typeof CreateRoute
   '/debug': typeof DebugRoute
-  '/sessions': typeof SessionsRoute
+  '/settings/build': typeof SettingsBuildRoute
+  '/settings/intelligence': typeof SettingsIntelligenceRoute
+  '/settings/pat': typeof SettingsPatRoute
+  '/settings/search': typeof SettingsSearchRoute
+  '/settings/sessions': typeof SettingsSessionsRoute
+  '/settings/storage': typeof SettingsStorageRoute
   '/user/$userId': typeof UserUserIdRoute
   '/items': typeof ItemsIndexRoute
   '/logs': typeof LogsIndexRoute
@@ -276,7 +356,12 @@ export interface FileRoutesById {
   '/about': typeof AboutRoute
   '/create': typeof CreateRoute
   '/debug': typeof DebugRoute
-  '/sessions': typeof SessionsRoute
+  '/settings/build': typeof SettingsBuildRoute
+  '/settings/intelligence': typeof SettingsIntelligenceRoute
+  '/settings/pat': typeof SettingsPatRoute
+  '/settings/search': typeof SettingsSearchRoute
+  '/settings/sessions': typeof SettingsSessionsRoute
+  '/settings/storage': typeof SettingsStorageRoute
   '/user/$userId': typeof UserUserIdRoute
   '/items/': typeof ItemsIndexRoute
   '/logs/': typeof LogsIndexRoute
@@ -296,7 +381,12 @@ export interface FileRouteTypes {
     | '/about'
     | '/create'
     | '/debug'
-    | '/sessions'
+    | '/settings/build'
+    | '/settings/intelligence'
+    | '/settings/pat'
+    | '/settings/search'
+    | '/settings/sessions'
+    | '/settings/storage'
     | '/user/$userId'
     | '/items'
     | '/logs'
@@ -313,7 +403,12 @@ export interface FileRouteTypes {
     | '/about'
     | '/create'
     | '/debug'
-    | '/sessions'
+    | '/settings/build'
+    | '/settings/intelligence'
+    | '/settings/pat'
+    | '/settings/search'
+    | '/settings/sessions'
+    | '/settings/storage'
     | '/user/$userId'
     | '/items'
     | '/logs'
@@ -330,7 +425,12 @@ export interface FileRouteTypes {
     | '/about'
     | '/create'
     | '/debug'
-    | '/sessions'
+    | '/settings/build'
+    | '/settings/intelligence'
+    | '/settings/pat'
+    | '/settings/search'
+    | '/settings/sessions'
+    | '/settings/storage'
     | '/user/$userId'
     | '/items/'
     | '/logs/'
@@ -349,7 +449,12 @@ export interface RootRouteChildren {
   AboutRoute: typeof AboutRoute
   CreateRoute: typeof CreateRoute
   DebugRoute: typeof DebugRoute
-  SessionsRoute: typeof SessionsRoute
+  SettingsBuildRoute: typeof SettingsBuildRoute
+  SettingsIntelligenceRoute: typeof SettingsIntelligenceRoute
+  SettingsPatRoute: typeof SettingsPatRoute
+  SettingsSearchRoute: typeof SettingsSearchRoute
+  SettingsSessionsRoute: typeof SettingsSessionsRoute
+  SettingsStorageRoute: typeof SettingsStorageRoute
   UserUserIdRoute: typeof UserUserIdRoute
   ItemsIndexRoute: typeof ItemsIndexRoute
   LogsIndexRoute: typeof LogsIndexRoute
@@ -367,7 +472,12 @@ const rootRouteChildren: RootRouteChildren = {
   AboutRoute: AboutRoute,
   CreateRoute: CreateRoute,
   DebugRoute: DebugRoute,
-  SessionsRoute: SessionsRoute,
+  SettingsBuildRoute: SettingsBuildRoute,
+  SettingsIntelligenceRoute: SettingsIntelligenceRoute,
+  SettingsPatRoute: SettingsPatRoute,
+  SettingsSearchRoute: SettingsSearchRoute,
+  SettingsSessionsRoute: SettingsSessionsRoute,
+  SettingsStorageRoute: SettingsStorageRoute,
   UserUserIdRoute: UserUserIdRoute,
   ItemsIndexRoute: ItemsIndexRoute,
   LogsIndexRoute: LogsIndexRoute,
@@ -394,7 +504,12 @@ export const routeTree = rootRoute
         "/about",
         "/create",
         "/debug",
-        "/sessions",
+        "/settings/build",
+        "/settings/intelligence",
+        "/settings/pat",
+        "/settings/search",
+        "/settings/sessions",
+        "/settings/storage",
         "/user/$userId",
         "/items/",
         "/logs/",
@@ -421,8 +536,23 @@ export const routeTree = rootRoute
     "/debug": {
       "filePath": "debug.tsx"
     },
-    "/sessions": {
-      "filePath": "sessions.tsx"
+    "/settings/build": {
+      "filePath": "settings/build.tsx"
+    },
+    "/settings/intelligence": {
+      "filePath": "settings/intelligence.tsx"
+    },
+    "/settings/pat": {
+      "filePath": "settings/pat.tsx"
+    },
+    "/settings/search": {
+      "filePath": "settings/search.tsx"
+    },
+    "/settings/sessions": {
+      "filePath": "settings/sessions.tsx"
+    },
+    "/settings/storage": {
+      "filePath": "settings/storage.tsx"
     },
     "/user/$userId": {
       "filePath": "user/$userId.tsx"

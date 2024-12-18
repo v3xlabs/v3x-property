@@ -8,12 +8,13 @@ import { SearchTaskTable } from '@/components/search_tasks/SearchTaskTable';
 import { BuildDetails } from '@/components/settings/BuildDetails';
 import { InstanceSettings } from '@/components/settings/InstanceSettings';
 import { IntelligenceDetails } from '@/components/settings/IntelligenceDetails';
+import { SettingsNav } from '@/components/settings/nav';
 import { SearchDetails } from '@/components/settings/SearchDetails';
 import { StorageDetails } from '@/components/settings/StorageDetails';
 import { Button } from '@/components/ui/Button';
 import { UserApiKeysTable } from '@/components/user_api_keys/UserApiKeysTable';
 import { UserProfile } from '@/components/UserProfile';
-import { SCPage } from '@/layouts/SimpleCenterPage';
+import { SidePage } from '@/layouts/SidebarPage';
 import { queryClient } from '@/util/query';
 
 export const Route = createFileRoute('/settings/')({
@@ -28,7 +29,7 @@ export const Route = createFileRoute('/settings/')({
         const { data: meData } = useMe();
 
         return (
-            <SCPage title="Settings">
+            <SidePage title="Settings" sidebar={<SettingsNav />}>
                 {meData && (
                     <div className="card flex justify-between items-center">
                         <UserProfile user_id={meData.user_id} />
@@ -41,17 +42,7 @@ export const Route = createFileRoute('/settings/')({
                     </div>
                 )}
                 <InstanceSettings />
-                <SearchDetails />
-                <IntelligenceDetails />
-                <StorageDetails />
-                <BuildDetails />
-                <div className="card">
-                    <SearchTaskTable />
-                </div>
-                <div className="card">
-                    <UserApiKeysTable />
-                </div>
-            </SCPage>
+            </SidePage>
         );
     },
 });

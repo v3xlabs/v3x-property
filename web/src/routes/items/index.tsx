@@ -29,7 +29,7 @@ export const ItemsOverviewPage = () => {
     return (
         <SCPage
             title="Items"
-            width="2xl"
+            width="5xl"
             suffix={
                 <div className="flex justify-end items-center gap-2">
                     <Button variant="default" size="icon" asChild>

@@ -33,7 +33,7 @@ export const SearchPage = () => {
     return (
         <SCPage
             title="Search"
-            width="2xl"
+            width="3xl"
             suffix={
                 <div className="flex justify-end items-center gap-2">
                     <Button variant="default" size="icon" asChild>

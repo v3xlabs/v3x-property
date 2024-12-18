@@ -55,8 +55,7 @@ export const IntelligenceDetails = () => {
     }
 
     return (
-        <div className="space-y-2">
-            <h2 className="h2">Intelligence</h2>
+        <>
             <div className="card space-y-3">
                 <div className="flex items-center gap-2">
                     <FaBrain />
@@ -129,6 +128,6 @@ export const IntelligenceDetails = () => {
                     </div>
                 </>
             )}
-        </div>
+        </>
     );
 };
