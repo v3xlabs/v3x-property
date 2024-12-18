@@ -24,14 +24,16 @@ impl PolicyApi {
         /// Example: "item" | "product" | "media" | "user"
         resource_type: Query<String>,
         /// Example: "1234" | "AB123"
-        resource_id: Query<String>,
+        resource_id: Query<Option<String>>,
     ) -> Result<Json<Vec<Action>>> {
+        let resource_id = resource_id.as_ref().map(|id| id.as_str());
+
         Ok(Json(
             User::enumerate_permissions(
                 &state.database,
                 user,
                 &resource_type.0,
-                &Some(resource_id.0.to_string().as_str()),
+                resource_id,
             )
             .await,
         ))

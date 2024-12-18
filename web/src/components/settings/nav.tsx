@@ -2,12 +2,14 @@ import { Link } from '@tanstack/react-router';
 import clsx from 'clsx';
 import {
     LuBrain,
+    LuClipboardType,
     LuClock,
     LuHardDrive,
     LuKey,
     LuScroll,
     LuSearch,
     LuSettings,
+    LuTag,
 } from 'react-icons/lu';
 
 export const SettingsNav = () => {
@@ -17,7 +19,18 @@ export const SettingsNav = () => {
                 [
                     ['', [['/settings', 'General', <LuSettings />]]],
                     [
-                        'Instance Settings',
+                        'Organizational',
+                        [
+                            ['/settings/tags', 'Tags', <LuTag />],
+                            [
+                                '/settings/fields',
+                                'Field Definitions',
+                                <LuClipboardType />,
+                            ],
+                        ],
+                    ],
+                    [
+                        'Instance',
                         [
                             ['/settings/search', 'Search', <LuSearch />],
                             [
@@ -41,7 +54,10 @@ export const SettingsNav = () => {
                     ],
                     [
                         'System',
-                        [['/settings/build', 'Software Info', <LuScroll />]],
+                        [
+                            ['/settings/logs', 'Access Logs', <LuScroll />],
+                            ['/settings/build', 'Software Info', <LuScroll />],
+                        ],
                     ],
                 ] as const
             ).map(([group, items]) => (

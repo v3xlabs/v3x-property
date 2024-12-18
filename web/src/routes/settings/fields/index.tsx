@@ -15,9 +15,10 @@ import { DynamicIcon } from '@/components/DynamicIcon';
 import { FieldSelect } from '@/components/form/Select';
 import { BaseInput } from '@/components/input/BaseInput';
 import { IconInput } from '@/components/input/IconInput';
+import { SettingsNav } from '@/components/settings/nav';
 import { Button } from '@/components/ui/Button';
 import * as Dialog from '@/components/ui/Dialog';
-import { SCPage } from '@/layouts/SimpleCenterPage';
+import { SidePage } from '@/layouts/SidebarPage';
 import { queryClient } from '@/util/query';
 
 const FieldDefinitionEditor = ({
@@ -231,7 +232,28 @@ const RouteComponent = () => {
     const [creatingField, setCreatingField] = useState<boolean>(false);
 
     return (
-        <SCPage title="Field Definitions">
+        <SidePage
+            title="Field Definitions"
+            sidebar={<SettingsNav />}
+            suffix={
+                <Dialog.Root
+                    open={creatingField}
+                    onOpenChange={setCreatingField}
+                >
+                    <Dialog.Trigger>
+                        <Button>Create Field Definition</Button>
+                    </Dialog.Trigger>
+                    <Dialog.Content>
+                        <Dialog.Title>Create Field Definition</Dialog.Title>
+                        <FieldDefinitionEditor
+                            onSuccess={() => {
+                                setCreatingField(false);
+                            }}
+                        />
+                    </Dialog.Content>
+                </Dialog.Root>
+            }
+        >
             <div className="card">
                 {data.map((field) => (
                     <div
@@ -264,19 +286,6 @@ const RouteComponent = () => {
                     </div>
                 ))}
             </div>
-            <Dialog.Root open={creatingField} onOpenChange={setCreatingField}>
-                <Dialog.Trigger>
-                    <Button>Create Field Definition</Button>
-                </Dialog.Trigger>
-                <Dialog.Content>
-                    <Dialog.Title>Create Field Definition</Dialog.Title>
-                    <FieldDefinitionEditor
-                        onSuccess={() => {
-                            setCreatingField(false);
-                        }}
-                    />
-                </Dialog.Content>
-            </Dialog.Root>
 
             <Dialog.Root
                 open={!!editingField}
@@ -296,7 +305,7 @@ const RouteComponent = () => {
                     />
                 </Dialog.Content>
             </Dialog.Root>
-        </SCPage>
+        </SidePage>
     );
 };
 

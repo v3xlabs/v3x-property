@@ -104,7 +104,7 @@ impl User {
         //     None
         // }
 
-        let permissions = Self::enumerate_permissions(db, user, resource_type, &resource_id).await;
+        let permissions = Self::enumerate_permissions(db, user, resource_type, resource_id).await;
 
         let bv = match actions {
             Actions::One(action) => permissions.contains(&action),
@@ -166,11 +166,12 @@ impl User {
         db: &Database,
         user: impl Into<Option<i32>>,
         resource_type: &str,
-        resource_id: &Option<&str>,
+        resource_id: impl Into<Option<&str>>,
     ) -> Vec<Action> {
         let user: Option<i32> = user.into();
         let user_id = user.unwrap_or(-1).to_string();
         let is_authed = user.is_some().to_string();
+        let resource_id = resource_id.into();
 
         debug!(
             "Enumerating permissions for user: {:?} on resource: {:?} / {:?}",
@@ -178,6 +179,8 @@ impl User {
             resource_type,
             resource_id
         );
+
+        let resource_id = resource_id.as_ref();
 
         let policies = query!(
             r#"SELECT action FROM policies WHERE
@@ -187,7 +190,7 @@ impl User {
                 (subject_type = 'authed' AND subject_id = $4))
                 "#,
             resource_type,
-            resource_id.unwrap_or(""),
+            resource_id,
             user_id,
             is_authed,
         )

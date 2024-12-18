@@ -2,15 +2,19 @@ import { queryOptions, useQuery } from '@tanstack/react-query';
 
 import { ApiRequest, apiRequest } from './core';
 
-export const getPolicy = (resourceType: string, resourceId: string) =>
+export const getPolicy = (resourceType: string, resourceId?: string) =>
     queryOptions({
         queryKey: ['policy', resourceType, resourceId],
         queryFn: async () => {
             const response = await apiRequest('/policy/enumerate', 'get', {
-                query: {
-                    resource_type: resourceType,
-                    resource_id: resourceId,
-                },
+                query: resourceId
+                    ? {
+                          resource_type: resourceType,
+                          resource_id: resourceId,
+                      }
+                    : {
+                          resource_type: resourceType,
+                      },
             });
 
             return response.data;

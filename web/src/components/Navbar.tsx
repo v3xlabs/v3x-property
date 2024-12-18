@@ -19,6 +19,7 @@ import {
 import { useAuth } from '@/api/auth';
 import { BASE_URL } from '@/api/core';
 import { useMe } from '@/api/me';
+import { useHasPolicy } from '@/api/policy';
 import * as DropdownMenu from '@/components/ui/Dropdown';
 
 import { Button } from './ui/Button';
@@ -26,75 +27,76 @@ import { AvatarHolder, getInitials } from './UserProfile';
 
 const LOGIN_URL = BASE_URL + 'login';
 
-const navLinks = [
-    {
-        path: '/items',
-        name: 'Items',
-        icon: <FiBox />,
-        slug: 'items-navlink',
-    },
-    {
-        path: '/products',
-        name: 'Products',
-        icon: <FiTag />,
-        slug: 'products-navlink',
-    },
-    {
-        path: '/search',
-        name: 'Search',
-        icon: <FiSearch />,
-        slug: 'search-navlink',
-    },
-    {
-        path: '/create',
-        name: 'Create',
-        icon: <FiPlusCircle />,
-        slug: 'create-navlink',
-    },
-] as const;
-
-const navLinks2 = [
-    {
-        path: '/tags/',
-        name: 'Tags',
-        icon: <FiTag />,
-        slug: 'tags-navlink',
-    },
-    {
-        path: '/settings/fields',
-        name: 'Fields',
-        icon: <FiTag />,
-        slug: 'fields-navlink',
-    },
-    {
-        path: '/media/',
-        name: 'Media',
-        icon: <FiImage />,
-        slug: 'media-navlink',
-    },
-    {
-        path: '/logs/',
-        name: 'Logs',
-        icon: <FiLogOut />,
-        slug: 'logs-navlink',
-    },
-    {
-        path: '/users/',
-        name: 'Users',
-        icon: <FiUsers />,
-        slug: 'users-navlink',
-    },
-    {
-        path: '/settings',
-        name: 'Settings',
-        icon: <FiSettings />,
-        slug: 'settings-navlink',
-    },
-] as const;
-
 export const Navbar = () => {
     const { token, clearAuthToken } = useAuth();
     const { data: meData } = useMe();
+    const { ok: hasUsersPermissions } = useHasPolicy('user', '', 'write');
+
+    const navLinks = [
+        {
+            path: '/items',
+            name: 'Items',
+            icon: <FiBox />,
+            slug: 'items-navlink',
+        },
+        {
+            path: '/products',
+            name: 'Products',
+            icon: <FiTag />,
+            slug: 'products-navlink',
+        },
+        {
+            path: '/search',
+            name: 'Search',
+            icon: <FiSearch />,
+            slug: 'search-navlink',
+        },
+        {
+            path: '/create',
+            name: 'Create',
+            icon: <FiPlusCircle />,
+            slug: 'create-navlink',
+        },
+    ] as const;
+
+    const navLinks2 = [
+        {
+            path: '/settings/tags',
+            name: 'Tags',
+            icon: <FiTag />,
+            slug: 'tags-navlink',
+        },
+        {
+            path: '/settings/fields',
+            name: 'Fields',
+            icon: <FiTag />,
+            slug: 'fields-navlink',
+        },
+        {
+            path: '/media/',
+            name: 'Media',
+            icon: <FiImage />,
+            slug: 'media-navlink',
+        },
+        {
+            path: '/settings/logs',
+            name: 'Logs',
+            icon: <FiLogOut />,
+            slug: 'logs-navlink',
+        },
+        hasUsersPermissions && {
+            path: '/settings/users',
+            name: 'Users',
+            icon: <FiUsers />,
+            slug: 'users-navlink',
+        },
+        {
+            path: '/settings',
+            name: 'Settings',
+            icon: <FiSettings />,
+            slug: 'settings-navlink',
+        },
+    ].filter(Boolean);
 
     const login_here_url =
         LOGIN_URL + '?redirect=' + encodeURIComponent(window.location.href);

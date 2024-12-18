@@ -1491,7 +1491,7 @@ export type paths = {
                     /** @description Example: "item" | "product" | "media" | "user" */
                     resource_type: string;
                     /** @description Example: "1234" | "AB123" */
-                    resource_id: string;
+                    resource_id?: string;
                 };
                 header?: never;
                 path?: never;
