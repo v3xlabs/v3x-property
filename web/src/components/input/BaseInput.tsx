@@ -22,13 +22,25 @@ export const BaseInput = ({
     errorMessage,
     description,
     width = 'fit',
+    required,
     ...rest
 }: BaseInputProperties) => {
     const id = useId();
 
     return (
         <div className="space-y-2 w-full">
-            {label && <Label htmlFor={id}>{label}</Label>}
+            {label && (
+                <Label htmlFor={id}>
+                    {label}
+                    {required && (
+                        <span
+                            className={clsx('', errorMessage && 'text-red-500')}
+                        >
+                            *
+                        </span>
+                    )}
+                </Label>
+            )}
             <div
                 className={clsx(
                     'flex items-stretch justify-start gap-2',
@@ -44,6 +56,7 @@ export const BaseInput = ({
                             width === 'full' && 'w-full'
                         )}
                         onChange={(event) => onChange?.(event.target.value)}
+                        required={required}
                         {...rest}
                     />
                 </div>

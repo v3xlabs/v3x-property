@@ -82,12 +82,14 @@ const FieldDefinitionEditor = ({
                     <BaseInput
                         label="Definition ID"
                         name="definition_id"
+                        placeholder="battery_capacity"
                         value={field.state.value}
                         onChange={field.handleChange}
                         onBlur={field.handleBlur}
                         width="full"
                         readOnly={!!fieldDef}
                         errorMessage={field.state.meta.errors.join(', ')}
+                        required
                     />
                 )}
             </form.Field>
@@ -105,11 +107,13 @@ const FieldDefinitionEditor = ({
                     <BaseInput
                         label="Name"
                         name="name"
+                        placeholder="Battery Capacity"
                         value={field.state.value}
                         onChange={field.handleChange}
                         onBlur={field.handleBlur}
                         width="full"
                         errorMessage={field.state.meta.errors.join(', ')}
+                        required
                     />
                 )}
             </form.Field>
@@ -119,6 +123,7 @@ const FieldDefinitionEditor = ({
                     <BaseInput
                         label="Description"
                         name="description"
+                        placeholder="The capacity of the battery in mAh"
                         value={field.state.value}
                         onChange={field.handleChange}
                         onBlur={field.handleBlur}
@@ -133,6 +138,7 @@ const FieldDefinitionEditor = ({
                     <BaseInput
                         label="Placeholder"
                         name="placeholder"
+                        placeholder="Capacity (ex 500mAh)"
                         value={field.state.value}
                         onChange={field.handleChange}
                         onBlur={field.handleBlur}
