@@ -17,10 +17,12 @@ export const IconInput = ({
     value,
     onChange,
     errorMessage,
+    label,
 }: {
     value: string;
     onChange: (_value: string) => void;
     errorMessage?: string;
+    label?: string;
 }) => {
     const [search, setSearch] = useState<string>(value);
     const [category, setCategory] = useState<string | null>();
@@ -102,7 +104,7 @@ export const IconInput = ({
 
     return (
         <FieldSelect
-            label="Icon"
+            label={label == '' ? undefined : 'Icon'}
             // name="icon"
             value={value}
             onChange={(value) => {
