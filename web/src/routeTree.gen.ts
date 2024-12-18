@@ -21,6 +21,7 @@ import { Route as SearchIndexImport } from './routes/search/index'
 import { Route as ProductsIndexImport } from './routes/products/index'
 import { Route as ItemsIndexImport } from './routes/items/index'
 import { Route as UserUserIdImport } from './routes/user/$userId'
+import { Route as SettingsUsersImport } from './routes/settings/users'
 import { Route as SettingsTagsImport } from './routes/settings/tags'
 import { Route as SettingsStorageImport } from './routes/settings/storage'
 import { Route as SettingsSessionsImport } from './routes/settings/sessions'
@@ -92,6 +93,12 @@ const ItemsIndexRoute = ItemsIndexImport.update({
 const UserUserIdRoute = UserUserIdImport.update({
   id: '/user/$userId',
   path: '/user/$userId',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const SettingsUsersRoute = SettingsUsersImport.update({
+  id: '/settings/users',
+  path: '/settings/users',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -249,6 +256,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SettingsTagsImport
       parentRoute: typeof rootRoute
     }
+    '/settings/users': {
+      id: '/settings/users'
+      path: '/settings/users'
+      fullPath: '/settings/users'
+      preLoaderRoute: typeof SettingsUsersImport
+      parentRoute: typeof rootRoute
+    }
     '/user/$userId': {
       id: '/user/$userId'
       path: '/user/$userId'
@@ -330,6 +344,7 @@ export interface FileRoutesByFullPath {
   '/settings/sessions': typeof SettingsSessionsRoute
   '/settings/storage': typeof SettingsStorageRoute
   '/settings/tags': typeof SettingsTagsRoute
+  '/settings/users': typeof SettingsUsersRoute
   '/user/$userId': typeof UserUserIdRoute
   '/items': typeof ItemsIndexRoute
   '/products': typeof ProductsIndexRoute
@@ -354,6 +369,7 @@ export interface FileRoutesByTo {
   '/settings/sessions': typeof SettingsSessionsRoute
   '/settings/storage': typeof SettingsStorageRoute
   '/settings/tags': typeof SettingsTagsRoute
+  '/settings/users': typeof SettingsUsersRoute
   '/user/$userId': typeof UserUserIdRoute
   '/items': typeof ItemsIndexRoute
   '/products': typeof ProductsIndexRoute
@@ -379,6 +395,7 @@ export interface FileRoutesById {
   '/settings/sessions': typeof SettingsSessionsRoute
   '/settings/storage': typeof SettingsStorageRoute
   '/settings/tags': typeof SettingsTagsRoute
+  '/settings/users': typeof SettingsUsersRoute
   '/user/$userId': typeof UserUserIdRoute
   '/items/': typeof ItemsIndexRoute
   '/products/': typeof ProductsIndexRoute
@@ -405,6 +422,7 @@ export interface FileRouteTypes {
     | '/settings/sessions'
     | '/settings/storage'
     | '/settings/tags'
+    | '/settings/users'
     | '/user/$userId'
     | '/items'
     | '/products'
@@ -428,6 +446,7 @@ export interface FileRouteTypes {
     | '/settings/sessions'
     | '/settings/storage'
     | '/settings/tags'
+    | '/settings/users'
     | '/user/$userId'
     | '/items'
     | '/products'
@@ -451,6 +470,7 @@ export interface FileRouteTypes {
     | '/settings/sessions'
     | '/settings/storage'
     | '/settings/tags'
+    | '/settings/users'
     | '/user/$userId'
     | '/items/'
     | '/products/'
@@ -476,6 +496,7 @@ export interface RootRouteChildren {
   SettingsSessionsRoute: typeof SettingsSessionsRoute
   SettingsStorageRoute: typeof SettingsStorageRoute
   SettingsTagsRoute: typeof SettingsTagsRoute
+  SettingsUsersRoute: typeof SettingsUsersRoute
   UserUserIdRoute: typeof UserUserIdRoute
   ItemsIndexRoute: typeof ItemsIndexRoute
   ProductsIndexRoute: typeof ProductsIndexRoute
@@ -500,6 +521,7 @@ const rootRouteChildren: RootRouteChildren = {
   SettingsSessionsRoute: SettingsSessionsRoute,
   SettingsStorageRoute: SettingsStorageRoute,
   SettingsTagsRoute: SettingsTagsRoute,
+  SettingsUsersRoute: SettingsUsersRoute,
   UserUserIdRoute: UserUserIdRoute,
   ItemsIndexRoute: ItemsIndexRoute,
   ProductsIndexRoute: ProductsIndexRoute,
@@ -533,6 +555,7 @@ export const routeTree = rootRoute
         "/settings/sessions",
         "/settings/storage",
         "/settings/tags",
+        "/settings/users",
         "/user/$userId",
         "/items/",
         "/products/",
@@ -579,6 +602,9 @@ export const routeTree = rootRoute
     },
     "/settings/tags": {
       "filePath": "settings/tags.tsx"
+    },
+    "/settings/users": {
+      "filePath": "settings/users.tsx"
     },
     "/user/$userId": {
       "filePath": "user/$userId.tsx"
