@@ -9,10 +9,11 @@ import { match } from 'ts-pattern';
 import { ApiError } from '@/api/core';
 import { useItemFields } from '@/api/fields/item';
 import { formatId, useInstanceSettings } from '@/api/instance_settings';
-import { ApiItemResponse, useItemById, useItemLocation, useItemMedia } from '@/api/item';
+import { ApiItemResponse, useItemById, useItemLocation, useItemMedia, useItemTags } from '@/api/item';
 import { useMedia } from '@/api/media';
 
 import { LocationPreview } from '../location/LocationPreview';
+import { Tag } from '../Tag';
 import { UserProfile } from '../UserProfile';
 
 const UNKNOWN_ITEM = 'Unknown Item';
@@ -154,6 +155,7 @@ const ItemPreviewLarge: FC<{
 }> = ({ item, isError, mediaUrl, formattedItemId }) => {
     const { data: fields } = useItemFields(item?.item_id);
     const { data: location } = useItemLocation(item?.item_id);
+    const { data: tags } = useItemTags(item?.item_id);
 
     const randomHue = deriveRandomHue(item?.item_id);
     const logos = fields?.map((field) => {
@@ -192,7 +194,7 @@ const ItemPreviewLarge: FC<{
         <Link
             to={`/item/${formattedItemId}`}
             className={clsx(
-                'flex cursor-pointer items-start gap-4 rounded-md border p-2 outline-1 outline-offset-1 outline-neutral-200 hover:outline',
+                'flex cursor-pointer flex-col items-start gap-4 rounded-md border p-2 outline-1 outline-offset-1 outline-neutral-200 hover:outline md:flex-row',
                 isError && 'bg-red-50'
             )}
             data-testid="item-preview-large"
@@ -206,26 +208,36 @@ const ItemPreviewLarge: FC<{
                 randomHue={randomHue}
             />
             <div className="flex grow flex-col justify-center -space-y-1.5 overflow-hidden py-4">
-                <div className="overflow-hidden text-ellipsis whitespace-nowrap text-base">
-                    {item?.name || UNKNOWN_ITEM}
-                </div>
-                {formattedItemId && (
-                    <div className="text-sm">#{formattedItemId}</div>
-                )}
-                {logos && logos.length > 0 && (
-                    <ul className="flex items-center gap-2 py-2">{logos}</ul>
-                )}
-                <div>
-                    {location && (
-                        <div className="w-fit">
-                            <LocationPreview itemLocation={location} variant="compact" />
-                        </div>
+                <div className='grow'>
+                    <div className="overflow-hidden text-ellipsis whitespace-nowrap text-base">
+                        {item?.name || UNKNOWN_ITEM}
+                    </div>
+                    {formattedItemId && (
+                        <div className="text-sm">#{formattedItemId}</div>
                     )}
+                    {logos && logos.length > 0 && (
+                        <ul className="flex items-center gap-2 py-2">{logos}</ul>
+                    )}
+                    {
+                        tags && tags.length > 0 && (
+                            <div className="flex flex-wrap gap-2">
+                                {tags?.map((tag) => (
+                                    <Tag key={tag.tag_id} tag={tag} variant='compact' />
+                                ))}
+                            </div>
+                        )
+                    }
                 </div>
             </div>
-            <div className="flex h-full">
+            <div className="flex h-full w-full items-end justify-between gap-2 md:w-auto md:flex-col md:justify-end">
                 {item?.owner_id && (
                     <UserProfile user_id={item.owner_id} variant="compact" />
+                )}
+                {location?.location_user_id == item?.owner_id && (<span className='text-end text-xs leading-tight text-neutral-500'>with owner</span>) }
+                {location && location.location_user_id != item?.owner_id && (
+                    <div className="w-fit">
+                        <LocationPreview itemLocation={location} variant="compact" />
+                    </div>
                 )}
             </div>
         </Link>

@@ -7,7 +7,8 @@ export type ItemField = components['schemas']['ItemUpdateFieldPayload'];
 export const fromItemToForm = (
     item: Item,
     item_fields: ItemField[],
-    item_media?: number[]
+    item_media?: number[],
+    item_tags?: number[]
 ): ItemUpdatePayload => {
     return {
         name: item.name ?? '',
@@ -17,6 +18,7 @@ export const fromItemToForm = (
                 media_id,
             })) ?? [],
         fields: item_fields,
+        tags: item_tags,
     };
 };
 

@@ -81,19 +81,22 @@ export const useItemLogs = (item_id: string) => {
     return useQuery(getItemLogs(item_id));
 };
 
-export const getItemTags = (item_id: string) =>
+export const getItemTags = (item_id?: string) =>
     queryOptions({
         queryKey: ['item', '{item_id}', item_id, 'tags'],
         queryFn: async () => {
+            if (!item_id) return;
+
             const response = await apiRequest('/item/{item_id}/tags', 'get', {
                 path: { item_id },
             });
 
             return response.data;
         },
+        enabled: !!item_id,
     });
 
-export const useItemTags = (item_id: string) => {
+export const useItemTags = (item_id?: string) => {
     return useQuery(getItemTags(item_id));
 };
 

@@ -9,6 +9,7 @@ import {
 } from '@tanstack/react-router';
 import { FC, useState } from 'react';
 import { FaPlus, FaTrash } from 'react-icons/fa6';
+import { FiX } from 'react-icons/fi';
 import { toast } from 'sonner';
 
 import { FieldDefinition, getFieldDefinitions } from '@/api/fields';
@@ -17,10 +18,13 @@ import { formatId, getInstanceSettings } from '@/api/instance_settings';
 import {
     getItemById,
     getItemMedia,
+    getItemTags,
     useDeleteItem,
     useEditItem,
 } from '@/api/item';
+import { getTags } from '@/api/tags';
 import { DynamicIcon } from '@/components/DynamicIcon';
+import { FieldOption, FieldSelect } from '@/components/form/Select';
 import { BaseInput } from '@/components/input/BaseInput';
 import { ItemIntelligentSuggest } from '@/components/item/ItemIntelligentSuggest';
 import { EditMediaGallery } from '@/components/media/EditMediaGallery';
@@ -189,12 +193,15 @@ export const Route = createFileRoute('/item/$itemId/edit')({
             queryClient.ensureQueryData(getItemMedia(params.itemId)),
             queryClient.ensureQueryData(getFieldDefinitions()),
             queryClient.ensureQueryData(getItemFields(params.itemId)),
+            queryClient.ensureQueryData(getTags()),
+            queryClient.ensureQueryData(getItemTags(params.itemId)),
         ]);
     },
     component: () => {
         const { itemId } = useParams({ from: '/item/$itemId/edit' });
         const { data: item } = useSuspenseQuery(getItemById(itemId));
         const { data: media } = useSuspenseQuery(getItemMedia(itemId));
+        const { data: tags } = useSuspenseQuery(getTags());
         const { mutateAsync: editItem } = useEditItem({
             onSuccess: async (data, variables, context) => {
                 navigate({
@@ -204,6 +211,7 @@ export const Route = createFileRoute('/item/$itemId/edit')({
             },
         });
         const { data: itemFields } = useSuspenseQuery(getItemFields(itemId));
+        const { data: itemTags } = useSuspenseQuery(getItemTags(itemId));
         const { data: instanceSettings } = useSuspenseQuery(
             getInstanceSettings()
         );
@@ -213,7 +221,8 @@ export const Route = createFileRoute('/item/$itemId/edit')({
         const defaultValue = fromItemToForm(
             item,
             itemFields as { definition_id: string; value: string }[],
-            media
+            media,
+            itemTags?.map((tag) => tag.tag_id)
         );
 
         const { Field, Subscribe, handleSubmit } = useForm<ItemUpdatePayload>({
@@ -358,20 +367,44 @@ export const Route = createFileRoute('/item/$itemId/edit')({
                                 {({ handleChange, state: { value } }) => (
                                     <div>
                                         <div className="text-sm font-medium">Tags</div>
-                                        <ul className="flex gap-2">
+                                        <ul className="flex flex-wrap gap-2">
                                             {value?.map((tag) => (
-                                                <Tag key={tag} tag_id={tag} />
+                                                <div className="flex w-fit items-center gap-1">
+                                                    <Tag key={tag} tag_id={tag} />
+                                                    <Button
+                                                        type="button"
+                                                        variant="ghost"
+                                                        size="icon"
+                                                        onClick={() => {
+                                                            handleChange(
+                                                                (value ?? []).filter((_tag) => _tag !== tag),
+                                                            );
+                                                        }}
+                                                    >
+                                                        <FiX />
+                                                    </Button>
+                                                </div>
                                             ))}
+                                            <ul>
+                                                <FieldSelect
+                                                    value=""
+                                                    onChange={(_value) => {
+                                                        const __value = Number.parseInt(_value);
+
+                                                        handleChange([
+                                                            ...(value ?? []).filter((tag) => tag !== __value),
+                                                            __value,
+                                                        ]);
+
+                                                        return true;
+                                                    }}
+                                                    options={tags?.filter((tag) => !value?.includes(tag.tag_id)).map((tag) => ({
+                                                        label: tag.name,
+                                                        value: tag.tag_id.toString(),
+                                                    } as FieldOption))}
+                                                />
+                                            </ul>
                                         </ul>
-                                        <Button
-                                            type="button"
-                                            onClick={() => {
-                                                handleChange([
-                                                    ...(value ?? []),
-                                                    1,
-                                                ]);
-                                            }}
-                                        >Add Tag</Button>
                                     </div>
                                 )}
                             </Field>
@@ -392,7 +425,7 @@ export const Route = createFileRoute('/item/$itemId/edit')({
                                                 >
                                                     {(subField) =>
                                                         subField.state.value !==
-                                                            EMPTY_VALUE && (
+                                                        EMPTY_VALUE && (
                                                             <BaseInput
                                                                 label={
                                                                     value.definition_name

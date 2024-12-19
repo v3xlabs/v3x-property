@@ -2,6 +2,7 @@ import { queryOptions, useMutation, useQuery } from '@tanstack/react-query';
 
 import { apiRequest } from './core';
 import { components } from './schema.gen';
+import { queryClient } from '@/util/query';
 
 export type Tag = components['schemas']['Tag'];
 
@@ -44,6 +45,8 @@ export const useTagCreate = () => useMutation({
                 tag_id: tag.tag_id,
             },
         });
+
+        queryClient.invalidateQueries({ queryKey: ['tags'] });
 
         return response.data;
     }
