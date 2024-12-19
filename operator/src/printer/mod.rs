@@ -1,4 +1,4 @@
-use std::{collections::HashMap, io::Read, ops::Deref};
+use std::collections::HashMap;
 
 use ipp::{
     prelude::{AsyncIppClient, IppOperationBuilder},
