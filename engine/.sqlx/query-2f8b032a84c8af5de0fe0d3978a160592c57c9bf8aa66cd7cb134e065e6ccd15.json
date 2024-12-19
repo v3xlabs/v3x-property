@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "SELECT * FROM locations WHERE location_id = $1",
+  "query": "INSERT INTO locations (location_id, name, root_location_id) VALUES ($1, $2, $3) RETURNING *",
   "describe": {
     "columns": [
       {
@@ -31,6 +31,8 @@
     ],
     "parameters": {
       "Left": [
+        "Text",
+        "Text",
         "Text"
       ]
     },
@@ -42,5 +44,5 @@
       true
     ]
   },
-  "hash": "ab20846ce063f2be2e2f4ac6f7535bae689d9a9aec25dd4d3b078e54b6af9ad9"
+  "hash": "2f8b032a84c8af5de0fe0d3978a160592c57c9bf8aa66cd7cb134e065e6ccd15"
 }

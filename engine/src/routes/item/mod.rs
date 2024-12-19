@@ -15,10 +15,7 @@ use super::{error::HttpError, ApiTags};
 use crate::{
     auth::{middleware::AuthUser, permissions::Action},
     models::{
-        field::kind::FieldKind,
-        item::{field::ItemField, Item},
-        log::LogEntry,
-        tags::Tag,
+        field::kind::FieldKind, item::{field::ItemField, Item}, location::{ItemLocation, Location}, log::LogEntry, tags::Tag
     },
     state::AppState,
 };
@@ -289,6 +286,51 @@ impl ItemsApi {
             .await?;
 
         LogEntry::find_by_resource(&state.database, "item", &item_id.0)
+            .await
+            .map(Json)
+            .map_err(HttpError::from)
+            .map_err(poem::Error::from)
+    }
+
+    /// /item/:item_id/location
+    ///
+    /// Get the location of an Item by `item_id`
+    #[oai(path = "/item/:item_id/location", method = "get", tag = "ApiTags::Items")]
+    async fn get_item_location(
+        &self,
+        state: Data<&Arc<AppState>>,
+        user: AuthUser,
+        item_id: Path<String>,
+    ) -> Result<Json<Option<ItemLocation>>> {
+        user.check_policy("item", item_id.0.to_string().as_str(), Action::Read)
+            .await?;
+
+        Location::get_by_item_id(&state.database, &item_id.0)
+            .await
+            .map(Json)
+            .map_err(HttpError::from)
+            .map_err(poem::Error::from)
+    }
+
+    /// /item/:item_id/location
+    ///
+    /// Update the location of an Item by `item_id`
+    #[oai(path = "/item/:item_id/location", method = "patch", tag = "ApiTags::Items")]
+    async fn update_item_location(
+        &self,
+        state: Data<&Arc<AppState>>,
+        user: AuthUser,
+        item_id: Path<String>,
+        data: Json<ItemLocation>,
+    ) -> Result<Json<Option<ItemLocation>>> {
+        user.check_policy("item", item_id.0.to_string().as_str(), Action::Write)
+            .await?;
+
+        LogEntry::new(&state.database, "item", &item_id.0, user.user_id().unwrap(), "update_location", &serde_json::to_string(&data.0).unwrap())
+            .await
+            .map_err(HttpError::from)?;
+
+        Location::update_item_location(&state.database, &item_id.0, &data.0)
             .await
             .map(Json)
             .map_err(HttpError::from)

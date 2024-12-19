@@ -24,6 +24,7 @@ import { Route as ItemsIndexImport } from './routes/items/index'
 import { Route as UserUserIdImport } from './routes/user/$userId'
 import { Route as SettingsLayoutImport } from './routes/settings/_layout'
 import { Route as SettingsLayoutIndexImport } from './routes/settings/_layout/index'
+import { Route as LocationLocationIdIndexImport } from './routes/location/$locationId/index'
 import { Route as ItemItemIdIndexImport } from './routes/item/$itemId/index'
 import { Route as SettingsLayoutUsersImport } from './routes/settings/_layout/users'
 import { Route as SettingsLayoutTagsImport } from './routes/settings/_layout/tags'
@@ -113,6 +114,12 @@ const SettingsLayoutIndexRoute = SettingsLayoutIndexImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => SettingsLayoutRoute,
+} as any)
+
+const LocationLocationIdIndexRoute = LocationLocationIdIndexImport.update({
+  id: '/location/$locationId/',
+  path: '/location/$locationId/',
+  getParentRoute: () => rootRoute,
 } as any)
 
 const ItemItemIdIndexRoute = ItemItemIdIndexImport.update({
@@ -353,6 +360,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ItemItemIdIndexImport
       parentRoute: typeof rootRoute
     }
+    '/location/$locationId/': {
+      id: '/location/$locationId/'
+      path: '/location/$locationId'
+      fullPath: '/location/$locationId'
+      preLoaderRoute: typeof LocationLocationIdIndexImport
+      parentRoute: typeof rootRoute
+    }
     '/settings/_layout/': {
       id: '/settings/_layout/'
       path: '/'
@@ -447,6 +461,7 @@ export interface FileRoutesByFullPath {
   '/settings/tags': typeof SettingsLayoutTagsRoute
   '/settings/users': typeof SettingsLayoutUsersRoute
   '/item/$itemId': typeof ItemItemIdIndexRoute
+  '/location/$locationId': typeof LocationLocationIdIndexRoute
   '/settings/': typeof SettingsLayoutIndexRoute
   '/settings/fields': typeof SettingsLayoutFieldsIndexRoute
   '/settings/logs': typeof SettingsLayoutLogsIndexRoute
@@ -474,6 +489,7 @@ export interface FileRoutesByTo {
   '/settings/tags': typeof SettingsLayoutTagsRoute
   '/settings/users': typeof SettingsLayoutUsersRoute
   '/item/$itemId': typeof ItemItemIdIndexRoute
+  '/location/$locationId': typeof LocationLocationIdIndexRoute
   '/settings/fields': typeof SettingsLayoutFieldsIndexRoute
   '/settings/logs': typeof SettingsLayoutLogsIndexRoute
 }
@@ -502,6 +518,7 @@ export interface FileRoutesById {
   '/settings/_layout/tags': typeof SettingsLayoutTagsRoute
   '/settings/_layout/users': typeof SettingsLayoutUsersRoute
   '/item/$itemId/': typeof ItemItemIdIndexRoute
+  '/location/$locationId/': typeof LocationLocationIdIndexRoute
   '/settings/_layout/': typeof SettingsLayoutIndexRoute
   '/settings/_layout/fields/': typeof SettingsLayoutFieldsIndexRoute
   '/settings/_layout/logs/': typeof SettingsLayoutLogsIndexRoute
@@ -531,6 +548,7 @@ export interface FileRouteTypes {
     | '/settings/tags'
     | '/settings/users'
     | '/item/$itemId'
+    | '/location/$locationId'
     | '/settings/'
     | '/settings/fields'
     | '/settings/logs'
@@ -557,6 +575,7 @@ export interface FileRouteTypes {
     | '/settings/tags'
     | '/settings/users'
     | '/item/$itemId'
+    | '/location/$locationId'
     | '/settings/fields'
     | '/settings/logs'
   id:
@@ -583,6 +602,7 @@ export interface FileRouteTypes {
     | '/settings/_layout/tags'
     | '/settings/_layout/users'
     | '/item/$itemId/'
+    | '/location/$locationId/'
     | '/settings/_layout/'
     | '/settings/_layout/fields/'
     | '/settings/_layout/logs/'
@@ -602,6 +622,7 @@ export interface RootRouteChildren {
   SearchIndexRoute: typeof SearchIndexRoute
   ItemItemIdEditRoute: typeof ItemItemIdEditRoute
   ItemItemIdIndexRoute: typeof ItemItemIdIndexRoute
+  LocationLocationIdIndexRoute: typeof LocationLocationIdIndexRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
@@ -617,6 +638,7 @@ const rootRouteChildren: RootRouteChildren = {
   SearchIndexRoute: SearchIndexRoute,
   ItemItemIdEditRoute: ItemItemIdEditRoute,
   ItemItemIdIndexRoute: ItemItemIdIndexRoute,
+  LocationLocationIdIndexRoute: LocationLocationIdIndexRoute,
 }
 
 export const routeTree = rootRoute
@@ -640,7 +662,8 @@ export const routeTree = rootRoute
         "/products/",
         "/search/",
         "/item/$itemId/edit",
-        "/item/$itemId/"
+        "/item/$itemId/",
+        "/location/$locationId/"
       ]
     },
     "/": {
@@ -735,6 +758,9 @@ export const routeTree = rootRoute
     },
     "/item/$itemId/": {
       "filePath": "item/$itemId/index.tsx"
+    },
+    "/location/$locationId/": {
+      "filePath": "location/$locationId/index.tsx"
     },
     "/settings/_layout/": {
       "filePath": "settings/_layout/index.tsx",

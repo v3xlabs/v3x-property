@@ -97,6 +97,26 @@ export const useItemTags = (item_id: string) => {
     return useQuery(getItemTags(item_id));
 };
 
+export const getItemLocation = (item_id?: string) =>
+    queryOptions({
+        queryKey: ['item', '{item_id}', item_id, 'location'],
+        queryFn: async () => {
+            if (!item_id) {
+                return;
+            }
+
+            const response = await apiRequest('/item/{item_id}/location', 'get', {
+                path: { item_id },
+            });
+
+            return response.data;
+        },
+    });
+
+export const useItemLocation = (item_id?: string) => {
+    return useQuery(getItemLocation(item_id));
+};
+
 // Create item
 // This endpoint provisions the desired item_id with a placeholder item
 export const useCreateItem = () => {
@@ -193,6 +213,26 @@ export const useEditItem = (
             }
 
             return response.ok;
+        },
+    });
+};
+
+export type ItemLocation = components['schemas']['ItemLocation'];
+
+export const useUpdateItemLocation = () => {
+    return useMutation({
+        mutationFn: async ({ item_id, data }: {item_id: string, data: ItemLocation}) => {
+            const response = await apiRequest('/item/{item_id}/location', 'patch', {
+                contentType: 'application/json; charset=utf-8',
+                path: { item_id },
+                data,
+            });
+
+            queryClient.invalidateQueries({
+                queryKey: ['item', '{item_id}', item_id, 'location'],
+            });
+
+            return response.data;
         },
     });
 };

@@ -12,14 +12,16 @@ import { useEffect } from 'react';
 import { FiEdit } from 'react-icons/fi';
 
 import { formatId, getInstanceSettings } from '@/api/instance_settings';
-import { getItemById, getItemMedia, getItemTags } from '@/api/item';
+import { getItemById, getItemLocation, getItemMedia, getItemTags } from '@/api/item';
 import { getPolicy } from '@/api/policy';
 import { ItemFields } from '@/components/item/ItemFields';
+import { LocationPreview } from '@/components/location/LocationPreview';
 import { ItemLogSection } from '@/components/logs/ItemLogSection';
 import { MediaGallery } from '@/components/media/MediaGallery';
 import { Tag } from '@/components/Tag';
 import { Button } from '@/components/ui/Button';
 import { UserProfile } from '@/components/UserProfile';
+import { YeetButton } from '@/components/YeetButton';
 import { SCPage } from '@/layouts/SimpleCenterPage';
 import { queryClient } from '@/util/query';
 
@@ -59,6 +61,7 @@ export const Route = createFileRoute('/item/$itemId/')({
             queryClient.ensureQueryData(getItemById(params.itemId)),
             queryClient.ensureQueryData(getItemMedia(params.itemId)),
             queryClient.ensureQueryData(getItemTags(params.itemId)),
+            queryClient.ensureQueryData(getItemLocation(params.itemId)),
         ]);
     },
     component: () => {
@@ -66,6 +69,7 @@ export const Route = createFileRoute('/item/$itemId/')({
 
         const item = useSuspenseQuery(getItemById(itemId));
         const media = useSuspenseQuery(getItemMedia(itemId));
+        const { data: location } = useSuspenseQuery(getItemLocation(itemId));
         const { data: tags } = useSuspenseQuery(getItemTags(itemId));
 
         return (
@@ -84,7 +88,7 @@ export const Route = createFileRoute('/item/$itemId/')({
                     </Button>
                 }
             >
-                <div className="card pt-4 no-padding">
+                <div className="card no-padding pt-4">
                     <div className="px-4">
                         <MediaGallery media_ids={media.data} />
                     </div>
@@ -96,13 +100,21 @@ export const Route = createFileRoute('/item/$itemId/')({
                             </div>
                         )}
                     </div>
-                    <div>
-                        {item.data?.location_id && (
-                            <div>
-                                <h3 className="font-bold">Location</h3>
-                                {/* <Location location_id={item.data.location_id} /> */}
-                            </div>
-                        )}
+                    <div className="flex w-full flex-wrap items-center gap-4 px-4">
+                        {/* {item.data?. && ( */}
+                        <div className="grow space-y-2">
+                            <h3 className="font-bold">Location</h3>
+                            {
+                                location ? (
+                                    <LocationPreview itemLocation={location} />
+                                ) : (
+                                    <div>
+                                        This item does not have a location
+                                    </div>
+                                )}
+                        </div>
+                        <YeetButton item_id={itemId} />
+                        {/* )} */}
                     </div>
                     <ItemFields item_id={itemId} />
                     {tags && tags.length > 0 && (
@@ -134,7 +146,7 @@ export const Route = createFileRoute('/item/$itemId/')({
             <SCPage title={'Could not load the item'}>
                 <div className="card space-y-3">
                     <p>There was an issue loading the item.</p>
-                    <code className="block bg-muted p-2 rounded-md">
+                    <code className="bg-muted block rounded-md p-2">
                         {error.message}
                     </code>
                     <Button onClick={() => router.invalidate()}>Retry</Button>

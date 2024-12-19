@@ -329,6 +329,74 @@ export type paths = {
         patch?: never;
         trace?: never;
     };
+    "/item/{item_id}/location": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * /item/:item_id/location
+         * @description Get the location of an Item by `item_id`
+         */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    item_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json; charset=utf-8": components["schemas"]["ItemLocation"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /**
+         * /item/:item_id/location
+         * @description Update the location of an Item by `item_id`
+         */
+        patch: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    item_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json; charset=utf-8": components["schemas"]["ItemLocation"];
+                };
+            };
+            responses: {
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json; charset=utf-8": components["schemas"]["ItemLocation"];
+                    };
+                };
+            };
+        };
+        trace?: never;
+    };
     "/item/{item_id}/media": {
         parameters: {
             query?: never;
@@ -799,6 +867,46 @@ export type paths = {
                 };
             };
         };
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/location/{location_id}/items": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * /location/:location_id/items
+         * @description Get all items in a location
+         */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    location_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json; charset=utf-8": components["schemas"]["ItemLocation"][];
+                    };
+                };
+            };
+        };
+        put?: never;
         post?: never;
         delete?: never;
         options?: never;
@@ -1532,6 +1640,46 @@ export type paths = {
         patch?: never;
         trace?: never;
     };
+    "/user/{user_id}/items": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * /user/:user_id/items
+         * @description Get all items in a user's location
+         */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    user_id: number;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json; charset=utf-8": components["schemas"]["ItemLocation"][];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/user/{user_id}/keys": {
         parameters: {
             query?: never;
@@ -1676,6 +1824,48 @@ export type paths = {
         };
         put?: never;
         post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/policy/batch": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * /policy/batch
+         * @description Batch enumerate policy requests
+         */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json; charset=utf-8": components["schemas"]["BatchRequest"][];
+                };
+            };
+            responses: {
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json; charset=utf-8": components["schemas"]["BatchResponse"][];
+                    };
+                };
+            };
+        };
         delete?: never;
         options?: never;
         head?: never;
@@ -2049,6 +2239,15 @@ export type components = {
             event: string;
             data: unknown;
         };
+        BatchRequest: {
+            resource_type: string;
+            resource_id?: string;
+        };
+        BatchResponse: {
+            resource_type: string;
+            resource_id?: string;
+            result: components["schemas"]["Action"][];
+        };
         BuildDetails: {
             git_hash?: string;
             version: string;
@@ -2155,6 +2354,17 @@ export type components = {
         ItemIdResponse: {
             item_id: string;
         };
+        ItemLocation: {
+            item_id: string;
+            location_id?: string;
+            /** Format: int32 */
+            location_user_id?: number;
+            location_item_id?: string;
+            /** Format: date-time */
+            created_at?: string;
+            /** Format: date-time */
+            updated_at?: string;
+        };
         ItemUpdateFieldPayload: {
             definition_id: string;
             /** @description The value of the field
@@ -2191,6 +2401,7 @@ export type components = {
         Location: {
             location_id: string;
             name: string;
+            root_location_id?: string;
             /** Format: date-time */
             created_at?: string;
             /** Format: date-time */

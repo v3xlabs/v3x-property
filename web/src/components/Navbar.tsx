@@ -8,6 +8,7 @@ import {
     FiImage,
     FiLogIn,
     FiLogOut,
+    FiMapPin,
     FiMoreHorizontal,
     FiPlusCircle,
     FiSearch,
@@ -31,6 +32,7 @@ export const Navbar = () => {
     const { token, clearAuthToken } = useAuth();
     const { data: meData } = useMe();
     const { ok: hasUsersPermissions } = useHasPolicy('user', '', 'write');
+    const { ok: hasLocationsPermissions } = useHasPolicy('location', '', 'write');
 
     const navLinks = [
         {
@@ -71,6 +73,12 @@ export const Navbar = () => {
             name: 'Fields',
             icon: <FiTag />,
             slug: 'fields-navlink',
+        },
+        hasLocationsPermissions && {
+            path: '/settings/locations',
+            name: 'Locations',
+            icon: <FiMapPin />,
+            slug: 'locations-navlink',
         },
         {
             path: '/media/',

@@ -5,7 +5,7 @@ use poem_openapi::{param::Path, payload::Json, OpenApi};
 
 use crate::{
     auth::{middleware::AuthUser, permissions::Action},
-    models::location::Location,
+    models::location::{ItemLocation, Location},
     state::AppState,
 };
 
@@ -45,7 +45,7 @@ impl LocationApi {
     ) -> Result<Json<Location>> {
         user.check_policy("location", "", Action::Write).await?;
 
-        Location::new(&state.database, payload.0.location_id, payload.0.name)
+        Location::new(&state.database, payload.0.location_id, payload.0.name, payload.0.root_location_id)
             .await
             .map(Json)
             .map_err(HttpError::from)
@@ -86,6 +86,20 @@ impl LocationApi {
         user.check_policy("location", location_id.0.as_str(), Action::Write).await?;
 
         Location::update(&state.database, &location_id.0, &payload.0.name)
+            .await
+            .map(Json)
+            .map_err(HttpError::from)
+            .map_err(poem::Error::from)
+    }
+
+    /// /location/:location_id/items
+    /// 
+    /// Get all items in a location
+    #[oai(path = "/location/:location_id/items", method = "get", tag = "ApiTags::Location")]
+    async fn get_items(&self, user: AuthUser, state: Data<&Arc<AppState>>, location_id: Path<String>) -> Result<Json<Vec<ItemLocation>>> {
+        user.check_policy("location", location_id.0.as_str(), Action::Read).await?;
+
+        Location::get_items_by_location_id(&state.database, &location_id.0)
             .await
             .map(Json)
             .map_err(HttpError::from)

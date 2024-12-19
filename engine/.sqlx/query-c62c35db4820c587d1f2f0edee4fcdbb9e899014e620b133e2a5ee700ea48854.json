@@ -1,41 +1,52 @@
 {
   "db_name": "PostgreSQL",
-  "query": "INSERT INTO locations (location_id, name) VALUES ($1, $2) RETURNING *",
+  "query": "SELECT * FROM item_locations WHERE item_id = $1",
   "describe": {
     "columns": [
       {
         "ordinal": 0,
-        "name": "location_id",
+        "name": "item_id",
         "type_info": "Text"
       },
       {
         "ordinal": 1,
-        "name": "name",
+        "name": "location_id",
         "type_info": "Text"
       },
       {
         "ordinal": 2,
+        "name": "location_user_id",
+        "type_info": "Int4"
+      },
+      {
+        "ordinal": 3,
+        "name": "location_item_id",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 4,
         "name": "created_at",
         "type_info": "Timestamptz"
       },
       {
-        "ordinal": 3,
+        "ordinal": 5,
         "name": "updated_at",
         "type_info": "Timestamptz"
       }
     ],
     "parameters": {
       "Left": [
-        "Text",
         "Text"
       ]
     },
     "nullable": [
       false,
-      false,
+      true,
+      true,
+      true,
       true,
       true
     ]
   },
-  "hash": "6e992a2358a7688689e39840ce7041e71efd4249a38077ec11de079b54624da8"
+  "hash": "c62c35db4820c587d1f2f0edee4fcdbb9e899014e620b133e2a5ee700ea48854"
 }

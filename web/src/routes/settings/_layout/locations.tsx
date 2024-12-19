@@ -3,7 +3,7 @@ import { FiPlus } from 'react-icons/fi';
 
 import { useLocations } from '@/api/locations';
 import { CreateLocationModal } from '@/components/location/CreateLocationModal';
-import { LocationPreview } from '@/components/location/LocationPreview';
+import { SpecificLocationPreview } from '@/components/location/LocationPreview';
 import { Button } from '@/components/ui/Button';
 import { Dialog, DialogTrigger } from '@/components/ui/Dialog';
 
@@ -38,10 +38,10 @@ function RouteComponent() {
                     user or with another item.
                 </p>
             </div>
-            <ul>
+            <ul className='space-y-2'>
                 {locations?.map((location) => (
                     <li key={location.location_id}>
-                        <LocationPreview location={location} />
+                        <SpecificLocationPreview location={location} />
                     </li>
                 ))}
             </ul>

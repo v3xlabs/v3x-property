@@ -1,24 +1,34 @@
 import { queryOptions, useQuery } from '@tanstack/react-query';
+import { create } from '@yornaath/batshit';
 
 import { ApiRequest, apiRequest } from './core';
+
+const batcher = create({
+    fetcher: async (queries: { resourceType: string, resourceId?: string }[]) => {
+        const response = await apiRequest('/policy/batch', 'post', {
+            contentType: 'application/json; charset=utf-8',
+            data: queries.map(({ resourceId, resourceType }) => ({
+                resource_type: resourceType,
+                resource_id: resourceId,
+            })),
+        });
+
+        return response.data;
+    },
+    resolver: (item, query) => {
+        return item
+            .find(({ resource_id, resource_type }) => resource_id === query.resourceId && resource_type === query.resourceType)
+            ?.result;
+    }
+});
 
 export const getPolicy = (resourceType: string, resourceId?: string) =>
     queryOptions({
         queryKey: ['policy', resourceType, resourceId],
-        queryFn: async () => {
-            const response = await apiRequest('/policy/enumerate', 'get', {
-                query: resourceId
-                    ? {
-                        resource_type: resourceType,
-                        resource_id: resourceId,
-                    }
-                    : {
-                        resource_type: resourceType,
-                    },
-            });
-
-            return response.data;
-        },
+        queryFn: async () => batcher.fetch({
+            resourceType,
+            resourceId,
+        }),
         retry: false,
     });
 
