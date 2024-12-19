@@ -1,13 +1,16 @@
 import { createFileRoute } from '@tanstack/react-router';
 
 import { AllLogsSection } from '@/components/logs/AllLogsSection';
-import { SettingsNav } from '@/components/settings/nav';
-import { SidePage } from '@/layouts/SidebarPage';
 
-export const Route = createFileRoute('/settings/logs/')({
+export const Route = createFileRoute('/settings/_layout/logs/')({
+    context() {
+        return {
+            title: 'Logs',
+        };
+    },
     component: () => {
         return (
-            <SidePage title="Logs" width="2xl" sidebar={<SettingsNav />}>
+            <div className="space-y-4">
                 <div className="card">
                     <p>
                         Logs are emitted anytime an item is created, edited, or
@@ -16,7 +19,7 @@ export const Route = createFileRoute('/settings/logs/')({
                     </p>
                 </div>
                 <AllLogsSection />
-            </SidePage>
+            </div>
         );
     },
 });

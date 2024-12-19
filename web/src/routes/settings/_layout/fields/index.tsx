@@ -15,10 +15,8 @@ import { DynamicIcon } from '@/components/DynamicIcon';
 import { FieldSelect } from '@/components/form/Select';
 import { BaseInput } from '@/components/input/BaseInput';
 import { IconInput } from '@/components/input/IconInput';
-import { SettingsNav } from '@/components/settings/nav';
 import { Button } from '@/components/ui/Button';
 import * as Dialog from '@/components/ui/Dialog';
-import { SidePage } from '@/layouts/SidebarPage';
 import { queryClient } from '@/util/query';
 
 const FieldDefinitionEditor = ({
@@ -238,28 +236,25 @@ const RouteComponent = () => {
     const [creatingField, setCreatingField] = useState<boolean>(false);
 
     return (
-        <SidePage
-            title="Field Definitions"
-            sidebar={<SettingsNav />}
-            suffix={
-                <Dialog.Root
-                    open={creatingField}
-                    onOpenChange={setCreatingField}
-                >
-                    <Dialog.Trigger>
-                        <Button>Create Field Definition</Button>
-                    </Dialog.Trigger>
-                    <Dialog.Content>
-                        <Dialog.Title>Create Field Definition</Dialog.Title>
-                        <FieldDefinitionEditor
-                            onSuccess={() => {
-                                setCreatingField(false);
-                            }}
-                        />
-                    </Dialog.Content>
-                </Dialog.Root>
-            }
-        >
+        // suffix={
+        //     <Dialog.Root
+        //         open={creatingField}
+        //         onOpenChange={setCreatingField}
+        //     >
+        //         <Dialog.Trigger>
+        //             <Button>Create Field Definition</Button>
+        //         </Dialog.Trigger>
+        //         <Dialog.Content>
+        //             <Dialog.Title>Create Field Definition</Dialog.Title>
+        //             <FieldDefinitionEditor
+        //                 onSuccess={() => {
+        //                     setCreatingField(false);
+        //                 }}
+        //             />
+        //         </Dialog.Content>
+        //     </Dialog.Root>
+        // }
+        <>
             <div className="card">
                 {data.map((field) => (
                     <div
@@ -311,13 +306,18 @@ const RouteComponent = () => {
                     />
                 </Dialog.Content>
             </Dialog.Root>
-        </SidePage>
+        </>
     );
 };
 
-export const Route = createFileRoute('/settings/fields/')({
+export const Route = createFileRoute('/settings/_layout/fields/')({
     loader: async () => {
         queryClient.prefetchQuery(getFieldDefinitions());
+    },
+    context() {
+        return {
+            title: 'Field Definitions',
+        };
     },
     component: RouteComponent,
 });

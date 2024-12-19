@@ -1,21 +1,24 @@
 import { createFileRoute } from '@tanstack/react-router';
 
 import { SearchTaskTable } from '@/components/search_tasks/SearchTaskTable';
-import { SettingsNav } from '@/components/settings/nav';
 import { SearchDetails } from '@/components/settings/SearchDetails';
-import { SidePage } from '@/layouts/SidebarPage';
 
-export const Route = createFileRoute('/settings/search')({
+export const Route = createFileRoute('/settings/_layout/search')({
     component: RouteComponent,
+    context() {
+        return {
+            title: 'Search',
+        };
+    },
 });
 
 function RouteComponent() {
     return (
-        <SidePage title="Search" sidebar={<SettingsNav />}>
+        <>
             <SearchDetails />
             <div className="card">
                 <SearchTaskTable />
             </div>
-        </SidePage>
+        </>
     );
 }

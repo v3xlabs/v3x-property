@@ -18,6 +18,9 @@ const router = createRouter({
     routeTree,
     defaultPendingComponent,
     defaultErrorComponent: PageErrorBoundary,
+    context: {
+        title: 'Hello',
+    },
 });
 
 // Register the router instance for type safety

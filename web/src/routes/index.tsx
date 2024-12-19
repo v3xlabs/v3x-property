@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from '@tanstack/react-router';
+import { createFileRoute, createRootRouteWithContext, Link } from '@tanstack/react-router';
 import { FiArrowRight } from 'react-icons/fi';
 
 import { useInstanceStatistics } from '@/api/instance_settings';
@@ -48,6 +48,10 @@ const Page = () => {
     );
 };
 
-export const Route = createFileRoute('/')({
+export interface MyRouterContext {
+    title: string;
+}
+
+export const Route = createRootRouteWithContext<MyRouterContext>()({
     component: Page,
 });
