@@ -21,6 +21,12 @@ impl UserEntry {
         self.oauth_sub == "$$SYSTEM$$"
     }
 
+    pub async fn find_all(database: &Database) -> Result<Vec<UserEntry>, sqlx::Error> {
+        query_as!(UserEntry, "SELECT user_id, oauth_sub, oauth_data::text::json as \"oauth_data!: Json<Userinfo>\", nickname, created_at, updated_at FROM users")
+            .fetch_all(&database.pool)
+            .await
+    }
+
     pub async fn upsert(
         oauth_userinfo: &Userinfo,
         nickname: Option<String>,

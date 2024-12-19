@@ -96,6 +96,10 @@ a {
     all: unset;
 }
 
+.link {
+    @apply text-blue-500 hover:cursor-pointer hover:underline;
+}
+
 .pre {
     @apply bg-neutral-100 rounded-md p-2;
 }

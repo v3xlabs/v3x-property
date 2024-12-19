@@ -6,7 +6,7 @@ use reqwest::StatusCode;
 
 use super::{error::HttpError, ApiTags};
 use crate::{
-    auth::middleware::AuthUser,
+    auth::{middleware::AuthUser, permissions::Action},
     models::user::{user::User, userentry::UserEntry},
     state::AppState,
 };
@@ -17,6 +17,27 @@ pub struct UserApi;
 
 #[OpenApi]
 impl UserApi {
+    /// /user
+    ///
+    /// List all users
+    #[oai(path = "/user", method = "get", tag = "ApiTags::User")]
+    pub async fn users(
+        &self,
+        user: AuthUser,
+        state: Data<&Arc<AppState>>,
+    ) -> Result<Json<Vec<User>>> {
+        user.check_policy("user", "", Action::Read).await?;
+
+        Ok(Json(
+            UserEntry::find_all(&state.database)
+                .await
+                .map_err(HttpError::from)?
+                .into_iter()
+                .map(|user| user.into())
+                .collect::<Vec<User>>(),
+        ))
+    }
+
     /// /user/:user_id
     ///
     /// Get a User by `user_id`

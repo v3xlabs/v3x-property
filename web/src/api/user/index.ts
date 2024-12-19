@@ -20,3 +20,15 @@ export const getUserById = (user_id: number) =>
     });
 
 export const useUserById = (user_id: number) => useQuery(getUserById(user_id));
+
+export const getUsers = () =>
+    queryOptions({
+        queryKey: ['users'],
+        queryFn: async () => {
+            const response = await apiRequest('/user', 'get', {});
+
+            return response.data;
+        },
+    });
+
+export const useUsers = () => useQuery(getUsers());
