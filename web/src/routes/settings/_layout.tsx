@@ -1,7 +1,6 @@
 import {
     createFileRoute,
     Outlet,
-    useRouteContext,
     useRouterState,
 } from '@tanstack/react-router';
 
@@ -15,13 +14,14 @@ export const Route = createFileRoute('/settings/_layout')({
 function RouteComponent() {
     const matches = useRouterState({ select: (s) => s.matches });
 
-    // @ts-expect-error
-    // eslint-disable-next-line prefer-destructuring
-    const title = matches[matches.length - 1].context['title'];
+    const { title, suffix } = matches[matches.length - 1].context;
 
     return (
-        <SidePage title={title} sidebar={<SettingsNav />}>
-            <Outlet />
-        </SidePage>
+        <SidePage
+            title={title}
+            suffix={suffix}
+            sidebar={<SettingsNav />}
+            children={<Outlet />}
+        />
     );
 }

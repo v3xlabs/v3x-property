@@ -1,15 +1,20 @@
-import { createRootRoute, Outlet } from '@tanstack/react-router';
+import { createRootRouteWithContext, Outlet } from '@tanstack/react-router';
+import { ReactNode } from 'react';
 
 import { Navbar } from '@/components/Navbar';
 import { Toaster } from '@/components/ui/Toaster';
 
-export const Route = createRootRoute({
+export interface MyRouterContext {
+    title: string;
+    suffix?: ReactNode;
+}
+
+export const Route = createRootRouteWithContext<MyRouterContext>()({
     component: () => (
         <>
             <Navbar />
             <Toaster />
             <Outlet />
-            {/* <TanStackRouterDevtools /> */}
         </>
     ),
 });
