@@ -41,3 +41,5 @@ reqwest = { version = "0.12.9", features = [
 ], default-features = false }
 serde = "1.0.216"
 serde_json = "1.0.133"
+ipp = { version = "5.2.0", features = ["async-client-rustls", "serde"] }
+envy = "0.4.2"

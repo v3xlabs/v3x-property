@@ -1,6 +1,9 @@
 import { queryOptions, useQuery } from '@tanstack/react-query';
 
 import { apiRequest } from '../core';
+import { components } from '../schema.gen';
+
+export type Operator = components['schemas']['LocalOperator'];
 
 export const getOperators = () =>
     queryOptions({

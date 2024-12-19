@@ -4,6 +4,7 @@ use poem::{
     get, handler, listener::TcpListener, middleware::Cors, EndpointExt as _, Route, Server,
 };
 use poem_openapi::{payload::Html, OpenApi, OpenApiService};
+use printer::Printers;
 use reqwest::Client;
 use serde::{Deserialize, Serialize};
 use state::AppState;
@@ -17,10 +18,9 @@ pub struct OperatorHeartbeatPayload {
     pub operator_endpoint: String,
 }
 
-// pub mod label;
 pub mod routes;
 pub mod state;
-// pub mod template;
+pub mod printer;
 
 fn get_api() -> impl OpenApi {
     MainApi
@@ -41,7 +41,9 @@ async fn main() {
 
     let spec = api_service.spec_endpoint();
 
-    let state = AppState {};
+    let printers = Printers::load().await;
+
+    let state = AppState { printers };
 
     let state = Arc::new(state);
 
