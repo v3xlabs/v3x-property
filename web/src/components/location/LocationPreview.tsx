@@ -1,4 +1,5 @@
 import { Link } from '@tanstack/react-router';
+import clsx from 'clsx';
 import { FC } from 'react';
 import { match, P } from 'ts-pattern';
 
@@ -13,7 +14,7 @@ export const LocationPreview: FC<{
     variant?: 'compact' | 'full';
 }> = ({ itemLocation, variant = 'full' }) => {
     return match(itemLocation)
-        .with({ location_id: P.string }, ({ location_id }) => <SpecificLocationPreview location_id={location_id} />)
+        .with({ location_id: P.string }, ({ location_id }) => <SpecificLocationPreview location_id={location_id} variant={variant} />)
         .with({ location_item_id: P.string }, ({ location_item_id }) => <ItemPreview item_id={location_item_id} variant={variant} />)
         .with({ location_user_id: P.number }, ({ location_user_id }) => <UserProfile user_id={location_user_id} variant={variant} />)
         .otherwise(() => <></>);
@@ -22,6 +23,7 @@ export const LocationPreview: FC<{
 export const SpecificLocationPreview: FC<{
     location_id?: string;
     location?: Location;
+    variant?: 'compact' | 'full';
 }> = (properties) => {
     const location_id =
         properties.location_id || properties.location?.location_id;
@@ -36,13 +38,17 @@ export const SpecificLocationPreview: FC<{
         <Link
             to={'/location/$locationId'}
             params={{ locationId: location_id }}
-            className="card flex cursor-pointer hover:bg-neutral-100"
+            className={
+                clsx(
+                    'card no-padding flex cursor-pointer hover:bg-neutral-100',
+                    properties.variant === 'compact' && 'px-2 py-0.5 text-sm',
+                    properties.variant === 'full' && 'flex flex-col p-4'
+                )
+            }
         >
-            <div className="flex flex-col">
-                <div>{data?.name}</div>
-                <div className="text-sm text-neutral-500">
+            <div>{data?.name}</div>
+            <div className="text-sm text-neutral-500">
                     #{data?.location_id}
-                </div>
             </div>
         </Link>
     );

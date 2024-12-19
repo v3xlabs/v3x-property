@@ -9,9 +9,10 @@ import { match } from 'ts-pattern';
 import { ApiError } from '@/api/core';
 import { useItemFields } from '@/api/fields/item';
 import { formatId, useInstanceSettings } from '@/api/instance_settings';
-import { ApiItemResponse, useItemById, useItemMedia } from '@/api/item';
+import { ApiItemResponse, useItemById, useItemLocation, useItemMedia } from '@/api/item';
 import { useMedia } from '@/api/media';
 
+import { LocationPreview } from '../location/LocationPreview';
 import { UserProfile } from '../UserProfile';
 
 const UNKNOWN_ITEM = 'Unknown Item';
@@ -59,13 +60,13 @@ export const AvatarHolder: FC<{
         >
             <Avatar.Root
                 className={clsx(
-                    'inline-flex items-center justify-center align-middle overflow-hidden select-none w-full h-full rounded-md size-8'
+                    'inline-flex size-8 h-full w-full select-none items-center justify-center overflow-hidden rounded-md align-middle'
                 )}
             >
                 {image && (
                     <Avatar.Image
                         className={clsx(
-                            'w-full h-full object-contain',
+                            'h-full w-full object-contain',
                             size === 'compact' && '!size-6'
                         )}
                         src={image}
@@ -74,14 +75,14 @@ export const AvatarHolder: FC<{
                 )}
                 <Avatar.Fallback
                     className={clsx(
-                        'w-full h-full flex items-center justify-center bg-gray-200 text-pink-500 text-base leading-none font-medium',
+                        'flex h-full w-full items-center justify-center bg-gray-200 text-base font-medium leading-none text-pink-500',
                         size === 'compact' && '!text-[0.6em]'
                     )}
                     delayMs={0}
                 >
                     <img
                         className={clsx(
-                            'w-full h-full object-cover',
+                            'h-full w-full object-cover',
                             size === 'compact' && '!size-6'
                         )}
                         src="/default_cube2.webp"
@@ -89,8 +90,8 @@ export const AvatarHolder: FC<{
                         style={
                             randomHue
                                 ? {
-                                      filter: `sepia(100%) hue-rotate(${randomHue}deg)`,
-                                  }
+                                    filter: `sepia(100%) hue-rotate(${randomHue}deg)`,
+                                }
                                 : undefined
                         }
                     />
@@ -152,6 +153,8 @@ const ItemPreviewLarge: FC<{
     formattedItemId?: string;
 }> = ({ item, isError, mediaUrl, formattedItemId }) => {
     const { data: fields } = useItemFields(item?.item_id);
+    const { data: location } = useItemLocation(item?.item_id);
+
     const randomHue = deriveRandomHue(item?.item_id);
     const logos = fields?.map((field) => {
         return match(field)
@@ -162,7 +165,7 @@ const ItemPreviewLarge: FC<{
                 (_) => {
                     return (
                         <div
-                            className="border rounded-md p-1"
+                            className="rounded-md border p-1"
                             key={field.definition_id}
                         >
                             <FaBarcode />
@@ -173,7 +176,7 @@ const ItemPreviewLarge: FC<{
             .with({ definition_id: 'asin' }, (_) => {
                 return (
                     <div
-                        className="border rounded-md p-1"
+                        className="rounded-md border p-1"
                         key={field.definition_id}
                     >
                         <FaAmazon />
@@ -189,7 +192,7 @@ const ItemPreviewLarge: FC<{
         <Link
             to={`/item/${formattedItemId}`}
             className={clsx(
-                'p-2 border cursor-pointer rounded-md flex items-start gap-4 hover:outline outline-1 outline-offset-1 outline-neutral-200',
+                'flex cursor-pointer items-start gap-4 rounded-md border p-2 outline-1 outline-offset-1 outline-neutral-200 hover:outline',
                 isError && 'bg-red-50'
             )}
             data-testid="item-preview-large"
@@ -202,8 +205,8 @@ const ItemPreviewLarge: FC<{
                 key={`media-${item?.item_id}`}
                 randomHue={randomHue}
             />
-            <div className="flex flex-col -space-y-1.5 justify-center overflow-hidden grow py-4">
-                <div className="text-base overflow-hidden text-ellipsis whitespace-nowrap">
+            <div className="flex grow flex-col justify-center -space-y-1.5 overflow-hidden py-4">
+                <div className="overflow-hidden text-ellipsis whitespace-nowrap text-base">
                     {item?.name || UNKNOWN_ITEM}
                 </div>
                 {formattedItemId && (
@@ -212,8 +215,15 @@ const ItemPreviewLarge: FC<{
                 {logos && logos.length > 0 && (
                     <ul className="flex items-center gap-2 py-2">{logos}</ul>
                 )}
+                <div>
+                    {location && (
+                        <div className="w-fit">
+                            <LocationPreview itemLocation={location} variant="compact" />
+                        </div>
+                    )}
+                </div>
             </div>
-            <div className="h-full flex">
+            <div className="flex h-full">
                 {item?.owner_id && (
                     <UserProfile user_id={item.owner_id} variant="compact" />
                 )}
@@ -228,11 +238,11 @@ export const ItemPreviewLargeSkeleton: FC<{
     return (
         <div
             className={clsx(
-                'p-2 border cursor-pointer rounded-md flex items-start gap-4 hover:outline outline-1 outline-offset-1 outline-neutral-200'
+                'flex cursor-pointer items-start gap-4 rounded-md border p-2 outline-1 outline-offset-1 outline-neutral-200 hover:outline'
             )}
             data-testid="item-preview-large"
         >
-            <div className="size-32 bg-neutral-200 rounded-md animate-pulse" />
+            <div className="size-32 animate-pulse rounded-md bg-neutral-200" />
             {/* <AvatarHolder
                 item_id={item?.item_id}
                 image={mediaUrl}
@@ -241,8 +251,8 @@ export const ItemPreviewLargeSkeleton: FC<{
                 key={`media-${item?.item_id}`}
                 randomHue={randomHue}
             /> */}
-            <div className="flex flex-col -space-y-1.5 justify-center overflow-hidden grow py-4">
-                <div className="text-base overflow-hidden text-ellipsis whitespace-nowrap">
+            <div className="flex grow flex-col justify-center -space-y-1.5 overflow-hidden py-4">
+                <div className="overflow-hidden text-ellipsis whitespace-nowrap text-base">
                     {UNKNOWN_ITEM}
                 </div>
                 {formattedItemId && (
@@ -252,7 +262,7 @@ export const ItemPreviewLargeSkeleton: FC<{
                     <ul className="flex items-center gap-2 py-2">{logos}</ul>
                 )} */}
             </div>
-            <div className="h-full flex">
+            <div className="flex h-full">
                 {/* {item?.owner_id && (
                     <UserProfile user_id={item.owner_id} variant="compact" />
                 )} */}
@@ -302,7 +312,7 @@ export const ItemPreview: FC<Properties> = ({ item_id, variant }) => {
 
     if (isError && error instanceof ApiError && error.status === 403) {
         return (
-            <div className="bg-red-50 px-2 py-0.5 border border-red-200 rounded-md">
+            <div className="rounded-md border border-red-200 bg-red-50 px-2 py-0.5">
                 Inaccessible Resource
             </div>
         );
@@ -317,7 +327,7 @@ export const ItemPreview: FC<Properties> = ({ item_id, variant }) => {
                             <Link
                                 to={`/item/${formattedItemId}`}
                                 className={clsx(
-                                    'p-1 border rounded-md flex items-center gap-2 hover:bg-black/5',
+                                    'flex items-center gap-2 rounded-md border p-1 hover:bg-black/5',
                                     isError && 'bg-red-50'
                                 )}
                                 data-testid="item-preview-avatar"
@@ -343,7 +353,7 @@ export const ItemPreview: FC<Properties> = ({ item_id, variant }) => {
                             <Link
                                 to={`/item/${formattedItemId}`}
                                 className={clsx(
-                                    'p-1.5 border cursor-pointer rounded-md inline-flex items-center gap-2 hover:bg-black/5',
+                                    'inline-flex cursor-pointer items-center gap-2 rounded-md border p-1.5 hover:bg-black/5',
                                     isError && 'bg-red-50'
                                 )}
                                 data-testid="item-preview-compact"
@@ -356,13 +366,13 @@ export const ItemPreview: FC<Properties> = ({ item_id, variant }) => {
                                     key={`media-${item?.item_id}`}
                                     randomHue={randomHue}
                                 />
-                                <span className="flex gap-0.5 items-baseline justify-start overflow-hidden">
+                                <span className="flex items-baseline justify-start gap-0.5 overflow-hidden">
                                     <span className="Text text-ellipsis whitespace-nowrap">
                                         {item?.name || UNKNOWN_ITEM}
                                     </span>
                                     {/* TODO: Figure out why -z-10 is needed to prevent overlap with user preview in logs page */}
                                     {formattedItemId && (
-                                        <span className="opacity-50 text-xs !leading-[1em] -z-10">
+                                        <span className="-z-10 text-xs !leading-[1em] opacity-50">
                                             #{formattedItemId}
                                         </span>
                                     )}
@@ -389,7 +399,7 @@ export const ItemPreview: FC<Properties> = ({ item_id, variant }) => {
                             <Link
                                 to={`/item/${formattedItemId}`}
                                 className={clsx(
-                                    'p-1.5 border cursor-pointer rounded-md flex items-center gap-2 hover:bg-black/5',
+                                    'flex cursor-pointer items-center gap-2 rounded-md border p-1.5 hover:bg-black/5',
                                     isError && 'bg-red-50'
                                 )}
                                 data-testid="item-preview-full"
@@ -400,7 +410,7 @@ export const ItemPreview: FC<Properties> = ({ item_id, variant }) => {
                                     key={`media-${item?.item_id}`}
                                     randomHue={randomHue}
                                 />
-                                <div className="flex flex-col -space-y-1.5 justify-center overflow-hidden">
+                                <div className="flex flex-col justify-center -space-y-1.5 overflow-hidden">
                                     <div className="Text overflow-hidden text-ellipsis whitespace-nowrap">
                                         {item?.name || UNKNOWN_ITEM}
                                     </div>
