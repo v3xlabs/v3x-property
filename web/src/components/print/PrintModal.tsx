@@ -37,7 +37,18 @@ export const PrintLabelModal: FC<{ label_id: string }> = ({ label_id }) => {
             <DialogDescription>
                 Print the label for the given label id.
             </DialogDescription>
-            <div>
+            <div className="space-y-4">
+                <div className="space-y-2">
+                    <div className="text-sm font-medium">Template</div>
+                    <div className="text-sm text-neutral-500">
+                        Select the template to print the label.
+                    </div>
+                    <div className="flex items-start gap-2">
+                        <div className="aspect-[9/16] h-32 rounded-sm border outline outline-offset-1 outline-blue-200"></div>
+                        <div className="aspect-square w-24 rounded-sm border"></div>
+                        <div className="aspect-video w-32 rounded-sm border"></div>
+                    </div>
+                </div>
                 <FieldSelect
                     label="Printer"
                     value={printer ?? ''}
