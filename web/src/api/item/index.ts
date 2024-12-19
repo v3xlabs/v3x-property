@@ -11,17 +11,9 @@ import { queryClient } from '@/util/query';
 
 import { useAuth } from '../auth';
 import { apiRequest, BASE_URL, getHttp } from '../core';
-import { paths } from '../schema.gen';
+import { components, paths } from '../schema.gen';
 
-export type ApiItemResponse = {
-    item_id: string;
-    owner_id: number;
-    product_id: number;
-    name?: string;
-    media?: number[];
-    created?: string;
-    modified?: string;
-};
+export type ApiItemResponse = components['schemas']['Item'];
 
 export const getItemById = (item_id: string) =>
     queryOptions({

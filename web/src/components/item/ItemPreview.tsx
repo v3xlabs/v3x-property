@@ -222,6 +222,45 @@ const ItemPreviewLarge: FC<{
     );
 };
 
+export const ItemPreviewLargeSkeleton: FC<{
+    formattedItemId?: string;
+}> = ({ formattedItemId }) => {
+    return (
+        <div
+            className={clsx(
+                'p-2 border cursor-pointer rounded-md flex items-start gap-4 hover:outline outline-1 outline-offset-1 outline-neutral-200'
+            )}
+            data-testid="item-preview-large"
+        >
+            <div className="size-32 bg-neutral-200 rounded-md animate-pulse" />
+            {/* <AvatarHolder
+                item_id={item?.item_id}
+                image={mediaUrl}
+                alt={item?.name || UNKNOWN_ITEM}
+                size="large"
+                key={`media-${item?.item_id}`}
+                randomHue={randomHue}
+            /> */}
+            <div className="flex flex-col -space-y-1.5 justify-center overflow-hidden grow py-4">
+                <div className="text-base overflow-hidden text-ellipsis whitespace-nowrap">
+                    {UNKNOWN_ITEM}
+                </div>
+                {formattedItemId && (
+                    <div className="text-sm">#{formattedItemId}</div>
+                )}
+                {/* {logos && logos.length > 0 && (
+                    <ul className="flex items-center gap-2 py-2">{logos}</ul>
+                )} */}
+            </div>
+            <div className="h-full flex">
+                {/* {item?.owner_id && (
+                    <UserProfile user_id={item.owner_id} variant="compact" />
+                )} */}
+            </div>
+        </div>
+    );
+};
+
 export const ItemPreview: FC<Properties> = ({ item_id, variant }) => {
     const { data: item, isLoading, isError, error } = useItemById(item_id);
     const { data: media } = useItemMedia(item_id);
@@ -254,7 +293,11 @@ export const ItemPreview: FC<Properties> = ({ item_id, variant }) => {
     })();
 
     if (isLoading) {
-        return <div>Loading...</div>;
+        return match({ variant })
+            .with({ variant: 'large' }, () => (
+                <ItemPreviewLargeSkeleton formattedItemId={formattedItemId} />
+            ))
+            .otherwise(() => <div>Loading...</div>);
     }
 
     if (isError && error instanceof ApiError && error.status === 403) {
