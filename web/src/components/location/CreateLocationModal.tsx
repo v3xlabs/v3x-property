@@ -1,4 +1,5 @@
 import { useForm } from '@tanstack/react-form';
+import { useNavigate } from '@tanstack/react-router';
 
 import { formatIdCasing, useInstanceSettings } from '@/api/instance_settings';
 import { useCreateLocation } from '@/api/locations';
@@ -16,6 +17,7 @@ import {
 export const CreateLocationModal = () => {
     const { data: instanceSettings } = useInstanceSettings();
     const { mutateAsync: createLocation } = useCreateLocation();
+    const navigate = useNavigate();
     const { Field, Subscribe, handleSubmit } = useForm({
         defaultValues: {
             location_id: '',
@@ -23,7 +25,9 @@ export const CreateLocationModal = () => {
             root_location_id: '',
         },
         onSubmit: async ({ value }) => {
-            await createLocation(value);
+            const response = await createLocation(value);
+
+            navigate({ to: '/location/$locationId', params: { locationId: response.location_id } });
         }
     });
 

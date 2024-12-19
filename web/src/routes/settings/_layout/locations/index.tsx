@@ -7,7 +7,7 @@ import { SpecificLocationPreview } from '@/components/location/LocationPreview';
 import { Button } from '@/components/ui/Button';
 import { Dialog, DialogTrigger } from '@/components/ui/Dialog';
 
-export const Route = createFileRoute('/settings/_layout/locations')({
+export const Route = createFileRoute('/settings/_layout/locations/')({
     component: RouteComponent,
     context() {
         return {
@@ -33,12 +33,12 @@ function RouteComponent() {
         <>
             <div className="card">
                 <p>
-                    These are the locations you have defined. A location is a
-                    place a thing can be stored. Items can also be located at a
-                    user or with another item.
+          These are the locations you have defined. A location is a place a
+          thing can be stored. Items can also be located at a user or with
+          another item.
                 </p>
             </div>
-            <ul className='space-y-2'>
+            <ul className="space-y-2">
                 {locations?.map((location) => (
                     <li key={location.location_id}>
                         <SpecificLocationPreview location={location} />

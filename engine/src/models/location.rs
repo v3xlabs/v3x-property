@@ -129,6 +129,15 @@ impl Location {
         .await
     }
 
+    pub async fn get_by_root_location_id(
+        db: &Database,
+        root_location_id: &str,
+    ) -> Result<Vec<Location>, sqlx::Error> {
+        query_as!(Location, "SELECT * FROM locations WHERE root_location_id = $1", root_location_id)
+            .fetch_all(&db.pool)
+            .await
+    }
+
     pub async fn update_item_location(
         db: &Database,
         item_id: &str,
@@ -140,7 +149,7 @@ impl Location {
             item_id,
             item_location.location_id,
             item_location.location_user_id,
-            item_location.location_item_id
+            item_location.location_item_id,
         )
         .fetch_optional(&db.pool)
         .await
