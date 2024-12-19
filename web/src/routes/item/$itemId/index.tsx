@@ -126,7 +126,7 @@ export const Route = createFileRoute('/item/$itemId/')({
                                     <LocationPreview itemLocation={location} variant='full' />
                                 </div>
                             ) : (
-                                <div>
+                                <div className="grow">
                                 This item does not have a location
                                 </div>
                             )}
