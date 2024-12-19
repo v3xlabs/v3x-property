@@ -32,6 +32,14 @@ impl Tag {
             .await
     }
 
+    pub async fn get_by_id(db: &Database, tag_id: i32) -> Result<Tag, sqlx::Error> {
+        tracing::info!("Getting tag by id: {}", tag_id);
+
+        query_as!(Tag, "SELECT * FROM tags WHERE tag_id = $1", tag_id)
+            .fetch_one(&db.pool)
+            .await
+    }
+
     pub async fn delete(db: &Database, tag_id: i32) -> Result<Tag, sqlx::Error> {
         query_as!(Tag, "DELETE FROM tags WHERE tag_id = $1 RETURNING *", tag_id)
             .fetch_one(&db.pool)

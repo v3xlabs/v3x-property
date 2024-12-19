@@ -1493,11 +1493,35 @@ export type paths = {
             path?: never;
             cookie?: never;
         };
-        get?: never;
+        /**
+         * /tags/:tag_id
+         * @description Get a tag by id
+         */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    tag_id: number;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json; charset=utf-8": components["schemas"]["Tag"];
+                    };
+                };
+            };
+        };
         put?: never;
         post?: never;
         /**
-         * /tags/{tag_id}
+         * /tags/:tag_id
          * @description Delete a tag
          */
         delete: {
@@ -2484,6 +2508,7 @@ export type components = {
             product_id?: number;
             media?: components["schemas"]["ItemUpdateMediaPayload"][];
             fields?: components["schemas"]["ItemUpdateFieldPayload"][];
+            tags?: number[];
         };
         LinkedItem: {
             item_id: string;

@@ -15,7 +15,11 @@ use super::{error::HttpError, ApiTags};
 use crate::{
     auth::{middleware::AuthUser, permissions::Action},
     models::{
-        field::kind::FieldKind, item::{field::ItemField, Item}, location::{ItemLocation, Location}, log::LogEntry, tags::Tag
+        field::kind::FieldKind,
+        item::{field::ItemField, Item},
+        location::{ItemLocation, Location},
+        log::LogEntry,
+        tags::Tag,
     },
     state::AppState,
 };
@@ -46,6 +50,7 @@ pub struct ItemUpdatePayload {
     pub product_id: Option<i32>,
     pub media: Option<Vec<ItemUpdateMediaPayload>>,
     pub fields: Option<Vec<ItemUpdateFieldPayload>>,
+    pub tags: Option<Vec<i32>>,
 }
 
 #[derive(poem_openapi::Enum, Debug, Clone, Serialize, Deserialize, PartialEq)]
@@ -118,18 +123,18 @@ impl ItemsApi {
             .map_or_else(|| Ok(()), |_| Err(HttpError::AlreadyExists))?;
 
         Item {
-                item_id: item_id.0,
-                owner_id: user.user_id(),
-                ..Default::default()
-            }
-            .insert(&state.database)
-            .await
-            .map_err(HttpError::from)?
-            .index_search(&state.search, &state.database)
-            .await
-            .map_err(HttpError::from)
-            .map_err(poem::Error::from)
-            .map(Json)
+            item_id: item_id.0,
+            owner_id: user.user_id(),
+            ..Default::default()
+        }
+        .insert(&state.database)
+        .await
+        .map_err(HttpError::from)?
+        .index_search(&state.search, &state.database)
+        .await
+        .map_err(HttpError::from)
+        .map_err(poem::Error::from)
+        .map(Json)
     }
 
     /// /item/next
@@ -295,7 +300,11 @@ impl ItemsApi {
     /// /item/:item_id/location
     ///
     /// Get the location of an Item by `item_id`
-    #[oai(path = "/item/:item_id/location", method = "get", tag = "ApiTags::Items")]
+    #[oai(
+        path = "/item/:item_id/location",
+        method = "get",
+        tag = "ApiTags::Items"
+    )]
     async fn get_item_location(
         &self,
         state: Data<&Arc<AppState>>,
@@ -315,7 +324,11 @@ impl ItemsApi {
     /// /item/:item_id/location
     ///
     /// Update the location of an Item by `item_id`
-    #[oai(path = "/item/:item_id/location", method = "patch", tag = "ApiTags::Items")]
+    #[oai(
+        path = "/item/:item_id/location",
+        method = "patch",
+        tag = "ApiTags::Items"
+    )]
     async fn update_item_location(
         &self,
         state: Data<&Arc<AppState>>,
@@ -326,9 +339,16 @@ impl ItemsApi {
         user.check_policy("item", item_id.0.to_string().as_str(), Action::Write)
             .await?;
 
-        LogEntry::new(&state.database, "item", &item_id.0, user.user_id().unwrap(), "update_location", &serde_json::to_string(&data.0).unwrap())
-            .await
-            .map_err(HttpError::from)?;
+        LogEntry::new(
+            &state.database,
+            "item",
+            &item_id.0,
+            user.user_id().unwrap(),
+            "update_location",
+            &serde_json::to_string(&data.0).unwrap(),
+        )
+        .await
+        .map_err(HttpError::from)?;
 
         Location::update_item_location(&state.database, &item_id.0, &data.0)
             .await

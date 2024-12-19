@@ -220,6 +220,25 @@ impl Item {
             .await?;
         }
 
+        if let Some(tags) = &data.tags {
+            query!(
+                "DELETE FROM items_to_tags WHERE item_id = $1",
+                item_id
+            )
+            .execute(&mut *tx)
+            .await?;
+
+            for tag in tags {
+                query!(
+                    "INSERT INTO items_to_tags (item_id, tag_id) VALUES ($1, $2) ON CONFLICT DO NOTHING",
+                    item_id,
+                    tag
+                )
+                .execute(&mut *tx)
+                .await?;
+            }
+        }
+
         if let Some(media) = &data.media {
             for media in media {
                 match media.status {

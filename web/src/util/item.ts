@@ -52,6 +52,7 @@ export const itemDiff = (
             item.product_id !== base.product_id ? item.product_id : undefined,
         fields,
         media,
+        tags: item.tags !== base.tags ? item.tags : undefined,
     };
 };
 

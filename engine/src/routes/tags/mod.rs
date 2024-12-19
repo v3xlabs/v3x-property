@@ -41,10 +41,22 @@ impl TagsApi {
             .map_err(poem::Error::from)
     }
 
-    /// /tags/{tag_id}
+    /// /tags/:tag_id
+    ///
+    /// Get a tag by id
+    #[oai(path = "/tags/:tag_id", method = "get", tag = "ApiTags::Tags")]
+    async fn get_tag_by_id(&self, state: Data<&Arc<AppState>>, tag_id: Path<i32>) -> Result<Json<Tag>> {
+        Tag::get_by_id(&state.database, tag_id.0)
+            .await
+            .map(Json)
+            .map_err(HttpError::from)
+            .map_err(poem::Error::from)
+    }
+
+    /// /tags/:tag_id
     ///
     /// Delete a tag
-    #[oai(path = "/tags/{tag_id}", method = "delete", tag = "ApiTags::Tags")]
+    #[oai(path = "/tags/:tag_id", method = "delete", tag = "ApiTags::Tags")]
     async fn delete_tag(
         &self,
         state: Data<&Arc<AppState>>,

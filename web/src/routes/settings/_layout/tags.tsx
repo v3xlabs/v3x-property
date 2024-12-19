@@ -1,5 +1,8 @@
 import { createFileRoute } from '@tanstack/react-router';
 
+import { useTags } from '@/api/tags';
+import { Tag } from '@/components/Tag';
+
 export const Route = createFileRoute('/settings/_layout/tags')({
     component: RouteComponent,
     context(context) {
@@ -10,5 +13,16 @@ export const Route = createFileRoute('/settings/_layout/tags')({
 });
 
 function RouteComponent() {
-    return <div className="card">Hello "/settings/tags"!</div>;
+    const { data: tags } = useTags();
+
+    return (
+        <>
+            <div className="card">All tags show up below here.</div>
+            <div className="card flex flex-wrap gap-2">
+                {tags?.map((tag) => (
+                    <Tag key={tag.tag_id} tag_id={tag.tag_id} />
+                ))}
+            </div>
+        </>
+    );
 }

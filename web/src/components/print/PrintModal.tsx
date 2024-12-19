@@ -17,7 +17,7 @@ import {
 } from '../ui/Dialog';
 import { Tooltip } from '../ui/Tooltip';
 
-export const PrintLabelModal: FC<{ label_id: string }> = ({ label_id }) => {
+const PrintLabelModalContent = () => {
     const { data: operators } = useOperators();
     const { data: capabilities } = useOperatorCapabilities(operators?.[0]?.operator_endpoint);
 
@@ -29,6 +29,36 @@ export const PrintLabelModal: FC<{ label_id: string }> = ({ label_id }) => {
         }
     }, [capabilities]);
 
+    return (
+        <FieldSelect
+            label="Printer"
+            value={printer ?? ''}
+            options={capabilities?.printers?.printers?.map((printer) => ({
+                label: printer.name,
+                value: printer.name,
+            } as FieldOption)) ?? []}
+            onChange={(value) => {
+                setPrinter(value);
+
+                return true;
+            }}
+            errorMessage={
+                !capabilities?.printers?.printers?.find((p) => p.name)
+                    ? 'No printers found'
+                    : undefined
+            }
+            description={
+                <>
+                            You can connect a printer by running an operator <Tooltip>Operator</Tooltip>
+
+                </>
+            }
+            justifyBetween
+        />
+    );
+};
+
+export const PrintLabelModal: FC<{ label_id: string }> = ({ label_id }) => {
     return (
         <DialogContent>
             <DialogHeader>
@@ -49,31 +79,7 @@ export const PrintLabelModal: FC<{ label_id: string }> = ({ label_id }) => {
                         <div className="aspect-video w-32 rounded-sm border"></div>
                     </div>
                 </div>
-                <FieldSelect
-                    label="Printer"
-                    value={printer ?? ''}
-                    options={capabilities?.printers?.printers?.map((printer) => ({
-                        label: printer.name,
-                        value: printer.name,
-                    } as FieldOption)) ?? []}
-                    onChange={(value) => {
-                        setPrinter(value);
-
-                        return true;
-                    }}
-                    errorMessage={
-                        !capabilities?.printers?.printers?.find((p) => p.name)
-                            ? 'No printers found'
-                            : undefined
-                    }
-                    description={
-                        <>
-                            You can connect a printer by running an operator <Tooltip>Operator</Tooltip>
-
-                        </>
-                    }
-                    justifyBetween
-                />
+                <PrintLabelModalContent />
             </div>
             <DialogFooter>
                 <Button>Print</Button>

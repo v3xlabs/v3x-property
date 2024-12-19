@@ -24,6 +24,7 @@ import { DynamicIcon } from '@/components/DynamicIcon';
 import { BaseInput } from '@/components/input/BaseInput';
 import { ItemIntelligentSuggest } from '@/components/item/ItemIntelligentSuggest';
 import { EditMediaGallery } from '@/components/media/EditMediaGallery';
+import { Tag } from '@/components/Tag';
 import * as AlertDialog from '@/components/ui/AlertDialog';
 import { Button } from '@/components/ui/Button';
 import * as Command from '@/components/ui/Command';
@@ -248,6 +249,7 @@ export const Route = createFileRoute('/item/$itemId/edit')({
                                 null
                                 : field.value,
                     })),
+                    tags: value.tags,
                 };
 
                 const diff = itemDiff(payload, defaultValue);
@@ -350,6 +352,27 @@ export const Route = createFileRoute('/item/$itemId/edit')({
                                         onChange={handleChange}
                                         onBlur={handleBlur}
                                     />
+                                )}
+                            </Field>
+                            <Field name="tags" mode="array">
+                                {({ handleChange, state: { value } }) => (
+                                    <div>
+                                        <div className="text-sm font-medium">Tags</div>
+                                        <ul className="flex gap-2">
+                                            {value?.map((tag) => (
+                                                <Tag key={tag} tag_id={tag} />
+                                            ))}
+                                        </ul>
+                                        <Button
+                                            type="button"
+                                            onClick={() => {
+                                                handleChange([
+                                                    ...(value ?? []),
+                                                    1,
+                                                ]);
+                                            }}
+                                        >Add Tag</Button>
+                                    </div>
                                 )}
                             </Field>
                             <hr />
