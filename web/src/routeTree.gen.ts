@@ -35,6 +35,8 @@ import { Route as SettingsLayoutPatImport } from './routes/settings/_layout/pat'
 import { Route as SettingsLayoutIntelligenceImport } from './routes/settings/_layout/intelligence'
 import { Route as SettingsLayoutBuildImport } from './routes/settings/_layout/build'
 import { Route as ItemItemIdEditImport } from './routes/item/$itemId/edit'
+import { Route as SettingsLayoutTemplatesIndexImport } from './routes/settings/_layout/templates/index'
+import { Route as SettingsLayoutOperatorsIndexImport } from './routes/settings/_layout/operators/index'
 import { Route as SettingsLayoutLogsIndexImport } from './routes/settings/_layout/logs/index'
 import { Route as SettingsLayoutLocationsIndexImport } from './routes/settings/_layout/locations/index'
 import { Route as SettingsLayoutFieldsIndexImport } from './routes/settings/_layout/fields/index'
@@ -184,6 +186,20 @@ const ItemItemIdEditRoute = ItemItemIdEditImport.update({
   path: '/item/$itemId/edit',
   getParentRoute: () => rootRoute,
 } as any)
+
+const SettingsLayoutTemplatesIndexRoute =
+  SettingsLayoutTemplatesIndexImport.update({
+    id: '/templates/',
+    path: '/templates/',
+    getParentRoute: () => SettingsLayoutRoute,
+  } as any)
+
+const SettingsLayoutOperatorsIndexRoute =
+  SettingsLayoutOperatorsIndexImport.update({
+    id: '/operators/',
+    path: '/operators/',
+    getParentRoute: () => SettingsLayoutRoute,
+  } as any)
 
 const SettingsLayoutLogsIndexRoute = SettingsLayoutLogsIndexImport.update({
   id: '/logs/',
@@ -404,6 +420,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SettingsLayoutLogsIndexImport
       parentRoute: typeof SettingsLayoutImport
     }
+    '/settings/_layout/operators/': {
+      id: '/settings/_layout/operators/'
+      path: '/operators'
+      fullPath: '/settings/operators'
+      preLoaderRoute: typeof SettingsLayoutOperatorsIndexImport
+      parentRoute: typeof SettingsLayoutImport
+    }
+    '/settings/_layout/templates/': {
+      id: '/settings/_layout/templates/'
+      path: '/templates'
+      fullPath: '/settings/templates'
+      preLoaderRoute: typeof SettingsLayoutTemplatesIndexImport
+      parentRoute: typeof SettingsLayoutImport
+    }
   }
 }
 
@@ -423,6 +453,8 @@ interface SettingsLayoutRouteChildren {
   SettingsLayoutFieldsIndexRoute: typeof SettingsLayoutFieldsIndexRoute
   SettingsLayoutLocationsIndexRoute: typeof SettingsLayoutLocationsIndexRoute
   SettingsLayoutLogsIndexRoute: typeof SettingsLayoutLogsIndexRoute
+  SettingsLayoutOperatorsIndexRoute: typeof SettingsLayoutOperatorsIndexRoute
+  SettingsLayoutTemplatesIndexRoute: typeof SettingsLayoutTemplatesIndexRoute
 }
 
 const SettingsLayoutRouteChildren: SettingsLayoutRouteChildren = {
@@ -439,6 +471,8 @@ const SettingsLayoutRouteChildren: SettingsLayoutRouteChildren = {
   SettingsLayoutFieldsIndexRoute: SettingsLayoutFieldsIndexRoute,
   SettingsLayoutLocationsIndexRoute: SettingsLayoutLocationsIndexRoute,
   SettingsLayoutLogsIndexRoute: SettingsLayoutLogsIndexRoute,
+  SettingsLayoutOperatorsIndexRoute: SettingsLayoutOperatorsIndexRoute,
+  SettingsLayoutTemplatesIndexRoute: SettingsLayoutTemplatesIndexRoute,
 }
 
 const SettingsLayoutRouteWithChildren = SettingsLayoutRoute._addFileChildren(
@@ -484,6 +518,8 @@ export interface FileRoutesByFullPath {
   '/settings/fields': typeof SettingsLayoutFieldsIndexRoute
   '/settings/locations': typeof SettingsLayoutLocationsIndexRoute
   '/settings/logs': typeof SettingsLayoutLogsIndexRoute
+  '/settings/operators': typeof SettingsLayoutOperatorsIndexRoute
+  '/settings/templates': typeof SettingsLayoutTemplatesIndexRoute
 }
 
 export interface FileRoutesByTo {
@@ -512,6 +548,8 @@ export interface FileRoutesByTo {
   '/settings/fields': typeof SettingsLayoutFieldsIndexRoute
   '/settings/locations': typeof SettingsLayoutLocationsIndexRoute
   '/settings/logs': typeof SettingsLayoutLogsIndexRoute
+  '/settings/operators': typeof SettingsLayoutOperatorsIndexRoute
+  '/settings/templates': typeof SettingsLayoutTemplatesIndexRoute
 }
 
 export interface FileRoutesById {
@@ -543,6 +581,8 @@ export interface FileRoutesById {
   '/settings/_layout/fields/': typeof SettingsLayoutFieldsIndexRoute
   '/settings/_layout/locations/': typeof SettingsLayoutLocationsIndexRoute
   '/settings/_layout/logs/': typeof SettingsLayoutLogsIndexRoute
+  '/settings/_layout/operators/': typeof SettingsLayoutOperatorsIndexRoute
+  '/settings/_layout/templates/': typeof SettingsLayoutTemplatesIndexRoute
 }
 
 export interface FileRouteTypes {
@@ -574,6 +614,8 @@ export interface FileRouteTypes {
     | '/settings/fields'
     | '/settings/locations'
     | '/settings/logs'
+    | '/settings/operators'
+    | '/settings/templates'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -601,6 +643,8 @@ export interface FileRouteTypes {
     | '/settings/fields'
     | '/settings/locations'
     | '/settings/logs'
+    | '/settings/operators'
+    | '/settings/templates'
   id:
     | '__root__'
     | '/'
@@ -630,6 +674,8 @@ export interface FileRouteTypes {
     | '/settings/_layout/fields/'
     | '/settings/_layout/locations/'
     | '/settings/_layout/logs/'
+    | '/settings/_layout/operators/'
+    | '/settings/_layout/templates/'
   fileRoutesById: FileRoutesById
 }
 
@@ -727,7 +773,9 @@ export const routeTree = rootRoute
         "/settings/_layout/locations/explorer",
         "/settings/_layout/fields/",
         "/settings/_layout/locations/",
-        "/settings/_layout/logs/"
+        "/settings/_layout/logs/",
+        "/settings/_layout/operators/",
+        "/settings/_layout/templates/"
       ]
     },
     "/user/$userId": {
@@ -801,6 +849,14 @@ export const routeTree = rootRoute
     },
     "/settings/_layout/logs/": {
       "filePath": "settings/_layout/logs/index.tsx",
+      "parent": "/settings/_layout"
+    },
+    "/settings/_layout/operators/": {
+      "filePath": "settings/_layout/operators/index.tsx",
+      "parent": "/settings/_layout"
+    },
+    "/settings/_layout/templates/": {
+      "filePath": "settings/_layout/templates/index.tsx",
       "parent": "/settings/_layout"
     }
   }
