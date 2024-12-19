@@ -93,11 +93,11 @@ export const Route = createFileRoute('/item/$itemId/')({
                     </div>
                 }
             >
-                <div className="card no-padding pt-4">
+                <div className="card no-padding space-y-4 py-4">
                     <div className="px-4">
                         <MediaGallery media_ids={media.data} />
                     </div>
-                    <div className="p-4">
+                    <div className="px-4">
                         {item.data?.owner_id && (
                             <div>
                                 <h3 className="font-bold">Owner</h3>
@@ -107,7 +107,7 @@ export const Route = createFileRoute('/item/$itemId/')({
                     </div>
                     <ItemFields item_id={itemId} />
                     {tags && tags.length > 0 && (
-                        <div className="p-4">
+                        <div className="px-4">
                             <h3>Tags</h3>
                             <div className="flex flex-wrap gap-2">
                                 {tags?.map((tag) => (

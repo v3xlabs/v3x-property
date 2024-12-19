@@ -30,9 +30,13 @@ export const ItemFields: FC<{ item_id: string }> = ({ item_id }) => {
         AMAZON_DOMAINS[0].value
     );
 
+    if (fields?.length === 0) {
+        return;
+    }
+
     return (
-        <div className="p-4">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="px-4">
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                 {fields?.map((field) =>
                     match(field)
                         .with({ definition_id: 'asin' }, (field) => (
@@ -43,7 +47,7 @@ export const ItemFields: FC<{ item_id: string }> = ({ item_id }) => {
                                 <div className="card no-padding px-4 py-2">
                                     {field.value as string}
                                 </div>
-                                <div className="flex items-center gap-2 justify-between">
+                                <div className="flex items-center justify-between gap-2">
                                     <Button variant="default" asChild>
                                         <Link
                                             to={`https://${selectedDomain}/dp/${field.value}`}
