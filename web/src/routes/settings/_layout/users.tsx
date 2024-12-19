@@ -31,7 +31,7 @@ function RouteComponent() {
                         </li>
                     ))}
             </ul>
-            <p className="text-sm text-gray-500 px-4">
+            <p className="px-4 text-sm text-gray-500">
                 With OAuth configured users will get automatically added here as
                 soon as they log in the for the first time.
             </p>

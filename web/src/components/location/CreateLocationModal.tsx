@@ -5,6 +5,7 @@ import { formatIdCasing, useInstanceSettings } from '@/api/instance_settings';
 import { useCreateLocation } from '@/api/locations';
 
 import { BaseInput } from '../input/BaseInput';
+import { LocationInput } from '../input/LocationInput';
 import { Button } from '../ui/Button';
 import {
     DialogContent,
@@ -86,12 +87,17 @@ export const CreateLocationModal = () => {
                         />
                         <Field name="root_location_id"
                             children={({ handleChange, handleBlur, state, }) => (
-                                <BaseInput label="Root Location ID"
-                                    onChange={handleChange}
-                                    onBlur={handleBlur}
+                                <LocationInput
+                                    name="Root Location"
+                                    onChange={(value) => {
+                                        handleChange(value.replace('location:', ''));
+
+                                        return true;
+                                    }}
+                                    forceCategory='location'
                                     value={state.value}
+                                    description='This is the parent location of this location. This is used to organize for examples shelves within a cabinet, or cabinets within a room.'
                                     errorMessage={state.meta.errors.join(', ')}
-                                    description=""
                                 />
                             )}
                         />

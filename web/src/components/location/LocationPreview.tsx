@@ -10,11 +10,12 @@ import { UserProfile } from '../UserProfile';
 
 export const LocationPreview: FC<{
     itemLocation?: ItemLocation;
-}> = ({ itemLocation }) => {
+    variant?: 'compact' | 'full';
+}> = ({ itemLocation, variant = 'full' }) => {
     return match(itemLocation)
         .with({ location_id: P.string }, ({ location_id }) => <SpecificLocationPreview location_id={location_id} />)
-        .with({ location_item_id: P.string }, ({ location_item_id }) => <ItemPreview item_id={location_item_id} />)
-        .with({ location_user_id: P.number }, ({ location_user_id }) => <UserProfile user_id={location_user_id} />)
+        .with({ location_item_id: P.string }, ({ location_item_id }) => <ItemPreview item_id={location_item_id} variant={variant} />)
+        .with({ location_user_id: P.number }, ({ location_user_id }) => <UserProfile user_id={location_user_id} variant={variant} />)
         .otherwise(() => <></>);
 };
 

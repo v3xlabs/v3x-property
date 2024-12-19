@@ -1,6 +1,6 @@
 import { useVirtualizer } from '@tanstack/react-virtual';
 import clsx from 'clsx';
-import { ReactNode, useEffect, useMemo, useRef, useState } from 'react';
+import { FC, ReactNode, useEffect, useMemo, useRef, useState } from 'react';
 import { useId } from 'react';
 import { FaArrowsUpDown } from 'react-icons/fa6';
 import { FiChevronRight } from 'react-icons/fi';
@@ -21,21 +21,7 @@ export type FieldOption = {
     back?: boolean;
 };
 
-export const FieldSelect = ({
-    value,
-    onChange,
-    label,
-    options,
-    description,
-    errorMessage,
-    emptyMessage,
-    placeholder,
-    onSearch,
-    justifyBetween = false,
-    suffix,
-    searchFn,
-    popoverWidth = '200px',
-}: {
+export type FieldSelectProps = {
     value: string;
     onChange?: (_value: string) => boolean;
     onSearch?: (_search: string) => void;
@@ -50,6 +36,22 @@ export const FieldSelect = ({
     suffix?: ReactNode;
     popoverWidth?: string;
     searchFn?: (_search: string) => FieldOption[];
+};
+
+export const FieldSelect: FC<FieldSelectProps> = ({
+    value,
+    onChange,
+    label,
+    options,
+    description,
+    errorMessage,
+    emptyMessage,
+    placeholder,
+    onSearch,
+    justifyBetween = false,
+    suffix,
+    searchFn,
+    popoverWidth = '200px',
 }) => {
     const [open, setOpen] = useState(false);
     const id = useId();
@@ -61,8 +63,6 @@ export const FieldSelect = ({
     const [nonce, setNonce] = useState(0);
 
     const filteredOptions = useMemo(() => {
-        console.log('nonce', nonce);
-
         if (search == '') return options;
 
         if (searchFn) {
@@ -121,8 +121,8 @@ export const FieldSelect = ({
                         >
                             {value
                                 ? options.find(
-                                      (option) => option.value === value
-                                  )?.label
+                                    (option) => option.value === value
+                                )?.label
                                 : 'Select an option...'}
                             <FaArrowsUpDown className="opacity-50" />
                         </Button>
@@ -147,10 +147,10 @@ export const FieldSelect = ({
                             <Command.List>
                                 {rowVirtualizer.getVirtualItems().length ===
                                     0 && (
-                                    <Command.Empty>
-                                        {emptyMessage || 'No options found.'}
-                                    </Command.Empty>
-                                )}
+                                        <Command.Empty>
+                                            {emptyMessage || 'No options found.'}
+                                        </Command.Empty>
+                                    )}
                                 <div
                                     ref={parentReference}
                                     className="max-h-[200px] overflow-y-auto w-full"
@@ -166,7 +166,7 @@ export const FieldSelect = ({
                                             .map((virtualRow) => {
                                                 const option =
                                                     filteredOptions[
-                                                        virtualRow.index
+                                                    virtualRow.index
                                                     ];
 
                                                 return (
@@ -191,8 +191,8 @@ export const FieldSelect = ({
                                                         className={clsx(
                                                             'absolute top-0 left-0 w-full',
                                                             justifyBetween &&
-                                                                !option.back &&
-                                                                'flex justify-between items-center'
+                                                            !option.back &&
+                                                            'flex justify-between items-center'
                                                         )}
                                                         style={{
                                                             height: `${virtualRow.size}px`,

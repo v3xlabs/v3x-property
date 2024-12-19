@@ -14,6 +14,7 @@ import { FiEdit } from 'react-icons/fi';
 import { formatId, getInstanceSettings } from '@/api/instance_settings';
 import { getItemById, getItemLocation, getItemMedia, getItemTags } from '@/api/item';
 import { getPolicy } from '@/api/policy';
+import { LocationInputExecutive } from '@/components/input/LocationInput';
 import { ItemFields } from '@/components/item/ItemFields';
 import { LocationPreview } from '@/components/location/LocationPreview';
 import { ItemLogSection } from '@/components/logs/ItemLogSection';
@@ -104,6 +105,7 @@ export const Route = createFileRoute('/item/$itemId/')({
                         {/* {item.data?. && ( */}
                         <div className="grow space-y-2">
                             <h3 className="font-bold">Location</h3>
+                            <LocationInputExecutive item_id={itemId} />
                             {
                                 location ? (
                                     <LocationPreview itemLocation={location} />
@@ -113,7 +115,9 @@ export const Route = createFileRoute('/item/$itemId/')({
                                     </div>
                                 )}
                         </div>
-                        <YeetButton item_id={itemId} />
+                        <div className="space-y-2">
+                            <YeetButton item_id={itemId} />
+                        </div>
                         {/* )} */}
                     </div>
                     <ItemFields item_id={itemId} />

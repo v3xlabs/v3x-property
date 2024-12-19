@@ -232,6 +232,10 @@ export const useUpdateItemLocation = () => {
                 queryKey: ['item', '{item_id}', item_id, 'location'],
             });
 
+            queryClient.invalidateQueries({
+                queryKey: ['item', '{item_id}', item_id, 'logs'],
+            });
+
             return response.data;
         },
     });

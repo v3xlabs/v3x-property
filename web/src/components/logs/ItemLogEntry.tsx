@@ -59,15 +59,22 @@ export const ItemLogEntry = ({
                                         />
                                     </>
                                 ))
-                                .with({ action: 'update_location' }, () => (
-                                    <>
-                                        <span>Moved by</span>
-                                        <UserProfile
-                                            user_id={log.user_id}
-                                            variant="compact"
-                                        />
-                                    </>
-                                ))
+                                .with({ action: 'update_location' }, () => {                
+                                    const itemLocation = JSON.parse(log.data) as ItemLocation;
+                    
+                                    return (
+                                        <>
+                                            <span>Moved by</span>
+                                            <UserProfile
+                                                user_id={log.user_id}
+                                                variant="compact"
+                                            />
+                                            <span>
+                                                to
+                                            </span>
+                                            <LocationPreview itemLocation={itemLocation} variant='compact' />
+                                        </>
+                                    );})
                                 .otherwise(() => log.action)}
                         </div>
                     </div>
@@ -75,16 +82,6 @@ export const ItemLogEntry = ({
             </div>
             {match({ action: log.action })
                 .with({ action: 'edit' }, () => <ItemEditLogData log={log} />)
-                .with({ action: 'update_location' }, () => {
-                    const itemLocation = JSON.parse(log.data ) as ItemLocation;
-
-                    return (
-                        <div>
-                            <span>Location</span>
-                            <LocationPreview itemLocation={itemLocation} />
-                        </div>
-                    );
-                })
                 .otherwise(() => (
                     <></>
                 ))}

@@ -137,7 +137,7 @@ const AddField = (properties: {
                                         {field.icon && (
                                             <DynamicIcon
                                                 icon={field.icon}
-                                                className="size-4 aspect-square"
+                                                className="aspect-square size-4"
                                             />
                                         )}
                                         {field.name}
@@ -145,18 +145,18 @@ const AddField = (properties: {
                                 ))}
                             {search.length > 0 &&
                                 /^[\dA-Za-z]+$/.test(search) && (
-                                    <Command.Item
-                                        value={`custom-${search}`}
-                                        onSelect={() => {
-                                            properties.onSelect({
-                                                definition_id: search,
-                                            } as any);
-                                            setOpen(false);
-                                        }}
-                                    >
+                                <Command.Item
+                                    value={`custom-${search}`}
+                                    onSelect={() => {
+                                        properties.onSelect({
+                                            definition_id: search,
+                                        } as any);
+                                        setOpen(false);
+                                    }}
+                                >
                                         Create '{search}'
-                                    </Command.Item>
-                                )}
+                                </Command.Item>
+                            )}
                         </Command.Group>
                     </Command.List>
                 </Command.Root>
@@ -245,7 +245,7 @@ export const Route = createFileRoute('/item/$itemId/edit')({
                         value:
                             field.value === EMPTY_VALUE || field.value === ''
                                 ? // eslint-disable-next-line unicorn/no-null
-                                  null
+                                null
                                 : field.value,
                     })),
                 };
@@ -317,7 +317,7 @@ export const Route = createFileRoute('/item/$itemId/edit')({
                                 />
                             )}
                         />
-                        <div className="px-2 pt-4 space-y-4">
+                        <div className="space-y-4 px-2 pt-4">
                             <BaseInput
                                 label="Item Id"
                                 value={item.item_id}
@@ -442,7 +442,7 @@ export const Route = createFileRoute('/item/$itemId/edit')({
                             </Field>
                         </div>
                     </div>
-                    <div className="flex gap-2 justify-end">
+                    <div className="flex justify-end gap-2">
                         {(instanceSettings.modules.intelligence?.gemini ||
                             instanceSettings.modules.intelligence?.ollama) && (
                             <ItemIntelligentSuggest itemId={item.item_id} />
@@ -469,8 +469,8 @@ export const Route = createFileRoute('/item/$itemId/edit')({
                         />
                     </div>
                 </form>
-                <div className="border-2 border-dashed rounded-md p-4 border-red-300 mt-8">
-                    <h2 className="text-red-500 font-bold">Danger Zone</h2>
+                <div className="mt-8 rounded-md border-2 border-dashed border-red-300 p-4">
+                    <h2 className="font-bold text-red-500">Danger Zone</h2>
                     <p>
                         This action cannot be undone. This will permanently
                         delete this item.

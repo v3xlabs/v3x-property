@@ -67,6 +67,28 @@ export const getLocationItems = (location_id?: string) =>
 export const useLocationItems = (location_id?: string) =>
     useQuery(getLocationItems(location_id));
 
+export const getLocationLocations = (location_id?: string) =>
+    queryOptions({
+        queryKey: ['location_locations', location_id],
+        async queryFn() {
+            if (!location_id) {
+                return;
+            }
+
+            const response = await apiRequest('/location/{location_id}/locations', 'get', {
+                path: {
+                    location_id,
+                }
+            });
+
+            return response.data;
+        },
+        enabled: !!location_id,
+    });
+
+export const useLocationLocations = (location_id?: string) =>
+    useQuery(getLocationLocations(location_id));
+
 export const useCreateLocation = () => useMutation({
     mutationFn: async (location: Location) => {
         const response = await apiRequest('/location', 'post', {

@@ -914,6 +914,46 @@ export type paths = {
         patch?: never;
         trace?: never;
     };
+    "/location/{location_id}/locations": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * /location/:location_id/locations
+         * @description Get all child locations of a location
+         */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    location_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json; charset=utf-8": components["schemas"]["Location"][];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/media": {
         parameters: {
             query?: never;

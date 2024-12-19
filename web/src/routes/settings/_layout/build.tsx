@@ -16,7 +16,7 @@ function RouteComponent() {
     return (
         <>
             <BuildDetails />
-            <p className="text-sm text-gray-500 px-4 flex items-center gap-1">
+            <p className="flex items-center gap-1 px-4 text-sm text-gray-500">
                 We thank you for using open-source software.{' '}
                 <Link
                     href="https://v3x.company"

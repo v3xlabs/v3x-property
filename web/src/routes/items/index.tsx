@@ -31,7 +31,7 @@ export const ItemsOverviewPage = () => {
             title="Items"
             width="5xl"
             suffix={
-                <div className="flex justify-end items-center gap-2">
+                <div className="flex items-center justify-end gap-2">
                     <Button variant="default" size="icon" asChild>
                         <Link to="/create">
                             <FaPlus />

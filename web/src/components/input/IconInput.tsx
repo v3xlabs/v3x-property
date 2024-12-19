@@ -40,9 +40,9 @@ export const IconInput = ({
             ...([
                 ['', 'feather'].includes(category || '')
                     ? {
-                          type: 'feather',
-                          value: { feather: featherIcons?.svgs },
-                      }
+                        type: 'feather',
+                        value: { feather: featherIcons?.svgs },
+                    }
                     : undefined,
                 ['', 'fa6'].includes(category || '')
                     ? { type: 'fa6', value: iconData?.svgs }
@@ -62,7 +62,7 @@ export const IconInput = ({
                                                 '$ITEM',
                                                 icon
                                             )}
-                                            className="size-4 aspect-square"
+                                            className="aspect-square size-4"
                                             key={`${type}:${category}/${icon}`}
                                         />
                                     ),
@@ -130,7 +130,7 @@ export const IconInput = ({
             suffix={
                 <DynamicIcon
                     icon={value ?? ''}
-                    className="size-6 aspect-square my-auto"
+                    className="my-auto aspect-square size-6"
                 />
             }
             popoverWidth="420"
