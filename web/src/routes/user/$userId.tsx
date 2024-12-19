@@ -2,6 +2,7 @@ import { createFileRoute, useParams } from '@tanstack/react-router';
 
 import { useUserById, useUserInventory } from '@/api/user';
 import { ItemPreview } from '@/components/item/ItemPreview';
+import { UserProfile } from '@/components/UserProfile';
 import { SCPage } from '@/layouts/SimpleCenterPage';
 
 export const Route = createFileRoute('/user/$userId')({
@@ -14,12 +15,12 @@ export const Route = createFileRoute('/user/$userId')({
         return (
             <SCPage title="User Profile">
                 <div className="flex flex-col gap-4">
-                    <div>{user?.name}</div>
+                    <UserProfile user_id={user_id} />
                     <div>
                         <h2 className="h2">Items at this location</h2>
                         {
                             inventory && inventory.length > 0 ? (
-                                <ul>
+                                <ul className="space-y-2">
                                     {
                                         inventory.map((item) => (
                                             <li key={item.item_id}>

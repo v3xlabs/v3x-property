@@ -21,14 +21,14 @@ export type FieldOption = {
     back?: boolean;
 };
 
-export type FieldSelectProps = {
+export type FieldSelectProperties = {
     value: string;
     onChange?: (_value: string) => boolean;
     onSearch?: (_search: string) => void;
     label?: string;
     options: FieldOption[];
 
-    description?: string;
+    description?: ReactNode;
     errorMessage?: string;
     emptyMessage?: string;
     placeholder?: string;
@@ -38,7 +38,7 @@ export type FieldSelectProps = {
     searchFn?: (_search: string) => FieldOption[];
 };
 
-export const FieldSelect: FC<FieldSelectProps> = ({
+export const FieldSelect: FC<FieldSelectProperties> = ({
     value,
     onChange,
     label,
@@ -102,7 +102,7 @@ export const FieldSelect: FC<FieldSelectProps> = ({
     }, [open]);
 
     return (
-        <div className="space-y-2 w-full">
+        <div className="w-full space-y-2">
             {label && <Label htmlFor={id}>{label}</Label>}
             <div
                 className={clsx(
@@ -147,16 +147,16 @@ export const FieldSelect: FC<FieldSelectProps> = ({
                             <Command.List>
                                 {rowVirtualizer.getVirtualItems().length ===
                                     0 && (
-                                        <Command.Empty>
-                                            {emptyMessage || 'No options found.'}
-                                        </Command.Empty>
-                                    )}
+                                    <Command.Empty>
+                                        {emptyMessage || 'No options found.'}
+                                    </Command.Empty>
+                                )}
                                 <div
                                     ref={parentReference}
-                                    className="max-h-[200px] overflow-y-auto w-full"
+                                    className="max-h-[200px] w-full overflow-y-auto"
                                 >
                                     <div
-                                        className="w-full relative"
+                                        className="relative w-full"
                                         style={{
                                             height: `${rowVirtualizer.getTotalSize()}px`,
                                         }}
@@ -166,7 +166,7 @@ export const FieldSelect: FC<FieldSelectProps> = ({
                                             .map((virtualRow) => {
                                                 const option =
                                                     filteredOptions[
-                                                    virtualRow.index
+                                                        virtualRow.index
                                                     ];
 
                                                 return (
@@ -189,10 +189,10 @@ export const FieldSelect: FC<FieldSelectProps> = ({
                                                             }
                                                         }}
                                                         className={clsx(
-                                                            'absolute top-0 left-0 w-full',
+                                                            'absolute left-0 top-0 w-full',
                                                             justifyBetween &&
                                                             !option.back &&
-                                                            'flex justify-between items-center'
+                                                            'flex items-center justify-between'
                                                         )}
                                                         style={{
                                                             height: `${virtualRow.size}px`,

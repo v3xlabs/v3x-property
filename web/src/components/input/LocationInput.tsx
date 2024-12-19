@@ -6,7 +6,7 @@ import { useItemLocation, useUpdateItemLocation } from '@/api/item';
 import { useLocations } from '@/api/locations';
 import { useUsers } from '@/api/user';
 
-import { FieldOption, FieldSelect, FieldSelectProps as FieldSelectProperties } from '../form/Select';
+import { FieldOption, FieldSelect, FieldSelectProperties as FieldSelectProperties } from '../form/Select';
 
 export const LocationInput: FC<{ value: string, name?: string, forceCategory?: string, onChange: (_value: string) => void } & Partial<FieldSelectProperties>> = ({ value, name, forceCategory, onChange, ...properties }) => {
     const { data: locations } = useLocations();

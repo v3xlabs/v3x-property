@@ -13,13 +13,18 @@ export type PrinterInfo = {
     metadata: Record<string, string>;
 };
 
-export const getOperatorCapabilities = (endpoint: string) => queryOptions({
-    queryKey: ['operator', 'capabilities', '{endpoint}', endpoint],
+export const getOperatorCapabilities = (endpoint?: string) => queryOptions({
+    queryKey: ['operator', 'capabilities', endpoint],
     queryFn: async () => {
+        if (!endpoint) {
+            return;
+        }
+
         const response = await fetch(`${endpoint}/api/capabilities`);
 
         return await response.json() as OperatorCapabilities;
     },
+    enabled: !!endpoint,
 });
 
-export const useOperatorCapabilities = (endpoint: string) => useQuery(getOperatorCapabilities(endpoint));
+export const useOperatorCapabilities = (endpoint?: string) => useQuery(getOperatorCapabilities(endpoint));
