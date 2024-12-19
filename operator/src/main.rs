@@ -1,21 +1,15 @@
-// use brother_ql_rs::printer::ThermalPrinter;
-
 use std::sync::Arc;
 
-use brother_ql_rs::printer::ThermalPrinter;
 use poem::{
     get, handler, listener::TcpListener, middleware::Cors, EndpointExt as _, Route, Server,
 };
-use poem_openapi::{payload::Html, Object, OpenApi, OpenApiService};
+use poem_openapi::{payload::Html, OpenApi, OpenApiService};
 use reqwest::Client;
 use serde::{Deserialize, Serialize};
 use state::AppState;
 use tracing::info;
 
-use crate::{
-    label::Label,
-    template::{LabelPrintable, LabelTemplate},
-};
+use crate::routes::MainApi;
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct OperatorHeartbeatPayload {
@@ -23,11 +17,14 @@ pub struct OperatorHeartbeatPayload {
     pub operator_endpoint: String,
 }
 
-pub mod label;
+// pub mod label;
+pub mod routes;
 pub mod state;
-pub mod template;
+// pub mod template;
 
-fn get_api() -> impl OpenApi {}
+fn get_api() -> impl OpenApi {
+    MainApi
+}
 
 #[async_std::main]
 async fn main() {
@@ -37,7 +34,7 @@ async fn main() {
 
     info!("Starting v3x-property operator");
 
-    let token = std::env::var("PAT_TOKEN").unwrap();
+    let token = std::env::var("PAT_TOKEN").expect("PAT_TOKEN is not set");
 
     let api_service =
         OpenApiService::new(get_api(), "Hello World", "1.0").server("http://localhost:3001/api");
@@ -79,30 +76,6 @@ async fn main() {
         Server::new(listener).run(app),
     )
     .await;
-    // println!("Hello, world!");
-
-    // let label = Label::new(1);
-    // LabelTemplate::G1QR.print(&label).unwrap();
-
-    // println!("Hello, worldz!");
-
-    // let devices = brother_ql_rs::printer::printers();
-
-    // if devices.is_empty() {
-    //     println!("No devices found");
-    //     return;
-    // }
-
-    // let device = devices.into_iter().next().unwrap();
-    // println!("Device: {:?}", device);
-
-    // let printer = ThermalPrinter::new(device).unwrap();
-
-    // println!("Printer: {:?}", printer.manufacturer);
-    // println!("Printer: {:?}", printer.model);
-    // println!("Printer: {:?}", printer.serial_number);
-    // println!("Printer: {:?}", printer.current_label().unwrap());
-    // println!("Printer: {:?}", printer.get_status().unwrap());
 }
 
 #[handler]

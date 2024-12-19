@@ -1804,28 +1804,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "4ee93343901ab17bd981295f2cf0026d4ad018c7c31ba84549a4ddbb47a45104"
 
 [[package]]
-name = "operator"
-version = "0.1.0"
-dependencies = [
- "anyhow",
- "async-std",
- "brother-ql-rs",
- "dotenvy",
- "futures",
- "image 0.25.1",
- "poem",
- "poem-openapi",
- "printpdf",
- "qrcode",
- "reqwest",
- "serde",
- "serde_json",
- "thiserror 2.0.7",
- "tracing",
- "tracing-subscriber",
-]
-
-[[package]]
 name = "lock_api"
 version = "0.4.12"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -3941,6 +3919,28 @@ name = "uuid"
 version = "1.11.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "f8c5f0a0af699448548ad1a2fbf920fb4bee257eae39953ba95cb84891a0446a"
+
+[[package]]
+name = "v3x-property-operator"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "async-std",
+ "brother-ql-rs",
+ "dotenvy",
+ "futures",
+ "image 0.25.1",
+ "poem",
+ "poem-openapi",
+ "printpdf",
+ "qrcode",
+ "reqwest",
+ "serde",
+ "serde_json",
+ "thiserror 2.0.7",
+ "tracing",
+ "tracing-subscriber",
+]
 
 [[package]]
 name = "v_frame"
