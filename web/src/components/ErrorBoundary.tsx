@@ -1,20 +1,21 @@
 import React, { Component, ReactNode } from 'react';
 
 interface ErrorBoundaryProperties {
-    children: ReactNode;
+  children: ReactNode;
 }
 
 interface ErrorBoundaryState {
-    hasError: boolean;
-    error: Error | null;
+  hasError: boolean;
+  error: Error | null;
 }
 
 class ErrorBoundary extends Component<
-    ErrorBoundaryProperties,
-    ErrorBoundaryState
+  ErrorBoundaryProperties,
+  ErrorBoundaryState
 > {
     constructor(properties: ErrorBoundaryProperties) {
         super(properties);
+        // eslint-disable-next-line unicorn/no-null
         this.state = { hasError: false, error: null };
     }
 
@@ -29,7 +30,7 @@ class ErrorBoundary extends Component<
     render() {
         if (this.state.hasError) {
             return (
-                <div className="p-4 border-red-500 border-2 rounded-md bg-red-100 h-full">
+                <div className="h-full rounded-md border-2 border-red-500 bg-red-100 p-4">
                     <p className="font-bold">STL Preview Error</p>
                     <p>Error loading STL file:</p>
                     <code>{this.state.error?.message}</code>

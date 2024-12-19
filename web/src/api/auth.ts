@@ -1,6 +1,7 @@
 /* eslint-disable no-undef */
-import { queryClient } from '@/util/query';
 import { create } from 'zustand';
+
+import { queryClient } from '@/util/query';
 
 const AUTH_TOKEN_KEY = 'property.v3x.token';
 
@@ -39,22 +40,22 @@ export const useAuth = create<{
     token: string | undefined;
     setAuthToken: (_token: string) => void;
     clearAuthToken: () => void;
-}>((set) => ({
-    token: getTokenFromLocalStorage() || undefined,
-    setAuthToken: (token: string) => {
-        setTokenToLocalStorage(token);
-        set({ token: token });
-    },
-    clearAuthToken: () => {
-        if (typeof window !== 'undefined') {
-            localStorage.removeItem(AUTH_TOKEN_KEY);
-        }
+        }>((set) => ({
+            token: getTokenFromLocalStorage() || undefined,
+            setAuthToken: (token: string) => {
+                setTokenToLocalStorage(token);
+                set({ token: token });
+            },
+            clearAuthToken: () => {
+                if (typeof window !== 'undefined') {
+                    localStorage.removeItem(AUTH_TOKEN_KEY);
+                }
 
-        set({ token: undefined });
+                set({ token: undefined });
 
-        // clear the queryclient
-        // queryClient.clear();
-        queryClient.invalidateQueries();
-        queryClient.refetchQueries();
-    },
-}));
+                // clear the queryclient
+                // queryClient.clear();
+                queryClient.invalidateQueries();
+                queryClient.refetchQueries();
+            },
+        }));

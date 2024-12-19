@@ -10,8 +10,8 @@ const Page = () => {
 
     return (
         <SCPage title="Overview">
-            <div className="card flex justify-stretch no-padding md:divide-y-0 divide-y md:divide-x flex-col md:flex-row">
-                <div className="gap-2 grid grid-cols-1 sm:grid-cols-3 grow p-5">
+            <div className="card no-padding flex flex-col justify-stretch divide-y md:flex-row md:divide-x md:divide-y-0">
+                <div className="grid grow grid-cols-1 gap-2 p-5 sm:grid-cols-3">
                     {[
                         ['Items', statistics?.item_count],
                         ['Products', 0],
@@ -26,7 +26,7 @@ const Page = () => {
                     ))}
                 </div>
                 <div className="w-full md:w-1/3 md:max-w-[33%]">
-                    <ul className="grid grid-cols-1 grid-rows-3 h-full divide-y">
+                    <ul className="grid h-full grid-cols-1 grid-rows-3 divide-y">
                         {[
                             ['Create an Item', '/create'],
                             ['Search for an Item', '/search'],
@@ -34,7 +34,7 @@ const Page = () => {
                         ].map(([title, href]) => (
                             <li key={title}>
                                 <Button variant="link" asChild>
-                                    <Link to={href} className="p-4 block">
+                                    <Link to={href} className="block p-4">
                                         <span>{title}</span>
                                         <FiArrowRight />
                                     </Link>

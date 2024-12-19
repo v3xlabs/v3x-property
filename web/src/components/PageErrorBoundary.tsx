@@ -13,9 +13,7 @@ export const PageErrorBoundary: ErrorRouteComponent = ({
 }) => {
     if (error instanceof ApiError && [401, 403].includes(error.status)) {
         const login_here_url =
-            BASE_URL +
-            'login?redirect=' +
-            encodeURIComponent(window.location.href);
+      BASE_URL + 'login?redirect=' + encodeURIComponent(window.location.href);
         const { data: meData } = useMe();
 
         return (
@@ -24,14 +22,11 @@ export const PageErrorBoundary: ErrorRouteComponent = ({
                     <div>You are not authorized to access this page</div>
                     {/* <Button onClick={reset}>Retry</Button> */}
                     {!meData && (
-                        <div className="flex items-center justify-between w-full">
-                            Try logging in.
+                        <div className="flex w-full items-center justify-between">
+              Try logging in.
                             <Button asChild>
-                                <Link
-                                    to={login_here_url}
-                                    data-testid="login-button"
-                                >
-                                    Login
+                                <Link to={login_here_url} data-testid="login-button">
+                  Login
                                 </Link>
                             </Button>
                         </div>

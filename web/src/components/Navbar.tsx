@@ -105,25 +105,25 @@ export const Navbar = () => {
         <nav
             role="navigation"
             aria-label="Main"
-            className="w-full bg-white border-t md:border-b h-16 md:h-9 flex items-center justify-between fixed bottom-0 md:sticky md:top-0 z-10"
+            className="fixed bottom-0 z-10 flex h-16 w-full items-center justify-between border-t bg-white md:sticky md:top-0 md:h-9 md:border-b"
         >
             <Link
                 to="/"
-                className="hidden md:flex font-semibold cursor-pointer text-base px-4 hover:bg-black/10 border-b md:border-r h-auto items-center"
+                className="hidden h-auto cursor-pointer items-center border-b px-4 text-base font-semibold hover:bg-black/10 md:flex md:border-r"
             >
                 v3x.property
             </Link>
-            <div className="flex w-full md:w-fit overflow-x-auto h-full">
-                <ul className="grid grid-cols-5 w-full h-full md:gap-2 md:flex">
+            <div className="flex h-full w-full overflow-x-auto md:w-fit">
+                <ul className="grid h-full w-full grid-cols-5 md:flex md:gap-2">
                     {navLinks.map(({ path, name, icon, slug }) => (
                         <li
                             key={path}
-                            className={clsx('flex-1 text-center h-full')}
+                            className={clsx('h-full flex-1 text-center')}
                         >
                             <Link
                                 to={path}
                                 data-testid={slug}
-                                className="flex cursor-pointer md:px-2 md:gap-1 h-full md:[&.active]:bg-black/10 flex-col md:flex-row items-center justify-center hover:bg-black/5"
+                                className="flex h-full cursor-pointer flex-col items-center justify-center hover:bg-black/5 md:flex-row md:gap-1 md:px-2 md:[&.active]:bg-black/10"
                             >
                                 {icon}
                                 <span className="text-xs md:text-base">
@@ -136,7 +136,7 @@ export const Navbar = () => {
                         <DropdownMenu.Trigger asChild>
                             <button
                                 className={
-                                    'flex flex-col md:flex-row md:px-2 md:gap-1 items-center justify-center hover:bg-black/5 aria-expanded:bg-black/5'
+                                    'flex flex-col items-center justify-center hover:bg-black/5 aria-expanded:bg-black/5 md:flex-row md:gap-1 md:px-2'
                                 }
                                 data-testid="more-dropdown-trigger"
                             >
@@ -153,7 +153,7 @@ export const Navbar = () => {
                                     <Link
                                         to={path}
                                         data-testid={slug}
-                                        className="flex items-center justify-start py-2.5 cursor-pointer hover:bg-black/5 rounded-md"
+                                        className="flex cursor-pointer items-center justify-start rounded-md py-2.5 hover:bg-black/5"
                                     >
                                         {icon}
                                         <span className="text-sm">{name}</span>
@@ -165,7 +165,7 @@ export const Navbar = () => {
                                 <DropdownMenu.Item asChild>
                                     <Button
                                         onClick={() => clearAuthToken()}
-                                        className="flex items-center justify-start py-2 hover:bg-black/5 w-full md:hidden"
+                                        className="flex w-full items-center justify-start py-2 hover:bg-black/5 md:hidden"
                                         variant="ghost"
                                     >
                                         <FiLogOut />
@@ -192,13 +192,13 @@ export const Navbar = () => {
                 </ul>
             </div>
             <div className="h-full">
-                <div className="h-full items-center gap-2 hidden md:flex">
+                <div className="hidden h-full items-center gap-2 md:flex">
                     {token && meData && (
                         <div className="h-full md:border-l">
                             <DropdownMenu.Root>
                                 <DropdownMenu.Trigger asChild>
                                     <button
-                                        className="h-full p-1 flex items-center gap-2 px-2 hover:bg-black/5"
+                                        className="flex h-full items-center gap-2 p-1 px-2 hover:bg-black/5"
                                         data-testid="user-dropdown-trigger"
                                     >
                                         <AvatarHolder
@@ -235,7 +235,7 @@ export const Navbar = () => {
                     {(!token || (token && !meData)) && (
                         <a
                             href={login_here_url}
-                            className="h-full border-t md:border-l px-2 py-0.5 flex items-center hover:bg-black/10"
+                            className="flex h-full items-center border-t px-2 py-0.5 hover:bg-black/10 md:border-l"
                             data-testid="login-button"
                         >
                             Login

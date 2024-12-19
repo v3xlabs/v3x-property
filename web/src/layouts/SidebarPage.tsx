@@ -5,11 +5,11 @@ import { cn } from '@/util/style';
 import { getTitle } from '@/util/title';
 
 export type SidePageProperties = PropsWithChildren<{
-    title: string;
-    width?: 'xl' | '2xl' | '3xl' | '4xl';
-    suffix?: ReactNode;
-    className?: ClassValue;
-    sidebar?: ReactNode;
+  title: string,
+  width?: 'xl' | '2xl' | '3xl' | '4xl',
+  suffix?: ReactNode,
+  className?: ClassValue,
+  sidebar?: ReactNode,
 }>;
 
 export const SidePage: FC<SidePageProperties> = ({
@@ -32,7 +32,7 @@ export const SidePage: FC<SidePageProperties> = ({
             )}
         >
             {sidebar && <div className="w-full md:max-w-64">{sidebar}</div>}
-            <div className="w-full max-w-xl lg:max-w-2xl space-y-4">
+            <div className="w-full max-w-xl space-y-4 lg:max-w-2xl">
                 <div className="flex items-end justify-between">
                     <h1 className="h1 pl-4">{title}</h1>
                     {suffix}

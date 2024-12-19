@@ -21,12 +21,12 @@ export const DynamicIcon = ({
     icon,
     ...properties
 }: {
-    icon: string;
-    className?: string;
+  icon: string,
+  className?: string,
 }) => {
     return (
         match(icon)
-            // if it starts with fa6:
+        // if it starts with fa6:
             .with(P.string.startsWith('fa6:'), (icon) => (
                 <SvgMask
                     src={`https://cdn.jsdelivr.net/gh/FortAwesome/Font-Awesome@6.x/svgs/${icon.replace(
@@ -36,7 +36,7 @@ export const DynamicIcon = ({
                     {...properties}
                 />
             ))
-            // if it starts with feather:
+        // if it starts with feather:
             .with(P.string.startsWith('feather:'), (icon) => (
                 <SvgMask
                     src={`https://cdn.jsdelivr.net/gh/feathericons/feather@4.29.2/icons/${icon.replace(

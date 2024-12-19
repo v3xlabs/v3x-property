@@ -111,15 +111,16 @@ BodyInit | undefined => {
     }
 
     switch (contentType) {
-        case 'application/json':
-        case 'application/json; charset=utf-8':
-            return JSON.stringify(data);
-        default:
-            throw new Error('Unsupported content type: ' + contentType);
+    case 'application/json':
+    case 'application/json; charset=utf-8':
+        return JSON.stringify(data);
+    default:
+        throw new Error('Unsupported content type: ' + contentType);
     }
 };
 
 export class ApiError extends Error {
+    // eslint-disable-next-line unused-imports/no-unused-vars
     constructor(message: string, public status: number) {
         super(message);
     }
@@ -310,29 +311,29 @@ export const apiRequest = async <
     const responseContentType = response.headers.get('content-type');
 
     switch (responseContentType) {
-        // eslint-disable-next-line unicorn/no-null
-        case null:
-            return {
-                status: response.status,
-                headers: response.headers,
-            } as any;
+    // eslint-disable-next-line unicorn/no-null
+    case null:
+        return {
+            status: response.status,
+            headers: response.headers,
+        } as any;
 
-        case 'text/plain; charset=utf-8':
-            return {
-                status: response.status,
-                contentType: responseContentType,
-                data: await response.text(),
-            } as any;
+    case 'text/plain; charset=utf-8':
+        return {
+            status: response.status,
+            contentType: responseContentType,
+            data: await response.text(),
+        } as any;
 
-        case 'application/json; charset=utf-8':
-            return {
-                status: response.status,
-                contentType: responseContentType,
-                data: await response.json(),
-                headers: response.headers,
-            } as any;
-        default:
-            throw new Error('Unsupported content type: ' + responseContentType);
+    case 'application/json; charset=utf-8':
+        return {
+            status: response.status,
+            contentType: responseContentType,
+            data: await response.json(),
+            headers: response.headers,
+        } as any;
+    default:
+        throw new Error('Unsupported content type: ' + responseContentType);
     }
 };
 
@@ -382,46 +383,46 @@ export type HttpOptions = {
  */
 export const getHttp =
     <T>(url: string, options?: HttpOptions) =>
-    async () => {
-        const { token, clearAuthToken } = useAuth.getState();
-        const { auth = 'ignore' } = options || {};
+        async () => {
+            const { token, clearAuthToken } = useAuth.getState();
+            const { auth = 'ignore' } = options || {};
 
-        const headers = new Headers();
+            const headers = new Headers();
 
-        if (auth === 'include' || auth === 'required') {
-            if (!token && auth === 'required') {
-                throw new Error(
-                    'No token available but endpoint requires it, url: ' + url
-                );
-            }
-
-            if (token) {
-                headers.append('Authorization', 'Bearer ' + token);
-            }
-        }
-
-        try {
-            const response = await fetch(new URL(url, BASE_URL), { headers });
-
-            if (response.status === 401) {
-                if (token) {
-                    console.log('Token expired, clearing token');
-                    clearAuthToken();
+            if (auth === 'include' || auth === 'required') {
+                if (!token && auth === 'required') {
+                    throw new Error(
+                        'No token available but endpoint requires it, url: ' + url
+                    );
                 }
 
-                throw new Error('Token expired');
+                if (token) {
+                    headers.append('Authorization', 'Bearer ' + token);
+                }
             }
 
-            if (!response.ok) {
-                throw new Error(response.statusText);
-            }
+            try {
+                const response = await fetch(new URL(url, BASE_URL), { headers });
 
-            return (await response.json()) as T;
-        } catch (error) {
-            console.error(error);
-            throw error;
-        }
-    };
+                if (response.status === 401) {
+                    if (token) {
+                        console.log('Token expired, clearing token');
+                        clearAuthToken();
+                    }
+
+                    throw new Error('Token expired');
+                }
+
+                if (!response.ok) {
+                    throw new Error(response.statusText);
+                }
+
+                return (await response.json()) as T;
+            } catch (error) {
+                console.error(error);
+                throw error;
+            }
+        };
 
 /**
  * @deprecated Use `useQuery` instead

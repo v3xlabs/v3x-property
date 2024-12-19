@@ -5,8 +5,8 @@ import { Navbar } from '@/components/Navbar';
 import { Toaster } from '@/components/ui/Toaster';
 
 export interface MyRouterContext {
-    title: string;
-    suffix?: ReactNode;
+  title: string;
+  suffix?: ReactNode;
 }
 
 export const Route = createRootRouteWithContext<MyRouterContext>()({

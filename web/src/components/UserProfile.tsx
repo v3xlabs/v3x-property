@@ -22,7 +22,7 @@ export const AvatarHolder: FC<{
     return (
         <Avatar.Root
             className={clsx(
-                'inline-flex items-center justify-center align-middle overflow-hidden select-none w-11 h-11 rounded-full bg-gray-300',
+                'inline-flex h-11 w-11 select-none items-center justify-center overflow-hidden rounded-full bg-gray-300 align-middle',
                 size === 'compact' && '!size-6',
                 size === 'navbar' && '!size-4'
             )}
@@ -30,7 +30,7 @@ export const AvatarHolder: FC<{
             {image && (
                 <Avatar.Image
                     className={clsx(
-                        'w-full h-full object-cover',
+                        'h-full w-full object-cover',
                         size === 'compact' && '!size-6',
                         size === 'navbar' && '!size-4'
                     )}
@@ -40,7 +40,7 @@ export const AvatarHolder: FC<{
             )}
             <Avatar.Fallback
                 className={clsx(
-                    'w-full h-full flex items-center justify-center bg-gray-200 text-pink-500 text-base leading-none font-medium',
+                    'flex h-full w-full items-center justify-center bg-gray-200 text-base font-medium leading-none text-pink-500',
                     size === 'compact' && '!text-[0.6em]',
                     size === 'navbar' && '!text-[0.5em]'
                 )}
@@ -119,7 +119,7 @@ export const UserProfile: FC<Properties> = ({ user_id, variant }) => {
                             <Link
                                 to="/user/$userId"
                                 params={{ userId: user_id.toString() }}
-                                className="p-1 border rounded-md flex items-center gap-2 hover:bg-black/5"
+                                className="flex items-center gap-2 rounded-md border p-1 hover:bg-black/5"
                             >
                                 <AvatarHolder
                                     image={user?.picture}
@@ -136,7 +136,7 @@ export const UserProfile: FC<Properties> = ({ user_id, variant }) => {
                             <Link
                                 to="/user/$userId"
                                 params={{ userId: user_id.toString() }}
-                                className="p-1.5 border cursor-pointer rounded-md flex items-center gap-2 hover:bg-black/5"
+                                className="flex cursor-pointer items-center gap-2 rounded-md border p-1.5 hover:bg-black/5"
                             >
                                 <AvatarHolder
                                     image={user?.picture}
@@ -159,13 +159,13 @@ export const UserProfile: FC<Properties> = ({ user_id, variant }) => {
                             <Link
                                 to="/user/$userId"
                                 params={{ userId: user_id.toString() }}
-                                className="p-1.5 border cursor-pointer rounded-md flex items-center gap-2 hover:bg-black/5"
+                                className="flex cursor-pointer items-center gap-2 rounded-md border p-1.5 hover:bg-black/5"
                             >
                                 <AvatarHolder
                                     image={user?.picture}
                                     initials={getInitials(user?.name)}
                                 />
-                                <div className="flex flex-col gap-1 justify-center">
+                                <div className="flex flex-col justify-center gap-1">
                                     <div className="Text !leading-[0.75em]">
                                         {user?.name || UNKNOWN_USER}
                                     </div>

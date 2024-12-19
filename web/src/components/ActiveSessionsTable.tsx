@@ -25,15 +25,12 @@ const ActiveSession: FC<{ session: SessionResponse }> = ({ session }) => {
     return (
         <div
             key={session.session_id}
-            className="bg-blue-50 p-2 flex justify-between items-center h-fit gap-2"
+            className="flex h-fit items-center justify-between gap-2 bg-blue-50 p-2"
         >
             {geoip?.latitude && (
                 <div className="h-full">
-                    <div className="w-32 h-32 aspect-square bg-gray-100 rounded-lg border border-neutral-400 overflow-hidden">
-                        <LeafletPreview
-                            latitude={latitude}
-                            longitude={longitude}
-                        />
+                    <div className="aspect-square h-32 w-32 overflow-hidden rounded-lg border border-neutral-400 bg-gray-100">
+                        <LeafletPreview latitude={latitude} longitude={longitude} />
                     </div>
                 </div>
             )}
@@ -64,13 +61,13 @@ const ActiveSession: FC<{ session: SessionResponse }> = ({ session }) => {
                 >
                     {isRecent && (
                         <div className="flex items-center pt-[1px]">
-                            <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                            <div className="h-2 w-2 rounded-full bg-green-500"></div>
                         </div>
                     )}
                     <span>{last_accessed_formatted}</span>
                 </div>
                 <div className="text-neutral-400">
-                    #{session.session_id?.slice(0, 6)}
+          #{session.session_id?.slice(0, 6)}
                 </div>
             </div>
             <div className="h-full">
@@ -92,7 +89,7 @@ const ActiveSession: FC<{ session: SessionResponse }> = ({ session }) => {
                             });
                         }}
                     >
-                        Deauthorize
+            Deauthorize
                     </Button>
                 </div>
             </div>
@@ -104,32 +101,26 @@ export const ActiveSessionsTable: FC = () => {
     const { data: sessions } = useSessions();
 
     return (
-        <div className="p-2 space-y-2">
+        <div className="space-y-2 p-2">
             <h2 className="font-bold">Active Sessions</h2>
             <hr />
-            <p>
-                These are the sessions that are currently active for your
-                account.
-            </p>
+            <p>These are the sessions that are currently active for your account.</p>
             <div className="space-y-2">
                 {sessions &&
-                    sessions
-                        .sort(
-                            // sort by last access time
-                            (a, b) =>
-                                new Date(b.last_access).getTime() -
-                                new Date(a.last_access).getTime()
-                        )
-                        .map((session) => (
-                            <ActiveSession
-                                session={session}
-                                key={session.session_id}
-                            />
-                        ))}
+          sessions
+              .sort(
+              // sort by last access time
+                  (a, b) =>
+                      new Date(b.last_access).getTime() -
+                new Date(a.last_access).getTime()
+              )
+              .map((session) => (
+                  <ActiveSession session={session} key={session.session_id} />
+              ))}
             </div>
             <p>
-                If there is a session in here that you do not recognize, you can
-                deauthorize it.
+        If there is a session in here that you do not recognize, you can
+        deauthorize it.
             </p>
             <hr />
             <Button>Log out everywhere</Button>

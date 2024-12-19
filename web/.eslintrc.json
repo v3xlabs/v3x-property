@@ -3,21 +3,21 @@
     "parserOptions": {
         "ecmaVersion": 2021
     },
-    "extends": [
-        "plugin:v3xlabs/recommended"
-    ],
-    "ignorePatterns": [
-        "!**/*",
-        "src/**/*.gen.ts"
-    ],
-    "plugins": [
-        "v3xlabs"
-    ],
+    "extends": ["plugin:v3xlabs/recommended"],
+    "ignorePatterns": ["!**/*", "src/**/*.gen.ts"],
+    "plugins": ["v3xlabs", "tailwindcss"],
     "env": {
         "browser": true,
         "node": true
     },
     "rules": {
-        "sonarjs/cognitive-complexity": "off"
+        "quotes": ["error", "single"],
+        "indent": ["error", 4],
+        "sonarjs/cognitive-complexity": "off",
+        "tailwindcss/classnames-order": ["error"],
+        "prettier/prettier": [
+            "off",
+            { "singleQuote": true, "parser": "flow" }
+        ]
     }
 }

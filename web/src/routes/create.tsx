@@ -73,35 +73,28 @@ const Page = () => {
                                         id="item-identifier"
                                         value={field.state.value}
                                         onChange={field.handleChange}
-                                        errorMessage={field.state.meta.errors.join(
-                                            ', '
-                                        )}
+                                        errorMessage={field.state.meta.errors.join(', ')}
                                     />
                                 </div>
-                                <p className="text-sm text-neutral-500 p-6">
-                                    To create a new item you will need to give
-                                    it an identifier. You can choose to use a
-                                    generated identifier (by clicking the
-                                    generate icon) or you can choose to provide
-                                    your own (a-zA-Z0-9). Leading zeros will be
-                                    trimmed.
+                                <p className="p-6 text-sm text-neutral-500">
+                  To create a new item you will need to give it an identifier.
+                  You can choose to use a generated identifier (by clicking the
+                  generate icon) or you can choose to provide your own
+                  (a-zA-Z0-9). Leading zeros will be trimmed.
                                 </p>
                             </>
                         )}
                     />
                     <div className="flex items-center justify-end gap-2 px-6 pb-4">
                         <Subscribe
-                            selector={(state) => [
-                                state.canSubmit,
-                                state.isSubmitting,
-                            ]}
+                            selector={(state) => [state.canSubmit, state.isSubmitting]}
                             children={([canSubmit, isSubmitting]) => (
                                 <Button
                                     type="submit"
                                     data-testid="create-button"
                                     disabled={!canSubmit}
                                 >
-                                    Configure
+                  Configure
                                     <FiArrowRight />
                                 </Button>
                             )}

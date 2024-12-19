@@ -9,12 +9,12 @@ export const getPolicy = (resourceType: string, resourceId?: string) =>
             const response = await apiRequest('/policy/enumerate', 'get', {
                 query: resourceId
                     ? {
-                          resource_type: resourceType,
-                          resource_id: resourceId,
-                      }
+                        resource_type: resourceType,
+                        resource_id: resourceId,
+                    }
                     : {
-                          resource_type: resourceType,
-                      },
+                        resource_type: resourceType,
+                    },
             });
 
             return response.data;

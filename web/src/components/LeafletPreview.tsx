@@ -3,7 +3,7 @@ import 'leaflet/dist/leaflet.css';
 import { FC } from 'react';
 import { MapContainer, TileLayer } from 'react-leaflet';
 
-export const LeafletPreview: FC<{ latitude: number; longitude: number }> = ({
+export const LeafletPreview: FC<{ latitude: number, longitude: number }> = ({
     latitude,
     longitude,
 }) => {
@@ -21,7 +21,7 @@ export const LeafletPreview: FC<{ latitude: number; longitude: number }> = ({
             }}
             zoom={5}
             scrollWheelZoom={false}
-            className="w-full h-full"
+            className="h-full w-full"
             dragging={false}
             touchZoom={false}
             doubleClickZoom={false}

@@ -1,13 +1,27 @@
 import { createFileRoute } from '@tanstack/react-router';
+import { FiPlus } from 'react-icons/fi';
 
 import { useLocations } from '@/api/locations';
+import { CreateLocationModal } from '@/components/location/CreateLocationModal';
 import { LocationPreview } from '@/components/location/LocationPreview';
+import { Button } from '@/components/ui/Button';
+import { Dialog, DialogTrigger } from '@/components/ui/Dialog';
 
 export const Route = createFileRoute('/settings/_layout/locations')({
     component: RouteComponent,
     context() {
         return {
             title: 'Locations',
+            suffix: (
+                <Dialog>
+                    <DialogTrigger asChild>
+                        <Button size="icon">
+                            <FiPlus />
+                        </Button>
+                    </DialogTrigger>
+                    <CreateLocationModal />
+                </Dialog>
+            ),
         };
     },
 });
