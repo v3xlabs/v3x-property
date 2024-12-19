@@ -4,6 +4,7 @@ import { z } from 'zod';
 
 import { useFieldDefinitions } from '@/api/fields';
 import { MediaPreview } from '@/components/media/MediaPreview';
+import { Tag } from '@/components/Tag';
 
 import { ApiLogEntry } from '../ItemLogEntry';
 
@@ -42,7 +43,7 @@ export const ItemEditLogData: FC<{ log: ApiLogEntry }> = ({ log }) => {
     }, [log.data]);
 
     return (
-        <div className="card no-padding p-2 w-full">
+        <div className="card no-padding w-full p-2">
             <ul className="space-y-2">
                 {Object.entries(log_data)
                     .filter(
@@ -52,10 +53,11 @@ export const ItemEditLogData: FC<{ log: ApiLogEntry }> = ({ log }) => {
                     )
                     .map(([key, value]) => (
                         <li key={key} className="space-x-2 space-y-1">
-                            <span className="font-bold px-2">
+                            <span className="px-2 font-bold">
                                 {match(key)
                                     .with('media', () => 'Changed Media')
                                     .with('fields', () => 'Changed Fields')
+                                    .with('tags', () => 'Updated Tags')
                                     .otherwise(() => key)}
                             </span>
                             {match(key)
@@ -101,7 +103,7 @@ export const ItemEditLogData: FC<{ log: ApiLogEntry }> = ({ log }) => {
                                                             status,
                                                             media_id,
                                                         }) => (
-                                                            <div className="card no-padding p-2 max-w-64 space-y-1">
+                                                            <div className="card no-padding max-w-64 space-y-1 p-2">
                                                                 <div className="px-2">
                                                                     {match(
                                                                         status
@@ -178,6 +180,19 @@ export const ItemEditLogData: FC<{ log: ApiLogEntry }> = ({ log }) => {
                                             )}
                                         </ul>
                                     );
+                                })
+                                .with('tags', () => {
+                                    const tagSchema = z.array(
+                                        z.number()
+                                    );
+
+                                    const tags = tagSchema.safeParse(value);
+
+                                    if (!tags.success) {
+                                        return <span>Failed to parse tags</span>;
+                                    }
+
+                                    return <ul className="flex gap-2">{tags.data.map(tag => <li key={tag}><Tag tag_id={tag} /></li>)}</ul>;
                                 })
                                 .otherwise(() => (
                                     <span>

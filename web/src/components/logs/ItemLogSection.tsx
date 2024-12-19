@@ -13,7 +13,7 @@ export const ItemLogSection = ({ item_id }: { item_id: string }) => {
         <div>
             <h2 className="h2">Logs</h2>
             <div className="card">
-                <ul className="divide-y divide-neutral-200 space-y-2">
+                <ul className="space-y-2 divide-y divide-neutral-200">
                     {logs?.map((log) => (
                         <ItemLogEntry key={log.log_id} log={log} view="local" />
                     ))}
