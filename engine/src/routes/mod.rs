@@ -4,6 +4,7 @@ use async_std::path::PathBuf;
 use fields::FieldsApi;
 use instance::InstanceApi;
 use item::{intelligence::ItemIntelligenceApi, media::ItemMediaApi, ItemsApi};
+use location::LocationApi;
 use logs::LogsApi;
 use me::MeApi;
 use media::MediaApi;
@@ -22,9 +23,11 @@ use users::{keys::UserKeysApi, UserApi};
 
 use crate::state::AppState;
 
+pub mod error;
 pub mod fields;
 pub mod instance;
 pub mod item;
+pub mod location;
 pub mod logs;
 pub mod me;
 pub mod media;
@@ -35,7 +38,6 @@ pub mod search;
 pub mod sessions;
 pub mod tags;
 pub mod users;
-pub mod error;
 
 #[derive(Tags)]
 enum ApiTags {
@@ -43,6 +45,8 @@ enum ApiTags {
     Items,
     /// Product-related operations
     Product,
+    /// Location-related operations
+    Location,
     /// Media-related operations
     Media,
     /// Fields-related operations
@@ -68,11 +72,12 @@ fn get_api() -> impl OpenApi {
         (ItemsApi, ItemMediaApi, ItemIntelligenceApi),
         // Product
         ProductApi,
+        // Location
+        LocationApi,
         // Media
         MediaApi,
         // Search
-        SearchApi,
-        SearchTaskApi,
+        (SearchApi, SearchTaskApi),
         // Fields
         FieldsApi,
         // Tags

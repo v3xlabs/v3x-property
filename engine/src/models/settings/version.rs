@@ -1,11 +1,8 @@
-use std::{ops::Deref, sync::Arc};
-
-use ollama_rs::IntoUrlSealed;
 use poem_openapi::Object;
 use semver::Version;
 use serde::{Deserialize, Serialize};
 
-use crate::{routes::error::HttpError, state::AppState};
+use crate::routes::error::HttpError;
 
 use super::{build_info, BuildDetails};
 

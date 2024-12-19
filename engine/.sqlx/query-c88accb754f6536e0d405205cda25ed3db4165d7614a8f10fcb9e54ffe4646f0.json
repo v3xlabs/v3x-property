@@ -1,12 +1,12 @@
 {
   "db_name": "PostgreSQL",
-  "query": "INSERT INTO locations (name) VALUES ($1) RETURNING *",
+  "query": "UPDATE locations SET name = $2 WHERE location_id = $1 RETURNING *",
   "describe": {
     "columns": [
       {
         "ordinal": 0,
         "name": "location_id",
-        "type_info": "Int4"
+        "type_info": "Text"
       },
       {
         "ordinal": 1,
@@ -26,6 +26,7 @@
     ],
     "parameters": {
       "Left": [
+        "Text",
         "Text"
       ]
     },
@@ -36,5 +37,5 @@
       true
     ]
   },
-  "hash": "42299c8e51e8b59fee17be3f0af717104e421b966534fe73f6f4f47a97265ce7"
+  "hash": "c88accb754f6536e0d405205cda25ed3db4165d7614a8f10fcb9e54ffe4646f0"
 }

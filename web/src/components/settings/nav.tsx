@@ -6,6 +6,7 @@ import {
     LuClock,
     LuHardDrive,
     LuKey,
+    LuMapPin,
     LuScroll,
     LuSearch,
     LuSettings,
@@ -36,6 +37,7 @@ export const SettingsNav = () => {
                                 'Field Definitions',
                                 <LuClipboardType />,
                             ],
+                            ['/settings/locations', 'Locations', <LuMapPin />],
                         ],
                     ],
                     [

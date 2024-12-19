@@ -23,7 +23,6 @@ pub struct Item {
     pub name: String,
     pub product_id: Option<i32>,
     pub owner_id: Option<i32>,
-    pub location_id: Option<i32>,
     pub created_at: Option<DateTime<Utc>>,
     pub updated_at: Option<DateTime<Utc>>,
 }
@@ -35,7 +34,6 @@ impl Default for Item {
             name: "A New Item".to_string(),
             product_id: None,
             owner_id: None,
-            location_id: None,
             created_at: Some(chrono::Utc::now()),
             updated_at: Some(chrono::Utc::now()),
         }
@@ -48,14 +46,12 @@ impl Item {
         item_id: String,
         name: String,
         owner_id: Option<i32>,
-        location_id: Option<i32>,
         product_id: Option<i32>,
     ) -> Result<Item, sqlx::Error> {
         Self {
             item_id,
             name,
             owner_id,
-            location_id,
             product_id,
             ..Default::default()
         }
@@ -64,7 +60,7 @@ impl Item {
     }
 
     pub async fn insert(&self, db: &Database) -> Result<Item, sqlx::Error> {
-        let item = query_as!(Item, "INSERT INTO items (item_id, name, owner_id, location_id, product_id) VALUES ($1, $2, $3, $4, $5) RETURNING *", self.item_id, self.name, self.owner_id, self.location_id, self.product_id)
+        let item = query_as!(Item, "INSERT INTO items (item_id, name, owner_id, product_id) VALUES ($1, $2, $3, $4) RETURNING *", self.item_id, self.name, self.owner_id, self.product_id)
             .fetch_one(&db.pool)
             .await?;
 
@@ -203,15 +199,16 @@ impl Item {
             .await?;
         }
 
-        if let Some(location_id) = data.location_id {
-            query!(
-                "UPDATE items SET location_id = $1 WHERE item_id = $2",
-                location_id,
-                item_id
-            )
-            .execute(&mut *tx)
-            .await?;
-        }
+        // TODO: location_id
+        // if let Some(location_id) = data.location_id {
+        //     query!(
+        //         "UPDATE items SET location_id = $1 WHERE item_id = $2",
+        //         location_id,
+        //         item_id
+        //     )
+        //     .execute(&mut *tx)
+        //     .await?;
+        // }
 
         if let Some(product_id) = data.product_id {
             query!(

@@ -7,7 +7,6 @@ use poem_openapi::{
     payload::Json,
     Object, OpenApi,
 };
-use reqwest::StatusCode;
 use serde::{Deserialize, Serialize};
 use sqlx::prelude::FromRow;
 use tracing::info;

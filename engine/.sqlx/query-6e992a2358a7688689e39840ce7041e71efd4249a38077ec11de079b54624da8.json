@@ -1,11 +1,11 @@
 {
   "db_name": "PostgreSQL",
-  "query": "SELECT * FROM items WHERE owner_id = $1 ORDER BY updated_at DESC",
+  "query": "INSERT INTO locations (location_id, name) VALUES ($1, $2) RETURNING *",
   "describe": {
     "columns": [
       {
         "ordinal": 0,
-        "name": "item_id",
+        "name": "location_id",
         "type_info": "Text"
       },
       {
@@ -15,38 +15,27 @@
       },
       {
         "ordinal": 2,
-        "name": "owner_id",
-        "type_info": "Int4"
-      },
-      {
-        "ordinal": 3,
-        "name": "product_id",
-        "type_info": "Int4"
-      },
-      {
-        "ordinal": 4,
         "name": "created_at",
         "type_info": "Timestamptz"
       },
       {
-        "ordinal": 5,
+        "ordinal": 3,
         "name": "updated_at",
         "type_info": "Timestamptz"
       }
     ],
     "parameters": {
       "Left": [
-        "Int4"
+        "Text",
+        "Text"
       ]
     },
     "nullable": [
       false,
       false,
       true,
-      true,
-      true,
       true
     ]
   },
-  "hash": "4d9f9bc2aa3bd5cfcaf38f97c7b87ee2a4ec58541015419627bf30f765b5fa0d"
+  "hash": "6e992a2358a7688689e39840ce7041e71efd4249a38077ec11de079b54624da8"
 }

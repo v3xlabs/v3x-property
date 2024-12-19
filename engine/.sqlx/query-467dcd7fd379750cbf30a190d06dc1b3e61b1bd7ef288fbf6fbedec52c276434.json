@@ -20,21 +20,16 @@
       },
       {
         "ordinal": 3,
-        "name": "location_id",
-        "type_info": "Int4"
-      },
-      {
-        "ordinal": 4,
         "name": "product_id",
         "type_info": "Int4"
       },
       {
-        "ordinal": 5,
+        "ordinal": 4,
         "name": "created_at",
         "type_info": "Timestamptz"
       },
       {
-        "ordinal": 6,
+        "ordinal": 5,
         "name": "updated_at",
         "type_info": "Timestamptz"
       }
@@ -45,7 +40,6 @@
     "nullable": [
       false,
       false,
-      true,
       true,
       true,
       true,

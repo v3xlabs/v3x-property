@@ -3,7 +3,7 @@ use std::sync::Arc;
 use poem::{web::Data, Result};
 use poem_openapi::{payload::Json, OpenApi};
 
-use super::{error::HttpError, ApiTags};
+use super::ApiTags;
 use crate::{
     auth::{middleware::AuthUser, permissions::Action},
     models::settings::{

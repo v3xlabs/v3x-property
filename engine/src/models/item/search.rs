@@ -11,7 +11,7 @@ pub struct SearchableItem {
     pub name: String,
     pub product_id: Option<i32>,
     pub owner_id: Option<i32>,
-    pub location_id: Option<i32>,
+    // pub location_id: Option<i32>,
     // TODO: add more location info
     pub tags: Option<Vec<SearchableItemTag>>,
     pub fields: Option<Vec<SearchableItemField>>,
@@ -57,7 +57,6 @@ impl Item {
             name: self.name.clone(),
             product_id: self.product_id,
             owner_id: self.owner_id,
-            location_id: self.location_id,
             tags,
             fields,
             created_at: self.created_at,

@@ -2,7 +2,6 @@ use s3::creds::Credentials;
 use s3::Bucket;
 use s3::Region;
 use std::env;
-use tracing::info;
 use uuid::Uuid;
 
 pub struct Storage {

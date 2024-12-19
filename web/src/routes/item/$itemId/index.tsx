@@ -96,6 +96,14 @@ export const Route = createFileRoute('/item/$itemId/')({
                             </div>
                         )}
                     </div>
+                    <div>
+                        {item.data?.location_id && (
+                            <div>
+                                <h3 className="font-bold">Location</h3>
+                                {/* <Location location_id={item.data.location_id} /> */}
+                            </div>
+                        )}
+                    </div>
                     <ItemFields item_id={itemId} />
                     {tags && tags.length > 0 && (
                         <div className="p-4">

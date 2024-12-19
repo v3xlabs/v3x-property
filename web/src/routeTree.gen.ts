@@ -31,6 +31,7 @@ import { Route as SettingsLayoutStorageImport } from './routes/settings/_layout/
 import { Route as SettingsLayoutSessionsImport } from './routes/settings/_layout/sessions'
 import { Route as SettingsLayoutSearchImport } from './routes/settings/_layout/search'
 import { Route as SettingsLayoutPatImport } from './routes/settings/_layout/pat'
+import { Route as SettingsLayoutLocationsImport } from './routes/settings/_layout/locations'
 import { Route as SettingsLayoutIntelligenceImport } from './routes/settings/_layout/intelligence'
 import { Route as SettingsLayoutBuildImport } from './routes/settings/_layout/build'
 import { Route as ItemItemIdEditImport } from './routes/item/$itemId/edit'
@@ -153,6 +154,12 @@ const SettingsLayoutSearchRoute = SettingsLayoutSearchImport.update({
 const SettingsLayoutPatRoute = SettingsLayoutPatImport.update({
   id: '/pat',
   path: '/pat',
+  getParentRoute: () => SettingsLayoutRoute,
+} as any)
+
+const SettingsLayoutLocationsRoute = SettingsLayoutLocationsImport.update({
+  id: '/locations',
+  path: '/locations',
   getParentRoute: () => SettingsLayoutRoute,
 } as any)
 
@@ -290,6 +297,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SettingsLayoutIntelligenceImport
       parentRoute: typeof SettingsLayoutImport
     }
+    '/settings/_layout/locations': {
+      id: '/settings/_layout/locations'
+      path: '/locations'
+      fullPath: '/settings/locations'
+      preLoaderRoute: typeof SettingsLayoutLocationsImport
+      parentRoute: typeof SettingsLayoutImport
+    }
     '/settings/_layout/pat': {
       id: '/settings/_layout/pat'
       path: '/pat'
@@ -368,6 +382,7 @@ declare module '@tanstack/react-router' {
 interface SettingsLayoutRouteChildren {
   SettingsLayoutBuildRoute: typeof SettingsLayoutBuildRoute
   SettingsLayoutIntelligenceRoute: typeof SettingsLayoutIntelligenceRoute
+  SettingsLayoutLocationsRoute: typeof SettingsLayoutLocationsRoute
   SettingsLayoutPatRoute: typeof SettingsLayoutPatRoute
   SettingsLayoutSearchRoute: typeof SettingsLayoutSearchRoute
   SettingsLayoutSessionsRoute: typeof SettingsLayoutSessionsRoute
@@ -382,6 +397,7 @@ interface SettingsLayoutRouteChildren {
 const SettingsLayoutRouteChildren: SettingsLayoutRouteChildren = {
   SettingsLayoutBuildRoute: SettingsLayoutBuildRoute,
   SettingsLayoutIntelligenceRoute: SettingsLayoutIntelligenceRoute,
+  SettingsLayoutLocationsRoute: SettingsLayoutLocationsRoute,
   SettingsLayoutPatRoute: SettingsLayoutPatRoute,
   SettingsLayoutSearchRoute: SettingsLayoutSearchRoute,
   SettingsLayoutSessionsRoute: SettingsLayoutSessionsRoute,
@@ -423,6 +439,7 @@ export interface FileRoutesByFullPath {
   '/item/$itemId/edit': typeof ItemItemIdEditRoute
   '/settings/build': typeof SettingsLayoutBuildRoute
   '/settings/intelligence': typeof SettingsLayoutIntelligenceRoute
+  '/settings/locations': typeof SettingsLayoutLocationsRoute
   '/settings/pat': typeof SettingsLayoutPatRoute
   '/settings/search': typeof SettingsLayoutSearchRoute
   '/settings/sessions': typeof SettingsLayoutSessionsRoute
@@ -449,6 +466,7 @@ export interface FileRoutesByTo {
   '/item/$itemId/edit': typeof ItemItemIdEditRoute
   '/settings/build': typeof SettingsLayoutBuildRoute
   '/settings/intelligence': typeof SettingsLayoutIntelligenceRoute
+  '/settings/locations': typeof SettingsLayoutLocationsRoute
   '/settings/pat': typeof SettingsLayoutPatRoute
   '/settings/search': typeof SettingsLayoutSearchRoute
   '/settings/sessions': typeof SettingsLayoutSessionsRoute
@@ -476,6 +494,7 @@ export interface FileRoutesById {
   '/item/$itemId/edit': typeof ItemItemIdEditRoute
   '/settings/_layout/build': typeof SettingsLayoutBuildRoute
   '/settings/_layout/intelligence': typeof SettingsLayoutIntelligenceRoute
+  '/settings/_layout/locations': typeof SettingsLayoutLocationsRoute
   '/settings/_layout/pat': typeof SettingsLayoutPatRoute
   '/settings/_layout/search': typeof SettingsLayoutSearchRoute
   '/settings/_layout/sessions': typeof SettingsLayoutSessionsRoute
@@ -504,6 +523,7 @@ export interface FileRouteTypes {
     | '/item/$itemId/edit'
     | '/settings/build'
     | '/settings/intelligence'
+    | '/settings/locations'
     | '/settings/pat'
     | '/settings/search'
     | '/settings/sessions'
@@ -529,6 +549,7 @@ export interface FileRouteTypes {
     | '/item/$itemId/edit'
     | '/settings/build'
     | '/settings/intelligence'
+    | '/settings/locations'
     | '/settings/pat'
     | '/settings/search'
     | '/settings/sessions'
@@ -554,6 +575,7 @@ export interface FileRouteTypes {
     | '/item/$itemId/edit'
     | '/settings/_layout/build'
     | '/settings/_layout/intelligence'
+    | '/settings/_layout/locations'
     | '/settings/_layout/pat'
     | '/settings/_layout/search'
     | '/settings/_layout/sessions'
@@ -648,6 +670,7 @@ export const routeTree = rootRoute
       "children": [
         "/settings/_layout/build",
         "/settings/_layout/intelligence",
+        "/settings/_layout/locations",
         "/settings/_layout/pat",
         "/settings/_layout/search",
         "/settings/_layout/sessions",
@@ -680,6 +703,10 @@ export const routeTree = rootRoute
     },
     "/settings/_layout/intelligence": {
       "filePath": "settings/_layout/intelligence.tsx",
+      "parent": "/settings/_layout"
+    },
+    "/settings/_layout/locations": {
+      "filePath": "settings/_layout/locations.tsx",
       "parent": "/settings/_layout"
     },
     "/settings/_layout/pat": {

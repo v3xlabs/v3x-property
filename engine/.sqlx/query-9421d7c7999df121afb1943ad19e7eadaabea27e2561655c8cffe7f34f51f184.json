@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "INSERT INTO items (item_id, name, owner_id, location_id, product_id) VALUES ($1, $2, $3, $4, $5) RETURNING *",
+  "query": "INSERT INTO items (item_id, name, owner_id, product_id) VALUES ($1, $2, $3, $4) RETURNING *",
   "describe": {
     "columns": [
       {
@@ -20,21 +20,16 @@
       },
       {
         "ordinal": 3,
-        "name": "location_id",
-        "type_info": "Int4"
-      },
-      {
-        "ordinal": 4,
         "name": "product_id",
         "type_info": "Int4"
       },
       {
-        "ordinal": 5,
+        "ordinal": 4,
         "name": "created_at",
         "type_info": "Timestamptz"
       },
       {
-        "ordinal": 6,
+        "ordinal": 5,
         "name": "updated_at",
         "type_info": "Timestamptz"
       }
@@ -43,7 +38,6 @@
       "Left": [
         "Text",
         "Text",
-        "Int4",
         "Int4",
         "Int4"
       ]
@@ -54,9 +48,8 @@
       true,
       true,
       true,
-      true,
       true
     ]
   },
-  "hash": "f61f1a80b3c3bc25087aa281afb8920d135448078791f13009157e2b86c7ca2a"
+  "hash": "9421d7c7999df121afb1943ad19e7eadaabea27e2561655c8cffe7f34f51f184"
 }

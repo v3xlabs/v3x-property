@@ -679,6 +679,133 @@ export type paths = {
         patch?: never;
         trace?: never;
     };
+    "/location": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json; charset=utf-8": components["schemas"]["Location"][];
+                    };
+                };
+            };
+        };
+        put?: never;
+        /**
+         * /location
+         * @description Create a new location
+         *
+         *     created_at and updated_at are automatically set and do not need to be provided
+         */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json; charset=utf-8": components["schemas"]["Location"];
+                };
+            };
+            responses: {
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json; charset=utf-8": components["schemas"]["Location"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/location/{location_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    location_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json; charset=utf-8": components["schemas"]["Location"];
+                    };
+                };
+            };
+        };
+        /**
+         * /location/:location_id
+         * @description Update a location
+         *     At the moment only the name can be updated, media soonTM
+         */
+        put: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    location_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json; charset=utf-8": components["schemas"]["Location"];
+                };
+            };
+            responses: {
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json; charset=utf-8": components["schemas"]["Location"];
+                    };
+                };
+            };
+        };
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/media": {
         parameters: {
             query?: never;
@@ -2007,8 +2134,6 @@ export type components = {
             product_id?: number;
             /** Format: int32 */
             owner_id?: number;
-            /** Format: int32 */
-            location_id?: number;
             /** Format: date-time */
             created_at?: string;
             /** Format: date-time */
@@ -2062,6 +2187,14 @@ export type components = {
              * @description The first media we find linked to this item
              */
             media_id: number;
+        };
+        Location: {
+            location_id: string;
+            name: string;
+            /** Format: date-time */
+            created_at?: string;
+            /** Format: date-time */
+            updated_at?: string;
         };
         /** @description Represents a log entry
          *     When an action is performed on a resource, a log entry is created
@@ -2145,8 +2278,6 @@ export type components = {
             product_id?: number;
             /** Format: int32 */
             owner_id?: number;
-            /** Format: int32 */
-            location_id?: number;
             tags?: components["schemas"]["SearchableItemTag"][];
             fields?: components["schemas"]["SearchableItemField"][];
             /** Format: date-time */
