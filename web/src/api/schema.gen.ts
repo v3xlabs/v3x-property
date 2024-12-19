@@ -1602,6 +1602,62 @@ export type paths = {
         patch?: never;
         trace?: never;
     };
+    "/operators": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json; charset=utf-8": components["schemas"]["LocalOperator"][];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json; charset=utf-8": components["schemas"]["LocalOperatorPayload"];
+                };
+            };
+            responses: {
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json; charset=utf-8": components["schemas"]["LocalOperator"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/user": {
         parameters: {
             query?: never;
@@ -2437,6 +2493,16 @@ export type components = {
              * @description The first media we find linked to this item
              */
             media_id: number;
+        };
+        LocalOperator: {
+            operator_id: string;
+            operator_endpoint: string;
+            /** Format: date-time */
+            operator_last_heartbeat: string;
+        };
+        LocalOperatorPayload: {
+            operator_id: string;
+            operator_endpoint: string;
         };
         Location: {
             location_id: string;

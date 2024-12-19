@@ -19,6 +19,7 @@ import { ItemFields } from '@/components/item/ItemFields';
 import { LocationPreview } from '@/components/location/LocationPreview';
 import { ItemLogSection } from '@/components/logs/ItemLogSection';
 import { MediaGallery } from '@/components/media/MediaGallery';
+import { PrintLabelButton } from '@/components/print/PrintModal';
 import { Tag } from '@/components/Tag';
 import { Button } from '@/components/ui/Button';
 import { UserProfile } from '@/components/UserProfile';
@@ -78,15 +79,18 @@ export const Route = createFileRoute('/item/$itemId/')({
                 title={(item.data && item.data.name) || `Item ${itemId}`}
                 subtext={`#${itemId}`}
                 suffix={
-                    <Button asChild>
-                        <Link
-                            to="/item/$itemId/edit"
-                            params={{ itemId }}
-                            aria-label="Edit"
-                        >
-                            <FiEdit />
-                        </Link>
-                    </Button>
+                    <div className="flex gap-2">
+                        <PrintLabelButton label_id={itemId} />
+                        <Button asChild>
+                            <Link
+                                to="/item/$itemId/edit"
+                                params={{ itemId }}
+                                aria-label="Edit"
+                            >
+                                <FiEdit />
+                            </Link>
+                        </Button>
+                    </div>
                 }
             >
                 <div className="card no-padding pt-4">

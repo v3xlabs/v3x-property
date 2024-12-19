@@ -117,7 +117,7 @@ export const Navbar = () => {
         >
             <Link
                 to="/"
-                className="hidden h-auto cursor-pointer items-center border-b px-4 text-base font-semibold hover:bg-black/10 md:flex md:border-r"
+                className="hidden h-full cursor-pointer items-center px-4 text-base font-semibold hover:bg-black/10 md:flex md:border-r"
             >
                 v3x.property
             </Link>

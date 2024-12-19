@@ -9,6 +9,7 @@ use logs::LogsApi;
 use me::MeApi;
 use media::MediaApi;
 use oauth::{callback::CallbackApi, login::LoginApi};
+use operators::OperatorApi;
 use poem::{
     endpoint::StaticFilesEndpoint, get, handler, listener::TcpListener, middleware::Cors,
     web::Html, EndpointExt, Route, Server,
@@ -32,6 +33,7 @@ pub mod logs;
 pub mod me;
 pub mod media;
 pub mod oauth;
+pub mod operators;
 pub mod policy;
 pub mod product;
 pub mod search;
@@ -57,6 +59,8 @@ enum ApiTags {
     Logs,
     /// Search-related operations
     Search,
+    /// Operators-related operations
+    Operators,
     /// User-related operations
     User,
     /// Auth-related operations
@@ -66,7 +70,7 @@ enum ApiTags {
     Instance,
 }
 
-fn get_api() -> impl OpenApi {
+fn get_api_2() -> impl OpenApi {
     (
         // Items
         (ItemsApi, ItemMediaApi, ItemIntelligenceApi),
@@ -84,11 +88,18 @@ fn get_api() -> impl OpenApi {
         TagsApi,
         // Logs
         LogsApi,
+    )
+}
+
+fn get_api() -> impl OpenApi {
+    (
+        get_api_2(),
         // Me
         MeApi,
+        // Operators
+        OperatorApi,
         // User
-        UserApi,
-        UserKeysApi,
+        (UserApi, UserKeysApi),
         // Policy
         PolicyApi,
         // Sessions

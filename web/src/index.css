@@ -91,9 +91,8 @@
     @apply text-base font-semibold px-2 py-1.5;
 }
 
-/* reset */
 a {
-    all: unset;
+    padding: 0;
 }
 
 .link {

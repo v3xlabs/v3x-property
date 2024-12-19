@@ -4,12 +4,15 @@ import clsx from 'clsx';
 import { ReactNode, useState } from 'react';
 import { FiChevronDown } from 'react-icons/fi';
 import {
+    LuBot,
     LuBrain,
     LuClipboardType,
     LuClock,
+    LuFileText,
     LuHardDrive,
     LuKey,
     LuMapPin,
+    LuPrinter,
     LuScroll,
     LuSearch,
     LuSettings,
@@ -79,9 +82,6 @@ const ExpandableItem = ({ path, label, icon }: { path: [string, string][], label
 
 export const SettingsNav = () => {
     const { ok: hasUsersPermissions } = useHasPolicy('user', '', 'write');
-    const x = useRouterState({
-        select: (state) => state.location,
-    });
 
     return (
         <ul className="flex flex-col divide-y">
@@ -118,6 +118,13 @@ export const SettingsNav = () => {
                                 <LuBrain />,
                             ],
                         ],
+                    ],
+                    [
+                        'Printing',
+                        [
+                            ['/settings/operators', 'Operators', <LuBot />],
+                            ['/settings/templates', 'Templates', <LuFileText />],
+                        ]
                     ],
                     [
                         'Authentication',

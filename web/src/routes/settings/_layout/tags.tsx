@@ -10,5 +10,5 @@ export const Route = createFileRoute('/settings/_layout/tags')({
 });
 
 function RouteComponent() {
-    return <div>Hello "/settings/tags"!</div>;
+    return <div className="card">Hello "/settings/tags"!</div>;
 }

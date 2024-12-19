@@ -25,6 +25,7 @@ export const SpecificLocationPreview: FC<{
     location?: Location;
     variant?: 'compact' | 'full';
 }> = (properties) => {
+    const variant = properties.variant || 'full';
     const location_id =
         properties.location_id || properties.location?.location_id;
     const { data: location } = useLocation(location_id);
@@ -41,14 +42,14 @@ export const SpecificLocationPreview: FC<{
             className={
                 clsx(
                     'card no-padding flex cursor-pointer hover:bg-neutral-100',
-                    properties.variant === 'compact' && 'px-2 py-0.5 text-sm',
-                    properties.variant === 'full' && 'flex flex-col p-4'
+                    variant === 'compact' && 'px-2 py-0.5 text-sm',
+                    variant === 'full' && 'flex flex-col p-4'
                 )
             }
         >
             <div>{data?.name}</div>
             <div className="text-sm text-neutral-500">
-                    #{data?.location_id}
+                #{data?.location_id}
             </div>
         </Link>
     );
