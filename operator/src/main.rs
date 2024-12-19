@@ -35,7 +35,7 @@ async fn main() {
 
     tracing_subscriber::fmt::init();
 
-    info!("Starting v3x-property local-operator");
+    info!("Starting v3x-property operator");
 
     let token = std::env::var("PAT_TOKEN").unwrap();
 

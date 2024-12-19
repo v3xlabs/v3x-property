@@ -6,13 +6,16 @@ on:
     paths:
       - "engine/**" # Our Rust backend
       - "web/**" # Our web frontend
+      - "operator/**" # Our operator
       - ".github/workflows/build.yaml"
 
 # Set up some global variables we'll use throughout
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAME: v3xlabs/v3x-property/engine
-  BINARY_NAME: v3x-property-engine
+  ENGINE_IMAGE_NAME: v3xlabs/v3x-property/engine
+  OPERATOR_IMAGE_NAME: v3xlabs/v3x-property/operator
+  ENGINE_BINARY_NAME: v3x-property-engine
+  OPERATOR_BINARY_NAME: v3x-property-operator
   DOCKER_BUILDKIT: 1 # Enable BuildKit
   COMPOSE_DOCKER_CLI_BUILD: 1
 
@@ -70,7 +73,7 @@ jobs:
       - name: Build Rust binary
         working-directory: ./engine
         env:
-          BINARY_NAME: ${{ env.BINARY_NAME }}
+          BINARY_NAME: ${{ env.ENGINE_BINARY_NAME }}
           SQLX_OFFLINE: true # Use prepared SQL queries
         run: cross build --target ${{ matrix.platform.arch }} --release
 
@@ -79,7 +82,73 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: engine-${{ matrix.platform.arch }}
-          path: engine/target/${{ matrix.platform.arch }}/release/${{ env.BINARY_NAME }}
+          path: engine/target/${{ matrix.platform.arch }}/release/${{ env.ENGINE_BINARY_NAME }}
+          retention-days: 1 # Save storage by cleaning up quickly
+          compression-level: 9 # Maximum compression
+
+  # 🦀 First job: Build our Rust backend for multiple architectures
+  build-operator:
+    strategy:
+      matrix:
+        platform:
+          - arch: x86_64-unknown-linux-musl
+            docker: linux/amd64
+          - arch: aarch64-unknown-linux-musl
+            docker: linux/arm64
+    timeout-minutes: 20 # Prevent hanging builds
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # Set up Rust with the specific target we need
+      - name: Install Rust
+        run: rustup toolchain install stable --profile minimal --no-self-update
+
+      # Speed up builds by caching dependencies
+      - name: Cache Rust
+        uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: operator
+          key: ${{ matrix.platform.arch }}
+
+      # Install cross
+      - name: Install cross
+        run: cargo install cross
+
+      # Update version number in operator/Cargo.toml
+      # If tag is a release use that
+      # Otherwise use the version number in the operator/Cargo.toml and append it with -alpha
+      - name: Update version number
+        run: |
+          if [[ "${{ github.ref }}" =~ ^refs/tags/v[0-9]+\.[0-9]+\.[0-9]+.*$ ]]; then
+            VERSION=${GITHUB_REF#refs/tags/v}
+            echo "Release tag detected, using version: $VERSION"
+            sed -i "0,/^version = .*/s//version = \"${VERSION}\"/" operator/Cargo.toml
+          else
+            echo "No release tag detected, using version from Cargo.toml"
+            # parse version from Cargo.toml using regex
+            version=$(grep -oP 'version = "([^"]+?)"' operator/Cargo.toml | head -n 1 | sed 's/^version = "\(.*\)"$/\1/')
+            echo "Current version: $version"
+            sed -i '0,/^version = .*/s//version = "'${version}'-alpha"/' operator/Cargo.toml
+          fi
+
+      # 🔨 Build our static binary
+      - name: Build Rust binary
+        working-directory: ./operator
+        env:
+          BINARY_NAME: ${{ env.OPERATOR_BINARY_NAME }}
+          SQLX_OFFLINE: true # Use prepared SQL queries
+        run: cross build --target ${{ matrix.platform.arch }} --release
+
+      # 📦 Save our binary for later
+      - name: Upload built binary as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: operator-${{ matrix.platform.arch }}
+          path: operator/target/${{ matrix.platform.arch }}/release/${{ env.OPERATOR_BINARY_NAME }}
           retention-days: 1 # Save storage by cleaning up quickly
           compression-level: 9 # Maximum compression
 
@@ -172,7 +241,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v5
         with:
-          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          images: ${{ env.REGISTRY }}/${{ env.ENGINE_IMAGE_NAME }}
 
       # 🚀 Build and push multi-arch Docker image
       - name: Build Docker digests
@@ -185,7 +254,7 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
           annotations: ${{ steps.meta.outputs.annotations }}
 
-          outputs: type=image,name=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }},push-by-digest=true,name-canonical=true,push=true
+          outputs: type=image,name=${{ env.REGISTRY }}/${{ env.ENGINE_IMAGE_NAME }},push-by-digest=true,name-canonical=true,push=true
 
           build-args: |
             BINARY_PATH=./v3x-property-engine
@@ -247,7 +316,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v5
         with:
-          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          images: ${{ env.REGISTRY }}/${{ env.ENGINE_IMAGE_NAME }}
           tags: |
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}
@@ -259,8 +328,8 @@ jobs:
         working-directory: /tmp/digests
         run: |
           docker buildx imagetools create $(jq -cr '.tags | map("-t " + .) | join(" ")' <<< "$DOCKER_METADATA_OUTPUT_JSON") \
-            $(printf '${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}@sha256:%s ' *)
+            $(printf '${{ env.REGISTRY }}/${{ env.ENGINE_IMAGE_NAME }}@sha256:%s ' *)
 
       - name: Inspect image
         run: |
-          docker buildx imagetools inspect ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ steps.meta.outputs.version }}
+          docker buildx imagetools inspect ${{ env.REGISTRY }}/${{ env.ENGINE_IMAGE_NAME }}:${{ steps.meta.outputs.version }}

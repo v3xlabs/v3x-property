@@ -21,7 +21,7 @@ function RouteComponent() {
                     warehouse), and expose peripherals (such as readers,
                     printers, etc).{' '}
                     <Link
-                        href="https://github.com/v3xlabs/v3x-property/blob/master/local-operator/README.md"
+                        href="https://github.com/v3xlabs/v3x-property/blob/master/operator/README.md"
                         target="_blank"
                         className="link"
                     >
