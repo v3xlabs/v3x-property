@@ -105,25 +105,6 @@ export const Route = createFileRoute('/item/$itemId/')({
                             </div>
                         )}
                     </div>
-                    <div className="flex w-full flex-wrap items-center gap-4 px-4">
-                        {/* {item.data?. && ( */}
-                        <div className="grow space-y-2">
-                            <h3 className="font-bold">Location</h3>
-                            <LocationInputExecutive item_id={itemId} />
-                            {
-                                location ? (
-                                    <LocationPreview itemLocation={location} />
-                                ) : (
-                                    <div>
-                                        This item does not have a location
-                                    </div>
-                                )}
-                        </div>
-                        <div className="space-y-2">
-                            <YeetButton item_id={itemId} />
-                        </div>
-                        {/* )} */}
-                    </div>
                     <ItemFields item_id={itemId} />
                     {tags && tags.length > 0 && (
                         <div className="p-4">
@@ -135,6 +116,25 @@ export const Route = createFileRoute('/item/$itemId/')({
                             </div>
                         </div>
                     )}
+                </div>
+                <div className="space-y-2">
+                    <h2 className="h2">Location</h2>
+                    <div className="flex w-full items-center justify-stretch gap-4">
+                        {
+                            location ? (
+                                <div className="grow text-nowrap">
+                                    <LocationPreview itemLocation={location} variant='full' />
+                                </div>
+                            ) : (
+                                <div>
+                                This item does not have a location
+                                </div>
+                            )}
+                        <div className="flex flex-col gap-2">
+                            <LocationInputExecutive item_id={itemId} />
+                            <YeetButton item_id={itemId} />
+                        </div>
+                    </div>
                 </div>
                 <ItemLogSection item_id={itemId} />
             </SCPage>

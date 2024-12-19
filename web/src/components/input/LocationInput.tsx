@@ -67,7 +67,7 @@ export const LocationInput: FC<{ value: string, name?: string, forceCategory?: s
     return (
         <FieldSelect
             {...properties}
-            label={name ?? 'Location'}
+            label={name}
             options={options}
             value={location ?? ''}
             // onSearch={setSearch}
