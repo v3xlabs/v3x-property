@@ -29,7 +29,7 @@ export const Route = createFileRoute('/item/$itemId/')({
         console.log('params', params);
 
         if (params.itemId == '') {
-            return redirect({ to: '/items' });
+            return redirect({ to: '/items', search: { view: 'full' } });
         }
 
         // Ensure instance settings are loaded
@@ -71,6 +71,7 @@ export const Route = createFileRoute('/item/$itemId/')({
         return (
             <SCPage
                 title={(item.data && item.data.name) || `Item ${itemId}`}
+                subtext={`#${itemId}`}
                 suffix={
                     <Button asChild>
                         <Link
@@ -83,7 +84,7 @@ export const Route = createFileRoute('/item/$itemId/')({
                     </Button>
                 }
             >
-                <div className="card pt-4">
+                <div className="card pt-4 no-padding">
                     <div className="px-4">
                         <MediaGallery media_ids={media.data} />
                     </div>
