@@ -1,0 +1,35 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "INSERT INTO local_operators (operator_id, operator_endpoint, operator_last_heartbeat) VALUES ($1, $2, NOW()) ON CONFLICT (operator_id) DO UPDATE SET operator_last_heartbeat = NOW() RETURNING *",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "operator_id",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 1,
+        "name": "operator_endpoint",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 2,
+        "name": "operator_last_heartbeat",
+        "type_info": "Timestamptz"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Text",
+        "Text"
+      ]
+    },
+    "nullable": [
+      false,
+      false,
+      false
+    ]
+  },
+  "hash": "1076c958be86b37aec0f0c5f41b9b34108c0a03702cedca441812a196c080bdf"
+}
