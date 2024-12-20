@@ -1,7 +1,7 @@
 import { queryOptions, useQuery } from '@tanstack/react-query';
 
-import { ApiRequest, apiRequest } from '../core';
 import { useAuth } from '../auth';
+import { ApiRequest, apiRequest } from '../core';
 
 export type SearchableItem = ApiRequest<
     '/search',

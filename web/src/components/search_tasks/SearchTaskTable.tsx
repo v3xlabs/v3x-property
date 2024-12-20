@@ -66,7 +66,7 @@ const TaskTableEntry = ({
                     </div>
                 </div>
             </td>
-            <td className="py-0.5 text-right flex items-center gap-2 justify-end">
+            <td className="flex items-center justify-end gap-2 py-0.5 text-right">
                 <div className="text-sm text-gray-500">
                     last updated {timeAgo.format(Date.parse(task.updated_at))}
                 </div>

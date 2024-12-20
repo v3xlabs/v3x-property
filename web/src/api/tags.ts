@@ -1,3 +1,4 @@
+/* eslint-disable sonarjs/no-duplicate-string */
 import { queryOptions, useMutation, useQuery } from '@tanstack/react-query';
 
 import { queryClient } from '@/util/query';

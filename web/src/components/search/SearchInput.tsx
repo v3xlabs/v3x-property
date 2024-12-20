@@ -16,7 +16,7 @@ export const SearchInput = ({ variant }: { variant: 'full' | 'large' }) => {
         <div className="w-full space-y-2">
             <form
                 role="search"
-                className="w-full flex gap-4 justify-stretch"
+                className="flex w-full justify-stretch gap-4"
                 onSubmit={(event) => {
                     event.preventDefault();
                 }}

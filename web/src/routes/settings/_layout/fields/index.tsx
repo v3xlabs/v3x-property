@@ -46,9 +46,9 @@ const FieldDefinitionEditor = ({
             try {
                 await (fieldDef?.definition_id
                     ? updateMutation.mutateAsync({
-                          field_id: fieldDef.definition_id,
-                          data: value,
-                      })
+                        field_id: fieldDef.definition_id,
+                        data: value,
+                    })
                     : createMutation.mutateAsync(value));
                 onSuccess?.();
             } catch (error) {
@@ -165,7 +165,7 @@ const FieldDefinitionEditor = ({
                 }}
             >
                 {(field) => (
-                    <div className="flex flex-col gap-2 w-full">
+                    <div className="flex w-full flex-col gap-2">
                         <FieldSelect
                             label="Kind"
                             value={field.state.value}
@@ -212,7 +212,7 @@ const FieldDefinitionEditor = ({
             <form.Subscribe
                 selector={(state) => [state.canSubmit, state.isSubmitting]}
                 children={([canSubmit, isSubmitting]) => (
-                    <div className="flex gap-2 items-center justify-end">
+                    <div className="flex items-center justify-end gap-2">
                         <Button
                             type="submit"
                             disabled={!canSubmit || isSubmitting}
@@ -258,13 +258,13 @@ const RouteComponent = () => {
             <div className="card">
                 {data.map((field) => (
                     <div
-                        className="flex gap-2 items-center hover:bg-gray-50 p-2 rounded-md"
+                        className="flex items-center gap-2 rounded-md p-2 hover:bg-gray-50"
                         key={field.definition_id}
                     >
                         {field.icon && (
                             <DynamicIcon
                                 icon={field.icon}
-                                className="size-4 aspect-square"
+                                className="aspect-square size-4"
                             />
                         )}
                         {field.name}

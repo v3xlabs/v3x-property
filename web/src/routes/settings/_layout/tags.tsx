@@ -3,9 +3,9 @@ import { createFileRoute } from '@tanstack/react-router';
 import { useTags } from '@/api/tags';
 import { Tag } from '@/components/Tag';
 import { TagCreateModal } from '@/components/tags/TagCreateModal';
+import { TagEditModalContent } from '@/components/tags/TagEditModal';
 import { Button } from '@/components/ui/Button';
 import { Dialog, DialogTrigger } from '@/components/ui/Dialog';
-import { TagEditModalContent } from '@/components/tags/TagEditModal';
 
 export const Route = createFileRoute('/settings/_layout/tags')({
     component: RouteComponent,

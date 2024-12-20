@@ -13,7 +13,7 @@ export const MediaDropzone: FC<{
 
     return (
         <div
-            className="border min-h-32 border-dashed border-gray-300 rounded-lg p-4 grow flex items-center justify-center"
+            className="flex min-h-32 grow items-center justify-center rounded-lg border border-dashed border-gray-300 p-4"
             {...getRootProps()}
         >
             <input {...getInputProps()} />

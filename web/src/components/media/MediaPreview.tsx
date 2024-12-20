@@ -2,6 +2,7 @@
 import { useMutation } from '@tanstack/react-query';
 import clsx from 'clsx';
 import { FC, Suspense, useEffect, useState } from 'react';
+import { lazy } from 'react';
 import { FiEdit, FiLoader, FiTrash } from 'react-icons/fi';
 import { match } from 'ts-pattern';
 import { useDebouncedCallback } from 'use-debounce';
@@ -13,7 +14,6 @@ import { useMedia } from '@/api/media';
 import { ErrorBoundary } from '@/components/ErrorBoundary';
 
 import { Button } from '../ui/Button';
-import { lazy } from 'react';
 
 export const MediaPreview: FC<{
     variant?: 'small' | 'default';
@@ -109,15 +109,15 @@ export const MediaPreview: FC<{
     return (
         <div
             className={clsx(
-                'relative aspect-video bg-neutral-100 max-w-md w-full rounded-md',
+                'relative aspect-video w-full max-w-md rounded-md bg-neutral-100',
                 status == 'new-media' &&
                     isPending &&
-                    'border-blue-400 border-2',
-                status == 'new-media' && isIdle && 'border-neutral-200 border',
+                    'border-2 border-blue-400',
+                status == 'new-media' && isIdle && 'border border-neutral-200',
                 ['new-media', 'existing-media'].includes(status ?? '') &&
                     isSuccess &&
-                    'border-green-400 border-2',
-                status == 'removed-media' && 'border-red-400 border-2'
+                    'border-2 border-green-400',
+                status == 'removed-media' && 'border-2 border-red-400'
             )}
         >
             {match(fileType)
@@ -142,18 +142,18 @@ export const MediaPreview: FC<{
                     <StlPreview media_id={media_id} url={mediaUrl} />
                 ))
                 .otherwise(() => (
-                    <div className="p-3 border-orange-500 border-2 rounded-md bg-orange-100 h-full">
+                    <div className="h-full rounded-md border-2 border-orange-500 bg-orange-100 p-3">
                         <span>Unknown file type</span>
                         <span>{fileType}</span>
                     </div>
                 ))}
             {isPending && (
-                <div className="flex items-center gap-2 justify-center w-full border-t-2 border-t-inherit mt-1">
+                <div className="mt-1 flex w-full items-center justify-center gap-2 border-t-2 border-t-inherit">
                     Uploading... <FiLoader className="animate-spin" />
                 </div>
             )}
             {media_id && (
-                <div className="flex justify-between items-center p-2 border-t-inherit border-t">
+                <div className="flex items-center justify-between border-t border-t-inherit p-2">
                     <div className="pl-4">{media?.description}</div>
                     <div className="flex gap-2">
                         {delete_media && (
@@ -183,7 +183,7 @@ export const VideoPreview: FC<{ media_id?: number; url?: string }> = ({
 
     return (
         <div>
-            <video src={url ?? media?.url} className="w-full h-full" controls />
+            <video src={url ?? media?.url} className="h-full w-full" controls />
         </div>
     );
 };
@@ -196,9 +196,9 @@ export const ImagePreview: FC<{ media_id?: number; url?: string }> = ({
     const [imageNotFound, setImageNotFound] = useState(false);
 
     return (
-        <div className="w-full h-full">
+        <div className="h-full w-full">
             {imageNotFound ? (
-                <div className="p-3 border-red-500 border-2 rounded-md bg-red-100 h-full">
+                <div className="h-full rounded-md border-2 border-red-500 bg-red-100 p-3">
                     <p className="font-bold">Image Preview Error</p>
                     <p>Image not found</p>
                     <code className="text-wrap break-all">
@@ -209,7 +209,7 @@ export const ImagePreview: FC<{ media_id?: number; url?: string }> = ({
                 <img
                     src={url ?? media?.url}
                     alt={media?.description}
-                    className="w-full h-full object-contain"
+                    className="h-full w-full object-contain"
                     onError={() => setImageNotFound(true)}
                 />
             )}

@@ -22,8 +22,8 @@ export const SearchDetails = () => {
     });
 
     return (
-        <div className="space-y-2.5 card">
-            <div className="flex flex-row gap-2 items-center">
+        <div className="card space-y-2.5">
+            <div className="flex flex-row items-center gap-2">
                 <SiMeilisearch />
                 <h3 className="font-bold">Meilisearch</h3>
             </div>

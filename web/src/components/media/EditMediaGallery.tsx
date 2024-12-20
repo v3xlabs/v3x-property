@@ -14,37 +14,37 @@ type Action =
 
 const reducer: Reducer<AttachedMedia[], Action> = (state, action) => {
     switch (action.type) {
-        case 'add':
-            return [...state, ...action.media];
-        case 'update':
-            return state.map((m) =>
-                m.status === 'new-media' && m.blob === action.blob
-                    ? action.media
-                    : m
-            );
-        case 'remove':
-            console.log('remove');
+    case 'add':
+        return [...state, ...action.media];
+    case 'update':
+        return state.map((m) =>
+            m.status === 'new-media' && m.blob === action.blob
+                ? action.media
+                : m
+        );
+    case 'remove':
+        console.log('remove');
 
-            return state
-                .map((m) => {
-                    if (m.media_id === action.media_id) {
-                        // If brand new media, no need to tell engine, just remove it
-                        if (m.status === 'new-media') {
-                            return;
-                        }
-
-                        // Otherwise, tell engine to remove it
-                        return {
-                            ...m,
-                            status: 'removed-media',
-                        } as AttachedMedia;
+        return state
+            .map((m) => {
+                if (m.media_id === action.media_id) {
+                    // If brand new media, no need to tell engine, just remove it
+                    if (m.status === 'new-media') {
+                        return;
                     }
 
-                    return m;
-                })
-                .filter((m) => !!m);
-        default:
-            return state;
+                    // Otherwise, tell engine to remove it
+                    return {
+                        ...m,
+                        status: 'removed-media',
+                    } as AttachedMedia;
+                }
+
+                return m;
+            })
+            .filter((m) => !!m);
+    default:
+        return state;
     }
 };
 
@@ -79,11 +79,11 @@ export const EditMediaGallery: FC<{
     }, [state]);
 
     return (
-        <div className="card flex-col md:flex-row flex items-stretch gap-2">
+        <div className="card flex flex-col items-stretch gap-2 md:flex-row">
             <div className="grow">
                 <ul
                     className={clsx(
-                        'grid gap-2 auto-rows-fr',
+                        'grid auto-rows-fr gap-2',
                         state.length > 0 && 'grid-cols-1 md:grid-cols-2'
                     )}
                 >
@@ -129,7 +129,7 @@ export const EditMediaGallery: FC<{
                             )}
                         </li>
                     ))}
-                    <li className="flex flex-col gap-2 w-full">
+                    <li className="flex w-full flex-col gap-2">
                         <MediaDropzone onDrop={onDrop} />
                         <Button type="button">Add Existing</Button>
                     </li>

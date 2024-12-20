@@ -15,12 +15,12 @@ import { defaultPendingComponent } from './components/Router';
 
 // Create a new router instance
 const router = createRouter({
-  routeTree,
-  defaultPendingComponent,
-  defaultErrorComponent: PageErrorBoundary,
-  context: {
-    title: 'Property',
-  },
+    routeTree,
+    defaultPendingComponent,
+    defaultErrorComponent: PageErrorBoundary,
+    context: {
+        title: 'Property',
+    },
 });
 
 // Register the router instance for type safety
@@ -34,9 +34,9 @@ declare module '@tanstack/react-router' {
 preflightAuth();
 
 ReactDOM.createRoot(document.querySelector('#root')!).render(
-  <React.StrictMode>
-    <QueryClientProvider client={queryClient}>
-      <RouterProvider router={router} />
-    </QueryClientProvider>
-  </React.StrictMode>
+    <React.StrictMode>
+        <QueryClientProvider client={queryClient}>
+            <RouterProvider router={router} />
+        </QueryClientProvider>
+    </React.StrictMode>
 );

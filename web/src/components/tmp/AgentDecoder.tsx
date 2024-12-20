@@ -66,8 +66,8 @@ export const ExpandableTextModal: FC<{
                     </DialogDescription>
                 </DialogHeader>
                 <div className="w-full overflow-x-hidden">
-                    <div className="max-h-[500px] max-w-full w-full">
-                        <pre className="pre border text-wrap p-0.5 overflow-y-auto overflow-x-auto w-full max-w-full">
+                    <div className="max-h-[500px] w-full max-w-full">
+                        <pre className="pre w-full max-w-full overflow-x-auto overflow-y-auto text-wrap border p-0.5">
                             {text instanceof Object
                                 ? JSON.stringify(text, undefined, 2)
                                 : text}
@@ -113,7 +113,7 @@ export const AgentDecoder: FC<{
                                         event: 'hello',
                                     },
                                     () => (
-                                        <div className="py-4 px-2 flex gap-2 items-center">
+                                        <div className="flex items-center gap-2 px-2 py-4">
                                             Chatting with <b>Gemini</b>{' '}
                                             <SiGooglegemini />
                                         </div>
@@ -132,14 +132,14 @@ export const AgentDecoder: FC<{
 
                                         return (
                                             <>
-                                                <div className="py-4 px-2 space-y-2">
+                                                <div className="space-y-2 px-2 py-4">
                                                     <div className="flex items-center gap-2">
                                                         <TbFunctionFilled />
                                                         <div>
                                                             {functionCall}
                                                         </div>
                                                     </div>
-                                                    <pre className="pre text-wrap p-0.5 break-words">
+                                                    <pre className="pre text-wrap break-words p-0.5">
                                                         {query}
                                                     </pre>
                                                 </div>
@@ -156,15 +156,15 @@ export const AgentDecoder: FC<{
                                             message.data.parts[0].type == 'text'
                                                 ? message.data.parts[0].content
                                                 : JSON.stringify(
-                                                      message.data.parts[0]
-                                                          .content[1],
-                                                      undefined,
-                                                      2
-                                                  );
+                                                    message.data.parts[0]
+                                                        .content[1],
+                                                    undefined,
+                                                    2
+                                                );
 
                                         return (
                                             <div
-                                                className={'py-4 px-2 border-b'}
+                                                className={'border-b px-2 py-4'}
                                             >
                                                 <ExpandableTextModal
                                                     text={text}
@@ -201,7 +201,7 @@ export const AgentDecoder: FC<{
                                         //     JSON.parse(attemptedExtraction)['name'];
 
                                         return (
-                                            <div className="flex items-center justify-center p-0.5 py-1 my-2">
+                                            <div className="my-2 flex items-center justify-center p-0.5 py-1">
                                                 <ExpandableTextModal
                                                     text={attemptedExtraction}
                                                     label={name ?? '📄 Results'}
@@ -219,15 +219,15 @@ export const AgentDecoder: FC<{
                                     () => {
                                         return (
                                             <div className="pt-2">
-                                                <div className="flex items-center justify-stretch py-0.5 gap-0.5">
-                                                    <div className="grow h-0.5 bg-border w-full"></div>
-                                                    <div className="italic text-center break-inside-avoid text-nowrap">
+                                                <div className="flex items-center justify-stretch gap-0.5 py-0.5">
+                                                    <div className="h-0.5 w-full grow bg-border"></div>
+                                                    <div className="break-inside-avoid text-nowrap text-center italic">
                                                         Intelligence Complete
                                                     </div>
-                                                    <div className="grow h-0.5 bg-border w-full"></div>
+                                                    <div className="h-0.5 w-full grow bg-border"></div>
                                                 </div>
                                                 {onReThinkSteps && (
-                                                    <div className="mx-auto w-full flex justify-center">
+                                                    <div className="mx-auto flex w-full justify-center">
                                                         <Button
                                                             variant="ghost"
                                                             onClick={
@@ -246,7 +246,7 @@ export const AgentDecoder: FC<{
                                     }
                                 )
                                 .otherwise(() => (
-                                    <div className="py-4 px-2">
+                                    <div className="px-2 py-4">
                                         <div>Unknown Output</div>
                                         <pre>
                                             {JSON.stringify(
@@ -266,7 +266,7 @@ export const AgentDecoder: FC<{
                                         { type: 'function_call' },
                                         { type: 'function_response' },
                                         () => (
-                                            <div className="flex items-center justify-center gap-2 mt-2 pt-1">
+                                            <div className="mt-2 flex items-center justify-center gap-2 pt-1">
                                                 <RxPaperPlane />
                                                 <div className="text-sm">
                                                     Generating

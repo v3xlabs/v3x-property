@@ -9,7 +9,7 @@
     "test:prepare": "mkdir -p ./playwright/.auth && touch ./playwright/.auth",
     "test:ui": "pnpm test:prepare && playwright test --ui",
     "test": "pnpm test:prepare && playwright test",
-    "lint": "eslint src/**/*.{ts,tsx} --fix",
+    "lint": "eslint 'src/**/*.{ts,tsx}' --fix",
     "api-schema": "openapi-typescript http://localhost:3000/openapi.json -t -o ./src/api/schema.gen.ts"
   },
   "keywords": [],

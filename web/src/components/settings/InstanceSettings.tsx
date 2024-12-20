@@ -57,7 +57,7 @@ export const InstanceSettings = () => {
                         name="id_casing_preference"
                         children={(field) => {
                             return (
-                                <div className="space-y-2 card">
+                                <div className="card space-y-2">
                                     <Label htmlFor="id_casing_preference">
                                         ID Casing Preference
                                     </Label>

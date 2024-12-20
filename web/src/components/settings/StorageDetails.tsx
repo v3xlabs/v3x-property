@@ -15,11 +15,11 @@ export const StorageDetails = () => {
     }
 
     return (
-        <div className="card flex flex-col justify-between md:flex-row gap-4">
+        <div className="card flex flex-col justify-between gap-4 md:flex-row">
             <div className="w-full space-y-2">
                 <h2 className="font-bold">S3-Compatible Object Storage</h2>
                 <p>Your media is stored in S3-compatible object storage.</p>
-                <ul className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <ul className="grid grid-cols-1 gap-4 md:grid-cols-2">
                     {(
                         [
                             [
@@ -44,7 +44,7 @@ export const StorageDetails = () => {
                             ],
                         ] as const
                     ).map(([key, value, icon]) => (
-                        <li key={key} className="gap-2 flex flex-col">
+                        <li key={key} className="flex flex-col gap-2">
                             <span className="font-bold">{key}</span>
                             <span className="flex items-center gap-0.5">
                                 {icon}

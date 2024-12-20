@@ -1,3 +1,4 @@
+/* eslint-disable sonarjs/no-identical-functions */
 import { useForm } from '@tanstack/react-form';
 import { useSuspenseQuery } from '@tanstack/react-query';
 import {

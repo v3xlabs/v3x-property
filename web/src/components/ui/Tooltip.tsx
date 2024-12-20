@@ -13,7 +13,7 @@ export const Tooltip: FC<PropsWithChildren<{ trigger?: ReactNode }>> = ({
                     {trigger || <FiInfo />}
                 </TooltipPrimitive.TooltipTrigger>
                 <TooltipPrimitive.TooltipContent
-                    className="TooltipContent border drop-shadow-sm max-w-sm"
+                    className="TooltipContent max-w-sm border drop-shadow-sm"
                     sideOffset={5}
                 >
                     {children}
