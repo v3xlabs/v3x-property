@@ -228,11 +228,11 @@ const ItemPreviewLarge: FC<{
                         <ul className="flex items-center gap-2 py-2">{logos}</ul>
                     )}
                 </div>
+                {/* {item?.owner_id && (
+                    <UserProfile user_id={item.owner_id} variant="compact" />
+                )} */}
             </div>
             <div className="flex h-full w-full items-end justify-between gap-2 md:w-auto md:flex-col md:justify-end">
-                {item?.owner_id && (
-                    <UserProfile user_id={item.owner_id} variant="compact" />
-                )}
                 {location?.location_user_id == item?.owner_id && (<span className='text-end text-xs leading-tight text-neutral-500'>with owner</span>) }
                 {location && location.location_user_id != item?.owner_id && (
                     <div className="w-fit">
