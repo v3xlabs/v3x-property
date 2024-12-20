@@ -55,6 +55,18 @@ impl TagsApi {
 
     /// /tags/:tag_id
     ///
+    /// Edit a tag
+    #[oai(path = "/tags/:tag_id", method = "put", tag = "ApiTags::Tags")]
+    async fn edit_tag(&self, state: Data<&Arc<AppState>>, tag_id: Path<i32>, tag: Json<Tag>) -> Result<Json<Tag>> {
+        Tag::edit(&state.database, tag_id.0, &tag.name, tag.color.clone())
+            .await
+            .map(Json)
+            .map_err(HttpError::from)
+            .map_err(poem::Error::from)
+    }
+
+    /// /tags/:tag_id
+    ///
     /// Delete a tag
     #[oai(path = "/tags/:tag_id", method = "delete", tag = "ApiTags::Tags")]
     async fn delete_tag(

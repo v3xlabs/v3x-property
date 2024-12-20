@@ -41,6 +41,12 @@ impl Tag {
             .await
     }
 
+    pub async fn edit(db: &Database, tag_id: i32, name: &str, color: Option<String>) -> Result<Tag, sqlx::Error> {
+        query_as!(Tag, "UPDATE tags SET name = $1, color = $2 WHERE tag_id = $3 RETURNING *", name.into(), color.unwrap_or("".to_string()), tag_id)
+            .fetch_one(&db.pool)
+            .await
+    }
+
     pub async fn delete(db: &Database, tag_id: i32) -> Result<Tag, sqlx::Error> {
         query_as!(Tag, "DELETE FROM tags WHERE tag_id = $1 RETURNING *", tag_id)
             .fetch_one(&db.pool)

@@ -1518,7 +1518,35 @@ export type paths = {
                 };
             };
         };
-        put?: never;
+        /**
+         * /tags/:tag_id
+         * @description Edit a tag
+         */
+        put: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    tag_id: number;
+                };
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json; charset=utf-8": components["schemas"]["Tag"];
+                };
+            };
+            responses: {
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json; charset=utf-8": components["schemas"]["Tag"];
+                    };
+                };
+            };
+        };
         post?: never;
         /**
          * /tags/:tag_id

@@ -1,23 +1,24 @@
 import { useForm } from '@tanstack/react-form';
 import { FC } from 'react';
 
-import { useTagCreate } from '@/api/tags';
+import { useTagById, useTagEdit } from '@/api/tags';
 
 import { BaseInput } from '../input/BaseInput';
 import { Button } from '../ui/Button';
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '../ui/Dialog';
+import { DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '../ui/Dialog';
 
-const TagCreateModalContent: FC<{ name?: string }> = ({ name }) => {
-    const { mutateAsync: createTag } = useTagCreate();
+export const TagEditModalContent: FC<{ tag_id?: number }> = ({ tag_id }) => {
+    const { data: tag } = useTagById(tag_id);
+    const { mutateAsync: editTag } = useTagEdit();
     const { Field, Subscribe, handleSubmit } = useForm({
         defaultValues: {
-            name: name ?? '',
-            color: '',
+            name: tag?.name ?? '',
+            color: tag?.color ?? '',
         },
         onSubmit: async (values) => {
             console.log(values);
-            const tag = await createTag({
-                tag_id: 0,
+            const tag = await editTag({
+                tag_id: tag_id ?? 0,
                 name: values.value.name,
                 color: values.value.color,
             });
@@ -30,7 +31,7 @@ const TagCreateModalContent: FC<{ name?: string }> = ({ name }) => {
     return (
         <DialogContent>
             <DialogHeader>
-                <DialogTitle>Create Tag</DialogTitle>
+                <DialogTitle>Edit Tag</DialogTitle>
             </DialogHeader>
             <DialogDescription>
                 Tags are used to categorize items.
@@ -74,7 +75,7 @@ const TagCreateModalContent: FC<{ name?: string }> = ({ name }) => {
                 <DialogFooter>
                     <Subscribe>
                         {({ isValid }) => (
-                            <Button type="submit" disabled={!isValid}>Create</Button>
+                            <Button type="submit" disabled={!isValid}>Update</Button>
                         )}
                     </Subscribe>
                 </DialogFooter>
@@ -82,18 +83,3 @@ const TagCreateModalContent: FC<{ name?: string }> = ({ name }) => {
         </DialogContent>
     );
 };
-
-export const TagCreateModal = () => {
-    return <Dialog>
-        <DialogTrigger asChild>
-            <Button>Create Tag</Button>
-        </DialogTrigger>
-        <TagCreateModalContent />
-    </Dialog>;
-};
-
-export const TagCreateModalForced: FC<{ name: string }> = ({ name }) => (
-    <Dialog defaultOpen>
-        <TagCreateModalContent name={name} />
-    </Dialog>
-);
