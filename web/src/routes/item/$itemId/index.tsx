@@ -26,6 +26,7 @@ import { UserProfile } from '@/components/UserProfile';
 import { YeetButton } from '@/components/YeetButton';
 import { SCPage } from '@/layouts/SimpleCenterPage';
 import { queryClient } from '@/util/query';
+import { toast } from 'sonner';
 
 export const Route = createFileRoute('/item/$itemId/')({
     // if item_id is not formatId(item_id, instanceSettings), redirect to the formatted item_id
@@ -80,7 +81,10 @@ export const Route = createFileRoute('/item/$itemId/')({
                 subtext={
                     <>
                         <span>{`#${itemId}`}</span>
-                        <Button variant='ghost' size='small-icon' onClick={() => navigator.clipboard.writeText(itemId)}><FiCopy size={10} className='size-2 text-xs' /></Button>
+                        <Button variant='ghost' size='small-icon' onClick={() => {
+                            navigator.clipboard.writeText(itemId);
+                            toast.success('Copied to clipboard');
+                        }}><FiCopy size={10} className='size-2 text-xs' /></Button>
                     </>
                 }
                 suffix={

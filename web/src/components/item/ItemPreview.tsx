@@ -14,7 +14,6 @@ import { useMedia } from '@/api/media';
 
 import { LocationPreview } from '../location/LocationPreview';
 import { Tag } from '../Tag';
-import { UserProfile } from '../UserProfile';
 
 const UNKNOWN_ITEM = 'Unknown Item';
 
@@ -202,15 +201,17 @@ const ItemPreviewLarge: FC<{
             {formattedItemId && (
                 <div className="bg-background absolute left-0 top-0 z-10 rounded-br-md rounded-tl-md border-b border-r px-1 py-0.5 text-sm">#{formattedItemId}</div>
             )}
-            <AvatarHolder
-                item_id={item?.item_id}
-                image={mediaUrl}
-                alt={item?.name || UNKNOWN_ITEM}
-                size="large"
-                key={`media-${item?.item_id}`}
-                randomHue={randomHue}
-            />
-            <div className="flex grow flex-col justify-center -space-y-1.5 overflow-hidden py-4">
+            <div className="mx-auto md:mx-0">
+                <AvatarHolder
+                    item_id={item?.item_id}
+                    image={mediaUrl}
+                    alt={item?.name || UNKNOWN_ITEM}
+                    size="large"
+                    key={`media-${item?.item_id}`}
+                    randomHue={randomHue}
+                />
+            </div>
+            <div className="flex max-w-full grow flex-col justify-center -space-y-1.5 overflow-hidden py-4">
                 <div className='grow'>
                     <div className="overflow-hidden text-ellipsis whitespace-nowrap text-base">
                         {item?.name || UNKNOWN_ITEM}
