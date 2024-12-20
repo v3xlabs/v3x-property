@@ -111,7 +111,7 @@ export const UserProfile: FC<Properties> = ({ user_id, variant }) => {
     }
 
     return (
-        <div>
+        <>
             {match({ variant })
                 .with({ variant: 'avatar' }, () => (
                     <HoverCard.Root>
@@ -136,7 +136,7 @@ export const UserProfile: FC<Properties> = ({ user_id, variant }) => {
                             <Link
                                 to="/user/$userId"
                                 params={{ userId: user_id.toString() }}
-                                className="flex cursor-pointer items-center gap-2 rounded-md border p-1.5 hover:bg-black/5"
+                                className="flex cursor-pointer items-center gap-2 rounded-md border px-1.5 py-1 hover:bg-black/5"
                             >
                                 <AvatarHolder
                                     image={user?.picture}
@@ -159,7 +159,7 @@ export const UserProfile: FC<Properties> = ({ user_id, variant }) => {
                             <Link
                                 to="/user/$userId"
                                 params={{ userId: user_id.toString() }}
-                                className="flex cursor-pointer items-center gap-2 rounded-md border p-1.5 hover:bg-black/5"
+                                className="flex min-w-48 cursor-pointer items-center gap-2 rounded-md border p-1.5 hover:bg-black/5"
                             >
                                 <AvatarHolder
                                     image={user?.picture}
@@ -180,6 +180,6 @@ export const UserProfile: FC<Properties> = ({ user_id, variant }) => {
                         <UserProfileHoverCard user={user!} />
                     </HoverCard.Root>
                 ))}
-        </div>
+        </>
     );
 };

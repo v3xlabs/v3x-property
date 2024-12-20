@@ -28,7 +28,7 @@ export const Route = createFileRoute('/settings/_layout/')({
         return (
             <>
                 {meData && (
-                    <div className="card flex items-center justify-between">
+                    <div className="card flex items-center justify-between gap-2">
                         <UserProfile user_id={meData.user_id} />
                         <Button
                             onClick={() => clearAuthToken()}
