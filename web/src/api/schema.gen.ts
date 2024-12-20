@@ -2666,6 +2666,7 @@ export type components = {
             /** Format: int32 */
             tag_id: number;
             name: string;
+            color?: string;
             /** Format: date-time */
             created_at?: string;
             /** Format: date-time */

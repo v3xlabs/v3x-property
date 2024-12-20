@@ -1,5 +1,24 @@
 # Engine
 
+## Running Engine
+
+The engine component itself is a simple rust application that can be run locally or in a docker container.
+The recommended way to run the engine is to use the [compose file from the root of the repository](../compose.yaml).
+
+### Enable Intelligence
+
+To enable intelligence you need to run the engine with the `ollama` and `gemini` modules.
+You can do this by providing the following environment variables:
+
+```sh
+# Ollama Agent
+OLLAMA_URL=http://0.0.0.0
+OLLAMA_PORT=11434
+
+# Gemini Agent
+GEMINI_API_KEY=AIabcdefghijklmnopqrstuvwxyzabcdefghijkl
+```
+
 ## Development
 
 ```sh

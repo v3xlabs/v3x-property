@@ -215,6 +215,7 @@ export const Route = createFileRoute('/item/$itemId/edit')({
         const { data: instanceSettings } = useSuspenseQuery(
             getInstanceSettings()
         );
+        const [dynamicTagCreate, setDynamicTagCreate] = useState<string | undefined>();
 
         const navigate = useNavigate();
 

@@ -1,4 +1,5 @@
 import { useForm } from '@tanstack/react-form';
+import { FC } from 'react';
 
 import { useTagCreate } from '@/api/tags';
 
@@ -6,17 +7,19 @@ import { BaseInput } from '../input/BaseInput';
 import { Button } from '../ui/Button';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '../ui/Dialog';
 
-const TagCreateModalContent = () => {
+const TagCreateModalContent: FC<{ name?: string }> = ({ name }) => {
     const { mutateAsync: createTag } = useTagCreate();
     const { Field, Subscribe, handleSubmit } = useForm({
         defaultValues: {
-            name: '',
+            name: name ?? '',
+            color: '#000000',
         },
         onSubmit: async (values) => {
             console.log(values);
             const tag = await createTag({
                 tag_id: 0,
                 name: values.value.name,
+                color: values.value.color,
             });
 
             // TODO: close modal
@@ -36,7 +39,7 @@ const TagCreateModalContent = () => {
                 event.preventDefault();
                 handleSubmit();
             }}>
-                <div>
+                <div className="space-y-4">
                     <Field name="name"
                         validators={{
                             onChange: ({ value }) => {
@@ -56,9 +59,25 @@ const TagCreateModalContent = () => {
                             required
                         />}
                     </Field>
+                    <Field name="color">
+                        {({ handleChange, state }) => <BaseInput
+                            name="color"
+                            label="Color"
+                            placeholder="#000000"
+                            value={state.value}
+                            onChange={handleChange}
+                            type="color"
+                            errorMessage={state.meta.errors.join(', ')}
+                            required
+                        />}
+                    </Field>
                 </div>
                 <DialogFooter>
-                    <Button type="submit">Create</Button>
+                    <Subscribe>
+                        {({ isValid }) => (
+                            <Button type="submit" disabled={!isValid}>Create</Button>
+                        )}
+                    </Subscribe>
                 </DialogFooter>
             </form>
         </DialogContent>
@@ -73,3 +92,9 @@ export const TagCreateModal = () => {
         <TagCreateModalContent />
     </Dialog>;
 };
+
+export const TagCreateModalForced: FC<{ name: string }> = ({ name }) => (
+    <Dialog defaultOpen>
+        <TagCreateModalContent name={name} />
+    </Dialog>
+);

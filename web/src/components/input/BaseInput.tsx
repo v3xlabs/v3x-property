@@ -28,7 +28,7 @@ export const BaseInput = ({
     const id = useId();
 
     return (
-        <div className="space-y-2 w-full">
+        <div className="w-full space-y-2">
             {label && (
                 <Label htmlFor={id}>
                     {label}
@@ -47,18 +47,38 @@ export const BaseInput = ({
                     width === 'full' && 'w-full'
                 )}
             >
-                <div className={width === 'full' ? 'grow' : ''}>
+                <div className={clsx(width === 'full' ? 'grow' : '', 'flex items-center gap-2')}>
                     <Input
                         type={type || 'text'}
                         id={id}
                         className={clsx(
                             className,
-                            width === 'full' && 'w-full'
+                            width === 'full' && 'w-full',
+                            type == 'color' && 'aspect-square rounded-md'
                         )}
                         onChange={(event) => onChange?.(event.target.value)}
                         required={required}
+                        style={{
+                            backgroundColor: type == 'color' ? rest.value as string : undefined,
+                            ...rest.style,
+                        }}
                         {...rest}
                     />
+                    {
+                        type == 'color' && (
+                            <Input
+                                type="text"
+                                id={id}
+                                value={rest.value as string}
+                                onChange={(event) => onChange?.(event.target.value)}
+                                required={required}
+                                className=""
+                                style={{
+                                    backgroundColor: rest.value as string,
+                                }}
+                            />
+                        )
+                    }
                 </div>
                 {suffix}
             </div>

@@ -15,18 +15,19 @@ pub struct Intelligence {
 }
 
 impl Intelligence {
-    pub async fn new(
-        ollama: Option<Ollama>,
-        gemini: Option<Gemini>,
-    ) -> Result<Self, anyhow::Error> {
-        Ok(Self { ollama, gemini })
+    pub fn new(ollama: Option<Ollama>, gemini: Option<Gemini>) -> Self {
+        Self { ollama, gemini }
     }
 
     pub async fn guess() -> Result<Self, anyhow::Error> {
         let ollama = Ollama::guess().await.ok();
         let gemini = Gemini::guess().await.ok();
 
-        Self::new(ollama, gemini).await
+        if ollama.is_none() && gemini.is_none() {
+            anyhow::bail!("No intelligence modules found");
+        }
+
+        Ok(Self::new(ollama, gemini))
     }
 
     pub async fn status(&self) -> Result<IntelligenceStatus, anyhow::Error> {

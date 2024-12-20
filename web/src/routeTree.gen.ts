@@ -22,6 +22,7 @@ import { Route as SearchIndexImport } from './routes/search/index'
 import { Route as ProductsIndexImport } from './routes/products/index'
 import { Route as ItemsIndexImport } from './routes/items/index'
 import { Route as UserUserIdImport } from './routes/user/$userId'
+import { Route as TagTagIdImport } from './routes/tag/$tagId'
 import { Route as SettingsLayoutImport } from './routes/settings/_layout'
 import { Route as SettingsLayoutIndexImport } from './routes/settings/_layout/index'
 import { Route as LocationLocationIdIndexImport } from './routes/location/$locationId/index'
@@ -105,6 +106,12 @@ const ItemsIndexRoute = ItemsIndexImport.update({
 const UserUserIdRoute = UserUserIdImport.update({
   id: '/user/$userId',
   path: '/user/$userId',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const TagTagIdRoute = TagTagIdImport.update({
+  id: '/tag/$tagId',
+  path: '/tag/$tagId',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -279,6 +286,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/settings'
       preLoaderRoute: typeof SettingsLayoutImport
       parentRoute: typeof SettingsRoute
+    }
+    '/tag/$tagId': {
+      id: '/tag/$tagId'
+      path: '/tag/$tagId'
+      fullPath: '/tag/$tagId'
+      preLoaderRoute: typeof TagTagIdImport
+      parentRoute: typeof rootRoute
     }
     '/user/$userId': {
       id: '/user/$userId'
@@ -498,6 +512,7 @@ export interface FileRoutesByFullPath {
   '/create': typeof CreateRoute
   '/debug': typeof DebugRoute
   '/settings': typeof SettingsLayoutRouteWithChildren
+  '/tag/$tagId': typeof TagTagIdRoute
   '/user/$userId': typeof UserUserIdRoute
   '/items': typeof ItemsIndexRoute
   '/products': typeof ProductsIndexRoute
@@ -529,6 +544,7 @@ export interface FileRoutesByTo {
   '/create': typeof CreateRoute
   '/debug': typeof DebugRoute
   '/settings': typeof SettingsLayoutIndexRoute
+  '/tag/$tagId': typeof TagTagIdRoute
   '/user/$userId': typeof UserUserIdRoute
   '/items': typeof ItemsIndexRoute
   '/products': typeof ProductsIndexRoute
@@ -561,6 +577,7 @@ export interface FileRoutesById {
   '/debug': typeof DebugRoute
   '/settings': typeof SettingsRouteWithChildren
   '/settings/_layout': typeof SettingsLayoutRouteWithChildren
+  '/tag/$tagId': typeof TagTagIdRoute
   '/user/$userId': typeof UserUserIdRoute
   '/items/': typeof ItemsIndexRoute
   '/products/': typeof ProductsIndexRoute
@@ -594,6 +611,7 @@ export interface FileRouteTypes {
     | '/create'
     | '/debug'
     | '/settings'
+    | '/tag/$tagId'
     | '/user/$userId'
     | '/items'
     | '/products'
@@ -624,6 +642,7 @@ export interface FileRouteTypes {
     | '/create'
     | '/debug'
     | '/settings'
+    | '/tag/$tagId'
     | '/user/$userId'
     | '/items'
     | '/products'
@@ -654,6 +673,7 @@ export interface FileRouteTypes {
     | '/debug'
     | '/settings'
     | '/settings/_layout'
+    | '/tag/$tagId'
     | '/user/$userId'
     | '/items/'
     | '/products/'
@@ -686,6 +706,7 @@ export interface RootRouteChildren {
   CreateRoute: typeof CreateRoute
   DebugRoute: typeof DebugRoute
   SettingsRoute: typeof SettingsRouteWithChildren
+  TagTagIdRoute: typeof TagTagIdRoute
   UserUserIdRoute: typeof UserUserIdRoute
   ItemsIndexRoute: typeof ItemsIndexRoute
   ProductsIndexRoute: typeof ProductsIndexRoute
@@ -702,6 +723,7 @@ const rootRouteChildren: RootRouteChildren = {
   CreateRoute: CreateRoute,
   DebugRoute: DebugRoute,
   SettingsRoute: SettingsRouteWithChildren,
+  TagTagIdRoute: TagTagIdRoute,
   UserUserIdRoute: UserUserIdRoute,
   ItemsIndexRoute: ItemsIndexRoute,
   ProductsIndexRoute: ProductsIndexRoute,
@@ -727,6 +749,7 @@ export const routeTree = rootRoute
         "/create",
         "/debug",
         "/settings",
+        "/tag/$tagId",
         "/user/$userId",
         "/items/",
         "/products/",
@@ -777,6 +800,9 @@ export const routeTree = rootRoute
         "/settings/_layout/operators/",
         "/settings/_layout/templates/"
       ]
+    },
+    "/tag/$tagId": {
+      "filePath": "tag/$tagId.tsx"
     },
     "/user/$userId": {
       "filePath": "user/$userId.tsx"

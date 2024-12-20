@@ -9,13 +9,14 @@ use crate::database::Database;
 pub struct Tag {
     pub tag_id: i32,
     pub name: String,
+    pub color: Option<String>,
     pub created_at: Option<DateTime<Utc>>,
     pub updated_at: Option<DateTime<Utc>>,
 }
 
 impl Tag {
-    pub async fn new(db: &Database, name: &str) -> Result<Tag, sqlx::Error> {
-        query_as!(Tag, "INSERT INTO tags (name) VALUES ($1) RETURNING *", name.into())
+    pub async fn new(db: &Database, name: &str, color: Option<String>) -> Result<Tag, sqlx::Error> {
+        query_as!(Tag, "INSERT INTO tags (name, color) VALUES ($1, $2) RETURNING *", name.into(), color.unwrap_or("".to_string()))
             .fetch_one(&db.pool)
             .await
     }

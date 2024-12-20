@@ -1,3 +1,4 @@
+import { Link } from '@tanstack/react-router';
 import clsx from 'clsx';
 import { FaBrain } from 'react-icons/fa6';
 import { SiGooglegemini, SiOpenai } from 'react-icons/si';
@@ -50,30 +51,40 @@ const INTELLIGENCE_DATA = {
 export const IntelligenceDetails = () => {
     const { data: instanceSettings } = useInstanceSettings();
 
-    if (!instanceSettings?.modules.intelligence) {
-        return;
-    }
-
     return (
         <>
-            <div className="card space-y-3">
-                <div className="flex items-center gap-2">
-                    <FaBrain />
-                    <h3 className="font-bold">Intelligence is active</h3>
-                </div>
-                <p>
-                    Intelligence is active. You can use the intelligence
-                    features of the application.
-                </p>
-                <div className="flex items-center gap-2">
-                    <Button variant="primary">Configure Preferences</Button>
-                    <Button variant="secondary">Capabilities</Button>
-                </div>
-            </div>
+            {
+                !instanceSettings?.modules.intelligence && (
+                    <div className="card space-y-3">
+                        <div className="flex items-center gap-2">
+                            <FaBrain />
+                            <h3 className="font-bold">No intelligence modules found</h3>
+                        </div>
+                        <p>
+                            You can use intelligence features by enabling one of the{' '}
+                            <a href="https://github.com/v3xlabs/v3x-property/tree/master/engine#enable-intelligence" target="_blank" className="link">intelligence modules</a>.
+                        </p>
+                    </div>
+                )
+            }
             {instanceSettings?.modules.intelligence && (
                 <>
+                    <div className="card space-y-3">
+                        <div className="flex items-center gap-2">
+                            <FaBrain />
+                            <h3 className="font-bold">Intelligence is active</h3>
+                        </div>
+                        <p>
+                    Intelligence is active. You can use the intelligence
+                    features of the application.
+                        </p>
+                        <div className="flex items-center gap-2">
+                            <Button variant="primary">Configure Preferences</Button>
+                            <Button variant="secondary">Capabilities</Button>
+                        </div>
+                    </div>
                     <h3 className="h3">Intelligence Endpoints</h3>
-                    <div className="flex flex-col divide-y divide-neutral-200 card no-padding">
+                    <div className="card no-padding flex flex-col divide-y divide-neutral-200">
                         {Object.entries(INTELLIGENCE_DATA)
                             // Sort based on enabled
                             .sort((a, b) =>
@@ -100,10 +111,10 @@ export const IntelligenceDetails = () => {
                                 const isEnabled = !!data;
 
                                 return (
-                                    <div className="p-4 w-full">
+                                    <div className="w-full p-4">
                                         <div
                                             className={clsx(
-                                                'font-bold flex items-center gap-2',
+                                                'flex items-center gap-2 font-bold',
                                                 !isEnabled && 'text-neutral-400'
                                             )}
                                         >
