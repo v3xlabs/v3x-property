@@ -194,11 +194,14 @@ const ItemPreviewLarge: FC<{
         <Link
             to={`/item/${formattedItemId}`}
             className={clsx(
-                'flex cursor-pointer flex-col items-start gap-4 rounded-md border p-2 outline-1 outline-offset-1 outline-neutral-200 hover:outline md:flex-row',
+                'relative flex cursor-pointer flex-col items-start gap-4 rounded-md border p-2 outline-1 outline-offset-1 outline-neutral-200 hover:outline md:flex-row',
                 isError && 'bg-red-50'
             )}
             data-testid="item-preview-large"
         >
+            {formattedItemId && (
+                <div className="bg-background absolute left-0 top-0 z-10 rounded-br-md rounded-tl-md border-b border-r px-1 py-0.5 text-sm">#{formattedItemId}</div>
+            )}
             <AvatarHolder
                 item_id={item?.item_id}
                 image={mediaUrl}
@@ -212,12 +215,6 @@ const ItemPreviewLarge: FC<{
                     <div className="overflow-hidden text-ellipsis whitespace-nowrap text-base">
                         {item?.name || UNKNOWN_ITEM}
                     </div>
-                    {formattedItemId && (
-                        <div className="text-sm">#{formattedItemId}</div>
-                    )}
-                    {logos && logos.length > 0 && (
-                        <ul className="flex items-center gap-2 py-2">{logos}</ul>
-                    )}
                     {
                         tags && tags.length > 0 && (
                             <div className="flex flex-wrap gap-2">
@@ -227,6 +224,9 @@ const ItemPreviewLarge: FC<{
                             </div>
                         )
                     }
+                    {logos && logos.length > 0 && (
+                        <ul className="flex items-center gap-2 py-2">{logos}</ul>
+                    )}
                 </div>
             </div>
             <div className="flex h-full w-full items-end justify-between gap-2 md:w-auto md:flex-col md:justify-end">
