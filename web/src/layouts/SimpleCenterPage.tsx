@@ -6,7 +6,7 @@ import { getTitle } from '@/util/title';
 
 export type SCPageProperties = PropsWithChildren<{
   title: string,
-  subtext?: string,
+  subtext?: ReactNode,
   width?: 'xl' | '2xl' | '3xl' | '4xl' | '5xl',
   suffix?: ReactNode,
   className?: ClassValue,
@@ -39,7 +39,7 @@ export const SCPage: FC<SCPageProperties> = ({
             <div className="flex items-end justify-between">
                 <div>
                     <h1 className="h1 pl-4">{title}</h1>
-                    {subtext && <div className="pl-4 text-sm">{subtext}</div>}
+                    {subtext && <div className="flex items-center gap-2 pl-4 text-sm">{subtext}</div>}
                 </div>
                 {suffix}
             </div>

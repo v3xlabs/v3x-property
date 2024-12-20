@@ -9,7 +9,7 @@ import {
     useRouter,
 } from '@tanstack/react-router';
 import { useEffect } from 'react';
-import { FiEdit } from 'react-icons/fi';
+import { FiCopy, FiEdit } from 'react-icons/fi';
 
 import { formatId, getInstanceSettings } from '@/api/instance_settings';
 import { getItemById, getItemLocation, getItemMedia, getItemTags } from '@/api/item';
@@ -77,7 +77,12 @@ export const Route = createFileRoute('/item/$itemId/')({
         return (
             <SCPage
                 title={(item.data && item.data.name) || `Item ${itemId}`}
-                subtext={`#${itemId}`}
+                subtext={
+                    <>
+                        <span>{`#${itemId}`}</span>
+                        <Button variant='ghost' size='small-icon' onClick={() => navigator.clipboard.writeText(itemId)}><FiCopy size={10} className='size-2 text-xs' /></Button>
+                    </>
+                }
                 suffix={
                     <div className="flex gap-2">
                         <PrintLabelButton label_id={itemId} />
@@ -127,7 +132,7 @@ export const Route = createFileRoute('/item/$itemId/')({
                                 </div>
                             ) : (
                                 <div className="grow">
-                                This item does not have a location
+                                    This item does not have a location
                                 </div>
                             )}
                         <div className="flex flex-col gap-2">
@@ -154,7 +159,7 @@ export const Route = createFileRoute('/item/$itemId/')({
             <SCPage title={'Could not load the item'}>
                 <div className="card space-y-3">
                     <p>There was an issue loading the item.</p>
-                    <code className="block rounded-md bg-muted p-2">
+                    <code className="bg-muted block rounded-md p-2">
                         {error.message}
                     </code>
                     <Button onClick={() => router.invalidate()}>Retry</Button>

@@ -53,6 +53,7 @@ const [buttonVariants, buttonVariantsConfig] = cvax(
                 sm: 'h-8 px-3 py-1 text-sm',
                 lg: 'h-12 px-6 py-2 text-base',
                 icon: 'h-10 w-10',
+                'small-icon': 'h-4 w-4',
             },
         },
         defaultVariants: {
