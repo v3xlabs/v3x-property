@@ -51,3 +51,29 @@ export const getLinkedItems = (media_id: number | undefined) =>
 
 export const useLinkedItems = (media_id: number | undefined) =>
     useQuery(getLinkedItems(media_id));
+
+export const getAllMedia = () => {
+    return queryOptions({
+        queryKey: ['media'],
+        queryFn: async () => {
+            const response = await apiRequest('/media', 'get', {});
+
+            return response.data;
+        },
+    });
+};
+
+export const useAllMedia = () => useQuery(getAllMedia());
+
+export const getUnassignedMedia = () => {
+    return queryOptions({
+        queryKey: ['media', 'unassigned'],
+        queryFn: async () => {
+            const response = await apiRequest('/media/unassigned', 'get', {});
+
+            return response.data;
+        },
+    });
+};
+
+export const useUnassignedMedia = () => useQuery(getUnassignedMedia());
