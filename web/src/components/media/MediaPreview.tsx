@@ -15,6 +15,64 @@ import { ErrorBoundary } from '@/components/ErrorBoundary';
 
 import { Button } from '../ui/Button';
 
+export const BareMediaPreview: FC<{
+    media_id?: number;
+}> = ({ media_id }) => {
+    const { data: instanceSettings } = useInstanceSettings();
+    const { data: media } = useMedia(media_id);
+
+    const mediaUrl = (() => {
+        const link = media?.url;
+
+        if (link?.includes(':')) {
+            return link;
+        }
+
+        if (!instanceSettings) {
+            return;
+        }
+
+        return (
+            instanceSettings.modules.storage.endpoint_url +
+            '/' +
+            instanceSettings.modules.storage.bucket +
+            '/' +
+            link
+        );
+    })();
+
+    return (
+        <div className="relative bg-neutral-100 w-full aspect-video rounded-md">
+            {match(media?.kind)
+                .with(
+                    'webp',
+                    'image/webp',
+                    'png',
+                    'image/png',
+                    'svg',
+                    'image/svg+xml',
+                    'jpeg',
+                    'jpg',
+                    'image/jpeg',
+                    'image/gif',
+                    () => <ImagePreview media_id={media_id} url={mediaUrl} />
+                )
+                .with('mp4', 'video/mp4', () => (
+                    <VideoPreview media_id={media_id} url={mediaUrl} />
+                ))
+                .with('stl', 'model/stl', () => (
+                    <StlPreview media_id={media_id} url={mediaUrl} />
+                ))
+                .otherwise(() => (
+                    <div className="p-3 border-orange-500 border-2 rounded-md bg-orange-100 h-full">
+                        <span>Unknown file type</span>
+                        <span>{media?.kind}</span>
+                    </div>
+                ))}
+        </div>
+    );
+};
+
 export const MediaPreview: FC<{
     variant?: 'small' | 'default';
     media_id?: number;
@@ -109,7 +167,7 @@ export const MediaPreview: FC<{
     return (
         <div
             className={clsx(
-                'relative aspect-video w-full max-w-md rounded-md bg-neutral-100',
+                'relative aspect-video bg-neutral-100 max-w-md w-full rounded-md h-fit',
                 status == 'new-media' &&
                     isPending &&
                     'border-2 border-blue-400',
@@ -120,33 +178,7 @@ export const MediaPreview: FC<{
                 status == 'removed-media' && 'border-2 border-red-400'
             )}
         >
-            {match(fileType)
-                .with(
-                    'webp',
-                    'image/webp',
-                    'png',
-                    'image/png',
-                    'svg',
-                    'image/svg+xml',
-                    'jpeg',
-                    'jpg',
-                    'image/jpeg',
-                    'image/gif',
-                    'gif',
-                    () => <ImagePreview media_id={media_id} url={mediaUrl} />
-                )
-                .with('mp4', 'video/mp4', () => (
-                    <VideoPreview media_id={media_id} url={mediaUrl} />
-                ))
-                .with('stl', 'model/stl', () => (
-                    <StlPreview media_id={media_id} url={mediaUrl} />
-                ))
-                .otherwise(() => (
-                    <div className="h-full rounded-md border-2 border-orange-500 bg-orange-100 p-3">
-                        <span>Unknown file type</span>
-                        <span>{fileType}</span>
-                    </div>
-                ))}
+            <BareMediaPreview media_id={media_id} />
             {isPending && (
                 <div className="mt-1 flex w-full items-center justify-center gap-2 border-t-2 border-t-inherit">
                     Uploading... <FiLoader className="animate-spin" />
