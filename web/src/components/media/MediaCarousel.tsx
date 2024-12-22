@@ -20,7 +20,6 @@ export const MediaCarousel: FC<{
         [AutoHeight()]
     );
 
-    // update mediaId based on embla state
     emblaApi?.on('select', () => {
         const selected = emblaApi.selectedScrollSnap();
 
@@ -33,9 +32,26 @@ export const MediaCarousel: FC<{
         if (mediaId !== undefined) {
             const index = ids.indexOf(mediaId);
 
-            // TODO: If this useEffect wasn't triggered by emblaApi.on('select'), then we should set the scrollTo(index, true) boolean to true to not animate the scroll
+            // TODO:  If this useEffect wasn't triggered by emblaApi.on('select'),
+            // then we should set the scrollTo(index, true) boolean to true to not animate the scroll
             emblaApi?.scrollTo(index);
         }
+    });
+
+    useEffect(() => {
+        const handleKeyDown = (event: KeyboardEvent) => {
+            if (event.key === 'ArrowLeft') {
+                emblaApi?.scrollPrev();
+            } else if (event.key === 'ArrowRight') {
+                emblaApi?.scrollNext();
+            }
+        };
+
+        document.addEventListener('keydown', handleKeyDown);
+
+        return () => {
+            document.removeEventListener('keydown', handleKeyDown);
+        };
     });
 
     return (
@@ -45,7 +61,7 @@ export const MediaCarousel: FC<{
                     {ids.map((id) => (
                         <div
                             key={id}
-                            className="embla__slide rounded-lg select-none"
+                            className="embla__slide select-none rounded-lg"
                             draggable={false}
                         >
                             <BareMediaPreview media_id={id} />
@@ -53,13 +69,13 @@ export const MediaCarousel: FC<{
                     ))}
                 </div>
             </div>
-            <div className="p-4 min-w-64">
+            <div className="min-w-64 p-4">
                 <code>
                     <MediaMetaData mediaId={mediaId} />
                 </code>
                 <div>
                     <button
-                        className="bg-gray-200 rounded-lg p-2 disabled:opacity-50 text-black px-2 gap-x-2"
+                        className="gap-x-2 rounded-lg bg-gray-200 p-2 px-2 text-black disabled:opacity-50"
                         onClick={() => {
                             emblaApi?.scrollPrev();
                         }}
@@ -67,7 +83,7 @@ export const MediaCarousel: FC<{
                         <FaArrowLeft />
                     </button>
                     <button
-                        className="bg-gray-200 rounded-lg p-2 disabled:opacity-50 text-black px-2 gap-x-2"
+                        className="gap-x-2 rounded-lg bg-gray-200 p-2 px-2 text-black disabled:opacity-50"
                         onClick={() => {
                             emblaApi?.scrollNext();
                         }}
