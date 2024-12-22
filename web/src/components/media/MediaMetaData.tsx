@@ -1,6 +1,13 @@
+import TimeAgo from 'javascript-time-ago';
+import en from 'javascript-time-ago/locale/en';
 import { FC } from 'react';
 
 import { useMedia } from '@/api/media';
+
+import { BaseInput } from '../input/BaseInput';
+
+TimeAgo.addDefaultLocale(en);
+const timeAgo = new TimeAgo('en-US');
 
 export const MediaMetaData: FC<{
     mediaId: number;
@@ -9,9 +16,15 @@ export const MediaMetaData: FC<{
 
     return (
         <>
-            <p>Type: {media?.kind}</p>
-            <p>Created: {media?.created_at}</p>
-            <p>Updated: {media?.updated_at}</p>
+            <BaseInput
+                label="Type"
+                value={media?.kind}
+                disabled
+            />
+            <span>Created: {timeAgo.format(new Date(media?.created_at||''))}</span>
+            {media?.updated_at !== media?.created_at && (
+                <span>Updated: {timeAgo.format(new Date(media?.updated_at||''))}</span>
+            )}
         </>
     );
 };
