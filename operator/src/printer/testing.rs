@@ -56,7 +56,7 @@ pub fn inner_canvas(
     let mut text_canvas = RgbaImage::new(inner_width, inner_height);
 
     let text = "v3x.property";
-    let font = FontRef::try_from_slice(include_bytes!("./hack-regular-subset.ttf")).unwrap();
+    let font = FontRef::try_from_slice(include_bytes!("./fonts/hack-regular-subset.ttf")).unwrap();
 
     let scale = PxScale::from(42.0 * multiplier as f32);
     let scaled_font = font.as_scaled(scale);
