@@ -9,29 +9,6 @@ use poem_openapi::Object;
 use serde::{Deserialize, Serialize};
 use tracing::info;
 
-// println!("Hello, world!");
-// let label = Label::new(1);
-// LabelTemplate::G1QR.print(&label).unwrap();
-// println!("Hello, worldz!");
-// let devices = brother_ql_rs::printer::printers();
-// if devices.is_empty() {
-//     println!("No devices found");
-//     return;
-// }
-// let device = devices.into_iter().next().unwrap();
-// println!("Device: {:?}", device);
-// let printer = ThermalPrinter::new(device).unwrap();
-// println!("Printer: {:?}", printer.manufacturer);
-// println!("Printer: {:?}", printer.model);
-// println!("Printer: {:?}", printer.serial_number);
-// println!("Printer: {:?}", printer.current_label().unwrap());
-// println!("Printer: {:?}", printer.get_status().unwrap());
-
-#[derive(Debug, Deserialize)]
-pub struct PrinterConfig {
-    ipp_urls: Vec<String>,
-}
-
 #[derive(Debug, Deserialize, Serialize, Object)]
 pub struct PrintersInfo {
     printers: Vec<PrinterInfo>,
@@ -51,14 +28,18 @@ impl Printers {
     pub async fn load() -> Self {
         let mut printers = Vec::new();
 
-        let ipp_urls = envy::from_env::<PrinterConfig>().ok();
+        let ipp_urls = std::env::var("IPP_URLS").unwrap();
+        let ipp_urls = ipp_urls.split(',').collect::<Vec<&str>>();
 
-        if let Some(ipp_urls) = ipp_urls {
-            for ipp_url in ipp_urls.ipp_urls {
-                let printer = Printer::new(ipp_url).await;
-
-                printers.push(printer);
+        for ipp_url in ipp_urls {
+            let ipp_url = ipp_url.trim();
+            if ipp_url.is_empty() {
+                continue;
             }
+
+            let printer = Printer::new(ipp_url.to_string()).await;
+
+            printers.push(printer);
         }
 
         Self { printers }
