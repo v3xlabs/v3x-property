@@ -1,6 +1,9 @@
+import { useMutation } from '@tanstack/react-query';
 import { FC, useEffect, useState } from 'react';
+import { FaQrcode } from 'react-icons/fa6';
 import { FiPrinter } from 'react-icons/fi';
 
+import { useItemById } from '@/api/item';
 import { useOperators } from '@/api/operators';
 import { useOperatorCapabilities } from '@/api/operators/capabilities';
 
@@ -16,6 +19,20 @@ import {
     DialogTrigger,
 } from '../ui/Dialog';
 import { Tooltip } from '../ui/Tooltip';
+
+const PrintableCableTemplatePreview = () => {
+    return (
+        <div className="relative h-full w-full bg-neutral-200">
+            <div className='absolute left-1/2 top-0 h-fit w-fit -translate-x-1/2 rotate-90 border'>
+                <FaQrcode />
+                #123
+            </div><div className='absolute bottom-0 left-1/2 h-fit w-fit -translate-x-1/2 -rotate-90 border'>
+                <FaQrcode />
+                #123
+            </div>
+        </div>
+    );
+};
 
 const PrintLabelModalContent = () => {
     const { data: operators } = useOperators();
@@ -49,8 +66,7 @@ const PrintLabelModalContent = () => {
             }
             description={
                 <>
-                            You can connect a printer by running an operator <Tooltip>Operator</Tooltip>
-
+                    You can connect a printer by running an operator <Tooltip>Operator</Tooltip>
                 </>
             }
             justifyBetween
@@ -59,6 +75,26 @@ const PrintLabelModalContent = () => {
 };
 
 export const PrintLabelModal: FC<{ label_id: string }> = ({ label_id }) => {
+    const { data: operators } = useOperators();
+    const { data: capabilities } = useOperatorCapabilities(operators?.[0]?.operator_endpoint);
+    const { data: label } = useItemById(label_id);
+    const { mutate: printLabel } = useMutation({
+        mutationFn: async () => {
+            const response = await fetch(`${operators?.[0]?.operator_endpoint}/api/print`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    label_id,
+                    printer_id: capabilities?.printers?.printers[0]?.name,
+                    label_template: 'v3x_cable_label_1',
+                    url: window.location.origin,
+                }),
+            });
+        }
+    });
+
     return (
         <DialogContent>
             <DialogHeader>
@@ -74,7 +110,9 @@ export const PrintLabelModal: FC<{ label_id: string }> = ({ label_id }) => {
                         Select the template to print the label.
                     </div>
                     <div className="flex items-start gap-2">
-                        <div className="aspect-[9/16] h-32 rounded-sm border outline outline-offset-1 outline-blue-200"></div>
+                        <div className="aspect-[9/16] h-32 rounded-sm border outline outline-offset-1 outline-blue-200">
+                            <PrintableCableTemplatePreview />
+                        </div>
                         <div className="aspect-square w-24 rounded-sm border"></div>
                         <div className="aspect-video w-32 rounded-sm border"></div>
                     </div>
@@ -82,7 +120,7 @@ export const PrintLabelModal: FC<{ label_id: string }> = ({ label_id }) => {
                 <PrintLabelModalContent />
             </div>
             <DialogFooter>
-                <Button>Print</Button>
+                <Button type="submit" variant="primary" onClick={() => printLabel()}>Print</Button>
             </DialogFooter>
         </DialogContent>
     );

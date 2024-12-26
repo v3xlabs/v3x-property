@@ -10,8 +10,7 @@ anyhow = "1.0.82"
 async-std = { version = "1.13.0", features = ["attributes", "tokio1"] }
 # brother-ql-rs = "0.2.1"
 dotenvy = "0.15.7"
-image = "0.25.1"
-# printpdf = { version = "0.7.0", features = ["image"] }
+# image = "0.25.1"
 # qrcode = "0.14.0"
 tracing = "0.1.41"
 thiserror = "2.0.3"
@@ -45,3 +44,10 @@ serde_json = "1.0.133"
 ipp = { git = "https://github.com/ancwrd1/ipp.rs.git", branch = "master", features = ["async-client-rustls"], default-features = false }
 envy = "0.4.2"
 rustls = "0.23.20"
+ab_glyph = "0.2.29"
+image = { version = "0.25", default-features = false, features = ["png"] } 
+imageproc = "0.25.0"
+qrcode = "0.14.1"
+printpdf = { version = "0.7.0", features = ["embedded_images", "svg"] }
+barcoders = { version = "2.0.0", features = ["image"] }
+rusttype = "0.9.3"

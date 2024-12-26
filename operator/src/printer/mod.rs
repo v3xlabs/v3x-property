@@ -9,19 +9,21 @@ use poem_openapi::Object;
 use serde::{Deserialize, Serialize};
 use tracing::info;
 
+pub mod testing;
+
 #[derive(Debug, Deserialize, Serialize, Object)]
 pub struct PrintersInfo {
-    printers: Vec<PrinterInfo>,
+    pub printers: Vec<PrinterInfo>,
 }
 
 #[derive(Debug, Deserialize, Serialize, Object)]
 pub struct PrinterInfo {
-    name: String,
-    metadata: HashMap<String, String>,
+    pub name: String,
+    pub metadata: HashMap<String, String>,
 }
 
 pub struct Printers {
-    printers: Vec<Printer>,
+    pub printers: Vec<Printer>,
 }
 
 impl Printers {
@@ -59,7 +61,7 @@ impl Printers {
 }
 
 pub struct Printer {
-    uri: String,
+    pub uri: String,
 }
 
 impl Printer {

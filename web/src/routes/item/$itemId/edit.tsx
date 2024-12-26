@@ -10,7 +10,7 @@ import {
 } from '@tanstack/react-router';
 import { FC, useState } from 'react';
 import { FaPlus, FaTrash } from 'react-icons/fa6';
-import { FiX } from 'react-icons/fi';
+import { FiCopy, FiX } from 'react-icons/fi';
 import { toast } from 'sonner';
 
 import { FieldDefinition, getFieldDefinitions } from '@/api/fields';
@@ -304,7 +304,29 @@ export const Route = createFileRoute('/item/$itemId/edit')({
         });
 
         return (
-            <SCPage title={`Edit Item ${itemId}`}>
+            <SCPage 
+                title={(item && item.name) || `Item ${itemId}`}
+                subtext={
+                    <>
+                        <span>{`#${itemId}`}</span>
+                        <Button variant='ghost' size='small-icon' onClick={() => {
+                            navigator.clipboard.writeText(itemId);
+                            toast.success('Copied to clipboard');
+                        }}><FiCopy size={10} className='size-2 text-xs' /></Button>
+                    </>
+                }
+                suffix={
+                    <ul className='flex gap-2'>
+                        <li>
+                            <Button variant="destructive" size="icon"><FaTrash /></Button>
+                        </li>
+                        <li>
+                            <Button asChild>
+                                <Link to="/item/$itemId" params={{ itemId }}>Cancel</Link>
+                            </Button>
+                        </li>
+                    </ul>
+                }>
                 <form
                     className="card space-y-4"
                     onSubmit={(event) => {

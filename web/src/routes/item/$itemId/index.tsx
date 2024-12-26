@@ -90,7 +90,7 @@ export const Route = createFileRoute('/item/$itemId/')({
                 suffix={
                     <div className="flex gap-2">
                         <PrintLabelButton label_id={itemId} />
-                        <Button asChild>
+                        <Button asChild size="icon">
                             <Link
                                 to="/item/$itemId/edit"
                                 params={{ itemId }}
