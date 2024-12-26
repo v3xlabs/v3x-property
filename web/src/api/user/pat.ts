@@ -1,6 +1,9 @@
 import { queryOptions, useMutation, useQuery } from '@tanstack/react-query';
 
+import { queryClient } from '@/util/query';
+
 import { apiRequest } from '../core';
+import { components } from '../schema.gen';
 
 export const getUserPats = (user_id: number) =>
     queryOptions({
@@ -16,6 +19,9 @@ export const getUserPats = (user_id: number) =>
 
 export const useUserPats = (user_id: number) => useQuery(getUserPats(user_id));
 
+
+export type PatCreateResult = components['schemas']['CreateKeyResponse'];
+
 export const useCreateUserPat = (user_id: number) =>
     useMutation({
         mutationFn: async (data: { name: string; permissions: string }) => {
@@ -24,6 +30,8 @@ export const useCreateUserPat = (user_id: number) =>
                 contentType: 'application/json; charset=utf-8',
                 data,
             });
+
+            queryClient.invalidateQueries({ queryKey: ['user_pats'] });
 
             return response.data;
         },
