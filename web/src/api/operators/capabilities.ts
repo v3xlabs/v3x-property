@@ -1,30 +1,23 @@
 import { queryOptions, useQuery } from '@tanstack/react-query';
 
-export type OperatorCapabilities = {
-    printers: PrintersInfo;
-};
+import { apiRequest } from '../core';
 
-export type PrintersInfo = {
-    printers: PrinterInfo[];
-};
-
-export type PrinterInfo = {
-    name: string;
-    metadata: Record<string, string>;
-};
-
-export const getOperatorCapabilities = (endpoint?: string) => queryOptions({
-    queryKey: ['operator', 'capabilities', endpoint],
+export const getOperatorCapabilities = (operator_id?: string) => queryOptions({
+    queryKey: ['operator', 'capabilities', operator_id],
     queryFn: async () => {
-        if (!endpoint) {
+        if (!operator_id) {
             return;
         }
 
-        const response = await fetch(`${endpoint}/api/capabilities`);
+        const response = await apiRequest('/operators/{operator_id}/capabilities', 'get', {
+            path: {
+                operator_id,
+            },
+        });
 
-        return await response.json() as OperatorCapabilities;
+        return response.data;
     },
-    enabled: !!endpoint,
+    enabled: !!operator_id,
 });
 
-export const useOperatorCapabilities = (endpoint?: string) => useQuery(getOperatorCapabilities(endpoint));
+export const useOperatorCapabilities = (operator_id?: string) => useQuery(getOperatorCapabilities(operator_id));

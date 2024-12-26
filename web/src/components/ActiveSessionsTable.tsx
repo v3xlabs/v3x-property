@@ -75,6 +75,7 @@ const ActiveSession: FC<{ session: SessionResponse }> = ({ session }) => {
                     <Button
                         variant="default"
                         onClick={() => {
+                            // TODO: reformat url
                             fetch(
                                 `http://localhost:3000/api/sessions/${session.session_id}`,
                                 {

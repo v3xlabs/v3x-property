@@ -73,7 +73,7 @@ export const TonerInfo: FC<{ markerChangeTime: string, markerColors: string, mar
 };
 
 export const OperatorDetail: FC<{ operator: Operator }> = ({ operator }) => {
-    const { data: capabilities } = useOperatorCapabilities(operator.operator_endpoint);
+    const { data: capabilities } = useOperatorCapabilities(operator.operator_id);
 
     return <li key={operator.operator_id} className="space-y-2">
         <div className="font-bold">

@@ -1,0 +1,34 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "SELECT * FROM local_operators WHERE operator_id = $1",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "operator_id",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 1,
+        "name": "operator_endpoint",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 2,
+        "name": "operator_last_heartbeat",
+        "type_info": "Timestamptz"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Text"
+      ]
+    },
+    "nullable": [
+      false,
+      false,
+      false
+    ]
+  },
+  "hash": "5adde1117afe0963883eda98adaa85a460f973b31b88081a0e8a26ef8b1c49b9"
+}

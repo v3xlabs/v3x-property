@@ -37,4 +37,12 @@ impl LocalOperator {
 
         Ok(x)
     }
+
+    pub async fn get_operator_by_id(db: &Database, operator_id: &str) -> Result<Self, sqlx::Error> {
+        let x = query_as!(LocalOperator, "SELECT * FROM local_operators WHERE operator_id = $1", operator_id)
+            .fetch_one(&db.pool)
+            .await?;
+
+        Ok(x)
+    }
 }

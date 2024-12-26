@@ -1,4 +1,3 @@
-import { useMutation } from '@tanstack/react-query';
 import { FC, useEffect, useState } from 'react';
 import { FaQrcode } from 'react-icons/fa6';
 import { FiPrinter } from 'react-icons/fi';
@@ -6,6 +5,7 @@ import { FiPrinter } from 'react-icons/fi';
 import { useItemById } from '@/api/item';
 import { useOperators } from '@/api/operators';
 import { useOperatorCapabilities } from '@/api/operators/capabilities';
+import { usePrintLabel } from '@/api/operators/print';
 
 import { FieldOption, FieldSelect } from '../form/Select';
 import { Button } from '../ui/Button';
@@ -36,7 +36,7 @@ const PrintableCableTemplatePreview = () => {
 
 const PrintLabelModalContent = () => {
     const { data: operators } = useOperators();
-    const { data: capabilities } = useOperatorCapabilities(operators?.[0]?.operator_endpoint);
+    const { data: capabilities } = useOperatorCapabilities(operators?.[0]?.operator_id);
 
     const [printer, setPrinter] = useState<string | undefined>(capabilities?.printers?.printers?.[0]?.name);
 
@@ -76,24 +76,25 @@ const PrintLabelModalContent = () => {
 
 export const PrintLabelModal: FC<{ label_id: string }> = ({ label_id }) => {
     const { data: operators } = useOperators();
-    const { data: capabilities } = useOperatorCapabilities(operators?.[0]?.operator_endpoint);
+    const { data: capabilities } = useOperatorCapabilities(operators?.[0]?.operator_id);
     const { data: label } = useItemById(label_id);
-    const { mutate: printLabel } = useMutation({
-        mutationFn: async () => {
-            const response = await fetch(`${operators?.[0]?.operator_endpoint}/api/print`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    label_id,
-                    printer_id: capabilities?.printers?.printers[0]?.name,
-                    label_template: 'v3x_cable_label_1',
-                    url: window.location.origin,
-                }),
-            });
-        }
-    });
+    // const { mutate: printLabel } = useMutation({
+    //     mutationFn: async () => {
+    //         const response = await fetch(`${operators?.[0]?.operator_endpoint}/api/print`, {
+    //             method: 'POST',
+    //             headers: {
+    //                 'Content-Type': 'application/json',
+    //             },
+    //             body: JSON.stringify({
+    //                 label_id,
+    //                 printer_id: capabilities?.printers?.printers[0]?.name,
+    //                 label_template: 'v3x_cable_label_1',
+    //                 url: window.location.origin,
+    //             }),
+    //         });
+    //     }
+    // });
+    const { mutate: printLabel } = usePrintLabel(operators?.[0]?.operator_id ?? '');
 
     return (
         <DialogContent>
@@ -118,9 +119,17 @@ export const PrintLabelModal: FC<{ label_id: string }> = ({ label_id }) => {
                     </div>
                 </div>
                 <PrintLabelModalContent />
+                <div className="text-sm text-neutral-500">
+                    Warning; implementation currently only supports printing one label type from the first printer on the first operator found.
+                </div>
             </div>
             <DialogFooter>
-                <Button type="submit" variant="primary" onClick={() => printLabel()}>Print</Button>
+                <Button type="submit" variant="primary" onClick={() => printLabel({
+                    label_id,
+                    printer_id: 'test',
+                    label_template: 'v3x_cable_label_1',
+                    url: window.location.origin,
+                })}>Print</Button>
             </DialogFooter>
         </DialogContent>
     );

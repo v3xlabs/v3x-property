@@ -1710,6 +1710,84 @@ export type paths = {
         patch?: never;
         trace?: never;
     };
+    "/operators/{operator_id}/capabilities": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** /operators/:operator_id/capabilities */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    operator_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json; charset=utf-8": components["schemas"]["OperatorCapabilities"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/operators/{operator_id}/print": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** /operators/:operator_id/print */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    operator_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json; charset=utf-8": components["schemas"]["PrintRequest"];
+                };
+            };
+            responses: {
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json; charset=utf-8": string;
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/user": {
         parameters: {
             query?: never;
@@ -2594,6 +2672,24 @@ export type components = {
         };
         OllamaStatus: {
             models: string[];
+        };
+        OperatorCapabilities: {
+            printers: components["schemas"]["PrintersInfo"];
+        };
+        PrintRequest: {
+            label_template: string;
+            printer_id: string;
+            label_id: string;
+            url: string;
+        };
+        PrinterInfo: {
+            name: string;
+            metadata: {
+                [key: string]: string;
+            };
+        };
+        PrintersInfo: {
+            printers: components["schemas"]["PrinterInfo"][];
         };
         Product: {
             /** Format: int32 */

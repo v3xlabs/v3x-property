@@ -34,6 +34,9 @@ async fn main() {
 
     info!("Starting v3x-property operator");
 
+    let property_engine_url = std::env::var("PROPERTY_ENGINE_URL").unwrap_or("http://localhost:3000".to_string());
+    let operator_endpoint = std::env::var("OPERATOR_ENDPOINT").unwrap_or("http://localhost:3001".to_string());
+
     let token = std::env::var("PAT_TOKEN").expect("PAT_TOKEN is not set");
 
     let api_service =
@@ -63,11 +66,11 @@ async fn main() {
 
             let body = OperatorHeartbeatPayload {
                 operator_id: "local-printer".to_string(),
-                operator_endpoint: "http://localhost:3001".to_string(),
+                operator_endpoint,
             };
 
             let response = client
-                .post("http://localhost:3000/api/operators")
+                .post(format!("{}/api/operators", property_engine_url))
                 .json(&body)
                 .header("Authorization", format!("Bearer {}", token))
                 .send()
