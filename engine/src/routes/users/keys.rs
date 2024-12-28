@@ -1,5 +1,3 @@
-use std::sync::Arc;
-
 use poem::web::Data;
 use poem::Error;
 use poem::Result;
@@ -37,7 +35,7 @@ impl UserKeysApi {
     pub async fn create_key(
         &self,
         user: AuthUser,
-        state: Data<&Arc<AppState>>,
+        state: Data<&AppState>,
         user_id: Path<i32>,
         body: Json<CreateKeyRequest>,
     ) -> Result<Json<CreateKeyResponse>> {
@@ -64,7 +62,7 @@ impl UserKeysApi {
     pub async fn get_keys(
         &self,
         user: AuthUser,
-        state: Data<&Arc<AppState>>,
+        state: Data<&AppState>,
         user_id: Path<i32>,
     ) -> Result<Json<Vec<UserApiKey>>> {
         let user = user
@@ -93,7 +91,7 @@ impl UserKeysApi {
     pub async fn delete_key(
         &self,
         user: AuthUser,
-        state: Data<&Arc<AppState>>,
+        state: Data<&AppState>,
         user_id: Path<i32>,
         token_id: Path<i32>,
     ) -> Result<()> {

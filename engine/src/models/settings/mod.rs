@@ -1,5 +1,3 @@
-use std::sync::Arc;
-
 use build_info::BuildInfo;
 use chrono::{DateTime, Utc};
 use modules::InstanceModulesStatus;
@@ -94,7 +92,7 @@ pub struct InstanceSettings {
 }
 
 impl InstanceSettings {
-    pub async fn load(state: &Arc<AppState>) -> Self {
+    pub async fn load(state: &AppState) -> Self {
         let build_info = build_info();
 
         // TODO: load the instance settings from the database

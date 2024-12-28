@@ -24,7 +24,7 @@ async fn main() {
 
     info!("Starting v3x-property");
 
-    let state = state::AppState::from_env().await;
+    let state = state::AppStateInternal::from_env().await;
 
     routes::serve(state).await.unwrap();
 }

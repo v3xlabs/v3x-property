@@ -1,5 +1,3 @@
-use std::sync::Arc;
-
 use futures::join;
 use poem_openapi::Object;
 use serde::{Deserialize, Serialize};
@@ -16,7 +14,7 @@ pub struct InstanceStatistics {
 }
 
 impl InstanceStatistics {
-    pub async fn load(state: &Arc<AppState>) -> Self {
+    pub async fn load(state: &AppState) -> Self {
         let db = &state.database.pool;
 
         let (user_count, item_count, media_count, log_count) = join!(
@@ -42,7 +40,7 @@ pub struct StorageStatistics {
 }
 
 impl StorageStatistics {
-    pub async fn load(state: &Arc<AppState>) -> Self {
+    pub async fn load(state: &AppState) -> Self {
         // query s3 to get total bucket size in bytes and store in bucket_disk_size
         // also list total files in bucket and store in bucket_file_count
         // state.storage.stat

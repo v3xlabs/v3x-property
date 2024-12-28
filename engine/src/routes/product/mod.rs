@@ -1,5 +1,3 @@
-use std::sync::Arc;
-
 use poem::{web::Data, Result};
 use poem_openapi::{
     param::{Path, Query},
@@ -61,7 +59,7 @@ impl ProductApi {
     async fn get_products(
         &self,
         user: AuthUser,
-        state: Data<&Arc<AppState>>,
+        state: Data<&AppState>,
     ) -> Result<Json<Vec<Product>>> {
         user.check_policy("product", None, Action::Read).await?;
 
@@ -79,7 +77,7 @@ impl ProductApi {
     async fn get_products_slim(
         &self,
         user: AuthUser,
-        state: Data<&Arc<AppState>>,
+        state: Data<&AppState>,
     ) -> Result<Json<Vec<ProductSlim>>> {
         user.check_policy("product", None, Action::Read).await?;
 
@@ -98,7 +96,7 @@ impl ProductApi {
     async fn create_product(
         &self,
         user: AuthUser,
-        state: Data<&Arc<AppState>>,
+        state: Data<&AppState>,
         name: Query<String>,
     ) -> Result<Json<Product>> {
         user.check_policy("product", None, Action::Write).await?;
@@ -124,7 +122,7 @@ impl ProductApi {
     async fn delete_product(
         &self,
         user: AuthUser,
-        state: Data<&Arc<AppState>>,
+        state: Data<&AppState>,
         product_id: Path<i32>,
     ) -> Result<()> {
         user.check_policy("product", product_id.0.to_string().as_str(), Action::Write)
@@ -153,7 +151,7 @@ impl ProductApi {
     )]
     async fn get_product(
         &self,
-        state: Data<&Arc<AppState>>,
+        state: Data<&AppState>,
         user: AuthUser,
         product_id: Path<i32>,
     ) -> Result<Json<Product>> {
@@ -180,7 +178,7 @@ impl ProductApi {
     async fn edit_product(
         &self,
         user: AuthUser,
-        state: Data<&Arc<AppState>>,
+        state: Data<&AppState>,
         product_id: Path<i32>,
         data: Json<ProductUpdatePayload>,
     ) -> Result<()> {
@@ -221,7 +219,7 @@ impl ProductApi {
     )]
     async fn get_product_media(
         &self,
-        state: Data<&Arc<AppState>>,
+        state: Data<&AppState>,
         user: AuthUser,
         product_id: Path<i32>,
     ) -> Result<Json<Vec<i32>>> {
@@ -245,7 +243,7 @@ impl ProductApi {
     )]
     async fn get_product_logs(
         &self,
-        state: Data<&Arc<AppState>>,
+        state: Data<&AppState>,
         user: AuthUser,
         product_id: Path<i32>,
     ) -> Result<Json<Vec<LogEntry>>> {

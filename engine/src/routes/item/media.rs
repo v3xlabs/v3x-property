@@ -1,5 +1,3 @@
-use std::sync::Arc;
-
 use poem::web::Data;
 use poem::Result;
 use poem_openapi::param::Path;
@@ -23,7 +21,7 @@ impl ItemMediaApi {
     #[oai(path = "/item/:item_id/media", method = "get", tag = "ApiTags::Items")]
     async fn get_item_media(
         &self,
-        state: Data<&Arc<AppState>>,
+        state: Data<&AppState>,
         user: AuthUser,
         item_id: Path<String>,
     ) -> Result<Json<Vec<i32>>> {

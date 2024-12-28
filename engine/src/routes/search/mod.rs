@@ -1,5 +1,3 @@
-use std::sync::Arc;
-
 use poem::web::Data;
 use poem::Result;
 use poem_openapi::param::Query;
@@ -26,7 +24,7 @@ impl SearchApi {
     pub async fn search(
         &self,
         user: AuthUser,
-        state: Data<&Arc<AppState>>,
+        state: Data<&AppState>,
         query: Query<String>,
     ) -> Result<Json<Vec<SearchableItem>>> {
         user.check_policy("search", None, Action::Read).await?;
@@ -56,7 +54,7 @@ impl SearchApi {
     pub async fn reindex_all_items(
         &self,
         user: AuthUser,
-        state: Data<&Arc<AppState>>,
+        state: Data<&AppState>,
     ) -> Result<()> {
         // TODO: change to search
         user.check_policy("search", None, Action::Write).await?;

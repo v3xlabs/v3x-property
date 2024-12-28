@@ -1,5 +1,3 @@
-use std::sync::Arc;
-
 use poem::{web::Data, Error, Result};
 use poem_openapi::{param::Path, payload::Json, OpenApi};
 use reqwest::StatusCode;
@@ -27,7 +25,7 @@ impl UserApi {
     pub async fn users(
         &self,
         user: AuthUser,
-        state: Data<&Arc<AppState>>,
+        state: Data<&AppState>,
     ) -> Result<Json<Vec<User>>> {
         user.check_policy("user", "", Action::Read).await?;
 
@@ -48,7 +46,7 @@ impl UserApi {
     pub async fn user(
         &self,
         user: AuthUser,
-        state: Data<&Arc<AppState>>,
+        state: Data<&AppState>,
         user_id: Path<i32>,
     ) -> Result<Json<User>> {
         let user = user
@@ -75,7 +73,7 @@ impl UserApi {
     pub async fn user_items(
         &self,
         user: AuthUser,
-        state: Data<&Arc<AppState>>,
+        state: Data<&AppState>,
         user_id: Path<i32>,
     ) -> Result<Json<Vec<ItemLocation>>> {
         user.check_policy("user", "", Action::Read).await?;

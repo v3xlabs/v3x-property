@@ -1,5 +1,3 @@
-use std::sync::Arc;
-
 use poem::{web::Data, Result};
 use poem_openapi::{param::Path, payload::Json, Object, OpenApi};
 use serde::{Deserialize, Serialize};
@@ -30,7 +28,7 @@ impl FieldsApi {
     async fn get_all_field_definitions(
         &self,
         user: AuthUser,
-        state: Data<&Arc<AppState>>,
+        state: Data<&AppState>,
     ) -> Result<Json<Vec<FieldDefinition>>> {
         user.check_policy("field", None, Action::Read).await?;
 
@@ -48,7 +46,7 @@ impl FieldsApi {
     async fn create_field_definition(
         &self,
         user: AuthUser,
-        state: Data<&Arc<AppState>>,
+        state: Data<&AppState>,
         payload: Json<FieldDefinition>,
     ) -> Result<Json<FieldDefinition>> {
         user.check_policy("field", None, Action::Write).await?;
@@ -84,7 +82,7 @@ impl FieldsApi {
     async fn update_field_definition(
         &self,
         user: AuthUser,
-        state: Data<&Arc<AppState>>,
+        state: Data<&AppState>,
         definition_id: Path<String>,
         payload: Json<FieldDefinition>,
     ) -> Result<Json<FieldDefinition>> {

@@ -1,5 +1,3 @@
-use std::sync::Arc;
-
 use chrono::{DateTime, Utc};
 use poem::{web::Data, Result};
 use poem_openapi::{
@@ -94,7 +92,7 @@ impl ItemsApi {
     async fn get_owned_items(
         &self,
         user: AuthUser,
-        state: Data<&Arc<AppState>>,
+        state: Data<&AppState>,
     ) -> Result<Json<Vec<Item>>> {
         user.check_policy("item", "owned", Action::Read).await?;
 
@@ -112,7 +110,7 @@ impl ItemsApi {
     async fn create_item(
         &self,
         user: AuthUser,
-        state: Data<&Arc<AppState>>,
+        state: Data<&AppState>,
         item_id: Query<String>,
     ) -> Result<Json<Item>> {
         user.check_policy("item", None, Action::Write).await?;
@@ -144,7 +142,7 @@ impl ItemsApi {
     async fn next_item_id(
         &self,
         user: AuthUser,
-        state: Data<&Arc<AppState>>,
+        state: Data<&AppState>,
     ) -> Result<Json<ItemIdResponse>> {
         user.check_policy("item", None, Action::Read).await?;
 
@@ -162,7 +160,7 @@ impl ItemsApi {
     async fn delete_item(
         &self,
         user: AuthUser,
-        state: Data<&Arc<AppState>>,
+        state: Data<&AppState>,
         item_id: Path<String>,
     ) -> Result<()> {
         user.check_policy("item", item_id.0.to_string().as_str(), Action::Delete)
@@ -184,7 +182,7 @@ impl ItemsApi {
     #[oai(path = "/item/:item_id", method = "get", tag = "ApiTags::Items")]
     async fn get_item(
         &self,
-        state: Data<&Arc<AppState>>,
+        state: Data<&AppState>,
         user: AuthUser,
         item_id: Path<String>,
     ) -> Result<Json<Item>> {
@@ -207,7 +205,7 @@ impl ItemsApi {
     async fn edit_item(
         &self,
         user: AuthUser,
-        state: Data<&Arc<AppState>>,
+        state: Data<&AppState>,
         item_id: Path<String>,
         data: Json<ItemUpdatePayload>,
     ) -> Result<()> {
@@ -243,7 +241,7 @@ impl ItemsApi {
     #[oai(path = "/item/:item_id/fields", method = "get", tag = "ApiTags::Items")]
     async fn get_item_fields(
         &self,
-        state: Data<&Arc<AppState>>,
+        state: Data<&AppState>,
         user: AuthUser,
         item_id: Path<String>,
     ) -> Result<Json<Vec<ItemDataField>>> {
@@ -263,7 +261,7 @@ impl ItemsApi {
     #[oai(path = "/item/:item_id/tags", method = "get", tag = "ApiTags::Items")]
     async fn get_item_tags(
         &self,
-        state: Data<&Arc<AppState>>,
+        state: Data<&AppState>,
         user: AuthUser,
         item_id: Path<String>,
     ) -> Result<Json<Vec<Tag>>> {
@@ -283,7 +281,7 @@ impl ItemsApi {
     #[oai(path = "/item/:item_id/logs", method = "get", tag = "ApiTags::Items")]
     async fn get_item_logs(
         &self,
-        state: Data<&Arc<AppState>>,
+        state: Data<&AppState>,
         user: AuthUser,
         item_id: Path<String>,
     ) -> Result<Json<Vec<LogEntry>>> {
@@ -307,7 +305,7 @@ impl ItemsApi {
     )]
     async fn get_item_location(
         &self,
-        state: Data<&Arc<AppState>>,
+        state: Data<&AppState>,
         user: AuthUser,
         item_id: Path<String>,
     ) -> Result<Json<Option<ItemLocation>>> {
@@ -331,7 +329,7 @@ impl ItemsApi {
     )]
     async fn update_item_location(
         &self,
-        state: Data<&Arc<AppState>>,
+        state: Data<&AppState>,
         user: AuthUser,
         item_id: Path<String>,
         data: Json<ItemLocation>,

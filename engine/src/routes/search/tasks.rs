@@ -1,5 +1,3 @@
-use std::sync::Arc;
-
 use poem::web::Data;
 use poem::{Error, Result};
 use poem_openapi::{param::Path, payload::Json, OpenApi};
@@ -23,7 +21,7 @@ impl SearchTaskApi {
     pub async fn search_tasks(
         &self,
         user: AuthUser,
-        state: Data<&Arc<AppState>>,
+        state: Data<&AppState>,
     ) -> Result<Json<Vec<SearchTask>>> {
         user.check_policy("search", None, Action::Read).await?;
 
@@ -45,7 +43,7 @@ impl SearchTaskApi {
     pub async fn refresh_task(
         &self,
         user: AuthUser,
-        state: Data<&Arc<AppState>>,
+        state: Data<&AppState>,
         task_id: Path<i32>,
     ) -> Result<Json<SearchTask>> {
         user.check_policy("search", None, Action::Write).await?;

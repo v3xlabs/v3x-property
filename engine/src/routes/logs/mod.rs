@@ -1,5 +1,3 @@
-use std::sync::Arc;
-
 use poem::{web::Data, Result};
 use poem_openapi::{payload::Json, OpenApi};
 
@@ -21,7 +19,7 @@ impl LogsApi {
     async fn get_all_logs(
         &self,
         user: AuthUser,
-        state: Data<&Arc<AppState>>,
+        state: Data<&AppState>,
     ) -> Result<Json<Vec<LogEntry>>> {
         user.check_policy("log", None, Action::Read).await?;
 

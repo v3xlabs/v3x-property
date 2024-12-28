@@ -22,7 +22,7 @@ use sessions::SessionsApi;
 use tags::TagsApi;
 use users::{keys::UserKeysApi, UserApi};
 
-use crate::state::AppState;
+use crate::state::AppStateInternal;
 
 pub mod error;
 pub mod fields;
@@ -117,7 +117,7 @@ async fn get_openapi_docs() -> Html<&'static str> {
     Html(include_str!("./index.html"))
 }
 
-pub async fn serve(state: AppState) -> Result<(), poem::Error> {
+pub async fn serve(state: AppStateInternal) -> Result<(), poem::Error> {
     let api_service =
         OpenApiService::new(get_api(), "Hello World", "1.0").server("http://localhost:3000/api");
 
@@ -133,6 +133,9 @@ pub async fn serve(state: AppState) -> Result<(), poem::Error> {
     .index_file("index.html");
 
     let state = Arc::new(state);
+    // let r = unsafe {
+    //     std::slice::from_raw_parts((&state).as_ptr(), 1)
+    // };
 
     let app = Route::new()
         .nest("/api", api_service)

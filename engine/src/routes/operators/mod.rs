@@ -1,6 +1,3 @@
-use std::collections::HashMap;
-use std::sync::Arc;
-
 use crate::auth::middleware::AuthUser;
 use crate::auth::permissions::Action;
 use crate::models::local_operators::LocalOperator;
@@ -12,6 +9,7 @@ use poem_openapi::payload::Json;
 use poem_openapi::Object;
 use poem_openapi::OpenApi;
 use serde::{Deserialize, Serialize};
+use std::collections::HashMap;
 
 use super::error::HttpError;
 use crate::routes::ApiTags;
@@ -56,7 +54,7 @@ impl OperatorApi {
     async fn list_operators(
         &self,
         user: AuthUser,
-        state: Data<&Arc<AppState>>,
+        state: Data<&AppState>,
     ) -> Result<Json<Vec<LocalOperator>>> {
         user.check_policy("local_operator", None, Action::Read)
             .await?;
@@ -72,25 +70,33 @@ impl OperatorApi {
     async fn create_operator(
         &self,
         user: AuthUser,
-        state: Data<&Arc<AppState>>,
+        state: Data<&AppState>,
         payload: Json<LocalOperatorPayload>,
     ) -> Result<Json<LocalOperator>> {
         user.check_policy("local_operator", None, Action::Write)
             .await?;
 
-        LocalOperator::upsert(&state.database, &payload.operator_id, &payload.operator_endpoint)
-            .await
-            .map(Json)
-            .map_err(HttpError::from)
-            .map_err(poem::Error::from)
+        LocalOperator::upsert(
+            &state.database,
+            &payload.operator_id,
+            &payload.operator_endpoint,
+        )
+        .await
+        .map(Json)
+        .map_err(HttpError::from)
+        .map_err(poem::Error::from)
     }
 
     /// /operators/:operator_id/capabilities
-    #[oai(path = "/operators/:operator_id/capabilities", method = "get", tag = "ApiTags::Operators")]
+    #[oai(
+        path = "/operators/:operator_id/capabilities",
+        method = "get",
+        tag = "ApiTags::Operators"
+    )]
     async fn get_operator_capabilities(
         &self,
         user: AuthUser,
-        state: Data<&Arc<AppState>>,
+        state: Data<&AppState>,
         operator_id: Path<String>,
     ) -> Result<Json<OperatorCapabilities>> {
         let operator = LocalOperator::get_operator_by_id(&state.database, &operator_id)
@@ -103,7 +109,8 @@ impl OperatorApi {
 
         tracing::info!("Getting capabilities for operator: {}", operator_endpoint);
 
-        let response = client.get(format!("{}/api/capabilities", operator_endpoint))
+        let response = client
+            .get(format!("{}/api/capabilities", operator_endpoint))
             .send()
             .await
             .unwrap();
@@ -114,11 +121,15 @@ impl OperatorApi {
     }
 
     /// /operators/:operator_id/print
-    #[oai(path = "/operators/:operator_id/print", method = "post", tag = "ApiTags::Operators")]
+    #[oai(
+        path = "/operators/:operator_id/print",
+        method = "post",
+        tag = "ApiTags::Operators"
+    )]
     async fn print_file(
         &self,
         user: AuthUser,
-        state: Data<&Arc<AppState>>,
+        state: Data<&AppState>,
         operator_id: Path<String>,
         payload: Json<PrintRequest>,
     ) -> Result<Json<String>> {
@@ -130,7 +141,8 @@ impl OperatorApi {
 
         let client = reqwest::Client::new();
 
-        let response = client.post(format!("{}/api/print", operator_endpoint))
+        let response = client
+            .post(format!("{}/api/print", operator_endpoint))
             .json(&payload.0)
             .send()
             .await

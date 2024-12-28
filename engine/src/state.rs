@@ -1,4 +1,4 @@
-use std::env;
+use std::{env, sync::Arc};
 
 use openid::{Client, Discovered, DiscoveredClient, StandardClaims};
 use reqwest::Url;
@@ -11,7 +11,9 @@ use crate::{
 
 pub type OpenIDClient = Client<Discovered, StandardClaims>;
 
-pub struct AppState {
+pub type AppState = Arc<AppStateInternal>;
+
+pub struct AppStateInternal {
     pub database: Database,
     // #[cfg(feature = "oauth")]
     pub openid: OpenIDClient,
@@ -20,7 +22,7 @@ pub struct AppState {
     pub search: Option<Search>,
 }
 
-impl AppState {
+impl AppStateInternal {
     pub async fn from_env() -> Self {
         let database_url = env::var("DATABASE_URL")
             .unwrap_or("postgres://postgres:postgres@localhost:5432/postgres".to_string());

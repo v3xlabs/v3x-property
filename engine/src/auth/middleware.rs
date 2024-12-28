@@ -1,5 +1,3 @@
-use std::sync::Arc;
-
 use poem::{web::Data, Error, FromRequest, Request, RequestBody, Result};
 use poem_openapi::{
     registry::{MetaSecurityScheme, Registry},
@@ -20,9 +18,9 @@ pub struct PatStorage {
 
 #[derive(Clone)]
 pub enum AuthUser {
-    User(Session, Arc<AppState>),
-    Pat(UserApiKey, Arc<AppState>),
-    None(Arc<AppState>),
+    User(Session, AppState),
+    Pat(UserApiKey, AppState),
+    None(AppState),
 }
 
 // impl AuthUser {
@@ -55,7 +53,7 @@ impl<'a> ApiExtractor<'a> for AuthUser {
         body: &mut RequestBody,
         _param_opts: ExtractParamOptions<Self::ParamType>,
     ) -> Result<Self> {
-        let state = <Data<&Arc<AppState>> as FromRequest>::from_request(req, body).await?;
+        let state = <Data<&AppState> as FromRequest>::from_request(req, body).await?;
 
         let state = state.0;
 
@@ -142,7 +140,7 @@ impl<'a> ApiExtractor<'a> for AuthUser {
 }
 
 impl AuthUser {
-    fn state(&self) -> &Arc<AppState> {
+    fn state(&self) -> &AppState {
         match self {
             AuthUser::User(_, state) => state,
             AuthUser::Pat(_, state) => state,

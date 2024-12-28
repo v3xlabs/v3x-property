@@ -1,5 +1,3 @@
-use std::sync::Arc;
-
 use crate::{
     models::item::Item,
     modules::intelligence::{
@@ -33,7 +31,7 @@ impl ItemIntelligenceApi {
     )]
     async fn suggest_item_intelligence(
         &self,
-        state: Data<&Arc<AppState>>,
+        state: Data<&AppState>,
         item_id: Path<String>,
     ) -> Result<EventStream<BoxStream<'static, ActorEvent>>> {
         let item = Item::get_by_id(&state.database, item_id.0.as_str())

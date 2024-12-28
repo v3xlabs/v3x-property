@@ -1,5 +1,3 @@
-use std::sync::Arc;
-
 use poem::{web::Data, Result};
 use poem_openapi::{param::Query, payload::Json, OpenApi};
 use serde::{Deserialize, Serialize};
@@ -35,7 +33,7 @@ impl PolicyApi {
     #[oai(path = "/policy/enumerate", method = "get", tag = "ApiTags::User")]
     pub async fn enumerate(
         &self,
-        state: Data<&Arc<AppState>>,
+        state: Data<&AppState>,
         user: AuthUser,
         /// Example: "item" | "product" | "media" | "user"
         resource_type: Query<String>,
@@ -55,7 +53,7 @@ impl PolicyApi {
     #[oai(path = "/policy/batch", method = "post", tag = "ApiTags::User")]
     pub async fn batch(
         &self,
-        state: Data<&Arc<AppState>>,
+        state: Data<&AppState>,
         user: AuthUser,
         payload: Json<Vec<BatchRequest>>,
     ) -> Result<Json<Vec<BatchResponse>>> {

@@ -1,5 +1,3 @@
-use std::sync::Arc;
-
 use poem::{
     web::{Data, Multipart},
     Result,
@@ -34,7 +32,7 @@ impl MediaApi {
     async fn get_all_media(
         &self,
         user: AuthUser,
-        state: Data<&Arc<AppState>>,
+        state: Data<&AppState>,
     ) -> Result<Json<Vec<Media>>> {
         user.check_policy("media", None, Action::Read).await?;
 
@@ -52,7 +50,7 @@ impl MediaApi {
     async fn get_unassigned_media(
         &self,
         user: AuthUser,
-        state: Data<&Arc<AppState>>,
+        state: Data<&AppState>,
     ) -> Result<Json<Vec<Media>>> {
         user.check_policy("media", None, Action::Read).await?;
 
@@ -69,7 +67,7 @@ impl MediaApi {
         name: Query<String>,
         kind: Query<String>,
         user: AuthUser,
-        state: Data<&Arc<AppState>>,
+        state: Data<&AppState>,
         mut upload: Multipart,
     ) -> Result<Json<Media>> {
         user.check_policy("media", None, Action::Write).await?;
@@ -96,7 +94,7 @@ impl MediaApi {
     #[oai(path = "/media/:media_id", method = "get", tag = "ApiTags::Media")]
     async fn get_media(
         &self,
-        state: Data<&Arc<AppState>>,
+        state: Data<&AppState>,
         user: AuthUser,
         media_id: Path<i32>,
     ) -> Result<Json<Media>> {
@@ -120,7 +118,7 @@ impl MediaApi {
     )]
     async fn get_linked_items(
         &self,
-        state: Data<&Arc<AppState>>,
+        state: Data<&AppState>,
         user: AuthUser,
         media_id: Path<i32>,
     ) -> Result<Json<Vec<LinkedItem>>> {
@@ -141,7 +139,7 @@ impl MediaApi {
     async fn delete_media(
         &self,
         user: AuthUser,
-        state: Data<&Arc<AppState>>,
+        state: Data<&AppState>,
         media_id: Path<i32>,
     ) -> Result<()> {
         user.check_policy("media", media_id.0.to_string().as_str(), Action::Write)

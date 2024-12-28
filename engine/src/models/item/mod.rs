@@ -1,5 +1,3 @@
-use std::sync::Arc;
-
 use chrono::{DateTime, Utc};
 use field::ItemField;
 use media::ItemMedia;
@@ -9,8 +7,10 @@ use tracing::info;
 
 use super::{log::LogEntry, settings::InstanceSettings};
 use crate::{
-    database::Database, modules::search::Search, routes::item::ItemUpdateMediaStatus,
-    routes::item::ItemUpdatePayload, state::AppState,
+    database::Database,
+    modules::search::Search,
+    routes::item::{ItemUpdateMediaStatus, ItemUpdatePayload},
+    state::AppState,
 };
 
 pub mod field;
@@ -87,9 +87,13 @@ impl Item {
         database: &Database,
         owner_id: i32,
     ) -> Result<Vec<Item>, sqlx::Error> {
-        query_as!(Item, "SELECT * FROM items WHERE owner_id = $1 ORDER BY updated_at DESC", owner_id)
-            .fetch_all(&database.pool)
-            .await
+        query_as!(
+            Item,
+            "SELECT * FROM items WHERE owner_id = $1 ORDER BY updated_at DESC",
+            owner_id
+        )
+        .fetch_all(&database.pool)
+        .await
     }
 
     pub async fn get_by_id(db: &Database, item_id: &str) -> Result<Option<Item>, sqlx::Error> {
@@ -102,7 +106,7 @@ impl Item {
     /// Start generation at 0, and check if the id is already taken.
     /// If it is, increment until we find an unused id.
     /// TODO: Implement resuming from the last id.
-    pub async fn next_id(state: &Arc<AppState>) -> Result<String, sqlx::Error> {
+    pub async fn next_id(state: &AppState) -> Result<String, sqlx::Error> {
         let initial_id = InstanceSettings::get_last_item_id(&state.database)
             .await
             .unwrap();
@@ -221,12 +225,9 @@ impl Item {
         }
 
         if let Some(tags) = &data.tags {
-            query!(
-                "DELETE FROM items_to_tags WHERE item_id = $1",
-                item_id
-            )
-            .execute(&mut *tx)
-            .await?;
+            query!("DELETE FROM items_to_tags WHERE item_id = $1", item_id)
+                .execute(&mut *tx)
+                .await?;
 
             for tag in tags {
                 query!(

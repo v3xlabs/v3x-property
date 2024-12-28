@@ -1,5 +1,3 @@
-use std::sync::Arc;
-
 use poem::{web::Data, Result};
 use poem_openapi::{payload::Json, OpenApi};
 
@@ -18,7 +16,7 @@ impl MeApi {
     ///
     /// Get the current user
     #[oai(path = "/me", method = "get", tag = "ApiTags::User")]
-    pub async fn me(&self, state: Data<&Arc<AppState>>, token: AuthUser) -> Result<Json<User>> {
+    pub async fn me(&self, state: Data<&AppState>, token: AuthUser) -> Result<Json<User>> {
         let active_user = token.user_id().ok_or(HttpError::Forbidden)?;
 
         UserEntry::find_by_user_id(active_user, &state.database)

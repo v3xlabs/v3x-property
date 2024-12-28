@@ -1,5 +1,3 @@
-use std::sync::Arc;
-
 use poem::{web::Data, Error, Result};
 use poem_openapi::{param::Path, payload::Json, OpenApi};
 use reqwest::StatusCode;
@@ -23,7 +21,7 @@ impl SessionsApi {
     async fn get_sessions(
         &self,
         auth: AuthUser,
-        state: Data<&Arc<AppState>>,
+        state: Data<&AppState>,
     ) -> Result<Json<Vec<Session>>> {
         let active_user = auth
             .user_id()
@@ -47,7 +45,7 @@ impl SessionsApi {
     async fn delete_session(
         &self,
         auth: AuthUser,
-        state: Data<&Arc<AppState>>,
+        state: Data<&AppState>,
         session_id: Path<String>,
     ) -> Result<Json<Vec<Session>>> {
         let user_id = auth.user_id().unwrap();

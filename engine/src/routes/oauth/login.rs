@@ -1,4 +1,4 @@
-use std::{collections::HashSet, sync::Arc};
+use std::collections::HashSet;
 
 use openid::{Options, Prompt};
 use poem::{web::Data, Result};
@@ -28,7 +28,7 @@ impl LoginApi {
     pub async fn login(
         &self,
         redirect: Query<Option<String>>,
-        state: Data<&Arc<AppState>>,
+        state: Data<&AppState>,
     ) -> Result<RedirectResponse> {
         // scopes, for calendar for example https://www.googleapis.com/auth/calendar.events
         let scope = "openid email profile".to_string();

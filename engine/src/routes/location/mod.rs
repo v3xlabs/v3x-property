@@ -1,5 +1,3 @@
-use std::sync::Arc;
-
 use poem::{web::Data, Result};
 use poem_openapi::{param::Path, payload::Json, OpenApi};
 
@@ -20,7 +18,7 @@ impl LocationApi {
     async fn get_all(
         &self,
         user: AuthUser,
-        state: Data<&Arc<AppState>>,
+        state: Data<&AppState>,
     ) -> Result<Json<Vec<Location>>> {
         user.check_policy("location", "", Action::Read).await?;
 
@@ -40,7 +38,7 @@ impl LocationApi {
     async fn create(
         &self,
         user: AuthUser,
-        state: Data<&Arc<AppState>>,
+        state: Data<&AppState>,
         payload: Json<Location>,
     ) -> Result<Json<Location>> {
         user.check_policy("location", "", Action::Write).await?;
@@ -60,7 +58,7 @@ impl LocationApi {
     async fn get(
         &self,
         user: AuthUser,
-        state: Data<&Arc<AppState>>,
+        state: Data<&AppState>,
         location_id: Path<String>,
     ) -> Result<Json<Location>> {
         user.check_policy("location", location_id.0.as_str(), Action::Read)
@@ -82,7 +80,7 @@ impl LocationApi {
         method = "put",
         tag = "ApiTags::Location"
     )]
-    async fn update(&self, user: AuthUser, state: Data<&Arc<AppState>>, location_id: Path<String>, payload: Json<Location>) -> Result<Json<Location>> {
+    async fn update(&self, user: AuthUser, state: Data<&AppState>, location_id: Path<String>, payload: Json<Location>) -> Result<Json<Location>> {
         user.check_policy("location", location_id.0.as_str(), Action::Write).await?;
 
         Location::update(&state.database, &location_id.0, &payload.0.name)
@@ -96,7 +94,7 @@ impl LocationApi {
     /// 
     /// Get all items in a location
     #[oai(path = "/location/:location_id/items", method = "get", tag = "ApiTags::Location")]
-    async fn get_items(&self, user: AuthUser, state: Data<&Arc<AppState>>, location_id: Path<String>) -> Result<Json<Vec<ItemLocation>>> {
+    async fn get_items(&self, user: AuthUser, state: Data<&AppState>, location_id: Path<String>) -> Result<Json<Vec<ItemLocation>>> {
         user.check_policy("location", location_id.0.as_str(), Action::Read).await?;
 
         Location::get_items_by_location_id(&state.database, &location_id.0)
@@ -110,7 +108,7 @@ impl LocationApi {
     /// 
     /// Get all child locations of a location
     #[oai(path = "/location/:location_id/locations", method = "get", tag = "ApiTags::Location")]
-    async fn get_locations(&self, user: AuthUser, state: Data<&Arc<AppState>>, location_id: Path<String>) -> Result<Json<Vec<Location>>> {
+    async fn get_locations(&self, user: AuthUser, state: Data<&AppState>, location_id: Path<String>) -> Result<Json<Vec<Location>>> {
         user.check_policy("location", location_id.0.as_str(), Action::Read).await?;
 
         Location::get_by_root_location_id(&state.database, &location_id.0)

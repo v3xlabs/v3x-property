@@ -1,5 +1,3 @@
-use std::sync::Arc;
-
 use futures::stream::BoxStream;
 
 use crate::{
@@ -24,7 +22,7 @@ pub const SYSTEM_PROMPT: &str = include_str!("ingress_product.prompt.md");
 impl IngressProductTask {
     pub async fn run<'a>(
         &self,
-        state: &Arc<AppState>,
+        state: &AppState,
     ) -> Result<BoxStream<'a, ActorEvent>, anyhow::Error> {
         // let mut actor = OllamaActor;
         let actor = GeminiActor;

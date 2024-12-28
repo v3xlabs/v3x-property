@@ -1,5 +1,3 @@
-use std::sync::Arc;
-
 use openid::Token;
 use poem::{
     http::HeaderMap,
@@ -45,7 +43,7 @@ impl CallbackApi {
         authuser: Query<Option<String>>,
         code: Query<String>,
         prompt: Query<Option<String>>,
-        app_state: Data<&Arc<AppState>>,
+        app_state: Data<&AppState>,
         ip: RealIp,
         headers: &HeaderMap,
     ) -> Result<RedirectResponse> {

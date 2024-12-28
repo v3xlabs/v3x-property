@@ -18,7 +18,6 @@ use futures::stream::BoxStream;
 use poem_openapi::Object;
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
-use std::sync::Arc;
 use tracing::{info, warn};
 
 #[derive(Debug, Serialize, Deserialize, Object)]
@@ -40,7 +39,7 @@ pub trait Actor: Send + Sync + Sized {
 
     fn prompt(
         self,
-        state: Arc<AppState>,
+        state: AppState,
         conversation: Conversation,
     ) -> BoxStream<'static, ActorEvent>
     where

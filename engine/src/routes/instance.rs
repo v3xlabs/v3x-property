@@ -1,5 +1,3 @@
-use std::sync::Arc;
-
 use poem::{web::Data, Result};
 use poem_openapi::{payload::Json, OpenApi};
 
@@ -23,7 +21,7 @@ impl InstanceApi {
     #[oai(path = "/instance/settings", method = "get", tag = "ApiTags::Instance")]
     pub async fn settings(
         &self,
-        state: Data<&Arc<AppState>>,
+        state: Data<&AppState>,
         user: AuthUser,
     ) -> Result<Json<InstanceSettings>> {
         user.check_policy("instance", "settings", Action::Read)
@@ -38,7 +36,7 @@ impl InstanceApi {
     #[oai(path = "/instance/settings", method = "put", tag = "ApiTags::Instance")]
     pub async fn update_settings(
         &self,
-        state: Data<&Arc<AppState>>,
+        state: Data<&AppState>,
         user: AuthUser,
         settings: Json<InstanceSettingsConfigurable>,
     ) -> Result<()> {
@@ -58,10 +56,7 @@ impl InstanceApi {
         method = "get",
         tag = "ApiTags::Instance"
     )]
-    pub async fn statistics(
-        &self,
-        state: Data<&Arc<AppState>>,
-    ) -> Result<Json<InstanceStatistics>> {
+    pub async fn statistics(&self, state: Data<&AppState>) -> Result<Json<InstanceStatistics>> {
         Ok(Json(InstanceStatistics::load(&state).await))
     }
 
@@ -73,7 +68,7 @@ impl InstanceApi {
         method = "get",
         tag = "ApiTags::Instance"
     )]
-    pub async fn storage(&self, state: Data<&Arc<AppState>>) -> Result<Json<StorageStatistics>> {
+    pub async fn storage(&self, state: Data<&AppState>) -> Result<Json<StorageStatistics>> {
         Ok(Json(StorageStatistics::load(&state).await))
     }
 

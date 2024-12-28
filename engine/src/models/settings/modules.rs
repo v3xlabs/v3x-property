@@ -1,5 +1,3 @@
-use std::sync::Arc;
-
 use poem_openapi::Object;
 use serde::{Deserialize, Serialize};
 
@@ -19,7 +17,7 @@ pub struct InstanceModulesStatus {
 }
 
 impl InstanceModulesStatus {
-    pub async fn load(state: &Arc<AppState>) -> Self {
+    pub async fn load(state: &AppState) -> Self {
         // TODO: introduce more information about connection & status
 
         let intelligence = match &state.intelligence {
