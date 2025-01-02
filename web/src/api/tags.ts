@@ -48,7 +48,7 @@ export const useTagCreate = () => useMutation({
             },
         });
 
-        queryClient.invalidateQueries({ queryKey: ['tags'] });
+        queryClient.invalidateQueries({ queryKey: ['tags', 'list'] });
 
         return response.data;
     }

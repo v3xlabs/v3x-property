@@ -23,8 +23,8 @@ type HTTPMethod =
 
 type PathMethods<TPath extends keyof paths> = {
     [TMethod in HTTPMethod]: paths[TPath][TMethod] extends undefined
-        ? never
-        : TMethod;
+    ? never
+    : TMethod;
 }[HTTPMethod];
 
 type AnyRequestBody = {
@@ -51,52 +51,52 @@ type AnyRoute = {
 
 export type ApiResponse<TResponses extends AnyResponses> = {
     [TStatus in keyof TResponses]: TStatus extends number
-        ? TResponses[TStatus]['content'] extends undefined
-            ? {
-                  status: TStatus;
-                  contentType: never;
-                  data: never;
-                  headers: TResponses[TStatus]['headers'] extends Record<
-                      string,
-                      unknown
-                  >
-                      ? Map<
-                            keyof TResponses[TStatus]['headers'],
-                            TResponses[TStatus]['headers'][keyof TResponses[TStatus]['headers']]
-                        >
-                      : TResponses[TStatus]['headers'];
-              }
-            : {
-                  [K in keyof TResponses[TStatus]['content']]: {
-                      status: TStatus;
-                      contentType: K;
-                      data: TResponses[TStatus]['content'][K];
-                      headers: TResponses[TStatus]['headers'] extends Record<
-                          string,
-                          unknown
-                      >
-                          ? Map<
-                                keyof TResponses[TStatus]['headers'],
-                                TResponses[TStatus]['headers'][keyof TResponses[TStatus]['headers']]
-                            >
-                          : TResponses[TStatus]['headers'];
-                  };
-              }[keyof TResponses[TStatus]['content']]
-        : never;
+    ? TResponses[TStatus]['content'] extends undefined
+    ? {
+        status: TStatus;
+        contentType: never;
+        data: never;
+        headers: TResponses[TStatus]['headers'] extends Record<
+            string,
+            unknown
+        >
+        ? Map<
+            keyof TResponses[TStatus]['headers'],
+            TResponses[TStatus]['headers'][keyof TResponses[TStatus]['headers']]
+        >
+        : TResponses[TStatus]['headers'];
+    }
+    : {
+        [K in keyof TResponses[TStatus]['content']]: {
+            status: TStatus;
+            contentType: K;
+            data: TResponses[TStatus]['content'][K];
+            headers: TResponses[TStatus]['headers'] extends Record<
+                string,
+                unknown
+            >
+            ? Map<
+                keyof TResponses[TStatus]['headers'],
+                TResponses[TStatus]['headers'][keyof TResponses[TStatus]['headers']]
+            >
+            : TResponses[TStatus]['headers'];
+        };
+    }[keyof TResponses[TStatus]['content']]
+    : never;
 }[keyof TResponses];
 
 export type ApiRequestBody<TBody extends AnyRequestBody | undefined> =
     TBody extends AnyRequestBody
-        ? {
-              [K in keyof TBody['content']]: {
-                  contentType: K;
-                  data: TBody['content'][K];
-              };
-          }[keyof TBody['content']]
-        : {
-              contentType?: undefined;
-              data?: undefined;
-          };
+    ? {
+        [K in keyof TBody['content']]: {
+            contentType: K;
+            data: TBody['content'][K];
+        };
+    }[keyof TBody['content']]
+    : {
+        contentType?: undefined;
+        data?: undefined;
+    };
 type Prettify<T> = {
     [K in keyof T]: T[K];
 } & {};
@@ -105,7 +105,7 @@ const convertBody = (
     data: any,
     contentType: string | undefined
 ): // eslint-disable-next-line no-undef
-BodyInit | undefined => {
+    BodyInit | undefined => {
     if (contentType === undefined) {
         return;
     }
@@ -134,8 +134,8 @@ export type ApiRequest<
     TPath extends keyof paths,
     TMethod extends PathMethods<TPath>,
     TRoute extends AnyRoute = paths[TPath][TMethod] extends AnyRoute
-        ? paths[TPath][TMethod]
-        : never
+    ? paths[TPath][TMethod]
+    : never
 > = Prettify<{
     path: TPath;
     method: TMethod;
@@ -231,13 +231,13 @@ export const apiRequest = async <
     TPath extends keyof paths,
     TMethod extends PathMethods<TPath>,
     TOptions extends TRoute['parameters'] &
-        ApiRequestBody<TRoute['requestBody']> & {
-            // eslint-disable-next-line no-undef
-            fetchOptions?: RequestInit;
-        },
+    ApiRequestBody<TRoute['requestBody']> & {
+        // eslint-disable-next-line no-undef
+        fetchOptions?: RequestInit;
+    },
     TRoute extends AnyRoute = paths[TPath][TMethod] extends AnyRoute
-        ? paths[TPath][TMethod]
-        : never
+    ? paths[TPath][TMethod]
+    : never
 >(
     path: TPath,
     method: TMethod,
