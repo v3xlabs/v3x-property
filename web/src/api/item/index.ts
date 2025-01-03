@@ -136,6 +136,22 @@ export const useItemLocation = (item_id?: string) => {
     return useQuery(getItemLocation(item_id));
 };
 
+export const getItemItems = (item_id?: string) =>
+    queryOptions({
+        queryKey: ['item', '{item_id}', item_id, 'items'],
+        queryFn: async () => {
+            const response = await apiRequest('/item/{item_id}/items', 'get', {
+                path: { item_id },
+            });
+
+            return response.data;
+        },
+    });
+
+export const useItemItems = (item_id?: string) => {
+    return useQuery(getItemItems(item_id));
+};
+
 // Create item
 // This endpoint provisions the desired item_id with a placeholder item
 export const useCreateItem = () => {

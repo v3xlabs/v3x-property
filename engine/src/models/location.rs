@@ -1,4 +1,5 @@
 use chrono::{DateTime, Utc};
+use parallel_stream::prelude::*;
 use poem_openapi::Object;
 use serde::{Deserialize, Serialize};
 use sqlx::{query_as, FromRow};
@@ -131,11 +132,15 @@ impl Location {
 
     pub async fn get_by_root_location_id(
         db: &Database,
-        root_location_id: &str,
+        root_location_id: Option<String>,
     ) -> Result<Vec<Location>, sqlx::Error> {
-        query_as!(Location, "SELECT * FROM locations WHERE root_location_id = $1", root_location_id)
-            .fetch_all(&db.pool)
-            .await
+        query_as!(
+            Location,
+            "SELECT * FROM locations WHERE root_location_id = $1",
+            root_location_id.unwrap_or("".to_string())
+        )
+        .fetch_all(&db.pool)
+        .await
     }
 
     pub async fn update_item_location(

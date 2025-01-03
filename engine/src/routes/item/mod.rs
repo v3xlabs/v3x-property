@@ -375,4 +375,25 @@ impl ItemsApi {
             .map_err(HttpError::from)
             .map_err(poem::Error::from)
     }
+
+    /// /item/:item_id/items
+    ///
+    /// Get all items for an Item by `item_id`
+    #[oai(path = "/item/:item_id/items", method = "get", tag = "ApiTags::Items")]
+    async fn get_item_items(
+        &self,
+        state: Data<&AppState>,
+        user: AuthUser,
+        item_id: Path<String>,
+    ) -> Result<Json<Vec<ItemLocation>>> {
+        user.check_policy("item", item_id.0.to_string().as_str(), Action::Read)
+            .await?;
+
+        Location::get_items_by_item_id(&state.database, &item_id.0)
+            .await
+            .map(Json)
+            .map_err(HttpError::from)
+            .map_err(poem::Error::from)
+    }
 }
+
