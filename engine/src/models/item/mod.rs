@@ -83,6 +83,66 @@ impl Item {
             .await
     }
 
+    // get all items from items table paginated by size, ordered by updated_at DESC if recent_first is true, otherwise ASC
+    // if tags is None, return all items
+    // if tags is Some, return all items that have all of the tags
+    // check wether an item has a tag by checking the items_to_tags table
+    // if tags is Some, add a WHERE clause to the query to filter items by tags
+    pub async fn get_filtered(
+        db: &Database,
+        tags: Option<Vec<i32>>,
+        recent_first: bool,
+        size: i32,
+    ) -> Result<Vec<Item>, sqlx::Error> {
+        let tags = tags.and_then(|x| if x.is_empty() { None } else { Some(x) });
+
+        let base_query = match tags.clone() {
+            Some(tags) => {
+                let placeholders: Vec<String> = (1..=tags.len())
+                    .map(|i| format!("${}", i))
+                    .collect();
+                format!(
+                    "SELECT DISTINCT i.* FROM items i 
+                    INNER JOIN items_to_tags itt ON i.item_id = itt.item_id 
+                    WHERE itt.tag_id IN ({}) 
+                    GROUP BY i.item_id 
+                    HAVING COUNT(DISTINCT itt.tag_id) = ${}
+                    ORDER BY i.updated_at {} 
+                    LIMIT ${}",
+                    placeholders.join(","),
+                    tags.len() + 1,
+                    if recent_first { "DESC" } else { "ASC" },
+                    tags.len() + 2
+                )
+            }
+            None => format!(
+                "SELECT * FROM items ORDER BY updated_at {} LIMIT $1",
+                if recent_first { "DESC" } else { "ASC" }
+            ),
+        };
+
+        match tags {
+            Some(tags) => {
+                let mut query = sqlx::query_as(&base_query);
+                // Bind all tag parameters
+                for tag in tags.iter() {
+                    query = query.bind(tag);
+                }
+                // Bind the tag count for HAVING clause
+                query = query.bind(tags.len() as i64);
+                // Bind the LIMIT parameter
+                query = query.bind(size);
+                query.fetch_all(&db.pool).await
+            }
+            None => {
+                sqlx::query_as(&base_query)
+                    .bind(size)
+                    .fetch_all(&db.pool)
+                    .await
+            }
+        }
+    }
+
     pub async fn get_by_owner_id(
         database: &Database,
         owner_id: i32,

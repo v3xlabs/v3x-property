@@ -103,6 +103,27 @@ impl ItemsApi {
         ))
     }
 
+    /// /item/filtered
+    ///
+    /// Get all items filtered by tags
+    #[oai(path = "/item/filtered", method = "get", tag = "ApiTags::Items")]
+    async fn get_filtered_items(
+        &self,
+        user: AuthUser,
+        state: Data<&AppState>,
+        #[oai(explode = true)] tags: Query<Option<Vec<i32>>>,
+        recent_first: Query<Option<bool>>,
+        size: Query<Option<i32>>,
+    ) -> Result<Json<Vec<Item>>> {
+        user.check_policy("item", "", Action::Read).await?;
+
+        Ok(Json(
+            Item::get_filtered(&state.database, tags.0, recent_first.0.unwrap_or(false), size.0.unwrap_or(100))
+                .await
+                .map_err(HttpError::from)?,
+        ))
+    }
+
     /// /item
     ///
     /// Create an Item

@@ -42,6 +42,48 @@ export type paths = {
         patch?: never;
         trace?: never;
     };
+    "/item/filtered": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * /item/filtered
+         * @description Get all items filtered by tags
+         */
+        get: {
+            parameters: {
+                query?: {
+                    tags?: number[];
+                    recent_first?: boolean;
+                    size?: number;
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json; charset=utf-8": components["schemas"]["Item"][];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/item": {
         parameters: {
             query?: never;

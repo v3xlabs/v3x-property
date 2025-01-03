@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { FaBox, FaPlus, FaTableCellsLarge } from 'react-icons/fa6';
 import { z } from 'zod';
 
-import { AllOwnedItems } from '@/components/owned_elements';
+import { AllItems } from '@/components/all_elements';
 import { Button } from '@/components/ui/Button';
 import { SCPage } from '@/layouts/SimpleCenterPage';
 
@@ -59,7 +59,7 @@ export const ItemsOverviewPage = () => {
                 </div>
             }
         >
-            <AllOwnedItems variant={active_variant} />
+            <AllItems variant={active_variant} />
         </SCPage>
     );
 };

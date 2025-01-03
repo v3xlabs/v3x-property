@@ -262,6 +262,9 @@ export const apiRequest = async <
 
     if (query) {
         for (const [key, value] of Object.entries(query)) {
+
+            if (!value) continue;
+            
             url.searchParams.set(key, value.toString());
         }
     }

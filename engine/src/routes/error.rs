@@ -1,6 +1,7 @@
 use poem::error::ResponseError;
 use poem::IntoResponse;
 use reqwest::StatusCode;
+use tracing::error;
 
 #[derive(Debug, thiserror::Error)]
 pub enum HttpError {
@@ -27,15 +28,24 @@ impl ResponseError for HttpError {
     fn as_response(&self) -> poem::Response
         where
             Self: std::error::Error + Send + Sync + 'static, {
-        poem::Response::default().with_status(StatusCode::BAD_REQUEST).into_response()
+        poem::Response::default().with_status(self.status()).into_response()
     }
     fn status(&self) -> StatusCode {
         match self {
             HttpError::AlreadyExists => StatusCode::CONFLICT,
             HttpError::NotFound => StatusCode::NOT_FOUND,
-            HttpError::AnyhowError(_) => StatusCode::INTERNAL_SERVER_ERROR,
-            HttpError::DatabaseError(_) => StatusCode::INTERNAL_SERVER_ERROR,
-            _ => StatusCode::BAD_REQUEST,
+            HttpError::AnyhowError(error) => {
+                error!("Anyhow error: {:?}", error);
+                StatusCode::INTERNAL_SERVER_ERROR
+            },
+            HttpError::DatabaseError(error) => {
+                error!("Database error: {:?}", error);
+                StatusCode::INTERNAL_SERVER_ERROR
+            },
+            error => {
+                error!("Error: {:?}", error);
+                StatusCode::BAD_REQUEST
+            },
         }
     }
 }

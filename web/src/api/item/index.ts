@@ -49,6 +49,22 @@ export const useOwnedItems = () => {
     return useQuery(getOwnedItems(token));
 };
 
+export const getFilteredItems = (tags?: number[], recent_first?: boolean, size?: number, offset?: number) =>
+    queryOptions({
+        queryKey: ['item', 'filtered', tags, recent_first, size, offset],
+        queryFn: async () => {
+            const response = await apiRequest('/item/filtered', 'get', {
+                query: { tags, recent_first, size, /* offset */ },
+            });
+
+            return response.data;
+        },
+    });
+
+export const useFilteredItems = (tags?: number[], recent_first?: boolean, size?: number, offset?: number) => {
+    return useQuery(getFilteredItems(tags, recent_first, size, offset));
+};
+
 export const getItemMedia = (item_id: string) =>
     queryOptions({
         queryKey: ['item', '{item_id}', item_id, 'media'],
@@ -224,7 +240,7 @@ export type ItemLocation = components['schemas']['ItemLocation'];
 
 export const useUpdateItemLocation = () => {
     return useMutation({
-        mutationFn: async ({ item_id, data }: {item_id: string, data: ItemLocation}) => {
+        mutationFn: async ({ item_id, data }: { item_id: string, data: ItemLocation }) => {
             const response = await apiRequest('/item/{item_id}/location', 'patch', {
                 contentType: 'application/json; charset=utf-8',
                 path: { item_id },
