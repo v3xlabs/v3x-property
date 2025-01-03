@@ -3,11 +3,12 @@ import clsx from 'clsx';
 import TimeAgo from 'javascript-time-ago';
 import en from 'javascript-time-ago/locale/en';
 import { useEffect } from 'react';
-import { FiLoader } from 'react-icons/fi';
+import { FiCheck, FiLoader } from 'react-icons/fi';
+import { match } from 'ts-pattern';
 
 import { useAuth } from '@/api/auth';
 import { BASE_URL } from '@/api/core';
-import { SearchTask, useTasks } from '@/api/searchtasks';
+import { SearchTask, useTasks } from '@/api/search/tasks';
 
 import { Button } from '../ui/Button';
 
@@ -60,15 +61,28 @@ const TaskTableEntry = ({
             <td>meili/{task.external_task_id}</td>
             <td className={clsx('py-0.5')}>
                 <div className="flex items-center gap-2">
-                    <div className={clsx(statusClass)}>{task.status}</div>
+                    <div className={clsx(statusClass)}>{
+                        match(task.status)
+                            .with('Succeeded', () =>
+                                <><FiCheck /></>
+                            )
+                            .otherwise(otherwise => otherwise)
+                    }</div>
                     <div>
                         {isPending && <FiLoader className="animate-spin" />}
                     </div>
+                    {
+                        task.label && (
+                            <div>
+                                {task.label}
+                            </div>
+                        )
+                    }
                 </div>
             </td>
             <td className="flex items-center justify-end gap-2 py-0.5 text-right">
                 <div className="text-sm text-gray-500">
-                    last updated {timeAgo.format(Date.parse(task.updated_at))}
+                    {timeAgo.format(Date.parse(task.updated_at))}
                 </div>
                 <Button onClick={() => mutate()}>Refresh</Button>
             </td>
@@ -89,7 +103,7 @@ export const SearchTaskTable = () => {
 
     return (
         <div className="w-full">
-            <h2>Search Tasks</h2>
+            <h3 className="h3">Search Tasks</h3>
             <table className="w-full">
                 <tbody className="w-full">
                     {data?.map((task) => (

@@ -27,6 +27,11 @@
         "ordinal": 4,
         "name": "updated_at",
         "type_info": "Timestamptz"
+      },
+      {
+        "ordinal": 5,
+        "name": "label",
+        "type_info": "Text"
       }
     ],
     "parameters": {
@@ -39,7 +44,8 @@
       false,
       false,
       true,
-      false
+      false,
+      true
     ]
   },
   "hash": "762aff3c1cac812540546bfb3cf3dc2d1d5fb9f393d14839d9acda9416cab0ff"

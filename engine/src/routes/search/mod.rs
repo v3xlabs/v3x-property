@@ -70,4 +70,21 @@ impl SearchApi {
             .map_err(HttpError::from)
             .map_err(poem::Error::from)
     }
+
+    /// /search/clear
+    ///
+    /// Clear the search index
+    #[oai(path = "/search/clear", method = "post", tag = "ApiTags::Search")]
+    pub async fn clear_index(&self, user: AuthUser, state: Data<&AppState>) -> Result<()> {
+        user.check_policy("search", None, Action::Write).await?;
+
+        state
+            .search
+            .as_ref()
+            .unwrap()
+            .clear_index(&state.database)
+            .await
+            .map_err(HttpError::from)
+            .map_err(poem::Error::from)
+    }
 }
