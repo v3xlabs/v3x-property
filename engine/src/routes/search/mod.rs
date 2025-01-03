@@ -25,7 +25,7 @@ impl SearchApi {
         &self,
         user: AuthUser,
         state: Data<&AppState>,
-        query: Query<String>,
+        query: Query<Option<String>>,
     ) -> Result<Json<Vec<SearchableItem>>> {
         user.check_policy("search", None, Action::Read).await?;
 
@@ -35,7 +35,7 @@ impl SearchApi {
             .client
             .index("items")
             .search()
-            .with_query(&query)
+            .with_query(&query.0.unwrap_or_default())
             // TODO: Re-enable hybrid search when more stable
             // .with_hybrid("ollama", 0.9)
             .execute::<SearchableItem>()
