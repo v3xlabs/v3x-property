@@ -49,14 +49,8 @@ impl UserApi {
         state: Data<&AppState>,
         user_id: Path<i32>,
     ) -> Result<Json<User>> {
-        let user = user
-            .user_id()
-            .ok_or(Error::from_status(StatusCode::UNAUTHORIZED))?;
-
-        // TODO: Fix to check policy user:read
-        if user != user_id.0 {
-            return Err(Error::from_status(StatusCode::FORBIDDEN));
-        }
+        let target_user_id = user_id.0.to_string();
+        user.check_policy("user", Some(target_user_id.as_str()), Action::Read).await?;
 
         UserEntry::find_by_user_id(user_id.0, &state.database)
             .await
