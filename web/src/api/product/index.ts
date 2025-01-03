@@ -69,12 +69,12 @@ export const useProductMedia = (product_id: number) => {
     return useQuery(getProductMedia(product_id));
 };
 
-export type ApiLogResponse =
+export type ApiProductLogResponse =
     paths['/product/{product_id}/logs']['get']['responses']['200']['content']['application/json; charset=utf-8'];
 
 export const getProductLogs = (
     product_id: number
-): UseQueryOptions<ApiLogResponse> => ({
+): UseQueryOptions<ApiProductLogResponse> => ({
     queryKey: ['product', product_id, 'logs'],
     queryFn: getHttp('/api/product/' + product_id + '/logs', {
         auth: 'include',

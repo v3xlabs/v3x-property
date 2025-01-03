@@ -2,7 +2,7 @@ import TimeAgo from 'javascript-time-ago';
 import en from 'javascript-time-ago/locale/en';
 import { match } from 'ts-pattern';
 
-import { ApiLogResponse, ItemLocation } from '@/api/item';
+import { ApiLogResponse, ItemLocation } from '@/api';
 import { UserProfile } from '@/components/UserProfile';
 
 import { ItemPreview } from '../item/ItemPreview';
@@ -59,9 +59,9 @@ export const ItemLogEntry = ({
                                         />
                                     </>
                                 ))
-                                .with({ action: 'update_location' }, () => {                
+                                .with({ action: 'update_location' }, () => {
                                     const itemLocation = JSON.parse(log.data) as ItemLocation;
-                    
+
                                     return (
                                         <>
                                             <span>Moved by</span>
@@ -74,7 +74,8 @@ export const ItemLogEntry = ({
                                             </span>
                                             <LocationPreview itemLocation={itemLocation} variant='compact' />
                                         </>
-                                    );})
+                                    );
+                                })
                                 .otherwise(() => log.action)}
                         </div>
                     </div>

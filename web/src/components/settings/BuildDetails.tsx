@@ -3,7 +3,7 @@ import { match } from 'ts-pattern';
 import {
     useInstanceSettings,
     useInstanceVersion,
-} from '@/api/instance_settings';
+} from '@/api';
 
 export const BuildDetails = () => {
     const { data: instanceSettings } = useInstanceSettings();

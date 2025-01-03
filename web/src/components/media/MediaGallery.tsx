@@ -3,7 +3,7 @@
 import * as Dialog from '@radix-ui/react-dialog';
 import { FC, useState } from 'react';
 
-import { useMedia } from '@/api/media';
+import { useMedia } from '@/api';
 
 import { MediaCarousel } from './MediaCarousel';
 import { MediaPreview } from './MediaPreview';

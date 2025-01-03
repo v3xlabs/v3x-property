@@ -1,11 +1,10 @@
 import { createFileRoute } from '@tanstack/react-router';
 import { FiPlus } from 'react-icons/fi';
 
-import { useLocations } from '@/api/locations';
+import { useLocations } from '@/api';
 import { CreateLocationModal } from '@/components/location/CreateLocationModal';
 import { SpecificLocationPreview } from '@/components/location/LocationPreview';
-import { Button } from '@/components/ui/Button';
-import { Dialog, DialogTrigger } from '@/components/ui/Dialog';
+import { Button, Dialog, DialogTrigger } from '@/gui';
 
 export const Route = createFileRoute('/settings/_layout/locations/')({
     component: RouteComponent,
@@ -33,9 +32,9 @@ function RouteComponent() {
         <>
             <div className="card">
                 <p>
-          These are the locations you have defined. A location is a place a
-          thing can be stored. Items can also be located at a user or with
-          another item.
+                    These are the locations you have defined. A location is a place a
+                    thing can be stored. Items can also be located at a user or with
+                    another item.
                 </p>
             </div>
             <ul className="space-y-2">

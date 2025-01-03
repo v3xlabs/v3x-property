@@ -1,12 +1,8 @@
 import { FC, useEffect, useState } from 'react';
-import { FiBox, FiMapPin, FiUser } from 'react-icons/fi';
-import { FiCornerLeftUp } from 'react-icons/fi';
+import { FiBox, FiCornerLeftUp,FiMapPin, FiUser  } from 'react-icons/fi';
 
-import { useItemLocation, useUpdateItemLocation } from '@/api/item';
-import { useLocations } from '@/api/locations';
-import { useUsers } from '@/api/user';
-
-import { FieldOption, FieldSelect, FieldSelectProperties as FieldSelectProperties } from '../form/Select';
+import { useItemLocation, useLocations , useUpdateItemLocation , useUsers } from '@/api';
+import { FieldOption, FieldSelect, FieldSelectProperties as FieldSelectProperties } from '@/gui';
 
 export const LocationInput: FC<{ value: string, name?: string, forceCategory?: string, onChange: (_value: string) => void } & Partial<FieldSelectProperties>> = ({ value, name, forceCategory, onChange, ...properties }) => {
     const { data: locations } = useLocations();

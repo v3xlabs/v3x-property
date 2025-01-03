@@ -2,9 +2,9 @@ import TimeAgo from 'javascript-time-ago';
 import en from 'javascript-time-ago/locale/en';
 import { FC } from 'react';
 
-import { useMedia } from '@/api/media';
+import { useMedia } from '@/api';
 
-import { BaseInput } from '../input/BaseInput';
+import { BaseInput } from '../../gui/input/BaseInput';
 
 TimeAgo.addDefaultLocale(en);
 const timeAgo = new TimeAgo('en-US');

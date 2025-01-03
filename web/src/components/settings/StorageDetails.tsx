@@ -4,7 +4,7 @@ import { FaBucket } from 'react-icons/fa6';
 import {
     useInstanceSettings,
     useInstanceStorageStatistics,
-} from '@/api/instance_settings';
+} from '@/api';
 
 export const StorageDetails = () => {
     const { data: instanceSettings } = useInstanceSettings();

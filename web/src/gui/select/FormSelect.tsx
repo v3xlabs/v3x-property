@@ -1,17 +1,14 @@
 import { useVirtualizer } from '@tanstack/react-virtual';
 import clsx from 'clsx';
-import { FC, ReactNode, useEffect, useMemo, useRef, useState } from 'react';
-import { useId } from 'react';
+import { FC, ReactNode, useEffect, useId, useMemo, useRef, useState } from 'react';
 import { FaArrowsUpDown } from 'react-icons/fa6';
 import { FiChevronRight } from 'react-icons/fi';
 import { match } from 'ts-pattern';
 
-import { Button } from '../ui/Button';
-import * as Command from '../ui/Command';
-import { Label } from '../ui/Label';
-import * as Popover from '../ui/Popover';
-
-// export type BaseInputProperties = ;
+import { Button } from '../Button';
+import * as Command from '../Command';
+import { Label } from '../Label';
+import * as Popover from '../Popover';
 
 export type FieldOption = {
     label: string | ReactNode;

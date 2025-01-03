@@ -1,6 +1,6 @@
 import { FC } from 'react';
 
-import { useOwnedItems } from '@/api/item';
+import { useOwnedItems } from '@/api';
 
 import { ItemPreview } from './item/ItemPreview';
 

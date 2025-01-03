@@ -2,13 +2,11 @@ import { clsx } from 'clsx';
 import { FC } from 'react';
 import { UAParser } from 'ua-parser-js';
 
-import { useAuth } from '@/api/auth';
-import { useGeoIp } from '@/api/geoip';
-import { SessionResponse, useSessions } from '@/api/sessions';
+import { SessionResponse, useAuth , useGeoIp , useSessions } from '@/api';
 import { getRelativeTimeString } from '@/util/date';
 
+import { Button } from '../gui/Button';
 import { LeafletPreview } from './LeafletPreview';
-import { Button } from './ui/Button';
 
 const ActiveSession: FC<{ session: SessionResponse }> = ({ session }) => {
     const { refetch: updateSessions } = useSessions();

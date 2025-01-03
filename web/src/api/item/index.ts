@@ -13,6 +13,9 @@ import { useAuth } from '../auth';
 import { apiRequest, BASE_URL, getHttp } from '../core';
 import { components, paths } from '../schema.gen';
 
+export * from './generate_id';
+export * from './intelligence';
+
 export type ApiItemResponse = components['schemas']['Item'];
 
 export const getItemById = (item_id: string) =>

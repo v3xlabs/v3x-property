@@ -1,19 +1,8 @@
 import { useForm } from '@tanstack/react-form';
 import { useNavigate } from '@tanstack/react-router';
 
-import { formatIdCasing, useInstanceSettings } from '@/api/instance_settings';
-import { useCreateLocation } from '@/api/locations';
-
-import { BaseInput } from '../input/BaseInput';
-import { LocationInput } from '../input/LocationInput';
-import { Button } from '../ui/Button';
-import {
-    DialogContent,
-    DialogDescription,
-    DialogFooter,
-    DialogHeader,
-    DialogTitle,
-} from '../ui/Dialog';
+import { formatIdCasing, useCreateLocation, useInstanceSettings } from '@/api';
+import { BaseInput, Button, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, LocationInput } from '@/gui';
 
 export const CreateLocationModal = () => {
     const { data: instanceSettings } = useInstanceSettings();

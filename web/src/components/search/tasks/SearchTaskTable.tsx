@@ -7,11 +7,8 @@ import { FiCheck, FiLoader } from 'react-icons/fi';
 import { SiMeilisearch } from 'react-icons/si';
 import { match } from 'ts-pattern';
 
-import { useAuth } from '@/api/auth';
-import { BASE_URL } from '@/api/core';
-import { SearchTask, useTasks } from '@/api/search/tasks';
-
-import { Button } from '../ui/Button';
+import { BASE_URL , SearchTask, useAuth , useTasks } from '@/api';
+import { Button } from '@/gui';
 
 TimeAgo.addDefaultLocale(en);
 const timeAgo = new TimeAgo('en-US');

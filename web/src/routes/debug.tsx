@@ -5,6 +5,13 @@ import { FaCheck, FaCopy, FaGear } from 'react-icons/fa6';
 import { toast } from 'sonner';
 
 import {
+    Button,
+    buttonVariants,
+    buttonVariantsConfig,
+    Command, Dialog, Dropdown, Input, Label
+} from '@/gui';
+import * as Popover from '@/gui';
+import {
     AlertDialog,
     AlertDialogAction,
     AlertDialogCancel,
@@ -14,30 +21,19 @@ import {
     AlertDialogHeader,
     AlertDialogTitle,
     AlertDialogTrigger,
-} from '@/components/ui/AlertDialog';
-import {
-    Button,
-    buttonVariants,
-    buttonVariantsConfig,
-} from '@/components/ui/Button';
-import * as Command from '@/components/ui/Command';
-import * as Dialog from '@/components/ui/Dialog';
-import * as Dropdown from '@/components/ui/Dropdown';
-import { Input } from '@/components/ui/Input';
-import { Label } from '@/components/ui/Label';
-import * as Popover from '@/components/ui/Popover';
-import { SCPage } from '@/layouts/SimpleCenterPage';
+} from '@/gui/dialog/AlertDialog';
+import { SCPage } from '@/layouts';
 import { BaseVariants, cn } from '@/util/style';
 // Helper function to generate all combinations of variant values
 const generateCombinations = <
-  T extends BaseVariants,
-  TGroup extends keyof T | undefined,
+    T extends BaseVariants,
+    TGroup extends keyof T | undefined,
 >(
         variants: T,
         groupBy?: TGroup,
     ): TGroup extends undefined
-  ? Record<string, string>[]
-  : Record<string, Record<string, string>[]> => {
+    ? Record<string, string>[]
+    : Record<string, Record<string, string>[]> => {
     const entries = Object.entries(variants);
 
     if (entries.length === 0) return groupBy ? [] : ([{}] as any);
@@ -55,9 +51,9 @@ const generateCombinations = <
         // Generate combinations for each group value
         for (const groupValue of Object.keys(groupValues)) {
             result[groupValue] = generateCombinations(remainingVariants) as Record<
-        string,
-        string
-      >[];
+                string,
+                string
+            >[];
         }
 
         return result as any;
@@ -70,9 +66,9 @@ const generateCombinations = <
     delete remainingVariants[key];
 
     const subCombinations = generateCombinations(remainingVariants) as Record<
-    string,
-    string
-  >[];
+        string,
+        string
+    >[];
     const combinations: Record<string, string>[] = [];
 
     for (const value of Object.keys(values)) {
@@ -82,22 +78,22 @@ const generateCombinations = <
     }
 
     return combinations as TGroup extends undefined
-    ? Record<string, string>[]
-    : Record<string, Record<string, string>[]>;
+        ? Record<string, string>[]
+        : Record<string, Record<string, string>[]>;
 };
 
 const DebugVariants = <
-  TVariants extends ReturnType<typeof cva>,
-  TConfig extends BaseVariants,
+    TVariants extends ReturnType<typeof cva>,
+    TConfig extends BaseVariants,
 >({
         displayName,
         config,
         children,
     }: {
-  displayName: string
-  variants: TVariants
-  config: TConfig
-  children: (properties_: VariantProps<TVariants>) => ReactNode
+    displayName: string
+    variants: TVariants
+    config: TConfig
+    children: (properties_: VariantProps<TVariants>) => ReactNode
 }) => {
     const combinations = generateCombinations(config, 'variant');
 
@@ -133,7 +129,7 @@ const DebugVariants = <
                 );
             })}
         </div>
-    // </div>
+        // </div>
     );
 };
 
@@ -154,25 +150,25 @@ const VariantTitle = ({ children }: { children: ReactNode }) => {
 };
 
 const CustomComponentSection = <
-  TStates extends Record<string, any> | undefined,
+    TStates extends Record<string, any> | undefined,
 >({
         displayName,
         children,
         states,
     }: {
-  displayName: string
-  states?: TStates
-  children: TStates extends undefined
+    displayName: string
+    states?: TStates
+    children: TStates extends undefined
     ? ReactNode
     : (
         _properties: {
-          [K in keyof TStates]: TStates[K]
+            [K in keyof TStates]: TStates[K]
         } & {
-          [SetK in keyof TStates & string as `set${Capitalize<SetK>}`]: (
-            _value: TStates[SetK],
-          ) => void
+            [SetK in keyof TStates & string as `set${Capitalize<SetK>}`]: (
+                _value: TStates[SetK],
+            ) => void
         },
-      ) => ReactNode
+    ) => ReactNode
 }) => {
     const stateObject: Record<string, any> = {};
 
@@ -250,8 +246,8 @@ const Components = () => {
                         <AlertDialogHeader>
                             <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
                             <AlertDialogDescription>
-                This action cannot be undone. This will permanently delete your
-                account and remove your data from our servers.
+                                This action cannot be undone. This will permanently delete your
+                                account and remove your data from our servers.
                             </AlertDialogDescription>
                         </AlertDialogHeader>
                         <AlertDialogFooter>
@@ -302,7 +298,7 @@ const Components = () => {
                                         properties.setShowStatusBar(value)
                                     }
                                 >
-                  Status Bar
+                                    Status Bar
                                 </Dropdown.CheckboxItem>
                                 <Dropdown.CheckboxItem
                                     checked={properties.showActivityBar}
@@ -310,13 +306,13 @@ const Components = () => {
                                         properties.setShowActivityBar(value)
                                     }
                                 >
-                  Activity Bar
+                                    Activity Bar
                                 </Dropdown.CheckboxItem>
                                 <Dropdown.CheckboxItem
                                     checked={properties.showPanel}
                                     onCheckedChange={(value) => properties.setShowPanel(value)}
                                 >
-                  Panel
+                                    Panel
                                 </Dropdown.CheckboxItem>
                             </Dropdown.Content>
                         </Dropdown.Root>
@@ -349,7 +345,7 @@ const Components = () => {
                     <Button onClick={() => toast('Normal Toast')}>Toast</Button>
 
                     <Button variant="primary" onClick={() => toast.info('Info Toast')}>
-            Info
+                        Info
                     </Button>
 
                     <Button
@@ -360,14 +356,14 @@ const Components = () => {
                             })
                         }
                     >
-            Success Toast
+                        Success Toast
                     </Button>
 
                     <Button
                         variant="warning"
                         onClick={() => toast.warning('Warning Toast')}
                     >
-            Warning
+                        Warning
                     </Button>
 
                     <Button
@@ -376,7 +372,7 @@ const Components = () => {
                             toast.error('It appears your piano fell down the skyrise')
                         }
                     >
-            Error Toast
+                        Error Toast
                     </Button>
                     <Button
                         onClick={() =>
@@ -392,7 +388,7 @@ const Components = () => {
                             })
                         }
                     >
-            Action Toast
+                        Action Toast
                     </Button>
                     <Button
                         onClick={() =>
@@ -404,13 +400,13 @@ const Components = () => {
                                             toast.success('Your genius plan has been executed');
                                         }}
                                     >
-                    Destroy them all
+                                        Destroy them all
                                     </Button>
                                 ),
                             })
                         }
                     >
-            Custom Action Toast
+                        Custom Action Toast
                     </Button>
 
                     <Button
@@ -437,7 +433,7 @@ const Components = () => {
                             )
                         }
                     >
-            Promise Toast
+                        Promise Toast
                     </Button>
                 </div>
             </CustomComponentSection>
@@ -452,7 +448,7 @@ const Components = () => {
                         <Dialog.Header>
                             <Dialog.Title>Some Title Here</Dialog.Title>
                             <Dialog.Description>
-                Perhaps a lorem ipsum could be here
+                                Perhaps a lorem ipsum could be here
                             </Dialog.Description>
                         </Dialog.Header>
                         <Dialog.Footer>
@@ -470,13 +466,13 @@ const Components = () => {
                         <Dialog.Header>
                             <Dialog.Title>Share link</Dialog.Title>
                             <Dialog.Description>
-                Anyone who has this link will be able to view this.
+                                Anyone who has this link will be able to view this.
                             </Dialog.Description>
                         </Dialog.Header>
                         <div className="flex items-center space-x-2">
                             <div className="grid flex-1 gap-2">
                                 <Label htmlFor="link" className="sr-only">
-                  Link
+                                    Link
                                 </Label>
                                 <Input id="link" defaultValue="https://v3x.property" readOnly />
                             </div>
@@ -498,7 +494,7 @@ const Components = () => {
                         <Dialog.Footer className="sm:justify-start">
                             <Dialog.Close asChild>
                                 <Button type="button" variant="secondary">
-                  Close
+                                    Close
                                 </Button>
                             </Dialog.Close>
                         </Dialog.Footer>
@@ -512,7 +508,7 @@ const Components = () => {
                         <Button variant="default">Open</Button>
                     </Popover.Trigger>
                     <Popover.Content>
-            All of the secret content you could ever dream of
+                        All of the secret content you could ever dream of
                     </Popover.Content>
                 </Popover.Root>
             </CustomComponentSection>

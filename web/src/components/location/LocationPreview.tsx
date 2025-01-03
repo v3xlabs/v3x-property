@@ -3,8 +3,7 @@ import clsx from 'clsx';
 import { FC } from 'react';
 import { match, P } from 'ts-pattern';
 
-import { ItemLocation } from '@/api/item';
-import { Location, useLocation } from '@/api/locations';
+import { ItemLocation, Location, useLocation } from '@/api';
 
 import { ItemPreview } from '../item/ItemPreview';
 import { UserProfile } from '../UserProfile';

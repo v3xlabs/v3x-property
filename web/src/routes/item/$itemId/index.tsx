@@ -10,23 +10,19 @@ import {
 } from '@tanstack/react-router';
 import { useEffect } from 'react';
 import { FiCopy, FiEdit } from 'react-icons/fi';
+import { toast } from 'sonner';
 
-import { formatId, getInstanceSettings } from '@/api/instance_settings';
-import { getItemById, getItemLocation, getItemMedia, getItemTags } from '@/api/item';
-import { getPolicy } from '@/api/policy';
-import { LocationInputExecutive } from '@/components/input/LocationInput';
+import { formatId, getInstanceSettings, getItemById, getItemLocation, getItemMedia, getItemTags, getPolicy } from '@/api';
 import { ItemFields } from '@/components/item/ItemFields';
 import { LocationPreview } from '@/components/location/LocationPreview';
 import { ItemLogSection } from '@/components/logs/ItemLogSection';
 import { MediaGallery } from '@/components/media/MediaGallery';
 import { PrintLabelButton } from '@/components/print/PrintModal';
-import { Tag } from '@/components/Tag';
-import { Button } from '@/components/ui/Button';
 import { UserProfile } from '@/components/UserProfile';
 import { YeetButton } from '@/components/YeetButton';
-import { SCPage } from '@/layouts/SimpleCenterPage';
+import { Button, LocationInputExecutive, Tag } from '@/gui';
+import { SCPage } from '@/layouts';
 import { queryClient } from '@/util/query';
-import { toast } from 'sonner';
 
 export const Route = createFileRoute('/item/$itemId/')({
     // if item_id is not formatId(item_id, instanceSettings), redirect to the formatted item_id

@@ -1,4 +1,4 @@
-import { useAllLogs } from '@/api/logs';
+import { useAllLogs } from '@/api';
 
 import { ItemLogEntry } from './ItemLogEntry';
 

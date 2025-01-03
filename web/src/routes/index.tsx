@@ -1,9 +1,9 @@
 import { createFileRoute, Link } from '@tanstack/react-router';
 import { FiArrowRight } from 'react-icons/fi';
 
-import { useInstanceStatistics } from '@/api/instance_settings';
-import { Button } from '@/components/ui/Button';
-import { SCPage } from '@/layouts/SimpleCenterPage';
+import { useInstanceStatistics } from '@/api';
+import { Button } from '@/gui';
+import { SCPage } from '@/layouts';
 
 const Page = () => {
     const { data: statistics } = useInstanceStatistics();

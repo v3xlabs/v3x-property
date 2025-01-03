@@ -1,11 +1,8 @@
 import { useForm } from '@tanstack/react-form';
 import { FC } from 'react';
 
-import { useTagById, useTagEdit } from '@/api/tags';
-
-import { BaseInput } from '../input/BaseInput';
-import { Button } from '../ui/Button';
-import { DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '../ui/Dialog';
+import { useTagById, useTagEdit } from '@/api';
+import { BaseInput, Button, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/gui';
 
 export const TagEditModalContent: FC<{ tag_id?: number }> = ({ tag_id }) => {
     const { data: tag } = useTagById(tag_id);

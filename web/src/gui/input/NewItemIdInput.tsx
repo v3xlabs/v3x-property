@@ -2,11 +2,8 @@ import { useMutation } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
 import { FiRefreshCcw } from 'react-icons/fi';
 
-import { useAuth } from '@/api/auth';
-import { BASE_URL } from '@/api/core';
-import { Button } from '@/components/ui/Button';
-
-import { BaseInput, BaseInputProperties } from './BaseInput';
+import { BASE_URL, useAuth } from '@/api';
+import { BaseInput, BaseInputProperties, Button } from '@/gui';
 
 const placeholderValues = ['000001', '123456', 'AA17C', 'ABCDEF', '000013'];
 
@@ -42,7 +39,7 @@ export const NewItemIdInput = (properties: BaseInputProperties) => {
         const interval = setInterval(() => {
             setPlaceholderValue(
                 placeholderValues[
-                    Math.floor(Math.random() * placeholderValues.length)
+                Math.floor(Math.random() * placeholderValues.length)
                 ]
             );
         }, 2000);

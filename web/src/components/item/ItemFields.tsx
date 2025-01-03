@@ -4,10 +4,10 @@ import Barcode, { BarcodeProps } from 'react-barcode';
 import { FaAmazon } from 'react-icons/fa6';
 import { match } from 'ts-pattern';
 
-import { useItemFields } from '@/api/fields/item';
+import { useItemFields } from '@/api';
 
-import { FieldOption, FieldSelect } from '../form/Select';
-import { Button } from '../ui/Button';
+import { Button } from '../../gui/Button';
+import { FieldOption, FieldSelect } from '../../gui/select/FormSelect';
 
 const AMAZON_DOMAINS = [
     { label: 'Amazon.com', value: 'amazon.com', icon: () => <FaAmazon /> },

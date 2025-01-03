@@ -2,6 +2,8 @@ import { queryOptions, useQuery } from '@tanstack/react-query';
 
 import { ApiRequest, apiRequest } from '../core';
 
+export * from './pat';
+
 export type ApiUserByIdResponse = ApiRequest<
     '/user/{user_id}',
     'get'

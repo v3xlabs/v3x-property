@@ -5,8 +5,7 @@ import { FC, useState } from 'react';
 import { FiChevronDown } from 'react-icons/fi';
 import { LuFolder, LuFolderOpen } from 'react-icons/lu';
 
-import { useItemItems } from '@/api/item';
-import { useLocation, useLocationItems, useLocationLocations } from '@/api/locations';
+import { useItemItems, useLocation, useLocationItems, useLocationLocations } from '@/api';
 import { ItemPreview } from '@/components/item/ItemPreview';
 
 export const Route = createFileRoute('/settings/_layout/locations/explorer')({

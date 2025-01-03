@@ -1,4 +1,4 @@
-import { SearchableItem } from '@/api/search';
+import { SearchableItem } from '@/api';
 
 import { ItemPreview } from './ItemPreview';
 

@@ -4,8 +4,7 @@ import { FC } from 'react';
 import { FaRecycle, FaSink, FaTruckMonster } from 'react-icons/fa6';
 import { match } from 'ts-pattern';
 
-import { Operator, useOperators } from '@/api/operators';
-import { useOperatorCapabilities } from '@/api/operators/capabilities';
+import { Operator, useOperatorCapabilities, useOperators } from '@/api';
 
 TimeAgo.addDefaultLocale(en);
 const timeAgo = new TimeAgo('en-US');

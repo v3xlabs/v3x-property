@@ -1,10 +1,10 @@
 import { useState } from 'react';
 
-import { Button } from '../ui/Button';
-import { Dialog, DialogTrigger } from '../ui/Dialog';
+import { Button } from '../../gui/Button';
+import { Dialog, DialogTrigger } from '../../gui/dialog/Dialog';
 import { CreatePatModal } from './CreatePatModal';
 
-export const CreatePatButton = () => {
+export const PatCreateButton = () => {
     const [open, setOpen] = useState(false);
 
     return (

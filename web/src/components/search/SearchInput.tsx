@@ -1,11 +1,10 @@
 import { useState } from 'react';
 import { useDebounce } from 'use-debounce';
 
-import { useSearch } from '@/api/search';
-import { BaseInput } from '@/components/input/BaseInput';
+import { useSearch } from '@/api';
+import { BaseInput , Button } from '@/gui';
 
 import { ItemPreviewSearch } from '../item/ItemPreviewSearch';
-import { Button } from '../ui/Button';
 
 export const SearchInput = ({ variant }: { variant: 'full' | 'large' }) => {
     const [query, setQuery] = useState('');

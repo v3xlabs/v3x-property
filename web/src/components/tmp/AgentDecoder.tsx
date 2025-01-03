@@ -5,7 +5,7 @@ import { TbFunctionFilled } from 'react-icons/tb';
 import { TfiReload } from 'react-icons/tfi';
 import { match } from 'ts-pattern';
 
-import { Button, ButtonProperties } from '../ui/Button';
+import { Button, ButtonProperties } from '../../gui/Button';
 import {
     Dialog,
     DialogContent,
@@ -14,8 +14,8 @@ import {
     DialogHeader,
     DialogTitle,
     DialogTrigger,
-} from '../ui/Dialog';
-import { PopoverContent } from '../ui/Popover';
+} from '../../gui/dialog/Dialog';
+import { PopoverContent } from '../../gui/Popover';
 
 export type AgentEvent = {
     event: string;

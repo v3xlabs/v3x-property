@@ -1,8 +1,7 @@
 import clsx from 'clsx';
 import { ComponentPropsWithoutRef, ReactNode, useId } from 'react';
 
-import { Input } from '@/components/ui/Input';
-import { Label } from '@/components/ui/Label';
+import { Input, Label } from '@/gui';
 
 export type BaseInputProperties = {
     label?: ReactNode;

@@ -1,11 +1,8 @@
 import { useForm } from '@tanstack/react-form';
 import { FC } from 'react';
 
-import { useTagCreate } from '@/api/tags';
-
-import { BaseInput } from '../input/BaseInput';
-import { Button } from '../ui/Button';
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '../ui/Dialog';
+import { useTagCreate } from '@/api';
+import { BaseInput,Button , Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger  } from '@/gui';
 
 const TagCreateModalContent: FC<{ name?: string }> = ({ name }) => {
     const { mutateAsync: createTag } = useTagCreate();

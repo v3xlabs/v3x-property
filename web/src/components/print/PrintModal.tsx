@@ -2,23 +2,18 @@ import { FC, useEffect, useState } from 'react';
 import { FaQrcode } from 'react-icons/fa6';
 import { FiPrinter } from 'react-icons/fi';
 
-import { useItemById } from '@/api/item';
-import { useOperators } from '@/api/operators';
-import { useOperatorCapabilities } from '@/api/operators/capabilities';
-import { usePrintLabel } from '@/api/operators/print';
-
-import { FieldOption, FieldSelect } from '../form/Select';
-import { Button } from '../ui/Button';
+import { useItemById, useOperatorCapabilities, useOperators, usePrintLabel } from '@/api';
 import {
-    Dialog,
+    Button, Dialog,
     DialogContent,
     DialogDescription,
     DialogFooter,
     DialogHeader,
     DialogTitle,
     DialogTrigger,
-} from '../ui/Dialog';
-import { Tooltip } from '../ui/Tooltip';
+    FieldOption, FieldSelect,
+    Tooltip
+} from '@/gui';
 
 const PrintableCableTemplatePreview = () => {
     return (
