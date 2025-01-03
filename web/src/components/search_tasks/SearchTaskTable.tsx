@@ -4,6 +4,7 @@ import TimeAgo from 'javascript-time-ago';
 import en from 'javascript-time-ago/locale/en';
 import { useEffect } from 'react';
 import { FiCheck, FiLoader } from 'react-icons/fi';
+import { SiMeilisearch } from 'react-icons/si';
 import { match } from 'ts-pattern';
 
 import { useAuth } from '@/api/auth';
@@ -58,7 +59,11 @@ const TaskTableEntry = ({
     return (
         <tr key={task.task_id} className="w-full border-b border-gray-200">
             <td>#{task.task_id}</td>
-            <td>meili/{task.external_task_id}</td>
+            <td>
+                <div className="flex items-center gap-1">
+                    <SiMeilisearch />{task.external_task_id}
+                </div>
+            </td>
             <td className={clsx('py-0.5')}>
                 <div className="flex items-center gap-2">
                     <div className={clsx(statusClass)}>{
