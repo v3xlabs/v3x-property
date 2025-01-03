@@ -10,6 +10,8 @@ services:
       POSTGRES_DB: property
     ports:
       - "5432:5432"
+    volumes:
+      - pg-data:/var/lib/postgresql/data
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres -d postgres"]
       interval: 5s
@@ -82,3 +84,7 @@ services:
         echo $0 "$@"
         exec minio $0 "$@"                                                 # start Minio in the foreground
       '
+
+volumes:
+  pg-data:
+   driver: local

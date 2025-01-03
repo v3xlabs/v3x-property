@@ -1253,8 +1253,8 @@ export type paths = {
          */
         get: {
             parameters: {
-                query: {
-                    query: string;
+                query?: {
+                    query?: string;
                 };
                 header?: never;
                 path?: never;
@@ -1292,6 +1292,42 @@ export type paths = {
         /**
          * /search/reindex
          * @description Reindex all Items
+         */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/search/clear": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * /search/clear
+         * @description Clear the search index
          */
         post: {
             parameters: {
@@ -2812,6 +2848,7 @@ export type components = {
             /** Format: int64 */
             external_task_id: number;
             status: components["schemas"]["SearchTaskStatus"];
+            label?: string;
             /** @description TODO: Make this a JSONB column */
             details?: string;
             /** Format: date-time */

@@ -55,6 +55,7 @@ pub struct SearchTask {
     pub task_id: i32,
     pub external_task_id: i64,
     pub status: SearchTaskStatus,
+    pub label: Option<String>,
     /// TODO: Make this a JSONB column
     pub details: Option<String>,
     pub updated_at: DateTime<Utc>,
@@ -65,15 +66,17 @@ impl SearchTask {
         db: &Database,
         external_task_id: u32,
         status: SearchTaskStatus,
+        label: Option<String>,
     ) -> Result<Self, sqlx::Error> {
         let status = status.to_string();
         let external_task_id = i64::from(external_task_id);
 
         query_as!(
             SearchTask,
-            "INSERT INTO search_tasks (external_task_id, status) VALUES ($1, $2) RETURNING *",
+            "INSERT INTO search_tasks (external_task_id, status, label) VALUES ($1, $2, $3) RETURNING *",
             external_task_id,
-            status
+            status,
+            label
         )
         .fetch_one(&db.pool)
         .await

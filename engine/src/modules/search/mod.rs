@@ -122,9 +122,16 @@ impl Search {
             .client
             .index("items")
             .add_documents(&[item], Some("item_id"))
-            .await.unwrap();
+            .await
+            .unwrap();
 
-        SearchTask::new(db, x.task_uid, x.status.into()).await?;
+        SearchTask::new(
+            db,
+            x.task_uid,
+            x.status.into(),
+            Some(format!("Indexing item {}", item.item_id)),
+        )
+        .await?;
 
         Ok(())
     }
@@ -135,6 +142,7 @@ impl Search {
         // batch by 10 (artificial TODO: implement sql paging)
         let batches = items.chunks(10);
 
+        let mut batch_index = 0;
         for batch in batches {
             info!("Indexing batch of {} items", batch.len());
             // async iter through batch to convert to SearchableItem
@@ -156,11 +164,33 @@ impl Search {
                 .client
                 .index("items")
                 .add_documents(&searchable_items, Some("item_id"))
-                .await.unwrap();
+                .await
+                .unwrap();
 
-            SearchTask::new(db, task.task_uid, task.status.into())
-                .await?;
+            SearchTask::new(
+                db,
+                task.task_uid,
+                task.status.into(),
+                Some(format!("Indexing batch of {} items", batch.len())),
+            )
+            .await?;
+
+            batch_index += 1;
         }
+
+        Ok(())
+    }
+
+    pub async fn clear_index(&self, db: &Database) -> Result<(), anyhow::Error> {
+        let task = self.client.index("items").delete_all_documents().await?;
+
+        SearchTask::new(
+            db,
+            task.task_uid,
+            task.status.into(),
+            Some("Clearing index".to_string()),
+        )
+        .await?;
 
         Ok(())
     }

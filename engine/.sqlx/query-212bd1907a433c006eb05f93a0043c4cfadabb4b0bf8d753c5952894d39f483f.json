@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "INSERT INTO search_tasks (external_task_id, status) VALUES ($1, $2) RETURNING *",
+  "query": "INSERT INTO search_tasks (external_task_id, status, label) VALUES ($1, $2, $3) RETURNING *",
   "describe": {
     "columns": [
       {
@@ -27,11 +27,17 @@
         "ordinal": 4,
         "name": "updated_at",
         "type_info": "Timestamptz"
+      },
+      {
+        "ordinal": 5,
+        "name": "label",
+        "type_info": "Text"
       }
     ],
     "parameters": {
       "Left": [
         "Int8",
+        "Text",
         "Text"
       ]
     },
@@ -40,8 +46,9 @@
       false,
       false,
       true,
-      false
+      false,
+      true
     ]
   },
-  "hash": "840701ddaffb910315e491a789072b7f050587079359b46918a7ff94b5e3ac01"
+  "hash": "212bd1907a433c006eb05f93a0043c4cfadabb4b0bf8d753c5952894d39f483f"
 }

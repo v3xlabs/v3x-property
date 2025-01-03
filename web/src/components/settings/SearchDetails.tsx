@@ -1,25 +1,14 @@
-import { useMutation } from '@tanstack/react-query';
 import { SiMeilisearch } from 'react-icons/si';
 
 import { useAuth } from '@/api/auth';
-import { BASE_URL } from '@/api/core';
+import { useSearchClearIndex, useSearchIndexAllItems } from '@/api/search';
 
 import { Button } from '../ui/Button';
 
 export const SearchDetails = () => {
     const { token } = useAuth();
-    const { mutate: indexAllItems } = useMutation({
-        mutationFn: async () => {
-            const response = await fetch(BASE_URL + 'search/reindex', {
-                method: 'POST',
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
-            });
-
-            return response.json();
-        },
-    });
+    const { mutate: indexAllItems } = useSearchIndexAllItems();
+    const { mutate: clearIndex } = useSearchClearIndex();
 
     return (
         <div className="card space-y-2.5">
@@ -34,6 +23,9 @@ export const SearchDetails = () => {
             <div className="flex gap-2">
                 <Button onClick={() => indexAllItems()} variant="primary">
                     Index All Items
+                </Button>
+                <Button onClick={() => clearIndex()} variant="secondary">
+                    Clear Index
                 </Button>
             </div>
         </div>
