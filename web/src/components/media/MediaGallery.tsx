@@ -43,6 +43,9 @@ export const MediaGallery: FC<{
                         <Dialog.DialogTitle className="overflow-hidden p-2 text-center text-xl font-medium">
                             {useMedia(mediaId).data?.description}
                         </Dialog.DialogTitle>
+                        <Dialog.Close className="absolute right-0 top-0 p-2 text-xl text-gray-500 hover:text-gray-700">
+                            &times;
+                        </Dialog.Close>
                         <MediaCarousel
                             ids={media_ids}
                             mediaId={mediaId!}
