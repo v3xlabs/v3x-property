@@ -113,7 +113,7 @@ export const Navbar = () => {
         <nav
             role="navigation"
             aria-label="Main"
-            className="fixed bottom-0 z-10 flex h-16 w-full items-center justify-between border-t bg-white md:sticky md:top-0 md:h-9 md:border-b"
+            className="fixed bottom-0 z-20 flex h-16 w-full items-center justify-between border-t bg-white md:sticky md:top-0 md:h-9 md:border-b"
         >
             <Link
                 to="/"
