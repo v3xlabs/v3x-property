@@ -2,8 +2,8 @@
 import clsx from 'clsx';
 import { FC, Reducer, useCallback, useEffect, useReducer } from 'react';
 
-import { Button } from '../ui/Button';
-import { Dialog, DialogContent, DialogTrigger } from '../ui/Dialog';
+import { Button } from '../../gui/Button';
+import { Dialog, DialogContent, DialogTrigger } from '../../gui/dialog/Dialog';
 import { ExistingMedia } from './ExistingMedia';
 import { MediaDropzone } from './MediaDropzone';
 import { MediaPreview } from './MediaPreview';
@@ -16,37 +16,37 @@ type Action =
 
 const reducer: Reducer<AttachedMedia[], Action> = (state, action) => {
     switch (action.type) {
-        case 'add':
-            return [...state, ...action.media];
-        case 'update':
-            return state.map((m) =>
-                m.status === 'new-media' && m.blob === action.blob
-                    ? action.media
-                    : m
-            );
-        case 'remove':
-            console.log('remove');
+    case 'add':
+        return [...state, ...action.media];
+    case 'update':
+        return state.map((m) =>
+            m.status === 'new-media' && m.blob === action.blob
+                ? action.media
+                : m
+        );
+    case 'remove':
+        console.log('remove');
 
-            return state
-                .map((m) => {
-                    if (m.media_id === action.media_id) {
-                        // If brand new media, no need to tell engine, just remove it
-                        if (m.status === 'new-media') {
-                            return;
-                        }
-
-                        // Otherwise, tell engine to remove it
-                        return {
-                            ...m,
-                            status: 'removed-media',
-                        } as AttachedMedia;
+        return state
+            .map((m) => {
+                if (m.media_id === action.media_id) {
+                    // If brand new media, no need to tell engine, just remove it
+                    if (m.status === 'new-media') {
+                        return;
                     }
 
-                    return m;
-                })
-                .filter((m) => !!m);
-        default:
-            return state;
+                    // Otherwise, tell engine to remove it
+                    return {
+                        ...m,
+                        status: 'removed-media',
+                    } as AttachedMedia;
+                }
+
+                return m;
+            })
+            .filter((m) => !!m);
+    default:
+        return state;
     }
 };
 
@@ -63,13 +63,13 @@ export const EditMediaGallery: FC<{
                 type: 'add',
                 media: acceptedFiles.map(
                     (file) =>
-                    ({
-                        status: 'new-media',
-                        media_id: undefined,
-                        name: file.name,
-                        kind: file.type,
-                        blob: URL.createObjectURL(file),
-                    } as AttachedMedia)
+                        ({
+                            status: 'new-media',
+                            media_id: undefined,
+                            name: file.name,
+                            kind: file.type,
+                            blob: URL.createObjectURL(file),
+                        } as AttachedMedia)
                 ),
             });
         },

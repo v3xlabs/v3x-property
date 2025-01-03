@@ -5,7 +5,7 @@ import {
 } from '@tanstack/react-router';
 
 import { SettingsNav } from '@/components/settings/nav';
-import { SidePage } from '@/layouts/SidebarPage';
+import { SidePage } from '@/layouts';
 
 export const Route = createFileRoute('/settings/_layout')({
     component: RouteComponent,

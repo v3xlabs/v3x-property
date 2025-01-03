@@ -3,11 +3,8 @@ import { useEffect, useMemo, useState } from 'react';
 import { FaFontAwesome } from 'react-icons/fa6';
 import { FiCornerLeftUp, FiFeather } from 'react-icons/fi';
 
-import { useFaIcons, useFeatherIcons } from '@/api/icons';
-
-import { DynamicIcon } from '../DynamicIcon';
-import { FieldOption } from '../form/Select';
-import { FieldSelect } from '../form/Select';
+import { useFaIcons, useFeatherIcons } from '@/api';
+import { DynamicIcon, FieldOption, FieldSelect } from '@/gui';
 
 function isDefined<T>(value: T | null | undefined): value is NonNullable<T> {
     return value !== null && value !== undefined;
@@ -53,20 +50,20 @@ export const IconInput = ({
                     Object.entries(value ?? {}).flatMap(([category, data]) => {
                         return data?.icons?.map(
                             (icon) =>
-                                ({
-                                    label: `${category}/${icon}`,
-                                    value: `${type}:${category}/${icon}`,
-                                    icon: () => (
-                                        <DynamicIcon
-                                            icon={data.url.replace(
-                                                '$ITEM',
-                                                icon
-                                            )}
-                                            className="aspect-square size-4"
-                                            key={`${type}:${category}/${icon}`}
-                                        />
-                                    ),
-                                } as FieldOption)
+                            ({
+                                label: `${category}/${icon}`,
+                                value: `${type}:${category}/${icon}`,
+                                icon: () => (
+                                    <DynamicIcon
+                                        icon={data.url.replace(
+                                            '$ITEM',
+                                            icon
+                                        )}
+                                        className="aspect-square size-4"
+                                        key={`${type}:${category}/${icon}`}
+                                    />
+                                ),
+                            } as FieldOption)
                         );
                     })
                 )

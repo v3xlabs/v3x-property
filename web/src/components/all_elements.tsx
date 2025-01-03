@@ -1,6 +1,6 @@
 import { FC } from 'react';
 
-import { useFilteredItems } from '@/api/item';
+import { useFilteredItems } from '@/api';
 
 import { ItemPreview } from './item/ItemPreview';
 

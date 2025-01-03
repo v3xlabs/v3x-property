@@ -2,8 +2,7 @@ import { Link } from '@tanstack/react-router';
 import clsx from 'clsx';
 import { FC } from 'react';
 
-import { ApiRequest } from '@/api/core';
-import { useTagById } from '@/api/tags';
+import { ApiRequest, useTagById } from '@/api';
 
 export type TagT = ApiRequest<'/tags', 'get'>['response']['data'][number];
 

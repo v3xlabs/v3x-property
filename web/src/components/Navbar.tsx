@@ -17,13 +17,9 @@ import {
     FiUsers,
 } from 'react-icons/fi';
 
-import { useAuth } from '@/api/auth';
-import { BASE_URL } from '@/api/core';
-import { useMe } from '@/api/me';
-import { useHasPolicy } from '@/api/policy';
-import * as DropdownMenu from '@/components/ui/Dropdown';
+import { BASE_URL , useAuth , useHasPolicy,useMe  } from '@/api';
+import { Button,Dropdown  } from '@/gui';
 
-import { Button } from './ui/Button';
 import { AvatarHolder, getInitials } from './UserProfile';
 
 const LOGIN_URL = BASE_URL + 'login';
@@ -140,8 +136,8 @@ export const Navbar = () => {
                             </Link>
                         </li>
                     ))}
-                    <DropdownMenu.Root>
-                        <DropdownMenu.Trigger asChild>
+                    <Dropdown.Root>
+                        <Dropdown.Trigger asChild>
                             <button
                                 className={
                                     'flex flex-col items-center justify-center hover:bg-black/5 aria-expanded:bg-black/5 md:flex-row md:gap-1 md:px-2'
@@ -154,10 +150,10 @@ export const Navbar = () => {
                                 </span>
                                 <FiChevronDown className="hidden md:block" />
                             </button>
-                        </DropdownMenu.Trigger>
-                        <DropdownMenu.Content>
+                        </Dropdown.Trigger>
+                        <Dropdown.Content>
                             {navLinks2.map(({ path, name, icon, slug }) => (
-                                <DropdownMenu.Item asChild key={path}>
+                                <Dropdown.Item asChild key={path}>
                                     <Link
                                         to={path}
                                         data-testid={slug}
@@ -166,11 +162,11 @@ export const Navbar = () => {
                                         {icon}
                                         <span className="text-sm">{name}</span>
                                     </Link>
-                                </DropdownMenu.Item>
+                                </Dropdown.Item>
                             ))}
-                            <DropdownMenu.Separator className="md:hidden" />
+                            <Dropdown.Separator className="md:hidden" />
                             {meData ? (
-                                <DropdownMenu.Item asChild>
+                                <Dropdown.Item asChild>
                                     <Button
                                         onClick={() => clearAuthToken()}
                                         className="flex w-full items-center justify-start py-2 hover:bg-black/5 md:hidden"
@@ -179,10 +175,10 @@ export const Navbar = () => {
                                         <FiLogOut />
                                         <span className="text-sm">Logout</span>
                                     </Button>
-                                </DropdownMenu.Item>
+                                </Dropdown.Item>
                             ) : (
                                 <>
-                                    <DropdownMenu.Item asChild>
+                                    <Dropdown.Item asChild>
                                         <Link
                                             to={login_here_url}
                                             className="flex items-center justify-center py-2 hover:bg-black/5"
@@ -192,19 +188,19 @@ export const Navbar = () => {
                                                 Login
                                             </span>
                                         </Link>
-                                    </DropdownMenu.Item>
+                                    </Dropdown.Item>
                                 </>
                             )}
-                        </DropdownMenu.Content>
-                    </DropdownMenu.Root>
+                        </Dropdown.Content>
+                    </Dropdown.Root>
                 </ul>
             </div>
             <div className="h-full">
                 <div className="hidden h-full items-center gap-2 md:flex">
                     {token && meData && (
                         <div className="h-full md:border-l">
-                            <DropdownMenu.Root>
-                                <DropdownMenu.Trigger asChild>
+                            <Dropdown.Root>
+                                <Dropdown.Trigger asChild>
                                     <button
                                         className="flex h-full items-center gap-2 p-1 px-2 hover:bg-black/5"
                                         data-testid="user-dropdown-trigger"
@@ -218,26 +214,26 @@ export const Navbar = () => {
                                             {meData.name}
                                         </div>
                                     </button>
-                                </DropdownMenu.Trigger>
+                                </Dropdown.Trigger>
 
-                                <DropdownMenu.Content align="end">
-                                    <DropdownMenu.Item asChild>
+                                <Dropdown.Content align="end">
+                                    <Dropdown.Item asChild>
                                         <Link to="/sessions">Sessions</Link>
-                                    </DropdownMenu.Item>
-                                    <DropdownMenu.Item asChild>
+                                    </Dropdown.Item>
+                                    <Dropdown.Item asChild>
                                         <Link to="/settings">Settings</Link>
-                                    </DropdownMenu.Item>
+                                    </Dropdown.Item>
 
-                                    <DropdownMenu.Separator />
-                                    <DropdownMenu.Item
+                                    <Dropdown.Separator />
+                                    <Dropdown.Item
                                         onClick={() => {
                                             clearAuthToken();
                                         }}
                                     >
                                         Logout
-                                    </DropdownMenu.Item>
-                                </DropdownMenu.Content>
-                            </DropdownMenu.Root>
+                                    </Dropdown.Item>
+                                </Dropdown.Content>
+                            </Dropdown.Root>
                         </div>
                     )}
                     {(!token || (token && !meData)) && (

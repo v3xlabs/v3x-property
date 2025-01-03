@@ -2,12 +2,8 @@ import { useForm } from '@tanstack/react-form';
 import { useState } from 'react';
 import { toast } from 'sonner';
 
-import { useMe } from '@/api/me';
-import { PatCreateResult, useCreateUserPat } from '@/api/user/pat';
-
-import { BaseInput } from '../input/BaseInput';
-import { Button } from '../ui/Button';
-import { DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '../ui/Dialog';
+import { PatCreateResult, useCreateUserPat, useMe } from '@/api';
+import { BaseInput,Button, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle  } from '@/gui';
 
 
 export const CreatePatModal = () => {

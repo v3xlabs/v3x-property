@@ -6,14 +6,10 @@ import { FC, Fragment } from 'react';
 import { FaAmazon, FaBarcode } from 'react-icons/fa6';
 import { match } from 'ts-pattern';
 
-import { ApiError } from '@/api/core';
-import { useItemFields } from '@/api/fields/item';
-import { formatId, useInstanceSettings } from '@/api/instance_settings';
-import { ApiItemResponse, useItemById, useItemLocation, useItemMedia, useItemTags } from '@/api/item';
-import { useMedia } from '@/api/media';
+import { ApiError , ApiItemResponse, formatId, useInstanceSettings,useItemById, useItemFields  , useItemLocation, useItemMedia, useItemTags , useMedia } from '@/api';
 
+import { Tag } from '../../gui/Tag';
 import { LocationPreview } from '../location/LocationPreview';
-import { Tag } from '../Tag';
 
 const UNKNOWN_ITEM = 'Unknown Item';
 

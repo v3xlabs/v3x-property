@@ -4,14 +4,9 @@ import { useSuspenseQuery } from '@tanstack/react-query';
 import {
     ConfigurableInstanceSettings,
     getInstanceSettings,
-    useUpdateInstanceSettings,
-} from '@/api/instance_settings';
-import { useHasPolicy } from '@/api/policy';
-
-import { BaseInput } from '../input/BaseInput';
-import { Button } from '../ui/Button';
-import * as Dropdown from '../ui/Dropdown';
-import { Label } from '../ui/Label';
+    useHasPolicy, useUpdateInstanceSettings
+} from '@/api';
+import { BaseInput, Button, Dropdown, Label } from '@/gui';
 
 export const InstanceSettings = () => {
     const { data: instanceSettings } = useSuspenseQuery(getInstanceSettings());
@@ -78,8 +73,8 @@ export const InstanceSettings = () => {
                                                     onValueChange={(value) =>
                                                         field.handleChange(
                                                             value as
-                                                                | 'upper'
-                                                                | 'lower'
+                                                            | 'upper'
+                                                            | 'lower'
                                                         )
                                                     }
                                                 >

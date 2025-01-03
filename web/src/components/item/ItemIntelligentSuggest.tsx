@@ -1,11 +1,11 @@
 import { FC } from 'react';
 import { HiOutlineSparkles } from 'react-icons/hi2';
 
-import { useItemSuggestion } from '@/api/item/intelligence';
+import { useItemSuggestion } from '@/api';
 
+import { Button } from '../../gui/Button';
+import { Popover, PopoverTrigger } from '../../gui/Popover';
 import { AgentDecoder } from '../tmp/AgentDecoder';
-import { Button } from '../ui/Button';
-import { Popover, PopoverTrigger } from '../ui/Popover';
 
 export const ItemIntelligentSuggest: FC<{ itemId: string }> = ({ itemId }) => {
     const { mutate, data, isIdle, status, isPending } = useItemSuggestion({

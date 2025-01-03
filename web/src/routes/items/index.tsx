@@ -4,8 +4,8 @@ import { FaBox, FaPlus, FaTableCellsLarge } from 'react-icons/fa6';
 import { z } from 'zod';
 
 import { AllItems } from '@/components/all_elements';
-import { Button } from '@/components/ui/Button';
-import { SCPage } from '@/layouts/SimpleCenterPage';
+import { Button } from '@/gui';
+import { SCPage } from '@/layouts';
 
 const viewModeSchema = z.enum(['full', 'large']);
 

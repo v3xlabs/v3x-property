@@ -4,12 +4,8 @@ import clsx from 'clsx';
 // import en from 'javascript-time-ago/locale/en';
 import { FiLoader } from 'react-icons/fi';
 
-import { useAuth } from '@/api/auth';
-import { ApiRequest, BASE_URL } from '@/api/core';
-import { useMe } from '@/api/me';
-import { useUserPats } from '@/api/user/pat';
-
-import { Button } from '../ui/Button';
+import { ApiRequest, BASE_URL , useAuth , useMe , useUserPats } from '@/api';
+import { Button } from '@/gui';
 
 // TimeAgo.addDefaultLocale(en);
 // const timeAgo = new TimeAgo('en-US');

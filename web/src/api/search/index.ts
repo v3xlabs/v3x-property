@@ -5,6 +5,8 @@ import { queryClient } from '@/util/query';
 import { useAuth } from '../auth';
 import { ApiRequest, apiRequest } from '../core';
 
+export * from './tasks';
+
 export type SearchableItem = ApiRequest<
     '/search',
     'get'

@@ -1,9 +1,8 @@
 import { SiMeilisearch } from 'react-icons/si';
 
-import { useAuth } from '@/api/auth';
-import { useSearchClearIndex, useSearchIndexAllItems } from '@/api/search';
+import { useAuth, useSearchClearIndex, useSearchIndexAllItems } from '@/api';
 
-import { Button } from '../ui/Button';
+import { Button } from '../../gui/Button';
 
 export const SearchDetails = () => {
     const { token } = useAuth();

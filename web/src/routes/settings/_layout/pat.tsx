@@ -1,6 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router';
 
-import { CreatePatButton } from '@/components/pat/CreatePatButton';
+import { PatCreateButton } from '@/components/pat/PatCreateButton';
 import { UserApiKeysTable } from '@/components/user_api_keys/UserApiKeysTable';
 
 export const Route = createFileRoute('/settings/_layout/pat')({
@@ -8,7 +8,7 @@ export const Route = createFileRoute('/settings/_layout/pat')({
     context() {
         return {
             title: 'Personal Access Tokens',
-            suffix: <CreatePatButton />,
+            suffix: <PatCreateButton />,
         };
     },
 });

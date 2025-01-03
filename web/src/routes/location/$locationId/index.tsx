@@ -1,10 +1,10 @@
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { createFileRoute } from '@tanstack/react-router';
 
-import { getLocation, getLocationItems, getLocationLocations } from '@/api/locations';
+import { getLocation, getLocationItems, getLocationLocations } from '@/api';
 import { ItemPreview } from '@/components/item/ItemPreview';
 import { SpecificLocationPreview } from '@/components/location/LocationPreview';
-import { SCPage } from '@/layouts/SimpleCenterPage';
+import { SCPage } from '@/layouts';
 import { queryClient } from '@/util/query';
 
 export const Route = createFileRoute('/location/$locationId/')({

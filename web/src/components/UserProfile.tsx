@@ -5,8 +5,7 @@ import clsx from 'clsx';
 import { FC } from 'react';
 import { match } from 'ts-pattern';
 
-import { ApiMeResponse, useMe } from '@/api/me';
-import { useUserById } from '@/api/user';
+import { ApiMeResponse, useMe, useUserById } from '@/api';
 
 type Properties = {
     user_id: number;
