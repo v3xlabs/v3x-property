@@ -1,7 +1,7 @@
 import { createFileRoute } from '@tanstack/react-router';
 
-import { PatCreateButton } from '@/components/pat/PatCreateButton';
-import { UserApiKeysTable } from '@/components/user_api_keys/UserApiKeysTable';
+import { PatCreateButton } from '@/components/user/pat/PatCreateButton';
+import { UserApiKeysTable } from '@/components/user/pat/UserApiKeysTable';
 
 export const Route = createFileRoute('/settings/_layout/pat')({
     component: RouteComponent,

@@ -2,7 +2,7 @@ import { createFileRoute, useParams } from '@tanstack/react-router';
 
 import { useUserById, useUserInventory } from '@/api';
 import { ItemPreview } from '@/components/item/ItemPreview';
-import { UserProfile } from '@/components/UserProfile';
+import { UserProfile } from '@/components/user/UserProfile';
 import { SCPage } from '@/layouts';
 
 export const Route = createFileRoute('/user/$userId')({

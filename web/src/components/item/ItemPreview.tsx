@@ -7,9 +7,8 @@ import { FaAmazon, FaBarcode } from 'react-icons/fa6';
 import { match } from 'ts-pattern';
 
 import { ApiError , ApiItemResponse, formatId, useInstanceSettings,useItemById, useItemFields  , useItemLocation, useItemMedia, useItemTags , useMedia } from '@/api';
-
-import { Tag } from '../../gui/Tag';
-import { LocationPreview } from '../location/LocationPreview';
+import { LocationPreview } from '@/components/location/LocationPreview';
+import { Tag } from '@/gui';
 
 const UNKNOWN_ITEM = 'Unknown Item';
 
@@ -195,7 +194,7 @@ const ItemPreviewLarge: FC<{
             data-testid="item-preview-large"
         >
             {formattedItemId && (
-                <div className="absolute left-0 top-0 z-10 rounded-br-md rounded-tl-md border-b border-r bg-background px-1 py-0.5 text-sm">#{formattedItemId}</div>
+                <div className="bg-background absolute left-0 top-0 z-10 rounded-br-md rounded-tl-md border-b border-r px-1 py-0.5 text-sm">#{formattedItemId}</div>
             )}
             <div className="mx-auto md:mx-0">
                 <AvatarHolder

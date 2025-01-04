@@ -2,7 +2,7 @@ import { FC } from 'react';
 
 import { useOwnedItems } from '@/api';
 
-import { ItemPreview } from './item/ItemPreview';
+import { ItemPreview } from './ItemPreview';
 
 export const AllOwnedItems: FC<{ variant: 'full' | 'large' }> = ({
     variant,

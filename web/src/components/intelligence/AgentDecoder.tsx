@@ -5,8 +5,8 @@ import { TbFunctionFilled } from 'react-icons/tb';
 import { TfiReload } from 'react-icons/tfi';
 import { match } from 'ts-pattern';
 
-import { Button, ButtonProperties } from '../../gui/Button';
 import {
+    Button, ButtonProperties,
     Dialog,
     DialogContent,
     DialogDescription,
@@ -14,8 +14,8 @@ import {
     DialogHeader,
     DialogTitle,
     DialogTrigger,
-} from '../../gui/dialog/Dialog';
-import { PopoverContent } from '../../gui/Popover';
+    Popover
+} from '@/gui';
 
 export type AgentEvent = {
     event: string;
@@ -96,7 +96,7 @@ export const AgentDecoder: FC<{
     }, [lastReference, conversation]);
 
     return (
-        <PopoverContent className="max-h-[60vh] overflow-y-auto">
+        <Popover.PopoverContent className="max-h-[60vh] overflow-y-auto">
             <ul className="">
                 {conversation?.map((entry, index, total) => {
                     const isLast = index === total.length - 1;
@@ -206,7 +206,7 @@ export const AgentDecoder: FC<{
                                                     text={attemptedExtraction}
                                                     label={name ?? '📄 Results'}
                                                     buttonWidth="w-full"
-                                                    // label={x}
+                                                // label={x}
                                                 />
                                             </div>
                                         );
@@ -220,11 +220,11 @@ export const AgentDecoder: FC<{
                                         return (
                                             <div className="pt-2">
                                                 <div className="flex items-center justify-stretch gap-0.5 py-0.5">
-                                                    <div className="h-0.5 w-full grow bg-border"></div>
+                                                    <div className="bg-border h-0.5 w-full grow"></div>
                                                     <div className="break-inside-avoid text-nowrap text-center italic">
                                                         Intelligence Complete
                                                     </div>
-                                                    <div className="h-0.5 w-full grow bg-border"></div>
+                                                    <div className="bg-border h-0.5 w-full grow"></div>
                                                 </div>
                                                 {onReThinkSteps && (
                                                     <div className="mx-auto flex w-full justify-center">
@@ -284,6 +284,6 @@ export const AgentDecoder: FC<{
                     );
                 })}
             </ul>
-        </PopoverContent>
+        </Popover.PopoverContent>
     );
 };

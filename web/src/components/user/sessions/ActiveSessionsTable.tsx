@@ -3,10 +3,9 @@ import { FC } from 'react';
 import { UAParser } from 'ua-parser-js';
 
 import { SessionResponse, useAuth , useGeoIp , useSessions } from '@/api';
+import { LeafletPreview } from '@/components/LeafletPreview';
+import { Button } from '@/gui';
 import { getRelativeTimeString } from '@/util/date';
-
-import { Button } from '../gui/Button';
-import { LeafletPreview } from './LeafletPreview';
 
 const ActiveSession: FC<{ session: SessionResponse }> = ({ session }) => {
     const { refetch: updateSessions } = useSessions();

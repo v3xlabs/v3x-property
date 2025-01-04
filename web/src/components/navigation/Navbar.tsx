@@ -20,7 +20,7 @@ import {
 import { BASE_URL , useAuth , useHasPolicy,useMe  } from '@/api';
 import { Button,Dropdown  } from '@/gui';
 
-import { AvatarHolder, getInitials } from './UserProfile';
+import { AvatarHolder, getInitials } from '../user/UserProfile';
 
 const LOGIN_URL = BASE_URL + 'login';
 

@@ -6,7 +6,7 @@ import { match, P } from 'ts-pattern';
 import { ItemLocation, Location, useLocation } from '@/api';
 
 import { ItemPreview } from '../item/ItemPreview';
-import { UserProfile } from '../UserProfile';
+import { UserProfile } from '../user/UserProfile';
 
 export const LocationPreview: FC<{
     itemLocation?: ItemLocation;

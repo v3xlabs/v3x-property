@@ -3,8 +3,7 @@ import en from 'javascript-time-ago/locale/en';
 import { FC } from 'react';
 
 import { useMedia } from '@/api';
-
-import { BaseInput } from '../../gui/input/BaseInput';
+import { BaseInput } from '@/gui';
 
 TimeAgo.addDefaultLocale(en);
 const timeAgo = new TimeAgo('en-US');
