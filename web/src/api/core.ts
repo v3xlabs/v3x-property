@@ -307,6 +307,10 @@ export const apiRequest = async <
         throw new ApiError('Forbidden', 403);
     }
 
+    if (response.status === 424) {
+        throw new ApiError('Operator is not ready', 424);
+    }
+
     if (!response.ok) {
         throw ApiError.fromResponse(response);
     }
