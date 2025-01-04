@@ -1,8 +1,8 @@
 import { useState } from 'react';
 
-import { Button } from '../../gui/Button';
-import { Dialog, DialogTrigger } from '../../gui/dialog/Dialog';
-import { CreatePatModal } from './CreatePatModal';
+import { Button , Dialog, DialogTrigger } from '@/gui';
+
+import { PatCreateModal } from './PatCreateModal';
 
 export const PatCreateButton = () => {
     const [open, setOpen] = useState(false);
@@ -18,7 +18,7 @@ export const PatCreateButton = () => {
             </DialogTrigger>
             {
                 open &&
-                <CreatePatModal />
+                <PatCreateModal />
             }
         </Dialog>
     );

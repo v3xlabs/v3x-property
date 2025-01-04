@@ -64,7 +64,7 @@ const ExpandableItem = ({ path, label, icon }: { path: [string, string][], label
                             activeOptions={{ exact: true }}
                             className={clsx(
                                 'relative flex cursor-pointer items-center gap-2 rounded-md px-2 py-1 pl-8 text-sm text-neutral-700 hover:bg-neutral-100',
-                                '[&.active]:text-primary [&.active]:bg-neutral-500/10',
+                                '[&.active]:bg-neutral-500/10 [&.active]:text-primary',
                                 // eslint-disable-next-line quotes
                                 "[&.active]:before:content-['']",
                                 '[&.active]:before:absolute [&.active]:before:-left-3 [&.active]:before:bottom-[12%] [&.active]:before:top-[12%] [&.active]:before:w-1 [&.active]:before:rounded-md [&.active]:before:bg-blue-500'
@@ -171,7 +171,7 @@ export const SettingsNav = () => {
                                             activeOptions={{ exact: true }}
                                             className={clsx(
                                                 'relative flex w-full cursor-pointer items-center gap-2 rounded-md px-2 py-1 text-neutral-700 hover:bg-neutral-100',
-                                                '[&.active]:text-primary [&.active]:bg-neutral-500/10',
+                                                '[&.active]:bg-neutral-500/10 [&.active]:text-primary',
                                                 // eslint-disable-next-line quotes
                                                 "[&.active]:before:content-['']",
                                                 '[&.active]:before:absolute [&.active]:before:-left-3 [&.active]:before:bottom-[12%] [&.active]:before:top-[12%] [&.active]:before:w-1 [&.active]:before:rounded-md [&.active]:before:bg-blue-500'

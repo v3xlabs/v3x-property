@@ -159,7 +159,7 @@ export const Route = createFileRoute('/item/$itemId/')({
             <SCPage title={'Could not load the item'}>
                 <div className="card space-y-3">
                     <p>There was an issue loading the item.</p>
-                    <code className="bg-muted block rounded-md p-2">
+                    <code className="block rounded-md bg-muted p-2">
                         {error.message}
                     </code>
                     <Button onClick={() => router.invalidate()}>Retry</Button>
