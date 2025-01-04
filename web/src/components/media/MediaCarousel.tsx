@@ -1,4 +1,4 @@
-import '../../embla.css';
+import '@/styles/embla.css';
 
 import AutoHeight from 'embla-carousel-auto-height';
 import useEmblaCarousel from 'embla-carousel-react';

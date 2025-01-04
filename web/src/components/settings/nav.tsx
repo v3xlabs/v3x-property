@@ -19,7 +19,7 @@ import {
     LuUsers,
 } from 'react-icons/lu';
 
-import { useHasPolicy } from '@/api/policy';
+import { useHasPolicy } from '@/api';
 
 export function isTruthy<T>(value?: T | undefined | null | false): value is T {
     return !!value;

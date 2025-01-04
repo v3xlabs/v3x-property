@@ -2,9 +2,9 @@ import { FC, useMemo } from 'react';
 import { match } from 'ts-pattern';
 import { z } from 'zod';
 
-import { useFieldDefinitions } from '@/api/fields';
+import { useFieldDefinitions } from '@/api';
 import { MediaPreview } from '@/components/media/MediaPreview';
-import { Tag } from '@/components/Tag';
+import { Tag } from '@/gui';
 
 import { ApiLogEntry } from '../ItemLogEntry';
 

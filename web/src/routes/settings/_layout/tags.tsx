@@ -1,11 +1,9 @@
 import { createFileRoute } from '@tanstack/react-router';
 
-import { useTags } from '@/api/tags';
-import { Tag } from '@/components/Tag';
+import { useTags } from '@/api';
 import { TagCreateModal } from '@/components/tags/TagCreateModal';
 import { TagEditModalContent } from '@/components/tags/TagEditModal';
-import { Button } from '@/components/ui/Button';
-import { Dialog, DialogTrigger } from '@/components/ui/Dialog';
+import { Button, Dialog, DialogTrigger, Tag } from '@/gui';
 
 export const Route = createFileRoute('/settings/_layout/tags')({
     component: RouteComponent,

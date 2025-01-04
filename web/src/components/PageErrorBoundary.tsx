@@ -1,10 +1,8 @@
 import { ErrorRouteComponent, Link } from '@tanstack/react-router';
 
-import { ApiError, BASE_URL } from '@/api/core';
-import { useMe } from '@/api/me';
-import { SCPage } from '@/layouts/SimpleCenterPage';
-
-import { Button } from './ui/Button';
+import { ApiError, BASE_URL , useMe } from '@/api';
+import { Button } from '@/gui';
+import { SCPage } from '@/layouts';
 
 export const PageErrorBoundary: ErrorRouteComponent = ({
     error,

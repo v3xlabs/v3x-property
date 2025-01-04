@@ -1,12 +1,11 @@
 import { createFileRoute, Link } from '@tanstack/react-router';
 import { useState } from 'react';
-import { FaBox, FaPlus } from 'react-icons/fa6';
-import { FaTableCellsLarge } from 'react-icons/fa6';
+import { FaBox, FaPlus , FaTableCellsLarge } from 'react-icons/fa6';
 import { z } from 'zod';
 
 import { SearchInput } from '@/components/search/SearchInput';
-import { Button } from '@/components/ui/Button';
-import { SCPage } from '@/layouts/SimpleCenterPage';
+import { Button } from '@/gui';
+import { SCPage } from '@/layouts';
 
 const viewModeSchema = z.enum(['full', 'large']);
 const querySchema = z.string();

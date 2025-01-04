@@ -1,10 +1,8 @@
 import { FC, useState } from 'react';
 
-import { useAllMedia } from '@/api/media';
-import { useUnassignedMedia } from '@/api/media';
+import { useAllMedia, useUnassignedMedia } from '@/api';
+import { Button , DialogDescription, DialogFooter, DialogHeader } from '@/gui';
 
-import { Button } from '../ui/Button';
-import { DialogDescription, DialogFooter, DialogHeader } from '../ui/Dialog';
 import { AttachedMedia } from './upload/t';
 
 export const ExistingMedia: FC<{ onChange?: (media_ids: AttachedMedia[]) => void }> = ({ onChange }) => {

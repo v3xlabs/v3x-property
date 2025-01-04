@@ -2,14 +2,9 @@ import { useForm } from '@tanstack/react-form';
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
 import { FiArrowRight } from 'react-icons/fi';
 
-import { ApiError } from '@/api/core';
-import { formatId, useInstanceSettings } from '@/api/instance_settings';
-import { useCreateItem } from '@/api/item';
-import { isValidId } from '@/api/item/generate_id';
-import { useHasPolicy } from '@/api/policy';
-import { NewItemIdInput } from '@/components/input/NewItemIdInput';
-import { Button } from '@/components/ui/Button';
-import { SCPage } from '@/layouts/SimpleCenterPage';
+import { ApiError, formatId, isValidId, useCreateItem, useHasPolicy, useInstanceSettings } from '@/api';
+import { Button, NewItemIdInput } from '@/gui';
+import { SCPage } from '@/layouts';
 
 const Page = () => {
     const { data: instanceSettings } = useInstanceSettings();
@@ -77,10 +72,10 @@ const Page = () => {
                                     />
                                 </div>
                                 <p className="p-6 text-sm text-neutral-500">
-                  To create a new item you will need to give it an identifier.
-                  You can choose to use a generated identifier (by clicking the
-                  generate icon) or you can choose to provide your own
-                  (a-zA-Z0-9). Leading zeros will be trimmed.
+                                    To create a new item you will need to give it an identifier.
+                                    You can choose to use a generated identifier (by clicking the
+                                    generate icon) or you can choose to provide your own
+                                    (a-zA-Z0-9). Leading zeros will be trimmed.
                                 </p>
                             </>
                         )}
@@ -94,7 +89,7 @@ const Page = () => {
                                     data-testid="create-button"
                                     disabled={!canSubmit}
                                 >
-                  Configure
+                                    Configure
                                     <FiArrowRight />
                                 </Button>
                             )}
