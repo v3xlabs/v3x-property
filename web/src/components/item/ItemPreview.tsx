@@ -195,7 +195,7 @@ const ItemPreviewLarge: FC<{
             data-testid="item-preview-large"
         >
             {formattedItemId && (
-                <div className="bg-background absolute left-0 top-0 z-10 rounded-br-md rounded-tl-md border-b border-r px-1 py-0.5 text-sm">#{formattedItemId}</div>
+                <div className="absolute left-0 top-0 z-10 rounded-br-md rounded-tl-md border-b border-r bg-background px-1 py-0.5 text-sm">#{formattedItemId}</div>
             )}
             <div className="mx-auto md:mx-0">
                 <AvatarHolder

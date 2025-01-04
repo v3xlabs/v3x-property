@@ -141,18 +141,18 @@ const AddField = (properties: {
                                 ))}
                             {search.length > 0 &&
                                 /^[\dA-Za-z]+$/.test(search) && (
-                                    <Command.Item
-                                        value={`custom-${search}`}
-                                        onSelect={() => {
-                                            properties.onSelect({
-                                                definition_id: search,
-                                            } as any);
-                                            setOpen(false);
-                                        }}
-                                    >
+                                <Command.Item
+                                    value={`custom-${search}`}
+                                    onSelect={() => {
+                                        properties.onSelect({
+                                            definition_id: search,
+                                        } as any);
+                                        setOpen(false);
+                                    }}
+                                >
                                         Create '{search}'
-                                    </Command.Item>
-                                )}
+                                </Command.Item>
+                            )}
                         </Command.Group>
                     </Command.List>
                 </Command.Root>
@@ -515,8 +515,8 @@ export const Route = createFileRoute('/item/$itemId/edit')({
                     <div className="flex justify-end gap-2">
                         {(instanceSettings.modules.intelligence?.gemini ||
                             instanceSettings.modules.intelligence?.ollama) && (
-                                <ItemIntelligentSuggest itemId={item.item_id} />
-                            )}
+                            <ItemIntelligentSuggest itemId={item.item_id} />
+                        )}
                         <Button variant="secondary" size="sm" asChild>
                             <Link to="/item/$itemId" params={{ itemId }}>
                                 Cancel

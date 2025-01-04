@@ -50,20 +50,20 @@ export const IconInput = ({
                     Object.entries(value ?? {}).flatMap(([category, data]) => {
                         return data?.icons?.map(
                             (icon) =>
-                            ({
-                                label: `${category}/${icon}`,
-                                value: `${type}:${category}/${icon}`,
-                                icon: () => (
-                                    <DynamicIcon
-                                        icon={data.url.replace(
-                                            '$ITEM',
-                                            icon
-                                        )}
-                                        className="aspect-square size-4"
-                                        key={`${type}:${category}/${icon}`}
-                                    />
-                                ),
-                            } as FieldOption)
+                                ({
+                                    label: `${category}/${icon}`,
+                                    value: `${type}:${category}/${icon}`,
+                                    icon: () => (
+                                        <DynamicIcon
+                                            icon={data.url.replace(
+                                                '$ITEM',
+                                                icon
+                                            )}
+                                            className="aspect-square size-4"
+                                            key={`${type}:${category}/${icon}`}
+                                        />
+                                    ),
+                                } as FieldOption)
                         );
                     })
                 )

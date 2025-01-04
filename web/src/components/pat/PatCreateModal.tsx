@@ -3,10 +3,10 @@ import { useState } from 'react';
 import { toast } from 'sonner';
 
 import { PatCreateResult, useCreateUserPat, useMe } from '@/api';
-import { BaseInput,Button, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle  } from '@/gui';
+import { BaseInput, Button, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/gui';
 
 
-export const CreatePatModal = () => {
+export const PatCreateModal = () => {
     const { data: user } = useMe();
     const { mutateAsync: createPat } = useCreateUserPat(user?.user_id ?? 0);
     const [tokenData, setTokenData] = useState<PatCreateResult | null>();

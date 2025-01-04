@@ -39,7 +39,7 @@ export const NewItemIdInput = (properties: BaseInputProperties) => {
         const interval = setInterval(() => {
             setPlaceholderValue(
                 placeholderValues[
-                Math.floor(Math.random() * placeholderValues.length)
+                    Math.floor(Math.random() * placeholderValues.length)
                 ]
             );
         }, 2000);
