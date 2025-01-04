@@ -2,8 +2,8 @@
 import clsx from 'clsx';
 import { FC, Reducer, useCallback, useEffect, useReducer } from 'react';
 
-import { Button } from '../../gui/Button';
-import { Dialog, DialogContent, DialogTrigger } from '../../gui/dialog/Dialog';
+import { Button , Dialog, DialogContent, DialogTrigger } from '@/gui';
+
 import { ExistingMedia } from './ExistingMedia';
 import { MediaDropzone } from './MediaDropzone';
 import { MediaPreview } from './MediaPreview';

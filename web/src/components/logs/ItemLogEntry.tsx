@@ -3,7 +3,7 @@ import en from 'javascript-time-ago/locale/en';
 import { match } from 'ts-pattern';
 
 import { ApiLogResponse, ItemLocation } from '@/api';
-import { UserProfile } from '@/components/UserProfile';
+import { UserProfile } from '@/components/user/UserProfile';
 
 import { ItemPreview } from '../item/ItemPreview';
 import { LocationPreview } from '../location/LocationPreview';

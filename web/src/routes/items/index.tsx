@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { FaBox, FaPlus, FaTableCellsLarge } from 'react-icons/fa6';
 import { z } from 'zod';
 
-import { AllItems } from '@/components/all_elements';
+import { AllItems } from '@/components/item/all_elements';
 import { Button } from '@/gui';
 import { SCPage } from '@/layouts';
 

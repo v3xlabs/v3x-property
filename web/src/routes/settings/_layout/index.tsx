@@ -3,7 +3,7 @@ import { createFileRoute } from '@tanstack/react-router';
 
 import { getInstanceSettings, useAuth, useMe } from '@/api';
 import { InstanceSettings } from '@/components/settings/InstanceSettings';
-import { UserProfile } from '@/components/UserProfile';
+import { UserProfile } from '@/components/user/UserProfile';
 import { Button } from '@/gui';
 import { queryClient } from '@/util/query';
 

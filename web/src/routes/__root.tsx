@@ -1,7 +1,7 @@
 import { createRootRouteWithContext, Outlet } from '@tanstack/react-router';
 import { ReactNode } from 'react';
 
-import { Navbar } from '@/components/Navbar';
+import { Navbar } from '@/components/navigation/Navbar';
 import { Toaster } from '@/gui';
 
 export interface MyRouterContext {

@@ -1,7 +1,7 @@
 import { createFileRoute } from '@tanstack/react-router';
 
 import { useUsers } from '@/api';
-import { UserProfile } from '@/components/UserProfile';
+import { UserProfile } from '@/components/user/UserProfile';
 
 export const Route = createFileRoute('/settings/_layout/users')({
     component: RouteComponent,

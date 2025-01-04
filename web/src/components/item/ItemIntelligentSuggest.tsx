@@ -2,10 +2,8 @@ import { FC } from 'react';
 import { HiOutlineSparkles } from 'react-icons/hi2';
 
 import { useItemSuggestion } from '@/api';
-
-import { Button } from '../../gui/Button';
-import { Popover, PopoverTrigger } from '../../gui/Popover';
-import { AgentDecoder } from '../tmp/AgentDecoder';
+import { AgentDecoder } from '@/components/intelligence/AgentDecoder';
+import { Button, Popover } from '@/gui';
 
 export const ItemIntelligentSuggest: FC<{ itemId: string }> = ({ itemId }) => {
     const { mutate, data, isIdle, status, isPending } = useItemSuggestion({
@@ -14,7 +12,7 @@ export const ItemIntelligentSuggest: FC<{ itemId: string }> = ({ itemId }) => {
 
     return (
         <div>
-            <Popover
+            <Popover.Popover
                 defaultOpen={!isIdle}
                 onOpenChange={(open) => {
                     if (open && status == 'idle') {
@@ -23,7 +21,7 @@ export const ItemIntelligentSuggest: FC<{ itemId: string }> = ({ itemId }) => {
                     }
                 }}
             >
-                <PopoverTrigger asChild>
+                <Popover.PopoverTrigger asChild>
                     <Button type="button">
                         <HiOutlineSparkles
                             className={
@@ -32,14 +30,14 @@ export const ItemIntelligentSuggest: FC<{ itemId: string }> = ({ itemId }) => {
                         />
                         Suggest
                     </Button>
-                </PopoverTrigger>
+                </Popover.PopoverTrigger>
                 <AgentDecoder
                     conversation={data?.contents}
                     onReThinkSteps={() => {
                         mutate();
                     }}
                 />
-            </Popover>
+            </Popover.Popover>
         </div>
     );
 };

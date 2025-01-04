@@ -1,8 +1,7 @@
 import { FC } from 'react';
 
 import { useMe, useUpdateItemLocation } from '@/api';
-
-import { Button } from '../gui/Button';
+import { Button } from '@/gui';
 
 export const YeetButton: FC<{ item_id: string }> = ({ item_id }) => {
     const { data: me } = useMe();

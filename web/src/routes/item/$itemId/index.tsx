@@ -15,11 +15,11 @@ import { toast } from 'sonner';
 import { formatId, getInstanceSettings, getItemById, getItemLocation, getItemMedia, getItemTags, getPolicy } from '@/api';
 import { ItemFields } from '@/components/item/ItemFields';
 import { LocationPreview } from '@/components/location/LocationPreview';
+import { YeetButton } from '@/components/location/YeetButton';
 import { ItemLogSection } from '@/components/logs/ItemLogSection';
 import { MediaGallery } from '@/components/media/MediaGallery';
 import { PrintLabelButton } from '@/components/print/PrintModal';
-import { UserProfile } from '@/components/UserProfile';
-import { YeetButton } from '@/components/YeetButton';
+import { UserProfile } from '@/components/user/UserProfile';
 import { Button, LocationInputExecutive, Tag } from '@/gui';
 import { SCPage } from '@/layouts';
 import { queryClient } from '@/util/query';
@@ -159,7 +159,7 @@ export const Route = createFileRoute('/item/$itemId/')({
             <SCPage title={'Could not load the item'}>
                 <div className="card space-y-3">
                     <p>There was an issue loading the item.</p>
-                    <code className="block rounded-md bg-muted p-2">
+                    <code className="bg-muted block rounded-md p-2">
                         {error.message}
                     </code>
                     <Button onClick={() => router.invalidate()}>Retry</Button>
