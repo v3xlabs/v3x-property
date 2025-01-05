@@ -179,7 +179,7 @@ export const MediaPreview: FC<{
                     Uploading... <FiLoader className="animate-spin" />
                 </div>
             )}
-            {media_id && (
+            {media_id && delete_media && (
                 <div className="flex items-center justify-between border-t border-t-inherit p-2">
                     <div className="pl-4">{media?.description}</div>
                     <div className="flex gap-2">

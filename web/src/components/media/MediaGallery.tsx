@@ -17,7 +17,7 @@ export const MediaGallery: FC<{
         <div className="card flex items-stretch">
             <Dialog.Root modal={true}>
                 {media_ids.length > 0 ? (
-                    <div className="grid w-full grid-flow-row grid-cols-1 gap-2 md:grid-cols-2">
+                    <div className="grid w-full grid-flow-row grid-cols-1 gap-2 md:grid-cols-1">
                         {media_ids.map((media_id) => (
                             <Dialog.Trigger
                                 key={media_id}
@@ -38,8 +38,8 @@ export const MediaGallery: FC<{
                     </div>
                 )}
                 <Dialog.Portal>
-                    <Dialog.Overlay className="fixed inset-0 z-10 bg-black bg-opacity-50" />
-                    <Dialog.Content className="fixed inset-0 z-10 mx-auto my-8 h-min max-w-6xl rounded-lg bg-white shadow-lg">
+                    <Dialog.Overlay className="fixed inset-0 z-20 bg-black bg-opacity-50" />
+                    <Dialog.Content className="fixed inset-0 z-20 mx-auto mb-8 mt-12 h-min max-w-6xl rounded-lg bg-white shadow-lg">
                         <Dialog.DialogTitle className="overflow-hidden p-2 text-center text-xl font-medium">
                             {useMedia(mediaId).data?.description}
                         </Dialog.DialogTitle>
