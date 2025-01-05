@@ -8,7 +8,7 @@ import {
 } from '@tanstack/react-query';
 
 import { useAuth } from '../auth';
-import { apiRequest, BASE_URL, getHttp } from '../core';
+import { apiRequest, BASE_URL } from '../core';
 import { paths } from '../schema.gen';
 
 export const getProducts = (token: string | undefined) =>
@@ -60,9 +60,13 @@ export const useProductById = (product_id: number) => {
 export const getProductMedia = (product_id: number) =>
     queryOptions({
         queryKey: ['product', product_id, 'media'],
-        queryFn: getHttp<number[]>('/api/product/' + product_id + '/media', {
-            auth: 'include',
-        }),
+        queryFn: async () => {
+            const response = await apiRequest('/product/{product_id}/media', 'get', {
+                path: { product_id },
+            });
+
+            return response.data;
+        },
     });
 
 export const useProductMedia = (product_id: number) => {
@@ -76,9 +80,13 @@ export const getProductLogs = (
     product_id: number
 ): UseQueryOptions<ApiProductLogResponse> => ({
     queryKey: ['product', product_id, 'logs'],
-    queryFn: getHttp('/api/product/' + product_id + '/logs', {
-        auth: 'include',
-    }),
+    queryFn: async () => {
+        const response = await apiRequest('/product/{product_id}/logs', 'get', {
+            path: { product_id },
+        });
+
+        return response.data;
+    },
 });
 
 export const useProductLogs = (product_id: number) => {

@@ -10,7 +10,7 @@ import {
 import { queryClient } from '@/util/query';
 
 import { useAuth } from '../auth';
-import { apiRequest, BASE_URL, getHttp } from '../core';
+import { apiRequest, BASE_URL } from '../core';
 import { components, paths } from '../schema.gen';
 
 export * from './generate_id';
@@ -89,11 +89,15 @@ export type ApiLogResponse =
 
 export const getItemLogs = (
     item_id: string
-): UseQueryOptions<ApiLogResponse> => ({
+): UseQueryOptions<ApiLogResponse> => queryOptions({
     queryKey: ['item', '{item_id}', item_id, 'logs'],
-    queryFn: getHttp('/api/item/' + item_id + '/logs', {
-        auth: 'include',
-    }),
+    queryFn: async () => {
+        const response = await apiRequest('/item/{item_id}/logs', 'get', {
+            path: { item_id },
+        });
+
+        return response.data;
+    },
 });
 
 export const useItemLogs = (item_id: string) => {
