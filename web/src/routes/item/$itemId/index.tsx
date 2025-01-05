@@ -113,7 +113,7 @@ export const Route = createFileRoute('/item/$itemId/')({
                         </div>
                         <div className="px-4">
                             <h3 className="h3">Location</h3>
-                            <div className="flex w-full items-center justify-stretch gap-4">
+                            <div className="flex w-full flex-col items-stretch justify-stretch gap-4">
                                 {
                                     location ? (
                                         <div className="grow text-nowrap">
