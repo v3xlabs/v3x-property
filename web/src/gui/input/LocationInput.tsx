@@ -124,23 +124,21 @@ export const LocationInputExecutive: FC<{ item_id: string }> = ({ item_id }) => 
 
 
     return (
-        <div>
-            <LocationInput
-                value={location ?? ''}
-                onChange={(value) => {
-                    setLocation(value);
+        <LocationInput
+            value={location ?? ''}
+            onChange={(value) => {
+                setLocation(value);
 
-                    if (value.startsWith('location:')) {
-                        updateItemLocation({ item_id, data: { item_id, location_id: value.split(':')[1] } });
-                    } else if (value.startsWith('user:')) {
-                        updateItemLocation({ item_id, data: { item_id, location_user_id: Number.parseInt(value.split(':')[1]) } });
-                    } else if (value.startsWith('item:')) {
-                        updateItemLocation({ item_id, data: { item_id, location_item_id: value.split(':')[1] } });
-                    }
+                if (value.startsWith('location:')) {
+                    updateItemLocation({ item_id, data: { item_id, location_id: value.split(':')[1] } });
+                } else if (value.startsWith('user:')) {
+                    updateItemLocation({ item_id, data: { item_id, location_user_id: Number.parseInt(value.split(':')[1]) } });
+                } else if (value.startsWith('item:')) {
+                    updateItemLocation({ item_id, data: { item_id, location_item_id: value.split(':')[1] } });
+                }
 
-                    return true;
-                }}
-            />
-        </div>
+                return true;
+            }}
+        />
     );
 };

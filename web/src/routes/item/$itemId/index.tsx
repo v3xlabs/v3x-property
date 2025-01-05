@@ -98,47 +98,57 @@ export const Route = createFileRoute('/item/$itemId/')({
                     </div>
                 }
             >
-                <div className="card no-padding space-y-4 py-4">
-                    <div className="px-4">
-                        <MediaGallery media_ids={media.data} />
-                    </div>
-                    <div className="px-4">
-                        {item.data?.owner_id && (
-                            <div>
-                                <h3 className="font-bold">Owner</h3>
-                                <UserProfile user_id={item.data.owner_id} />
-                            </div>
-                        )}
-                    </div>
-                    <ItemFields item_id={itemId} />
-                    {tags && tags.length > 0 && (
+                <div className="flex flex-col gap-4 md:flex-row-reverse">
+                    <div className="card no-padding space-y-4 py-4">
                         <div className="px-4">
-                            <h3>Tags</h3>
-                            <div className="flex flex-wrap gap-2">
-                                {tags?.map((tag) => (
-                                    <Tag key={tag.tag_id} tag={tag} />
-                                ))}
-                            </div>
+                            <MediaGallery media_ids={media.data} />
                         </div>
-                    )}
-                </div>
-                <div className="space-y-2">
-                    <h2 className="h2">Location</h2>
-                    <div className="flex w-full items-center justify-stretch gap-4">
-                        {
-                            location ? (
-                                <div className="grow text-nowrap">
-                                    <LocationPreview itemLocation={location} variant='full' />
-                                </div>
-                            ) : (
-                                <div className="grow">
-                                    This item does not have a location
+                        <div className="px-4">
+                            {item.data?.owner_id && (
+                                <div>
+                                    <h3 className="h3">Owner</h3>
+                                    <UserProfile user_id={item.data.owner_id} />
                                 </div>
                             )}
-                        <div className="flex flex-col gap-2">
-                            <LocationInputExecutive item_id={itemId} />
-                            <YeetButton item_id={itemId} />
                         </div>
+                        <div className="px-4">
+                            <h3 className="h3">Location</h3>
+                            <div className="flex w-full items-center justify-stretch gap-4">
+                                {
+                                    location ? (
+                                        <div className="grow text-nowrap">
+                                            <LocationPreview itemLocation={location} variant='full' />
+                                        </div>
+                                    ) : (
+                                        <></>
+                                    )}
+                                <div className="grid w-full grid-cols-2 gap-2">
+                                    <LocationInputExecutive item_id={itemId} />
+                                    <YeetButton item_id={itemId} />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="card no-padding w-full space-y-4 py-4">
+                        <div className="px-4">
+                            <h3 className="h3">
+                                Id
+                            </h3>
+                            <div className="card no-padding px-4 py-2">
+                                {itemId}
+                            </div>
+                        </div>
+                        <ItemFields item_id={itemId} />
+                        {tags && tags.length > 0 && (
+                            <div className="px-4">
+                                <h3 className="h3">Tags</h3>
+                                <div className="flex flex-wrap gap-2">
+                                    {tags?.map((tag) => (
+                                        <Tag key={tag.tag_id} tag={tag} />
+                                    ))}
+                                </div>
+                            </div>
+                        )}
                     </div>
                 </div>
                 <ItemLogSection item_id={itemId} />

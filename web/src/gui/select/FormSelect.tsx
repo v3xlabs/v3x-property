@@ -114,7 +114,7 @@ export const FieldSelect: FC<FieldSelectProperties> = ({
                             type="button"
                             role="combobox"
                             aria-expanded={open}
-                            className="justify-between"
+                            className="w-full justify-between"
                         >
                             {value
                                 ? options.find(
