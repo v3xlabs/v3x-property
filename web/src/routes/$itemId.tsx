@@ -1,6 +1,6 @@
 import { createFileRoute, redirect } from '@tanstack/react-router';
 
-import { formatId, getInstanceSettings } from '@/api/instance_settings';
+import { formatId, getInstanceSettings } from '@/api';
 import { queryClient } from '@/util/query';
 
 export const Route = createFileRoute('/$itemId')({

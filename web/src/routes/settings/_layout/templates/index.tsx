@@ -10,5 +10,5 @@ export const Route = createFileRoute('/settings/_layout/templates/')({
 });
 
 function RouteComponent() {
-    return <div className="card">Hello "/settings/_layout/templates/"!</div>;
+    return <div className="card">Templates go here</div>;
 }

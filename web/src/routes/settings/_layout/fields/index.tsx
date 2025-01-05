@@ -10,13 +10,8 @@ import {
     getFieldDefinitions,
     useCreateFieldDefinition,
     useEditFieldDefinition,
-} from '@/api/fields';
-import { DynamicIcon } from '@/components/DynamicIcon';
-import { FieldSelect } from '@/components/form/Select';
-import { BaseInput } from '@/components/input/BaseInput';
-import { IconInput } from '@/components/input/IconInput';
-import { Button } from '@/components/ui/Button';
-import * as Dialog from '@/components/ui/Dialog';
+} from '@/api';
+import { BaseInput, Button, Dialog, DynamicIcon, FieldSelect, IconInput } from '@/gui';
 import { queryClient } from '@/util/query';
 
 const FieldDefinitionEditor = ({
@@ -172,10 +167,10 @@ const FieldDefinitionEditor = ({
                             onChange={(value) =>
                                 field.handleChange(
                                     value as
-                                        | 'String'
-                                        | 'Number'
-                                        | 'Boolean'
-                                        | 'Json'
+                                    | 'String'
+                                    | 'Number'
+                                    | 'Boolean'
+                                    | 'Json'
                                 )
                             }
                             options={[

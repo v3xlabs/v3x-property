@@ -4,10 +4,8 @@ import Barcode, { BarcodeProps } from 'react-barcode';
 import { FaAmazon } from 'react-icons/fa6';
 import { match } from 'ts-pattern';
 
-import { useItemFields } from '@/api/fields/item';
-
-import { FieldOption, FieldSelect } from '../form/Select';
-import { Button } from '../ui/Button';
+import { useItemFields } from '@/api';
+import { Button, FieldOption, FieldSelect } from '@/gui';
 
 const AMAZON_DOMAINS = [
     { label: 'Amazon.com', value: 'amazon.com', icon: () => <FaAmazon /> },
@@ -36,14 +34,14 @@ export const ItemFields: FC<{ item_id: string }> = ({ item_id }) => {
 
     return (
         <div className="px-4">
-            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+            <div className="grid gap-2">
                 {fields?.map((field) =>
                     match(field)
                         .with({ definition_id: 'asin' }, (field) => (
                             <div className="space-y-2">
-                                <div className="font-bold">
+                                <h3 className="h3">
                                     {field.definition_name}
-                                </div>
+                                </h3>
                                 <div className="card no-padding px-4 py-2">
                                     {field.value as string}
                                 </div>
@@ -79,9 +77,9 @@ export const ItemFields: FC<{ item_id: string }> = ({ item_id }) => {
                             { definition_id: 'gtin' },
                             (field) => (
                                 <div className="space-y-2">
-                                    <div className="font-bold">
+                                    <h3 className="h3">
                                         {field.definition_name}
-                                    </div>
+                                    </h3>
                                     <div className="card no-padding flex items-center justify-center p-0.5">
                                         <Barcode
                                             value={field.value as string}
@@ -103,9 +101,9 @@ export const ItemFields: FC<{ item_id: string }> = ({ item_id }) => {
                         )
                         .otherwise(() => (
                             <div>
-                                <div className="font-bold">
+                                <h3 className="h3">
                                     {field.definition_name}
-                                </div>
+                                </h3>
                                 <div>{field.value as string}</div>
                             </div>
                         ))

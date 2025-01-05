@@ -1,19 +1,14 @@
 /* eslint-disable jsx-a11y/media-has-caption */
 import { useMutation } from '@tanstack/react-query';
 import clsx from 'clsx';
-import { FC, Suspense, useEffect, useState } from 'react';
-import { lazy } from 'react';
+import { FC, lazy,Suspense, useEffect, useState  } from 'react';
 import { FiEdit, FiLoader, FiTrash } from 'react-icons/fi';
 import { match } from 'ts-pattern';
 import { useDebouncedCallback } from 'use-debounce';
 
-import { useAuth } from '@/api/auth';
-import { BASE_URL } from '@/api/core';
-import { useInstanceSettings } from '@/api/instance_settings';
-import { useMedia } from '@/api/media';
+import { BASE_URL , useAuth , useInstanceSettings , useMedia } from '@/api';
 import { ErrorBoundary } from '@/components/ErrorBoundary';
-
-import { Button } from '../ui/Button';
+import { Button } from '@/gui';
 
 export const BareMediaPreview: FC<{
     media_id?: number;
@@ -42,7 +37,7 @@ export const BareMediaPreview: FC<{
     })();
 
     return (
-        <div className="relative bg-neutral-100 w-full aspect-video rounded-md">
+        <div className="relative aspect-video w-full rounded-md bg-neutral-100">
             {match(media?.kind)
                 .with(
                     'webp',
@@ -64,7 +59,7 @@ export const BareMediaPreview: FC<{
                     <StlPreview media_id={media_id} url={mediaUrl} />
                 ))
                 .otherwise(() => (
-                    <div className="p-3 border-orange-500 border-2 rounded-md bg-orange-100 h-full">
+                    <div className="h-full rounded-md border-2 border-orange-500 bg-orange-100 p-3">
                         <span>Unknown file type</span>
                         <span>{media?.kind}</span>
                     </div>
@@ -167,7 +162,7 @@ export const MediaPreview: FC<{
     return (
         <div
             className={clsx(
-                'relative aspect-video bg-neutral-100 max-w-md w-full rounded-md h-fit',
+                'relative aspect-video h-fit w-full max-w-md rounded-md bg-neutral-100',
                 status == 'new-media' &&
                     isPending &&
                     'border-2 border-blue-400',
@@ -184,7 +179,7 @@ export const MediaPreview: FC<{
                     Uploading... <FiLoader className="animate-spin" />
                 </div>
             )}
-            {media_id && (
+            {media_id && delete_media && (
                 <div className="flex items-center justify-between border-t border-t-inherit p-2">
                     <div className="pl-4">{media?.description}</div>
                     <div className="flex gap-2">
@@ -250,7 +245,7 @@ export const ImagePreview: FC<{ media_id?: number; url?: string }> = ({
 };
 
 const LazyStlPreviewWindow = lazy(
-    () => import('@/components/stl_preview/StlPreview')
+    () => import('@/components/media/stl_preview/StlPreview')
 );
 
 export const StlPreview: FC<{ media_id?: number; url?: string }> = ({

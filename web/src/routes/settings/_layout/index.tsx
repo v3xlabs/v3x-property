@@ -1,12 +1,10 @@
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { createFileRoute } from '@tanstack/react-router';
 
-import { useAuth } from '@/api/auth';
-import { getInstanceSettings } from '@/api/instance_settings';
-import { useMe } from '@/api/me';
+import { getInstanceSettings, useAuth, useMe } from '@/api';
 import { InstanceSettings } from '@/components/settings/InstanceSettings';
-import { Button } from '@/components/ui/Button';
-import { UserProfile } from '@/components/UserProfile';
+import { UserProfile } from '@/components/user/UserProfile';
+import { Button } from '@/gui';
 import { queryClient } from '@/util/query';
 
 export const Route = createFileRoute('/settings/_layout/')({

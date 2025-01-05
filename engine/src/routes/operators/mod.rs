@@ -113,7 +113,10 @@ impl OperatorApi {
             .get(format!("{}/api/capabilities", operator_endpoint))
             .send()
             .await
-            .unwrap();
+            .map_err(|error| {
+                tracing::error!("Error getting capabilities for operator: {}", error);
+                HttpError::ProxyError(error)
+            })?;
 
         let body = response.json().await.unwrap();
 

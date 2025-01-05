@@ -1,7 +1,7 @@
 import { createFileRoute } from '@tanstack/react-router';
 
-import { useProducts } from '@/api/product';
-import { SCPage } from '@/layouts/SimpleCenterPage';
+import { useProducts } from '@/api';
+import { SCPage } from '@/layouts';
 
 export const Route = createFileRoute('/products/')({
     component: () => {

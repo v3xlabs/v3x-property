@@ -5,6 +5,9 @@ use tracing::error;
 
 #[derive(Debug, thiserror::Error)]
 pub enum HttpError {
+    #[error("Proxy error: {0}")]
+    ProxyError(#[from] reqwest::Error),
+
     #[error("Anyhow error: {0}")]
     AnyhowError(#[from] anyhow::Error),
 
@@ -26,9 +29,12 @@ pub enum HttpError {
 
 impl ResponseError for HttpError {
     fn as_response(&self) -> poem::Response
-        where
-            Self: std::error::Error + Send + Sync + 'static, {
-        poem::Response::default().with_status(self.status()).into_response()
+    where
+        Self: std::error::Error + Send + Sync + 'static,
+    {
+        poem::Response::default()
+            .with_status(self.status())
+            .into_response()
     }
     fn status(&self) -> StatusCode {
         match self {
@@ -37,15 +43,19 @@ impl ResponseError for HttpError {
             HttpError::AnyhowError(error) => {
                 error!("Anyhow error: {:?}", error);
                 StatusCode::INTERNAL_SERVER_ERROR
-            },
+            }
             HttpError::DatabaseError(error) => {
                 error!("Database error: {:?}", error);
                 StatusCode::INTERNAL_SERVER_ERROR
-            },
+            }
+            HttpError::ProxyError(error) => {
+                error!("Proxy error: {:?}", error);
+                StatusCode::FAILED_DEPENDENCY
+            }
             error => {
                 error!("Error: {:?}", error);
                 StatusCode::BAD_REQUEST
-            },
+            }
         }
     }
 }

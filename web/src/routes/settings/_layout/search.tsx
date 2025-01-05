@@ -1,6 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router';
 
-import { SearchTaskTable } from '@/components/search_tasks/SearchTaskTable';
+import { SearchTaskTable } from '@/components/search/tasks/SearchTaskTable';
 import { SearchDetails } from '@/components/settings/SearchDetails';
 
 export const Route = createFileRoute('/settings/_layout/search')({

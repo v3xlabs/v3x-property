@@ -1,12 +1,9 @@
 import clsx from 'clsx';
 import { FaBrain } from 'react-icons/fa6';
-import { SiGooglegemini, SiOpenai } from 'react-icons/si';
-import { SiOllama } from 'react-icons/si';
+import { SiGooglegemini, SiKagi, SiOllama, SiOpenai } from 'react-icons/si';
 
-import { useInstanceSettings } from '@/api/instance_settings';
-
-import { Button } from '../ui/Button';
-import { Tooltip } from '../ui/Tooltip';
+import { useInstanceSettings } from '@/api';
+import { Button, Tooltip } from '@/gui';
 
 const INTELLIGENCE_DATA = {
     gemini: {
@@ -74,8 +71,8 @@ export const IntelligenceDetails = () => {
                             <h3 className="font-bold">Intelligence is active</h3>
                         </div>
                         <p>
-                    Intelligence is active. You can use the intelligence
-                    features of the application.
+                            Intelligence is active. You can use the intelligence
+                            features of the application.
                         </p>
                         <div className="flex items-center gap-2">
                             <Button variant="primary">Configure Preferences</Button>
@@ -90,9 +87,9 @@ export const IntelligenceDetails = () => {
                                 !!instanceSettings?.modules?.intelligence?.[
                                     a[0] as keyof typeof instanceSettings.modules.intelligence
                                 ] >
-                                !!instanceSettings?.modules?.intelligence?.[
+                                    !!instanceSettings?.modules?.intelligence?.[
                                     b[0] as keyof typeof instanceSettings.modules.intelligence
-                                ]
+                                    ]
                                     ? -1
                                     : 1
                             )
@@ -104,7 +101,7 @@ export const IntelligenceDetails = () => {
 
                                 const data =
                                     instanceSettings.modules.intelligence[
-                                        key as keyof typeof instanceSettings.modules.intelligence
+                                    key as keyof typeof instanceSettings.modules.intelligence
                                     ];
 
                                 const isEnabled = !!data;
@@ -135,6 +132,30 @@ export const IntelligenceDetails = () => {
                                     </div>
                                 );
                             })}
+                    </div>
+                    <h3 className="h3">Intelligence Features</h3>
+                    <div className="card no-padding flex flex-col divide-y divide-neutral-200">
+                        <div className="w-full p-4">
+                            <div className="flex items-center gap-2 font-bold">
+                                <SiKagi />
+                                Kagi
+                                <Tooltip>
+                                    <div className="space-y-4 pt-2">
+                                        <div className="flex items-center gap-2">
+                                            <SiKagi />
+                                            <span>
+                                                Kagi
+                                            </span>
+                                        </div>
+                                        <p>Kagi is a search engine.</p>
+                                        <p className="text-sm text-neutral-500">
+                                            You can enable kagi by setting the{' '}
+                                            <code className="code">KAGI_API_KEY</code> via environment
+                                            variables.</p>
+                                    </div>
+                                </Tooltip>
+                            </div>
+                        </div>
                     </div>
                 </>
             )}

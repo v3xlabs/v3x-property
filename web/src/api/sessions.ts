@@ -1,4 +1,6 @@
-import { useHttp } from './core';
+import { useQuery } from '@tanstack/react-query';
+
+import { apiRequest } from './core';
 
 export type SessionResponse = {
     session_id: string;
@@ -10,6 +12,11 @@ export type SessionResponse = {
 };
 
 export const useSessions = () =>
-    useHttp<SessionResponse[]>('/api/sessions', {
-        auth: 'required',
+    useQuery<SessionResponse[]>({
+        queryKey: ['sessions'],
+        queryFn: async () => {
+            const response = await apiRequest('/sessions', 'get', {});
+
+            return response.data;
+        },
     });

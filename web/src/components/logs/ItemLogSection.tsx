@@ -1,4 +1,4 @@
-import { useItemLogs } from '@/api/item';
+import { useItemLogs } from '@/api';
 
 import { ItemLogEntry } from './ItemLogEntry';
 

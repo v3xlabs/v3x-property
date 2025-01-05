@@ -5,6 +5,8 @@ import { queryClient } from '@/util/query';
 import { ApiRequest, apiRequest } from '../core';
 import { paths } from '../schema.gen';
 
+export * from './item';
+
 export type FieldDefinition = ApiRequest<
     '/field/definitions',
     'get'

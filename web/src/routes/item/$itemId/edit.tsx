@@ -13,28 +13,18 @@ import { FaPlus, FaTrash } from 'react-icons/fa6';
 import { FiCopy, FiX } from 'react-icons/fi';
 import { toast } from 'sonner';
 
-import { FieldDefinition, getFieldDefinitions } from '@/api/fields';
-import { getItemFields } from '@/api/fields/item';
-import { formatId, getInstanceSettings } from '@/api/instance_settings';
 import {
-    getItemById,
+    FieldDefinition, formatId, getFieldDefinitions, getInstanceSettings, getItemById,
+    getItemFields,
     getItemMedia,
     getItemTags,
-    useDeleteItem,
-    useEditItem,
-} from '@/api/item';
-import { getTags } from '@/api/tags';
-import { DynamicIcon } from '@/components/DynamicIcon';
-import { FieldOption, FieldSelect } from '@/components/form/Select';
-import { BaseInput } from '@/components/input/BaseInput';
+    getTags, useDeleteItem,
+    useEditItem
+} from '@/api';
 import { ItemIntelligentSuggest } from '@/components/item/ItemIntelligentSuggest';
 import { EditMediaGallery } from '@/components/media/EditMediaGallery';
-import { Tag } from '@/components/Tag';
-import * as AlertDialog from '@/components/ui/AlertDialog';
-import { Button } from '@/components/ui/Button';
-import * as Command from '@/components/ui/Command';
-import * as Popover from '@/components/ui/Popover';
-import { SCPage } from '@/layouts/SimpleCenterPage';
+import { AlertDialog, BaseInput, Button, Command, DynamicIcon, FieldOption, FieldSelect, Popover, Tag } from '@/gui';
+import { SCPage } from '@/layouts';
 import {
     fromItemToForm,
     isEmptyDiff,
@@ -304,7 +294,7 @@ export const Route = createFileRoute('/item/$itemId/edit')({
         });
 
         return (
-            <SCPage 
+            <SCPage
                 title={(item && item.name) || `Item ${itemId}`}
                 subtext={
                     <>

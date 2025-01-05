@@ -10,23 +10,19 @@ import {
 } from '@tanstack/react-router';
 import { useEffect } from 'react';
 import { FiCopy, FiEdit } from 'react-icons/fi';
+import { toast } from 'sonner';
 
-import { formatId, getInstanceSettings } from '@/api/instance_settings';
-import { getItemById, getItemLocation, getItemMedia, getItemTags } from '@/api/item';
-import { getPolicy } from '@/api/policy';
-import { LocationInputExecutive } from '@/components/input/LocationInput';
+import { formatId, getInstanceSettings, getItemById, getItemLocation, getItemMedia, getItemTags, getPolicy } from '@/api';
 import { ItemFields } from '@/components/item/ItemFields';
 import { LocationPreview } from '@/components/location/LocationPreview';
+import { YeetButton } from '@/components/location/YeetButton';
 import { ItemLogSection } from '@/components/logs/ItemLogSection';
 import { MediaGallery } from '@/components/media/MediaGallery';
 import { PrintLabelButton } from '@/components/print/PrintModal';
-import { Tag } from '@/components/Tag';
-import { Button } from '@/components/ui/Button';
-import { UserProfile } from '@/components/UserProfile';
-import { YeetButton } from '@/components/YeetButton';
-import { SCPage } from '@/layouts/SimpleCenterPage';
+import { UserProfile } from '@/components/user/UserProfile';
+import { Button, LocationInputExecutive, Tag } from '@/gui';
+import { SCPage } from '@/layouts';
 import { queryClient } from '@/util/query';
-import { toast } from 'sonner';
 
 export const Route = createFileRoute('/item/$itemId/')({
     // if item_id is not formatId(item_id, instanceSettings), redirect to the formatted item_id
@@ -102,47 +98,57 @@ export const Route = createFileRoute('/item/$itemId/')({
                     </div>
                 }
             >
-                <div className="card no-padding space-y-4 py-4">
-                    <div className="px-4">
-                        <MediaGallery media_ids={media.data} />
-                    </div>
-                    <div className="px-4">
-                        {item.data?.owner_id && (
-                            <div>
-                                <h3 className="font-bold">Owner</h3>
-                                <UserProfile user_id={item.data.owner_id} />
-                            </div>
-                        )}
-                    </div>
-                    <ItemFields item_id={itemId} />
-                    {tags && tags.length > 0 && (
+                <div className="flex flex-col gap-4 md:flex-row-reverse">
+                    <div className="card no-padding space-y-4 py-4">
                         <div className="px-4">
-                            <h3>Tags</h3>
-                            <div className="flex flex-wrap gap-2">
-                                {tags?.map((tag) => (
-                                    <Tag key={tag.tag_id} tag={tag} />
-                                ))}
-                            </div>
+                            <MediaGallery media_ids={media.data} />
                         </div>
-                    )}
-                </div>
-                <div className="space-y-2">
-                    <h2 className="h2">Location</h2>
-                    <div className="flex w-full items-center justify-stretch gap-4">
-                        {
-                            location ? (
-                                <div className="grow text-nowrap">
-                                    <LocationPreview itemLocation={location} variant='full' />
-                                </div>
-                            ) : (
-                                <div className="grow">
-                                    This item does not have a location
+                        <div className="px-4">
+                            {item.data?.owner_id && (
+                                <div>
+                                    <h3 className="h3">Owner</h3>
+                                    <UserProfile user_id={item.data.owner_id} />
                                 </div>
                             )}
-                        <div className="flex flex-col gap-2">
-                            <LocationInputExecutive item_id={itemId} />
-                            <YeetButton item_id={itemId} />
                         </div>
+                        <div className="px-4">
+                            <h3 className="h3">Location</h3>
+                            <div className="flex w-full flex-col items-stretch justify-stretch gap-4">
+                                {
+                                    location ? (
+                                        <div className="grow text-nowrap">
+                                            <LocationPreview itemLocation={location} variant='full' />
+                                        </div>
+                                    ) : (
+                                        <></>
+                                    )}
+                                <div className="grid w-full grid-cols-2 gap-2">
+                                    <LocationInputExecutive item_id={itemId} />
+                                    <YeetButton item_id={itemId} />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="card no-padding w-full space-y-4 py-4">
+                        <div className="px-4">
+                            <h3 className="h3">
+                                Id
+                            </h3>
+                            <div className="card no-padding px-4 py-2">
+                                {itemId}
+                            </div>
+                        </div>
+                        <ItemFields item_id={itemId} />
+                        {tags && tags.length > 0 && (
+                            <div className="px-4">
+                                <h3 className="h3">Tags</h3>
+                                <div className="flex flex-wrap gap-2">
+                                    {tags?.map((tag) => (
+                                        <Tag key={tag.tag_id} tag={tag} />
+                                    ))}
+                                </div>
+                            </div>
+                        )}
                     </div>
                 </div>
                 <ItemLogSection item_id={itemId} />
