@@ -32,7 +32,7 @@ const Page = () => {
                             ['Search for an Item', '/search'],
                             ['Adjust your settings', '/settings'],
                         ].map(([title, href]) => (
-                            <li key={title}>
+                            <li key={title} className="flex items-center">
                                 <Button variant="link" asChild>
                                     <Link to={href} className="block p-4">
                                         <span>{title}</span>
