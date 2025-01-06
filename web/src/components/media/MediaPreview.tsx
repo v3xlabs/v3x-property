@@ -42,6 +42,8 @@ export const BareMediaPreview: FC<{
                 .with(
                     'webp',
                     'image/webp',
+                    'image/avif',
+                    'avif',
                     'png',
                     'image/png',
                     'svg',

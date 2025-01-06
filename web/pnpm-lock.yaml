@@ -126,8 +126,8 @@ importers:
         specifier: ^1.9.4
         version: 1.9.4
       openapi-hooks:
-        specifier: ^0.0.3
-        version: 0.0.3(jiti@1.21.0)(postcss@8.4.38)(typescript@5.5.4)
+        specifier: 0.0.3-alpha.3
+        version: 0.0.3-alpha.3(jiti@1.21.0)(postcss@8.4.38)(typescript@5.5.4)
       postcss:
         specifier: ^8.4.38
         version: 8.4.38
@@ -3394,8 +3394,8 @@ packages:
   once@1.4.0:
     resolution: {integrity: sha512-lNaJgI+2Q5URQBkccEKHTQOPaXdUxnZZElQTZY0MFUAuaEqe1E+Nyvgdz/aIyNi6Z9MzO5dv1H8n58/GELp3+w==}
 
-  openapi-hooks@0.0.3:
-    resolution: {integrity: sha512-EIHQgq5GBaC8Y72f496xwzGvGieRQvHOFWog/7hSHNwM7tcTQyBeR0M4ZdCuHTqgG0fuiNK9EtNmV8ZMjammcw==}
+  openapi-hooks@0.0.3-alpha.3:
+    resolution: {integrity: sha512-oNplzxcM3a7vEkM2WFwBDZDfNbI5spUumiPoY1vGi/YIIZ6EfeP59oRFbI2SaWnjTSv9q+XuZR8pq62r6rUhtg==}
 
   openapi-typescript@7.4.3:
     resolution: {integrity: sha512-xTIjMIIOv9kNhsr8JxaC00ucbIY/6ZwuJPJBZMSh5FA2dicZN5uM805DWVJojXdom8YI4AQTavPDPHMx/3g0vQ==}
@@ -7605,7 +7605,7 @@ snapshots:
     dependencies:
       wrappy: 1.0.2
 
-  openapi-hooks@0.0.3(jiti@1.21.0)(postcss@8.4.38)(typescript@5.5.4):
+  openapi-hooks@0.0.3-alpha.3(jiti@1.21.0)(postcss@8.4.38)(typescript@5.5.4):
     dependencies:
       tsup: 8.3.5(jiti@1.21.0)(postcss@8.4.38)(tsx@4.19.2)(typescript@5.5.4)
       tsx: 4.19.2
