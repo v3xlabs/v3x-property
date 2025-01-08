@@ -1,13 +1,11 @@
 import { queryOptions, useMutation, useQuery } from '@tanstack/react-query';
 
 import { useAuth } from './auth';
-import { ApiRequest, apiRequest } from './core';
+import { apiRequest } from './core';
+import { components } from './schema.gen';
 
 export type IdCasingPreference = 'upper' | 'lower';
-export type InstanceSettings = ApiRequest<
-    '/instance/settings',
-    'get'
->['response']['data'];
+export type InstanceSettings = components['schemas']['InstanceSettings'];
 
 export const getInstanceSettings = () =>
     queryOptions({
@@ -24,10 +22,7 @@ export const useInstanceSettings = () => {
     return useQuery(getInstanceSettings());
 };
 
-export type ConfigurableInstanceSettings = ApiRequest<
-    '/instance/settings',
-    'put'
->['body']['data'];
+export type ConfigurableInstanceSettings = components['schemas']['InstanceSettingsConfigurable'];
 
 export const useUpdateInstanceSettings = () =>
     useMutation({
@@ -64,6 +59,20 @@ export const formatId = (
     const trimmedId = id.replace(/^0+/, '');
 
     return formatIdCasing(trimmedId, instanceSettings?.id_casing_preference);
+};
+
+export const getPublicInstanceSettings = () =>
+    queryOptions({
+        queryKey: ['instance', 'public'],
+        queryFn: async () => {
+            const response = await apiRequest('/instance/public', 'get', {});
+
+            return response.data;
+        },
+    });
+
+export const usePublicInstanceSettings = () => {
+    return useQuery(getPublicInstanceSettings());
 };
 
 export const useInstanceStatistics = () => {

@@ -7,7 +7,7 @@ use crate::{
     models::settings::{
         statistics::{InstanceStatistics, StorageStatistics},
         version::VersionSettings,
-        InstanceSettings, InstanceSettingsConfigurable,
+        InstanceSettings, InstanceSettingsConfigurable, PublicInstanceSettings,
     },
     state::AppState,
 };
@@ -46,6 +46,14 @@ impl InstanceApi {
         InstanceSettings::update_instance_settings(&state.database, &settings).await;
 
         Ok(())
+    }
+
+    /// /instance/public
+    ///
+    /// Get the public instance settings
+    #[oai(path = "/instance/public", method = "get", tag = "ApiTags::Instance")]
+    pub async fn public(&self) -> Result<Json<PublicInstanceSettings>> {
+        Ok(Json(PublicInstanceSettings::get_public_settings()))
     }
 
     /// /instance/statistics
