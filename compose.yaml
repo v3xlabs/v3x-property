@@ -1,11 +1,12 @@
-# runs the engine on port 3000
 services:
   # Engine
   engine:
     image: ghcr.io/v3xlabs/v3x-property/engine:master
     pull_policy: always
     ports:
+      # You can customize the port here
       - "3000:3000"
+    # Dont forget to setup the .env file
     env_file: .env
     environment:
       - RUST_BACKTRACE=1
