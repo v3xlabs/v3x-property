@@ -70,7 +70,7 @@ export const AvatarHolder: FC<{
                 )}
                 <Avatar.Fallback
                     className={clsx(
-                        'flex h-full w-full items-center justify-center bg-gray-200 text-base font-medium leading-none text-pink-500',
+                        'bg-backgroundSecondary flex h-full w-full items-center justify-center text-base font-medium leading-none text-pink-500',
                         size === 'compact' && '!text-[0.6em]'
                     )}
                     delayMs={0}

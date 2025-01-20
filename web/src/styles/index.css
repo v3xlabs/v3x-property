@@ -31,11 +31,10 @@
 
     @media (prefers-color-scheme: dark) {
         :root {
-            --background: 222.2 47.4% 11.2%;
-            --foreground: 210 40% 98%;
-            --card: 222.2 47.4% 11.2%;
-            --card-foreground: 210 40% 98%;
-            --border: 214.3 31.8% 15.3%;
+            --background: 240 8% 7%;
+            --background-secondary: 240 5% 15%;
+            --foreground: 240 9% 75%;
+            --border: 240 5% 15%;
         }
     }
 }
