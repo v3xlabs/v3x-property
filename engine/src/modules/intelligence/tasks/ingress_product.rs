@@ -28,7 +28,7 @@ impl IngressProductTask {
         let actor = GeminiActor;
 
         let conversation = Conversation {
-            strategy: Strategy::Basic,
+            strategy: Strategy::ProductOptimized,
             index: 0,
             messages: vec![ConversationMessage {
                 role: "user".to_string(),

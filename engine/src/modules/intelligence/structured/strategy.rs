@@ -3,6 +3,7 @@ use crate::modules::intelligence::actions::{
     SmartAction, SmartActionType,
 };
 use serde::{Deserialize, Serialize};
+use serde_with::SerializeDisplay;
 
 use super::Conversation;
 
@@ -13,6 +14,8 @@ pub enum Strategy {
     UPCForcedSearch,
     /// 8 rounds max
     Basic,
+    /// 8 rounds max
+    ProductOptimized,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -23,6 +26,16 @@ pub enum FunctionMode {
     Auto,
     #[serde(rename = "NONE")]
     None,
+}
+
+impl ToString for FunctionMode {
+    fn to_string(&self) -> String {
+        match self {
+            FunctionMode::Any => "ANY".to_string(),
+            FunctionMode::Auto => "AUTO".to_string(),
+            FunctionMode::None => "NONE".to_string(),
+        }
+    }
 }
 
 #[derive(Debug, Clone)]
@@ -60,6 +73,30 @@ impl Strategy {
                     1 => FunctionMode::Auto,
                     _ => FunctionMode::None,
                 }),
+            }),
+            Strategy::ProductOptimized => Ok(StrategyConfig {
+                max_rounds: 8,
+                tasks: vec![
+                    SmartActionType::SearchKagi,
+                    SmartActionType::SearchUPCEAN,
+                    SmartActionType::ExtractLDJSON,
+                ],
+                allowed_functions: None,
+                // allowed_functions: match conversation.index {
+                //     // less then 5
+                //     0..8 => Some(vec![
+                //         SearchKagiTask::name(),
+                //         ExtractLDJsonTask::name(),
+                //         SearchUPCEANDatabaseTask::name(),
+                //     ]),
+                //     _ => None,
+                // },
+                function_mode: Some(match conversation.index {
+                    0..3 => FunctionMode::Any,
+                    3..7 => FunctionMode::Auto,
+                    _ => FunctionMode::None,
+                }),
+                // function_mode: Some(FunctionMode::Auto),
             }),
             Strategy::Basic => Ok(StrategyConfig {
                 max_rounds: 8,

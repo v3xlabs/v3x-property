@@ -51,7 +51,7 @@ impl GeminiStructuredContentRequest {
                 true => Some(GeminiStructuredContentRequestToolConfig {
                     function_calling_config: GeminiStructuredContentRequestToolConfigFunctionCallingConfig {
                         allowed_function_names: strategy.allowed_functions.clone(),
-                        mode: serde_json::to_string(strategy.function_mode.as_ref().unwrap_or(&FunctionMode::Auto)).unwrap()
+                        mode: strategy.function_mode.as_ref().unwrap_or(&FunctionMode::Auto).to_string()
                     }
                 }),
                 false => None,
