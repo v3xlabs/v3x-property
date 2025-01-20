@@ -21,8 +21,6 @@ impl Actor for GeminiActor {
     ) -> Result<CalculatedResponse, anyhow::Error> {
         let body = GeminiStructuredContentRequest::from_conversation(conversation, strategy);
 
-        tracing::info!("body: {}", serde_json::to_string(&body).unwrap());
-
         let client = reqwest::Client::new();
         let api_key = intelligence.gemini.as_ref().unwrap().api_key.as_str();
 
