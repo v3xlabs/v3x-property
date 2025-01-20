@@ -51,6 +51,9 @@ export default {
                     },
                 },
             },
+            borderColor: {
+                DEFAULT: 'hsl(var(--border))',
+            }
         },
     },
     plugins: [require('tailwindcss-animate')],
