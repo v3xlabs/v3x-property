@@ -33,8 +33,9 @@
         :root {
             --background: 240 8% 7%;
             --background-secondary: 240 5% 15%;
-            --foreground: 240 9% 75%;
+            --foreground: 0 0% 90%;
             --border: 240 5% 15%;
+            --accent: 240 2% 15%;
         }
     }
 }

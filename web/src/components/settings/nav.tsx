@@ -44,7 +44,7 @@ const ExpandableItem = ({ path, label, icon }: { path: [string, string][], label
             <div className="flex w-full flex-col">
                 <Accordion.Trigger>
                     <div className={clsx(
-                        'relative flex w-full cursor-pointer items-center justify-between gap-2 rounded-md px-2 py-1 text-neutral-700 hover:bg-neutral-100',
+                        'hover:bg-accent text-foreground relative flex w-full cursor-pointer items-center justify-between gap-2 rounded-md px-2 py-1',
                     )}>
                         <div className='flex items-center gap-2'>
                             {icon}
@@ -63,8 +63,8 @@ const ExpandableItem = ({ path, label, icon }: { path: [string, string][], label
                             to={path as string}
                             activeOptions={{ exact: true }}
                             className={clsx(
-                                'relative flex cursor-pointer items-center gap-2 rounded-md px-2 py-1 pl-8 text-sm text-neutral-700 hover:bg-neutral-100',
-                                '[&.active]:bg-neutral-500/10 [&.active]:text-primary',
+                                'text-foreground hover:bg-accent relative flex cursor-pointer items-center gap-2 rounded-md px-2 py-1 pl-8 text-sm',
+                                '[&.active]:text-foreground [&.active]:bg-neutral-500/10',
                                 // eslint-disable-next-line quotes
                                 "[&.active]:before:content-['']",
                                 '[&.active]:before:absolute [&.active]:before:-left-3 [&.active]:before:bottom-[12%] [&.active]:before:top-[12%] [&.active]:before:w-1 [&.active]:before:rounded-md [&.active]:before:bg-blue-500'
@@ -170,8 +170,8 @@ export const SettingsNav = () => {
                                             to={path as string}
                                             activeOptions={{ exact: true }}
                                             className={clsx(
-                                                'relative flex w-full cursor-pointer items-center gap-2 rounded-md px-2 py-1 text-neutral-700 hover:bg-neutral-100',
-                                                '[&.active]:bg-neutral-500/10 [&.active]:text-primary',
+                                                'text-foreground hover:bg-accent relative flex w-full cursor-pointer items-center gap-2 rounded-md px-2 py-1',
+                                                '[&.active]:text-foreground [&.active]:bg-neutral-500/10',
                                                 // eslint-disable-next-line quotes
                                                 "[&.active]:before:content-['']",
                                                 '[&.active]:before:absolute [&.active]:before:-left-3 [&.active]:before:bottom-[12%] [&.active]:before:top-[12%] [&.active]:before:w-1 [&.active]:before:rounded-md [&.active]:before:bg-blue-500'
