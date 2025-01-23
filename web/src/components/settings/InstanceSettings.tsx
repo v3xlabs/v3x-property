@@ -64,7 +64,7 @@ export const InstanceSettings = () => {
                                                 </Button>
                                             </Dropdown.Trigger>
                                             <Dropdown.Content className="w-56">
-                                                <Dropdown.Label>
+                                                <Dropdown.Label className='Text'>
                                                     ID Casing Preference
                                                 </Dropdown.Label>
                                                 <Dropdown.Separator />
@@ -85,6 +85,7 @@ export const InstanceSettings = () => {
                                                                     value={
                                                                         value
                                                                     }
+                                                                    className='Text'
                                                                 >
                                                                     {value}
                                                                 </Dropdown.RadioItem>

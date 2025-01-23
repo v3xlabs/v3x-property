@@ -157,7 +157,7 @@ export const Navbar = () => {
                                     <Link
                                         to={path}
                                         data-testid={slug}
-                                        className="flex cursor-pointer items-center justify-start rounded-md py-2.5 hover:bg-black/5"
+                                        className="Text flex cursor-pointer items-center justify-start rounded-md py-2.5 hover:bg-black/5"
                                     >
                                         {icon}
                                         <span className="text-sm">{name}</span>
