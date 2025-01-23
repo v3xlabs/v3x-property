@@ -34,8 +34,13 @@
             --background: 240 8% 7%;
             --background-secondary: 240 5% 15%;
             --foreground: 0 0% 90%;
+            --primary: 210 40% 98%;
+            --primary-foreground: 210 40% 98%;
+            --accent-foreground: 210 40% 98%;
             --border: 240 5% 15%;
             --accent: 240 2% 15%;
+            --popover: 240 8% 7%;
+            --popover-foreground: 210 40% 98%;
         }
     }
 }
