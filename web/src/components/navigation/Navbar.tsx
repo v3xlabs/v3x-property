@@ -181,7 +181,7 @@ export const Navbar = () => {
                                     <Dropdown.Item asChild>
                                         <Link
                                             to={login_here_url}
-                                            className="flex items-center justify-center py-2 hover:bg-black/5"
+                                            className="Text flex items-center justify-center py-2 hover:bg-black/5"
                                         >
                                             <FiLogIn />
                                             <span className="text-sm">
@@ -239,7 +239,7 @@ export const Navbar = () => {
                     {(!token || (token && !meData)) && (
                         <a
                             href={login_here_url}
-                            className="flex h-full items-center border-t px-2 py-0.5 hover:bg-black/10 md:border-l"
+                            className="Text flex h-full items-center border-t px-2 py-0.5 hover:bg-black/10 md:border-l"
                             data-testid="login-button"
                         >
                             Login

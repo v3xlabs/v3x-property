@@ -164,7 +164,7 @@ export const MediaPreview: FC<{
     return (
         <div
             className={clsx(
-                'relative aspect-video h-fit w-full max-w-md rounded-md bg-neutral-100',
+                'bg-background relative aspect-video h-fit w-full max-w-md rounded-md',
                 status == 'new-media' &&
                     isPending &&
                     'border-2 border-blue-400',

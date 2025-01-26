@@ -108,7 +108,7 @@ a {
     border-radius: 6px;
     padding: 20px;
     width: 300px;
-    background-color: white;
+    background-color: hsl(var(--background-secondary));
     box-shadow: hsl(206 22% 7% / 35%) 0px 10px 38px -10px,
         hsl(206 22% 7% / 20%) 0px 10px 20px -15px;
     animation-duration: 400ms;
@@ -214,8 +214,8 @@ a {
     outline: none;
 }
 .DropdownMenuSubTrigger[data-state='open'] {
-    background-color: #e4e2ee;
-    color: #53526a;
+    background-color: hsl(var(--background-secondary));
+    color: hsl(var(--foreground));
 }
 .DropdownMenuItem[data-disabled],
 .DropdownMenuCheckboxItem[data-disabled],
@@ -266,7 +266,7 @@ a {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    color: #53526a;
+    color: hsl(var(--foreground));
     background-color: white;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.35);
 }
