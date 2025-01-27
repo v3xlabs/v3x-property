@@ -109,7 +109,7 @@ export const Navbar = () => {
         <nav
             role="navigation"
             aria-label="Main"
-            className="bg-background fixed bottom-0 z-20 flex h-16 w-full items-center justify-between border-t md:sticky md:top-0 md:h-9 md:border-b"
+            className="fixed bottom-0 z-20 flex h-16 w-full items-center justify-between border-t bg-background md:sticky md:top-0 md:h-9 md:border-b"
         >
             <Link
                 to="/"
@@ -157,7 +157,7 @@ export const Navbar = () => {
                                     <Link
                                         to={path}
                                         data-testid={slug}
-                                        className="text-foreground flex cursor-pointer items-center justify-start rounded-md py-2.5 hover:bg-black/5"
+                                        className="flex cursor-pointer items-center justify-start rounded-md py-2.5 text-foreground hover:bg-black/5"
                                     >
                                         {icon}
                                         <span className="text-sm">{name}</span>
@@ -181,7 +181,7 @@ export const Navbar = () => {
                                     <Dropdown.Item asChild>
                                         <Link
                                             to={login_here_url}
-                                            className="text-foreground flex items-center justify-center py-2 hover:bg-black/5"
+                                            className="flex items-center justify-center py-2 text-foreground hover:bg-black/5"
                                         >
                                             <FiLogIn />
                                             <span className="text-sm">
@@ -202,7 +202,7 @@ export const Navbar = () => {
                             <Dropdown.Root>
                                 <Dropdown.Trigger asChild>
                                     <button
-                                        className="text-foreground flex h-full items-center gap-2 p-1 px-2 hover:bg-black/5"
+                                        className="flex h-full items-center gap-2 p-1 px-2 text-foreground hover:bg-black/5"
                                         data-testid="user-dropdown-trigger"
                                     >
                                         <AvatarHolder
@@ -239,7 +239,7 @@ export const Navbar = () => {
                     {(!token || (token && !meData)) && (
                         <a
                             href={login_here_url}
-                            className="text-foreground flex h-full items-center border-t px-2 py-0.5 hover:bg-black/10 md:border-l"
+                            className="flex h-full items-center border-t px-2 py-0.5 text-foreground hover:bg-black/10 md:border-l"
                             data-testid="login-button"
                         >
                             Login
