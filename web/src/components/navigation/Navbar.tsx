@@ -202,7 +202,7 @@ export const Navbar = () => {
                             <Dropdown.Root>
                                 <Dropdown.Trigger asChild>
                                     <button
-                                        className="flex h-full items-center gap-2 p-1 px-2 hover:bg-black/5"
+                                        className="Text flex h-full items-center gap-2 p-1 px-2 hover:bg-black/5"
                                         data-testid="user-dropdown-trigger"
                                     >
                                         <AvatarHolder
@@ -216,7 +216,7 @@ export const Navbar = () => {
                                     </button>
                                 </Dropdown.Trigger>
 
-                                <Dropdown.Content align="end">
+                                <Dropdown.Content align="end" className='Text'>
                                     <Dropdown.Item asChild>
                                         <Link to="/sessions">Sessions</Link>
                                     </Dropdown.Item>
