@@ -115,22 +115,22 @@ export const ItemPreviewHoverCard: FC<{
                 />
                 <div className="flex flex-col gap-3">
                     <div>
-                        <div className="Text bold">{item?.name}</div>
-                        <div className="Text faded">#{formattedItemId}</div>
+                        <div className="text-foreground bold">{item?.name}</div>
+                        <div className="text-foreground faded">#{formattedItemId}</div>
                     </div>
-                    {/* <div className="Text">
+                    {/* <div className="text-foreground">
                                         Components, icons, colors, and templates
                                         for building high-quality, accessible
                                         UI. Free and open-source.
                                     </div> */}
                     <div className="flex gap-3">
                         {/* <div className="flex gap-1">
-                            <div className="Text bold">0</div>{' '}
-                            <div className="Text faded">Following</div>
+                            <div className="text-foreground bold">0</div>{' '}
+                            <div className="text-foreground faded">Following</div>
                         </div>
                         <div className="flex gap-1">
-                            <div className="Text bold">2,900</div>{' '}
-                            <div className="Text faded">Followers</div>
+                            <div className="text-foreground bold">2,900</div>{' '}
+                            <div className="text-foreground faded">Followers</div>
                         </div> */}
                     </div>
                 </div>
@@ -375,7 +375,7 @@ export const ItemPreview: FC<Properties> = ({ item_id, variant }) => {
                                     randomHue={randomHue}
                                 />
                                 <span className="flex items-baseline justify-start gap-0.5 overflow-hidden">
-                                    <span className="Text text-ellipsis whitespace-nowrap">
+                                    <span className="text-foreground text-ellipsis whitespace-nowrap">
                                         {item?.name || UNKNOWN_ITEM}
                                     </span>
                                     {/* TODO: Figure out why -z-10 is needed to prevent overlap with user preview in logs page */}
@@ -419,11 +419,11 @@ export const ItemPreview: FC<Properties> = ({ item_id, variant }) => {
                                     randomHue={randomHue}
                                 />
                                 <div className="flex flex-col justify-center -space-y-1.5 overflow-hidden">
-                                    <div className="Text overflow-hidden text-ellipsis whitespace-nowrap">
+                                    <div className="text-foreground overflow-hidden text-ellipsis whitespace-nowrap">
                                         {item?.name || UNKNOWN_ITEM}
                                     </div>
                                     {formattedItemId && (
-                                        <div className="Text faded">
+                                        <div className="text-foreground faded">
                                             #{formattedItemId}
                                         </div>
                                     )}

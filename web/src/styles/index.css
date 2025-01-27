@@ -154,11 +154,6 @@ a {
     height: 60px;
 }
 
-.Text {
-    margin: 0;
-    color: hsl(var(--foreground));
-    font-size: 15px;
-}
 .Text.faded {
     color: #6c6576;
 }

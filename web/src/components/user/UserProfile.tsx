@@ -63,22 +63,22 @@ export const UserProfileHoverCard: FC<{
                 />
                 <div className="flex flex-col gap-3">
                     <div>
-                        <div className="Text bold">{user?.name}</div>
-                        <div className="Text faded">#{user?.user_id}</div>
+                        <div className="text-foreground bold">{user?.name}</div>
+                        <div className="text-foreground faded">#{user?.user_id}</div>
                     </div>
-                    {/* <div className="Text">
+                    {/* <div className="text-foreground">
                                         Components, icons, colors, and templates
                                         for building high-quality, accessible
                                         UI. Free and open-source.
                                     </div> */}
                     <div className="flex gap-3">
                         <div className="flex gap-1">
-                            <div className="Text bold">0</div>{' '}
-                            <div className="Text faded">Following</div>
+                            <div className="text-foreground bold">0</div>{' '}
+                            <div className="text-foreground faded">Following</div>
                         </div>
                         <div className="flex gap-1">
-                            <div className="Text bold">2,900</div>{' '}
-                            <div className="Text faded">Followers</div>
+                            <div className="text-foreground bold">2,900</div>{' '}
+                            <div className="text-foreground faded">Followers</div>
                         </div>
                     </div>
                 </div>
@@ -142,7 +142,7 @@ export const UserProfile: FC<Properties> = ({ user_id, variant }) => {
                                     initials={getInitials(user?.name)}
                                     size="compact"
                                 />
-                                <span className="Text !leading-[0.75em]">
+                                <span className="text-foreground !leading-[0.75em]">
                                     {user?.first_name ||
                                         user?.name ||
                                         UNKNOWN_USER}
@@ -165,10 +165,10 @@ export const UserProfile: FC<Properties> = ({ user_id, variant }) => {
                                     initials={getInitials(user?.name)}
                                 />
                                 <div className="flex flex-col justify-center gap-1">
-                                    <div className="Text !leading-[0.75em]">
+                                    <div className="text-foreground !leading-[0.75em]">
                                         {user?.name || UNKNOWN_USER}
                                     </div>
-                                    <div className="Text faded !leading-[0.75em]">
+                                    <div className="text-foreground faded !leading-[0.75em]">
                                         {me?.user_id === user?.user_id
                                             ? 'You'
                                             : `#${user?.user_id}`}

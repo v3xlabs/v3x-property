@@ -157,7 +157,7 @@ export const Navbar = () => {
                                     <Link
                                         to={path}
                                         data-testid={slug}
-                                        className="Text flex cursor-pointer items-center justify-start rounded-md py-2.5 hover:bg-black/5"
+                                        className="text-foreground flex cursor-pointer items-center justify-start rounded-md py-2.5 hover:bg-black/5"
                                     >
                                         {icon}
                                         <span className="text-sm">{name}</span>
@@ -181,7 +181,7 @@ export const Navbar = () => {
                                     <Dropdown.Item asChild>
                                         <Link
                                             to={login_here_url}
-                                            className="Text flex items-center justify-center py-2 hover:bg-black/5"
+                                            className="text-foreground flex items-center justify-center py-2 hover:bg-black/5"
                                         >
                                             <FiLogIn />
                                             <span className="text-sm">
@@ -202,7 +202,7 @@ export const Navbar = () => {
                             <Dropdown.Root>
                                 <Dropdown.Trigger asChild>
                                     <button
-                                        className="Text flex h-full items-center gap-2 p-1 px-2 hover:bg-black/5"
+                                        className="text-foreground flex h-full items-center gap-2 p-1 px-2 hover:bg-black/5"
                                         data-testid="user-dropdown-trigger"
                                     >
                                         <AvatarHolder
@@ -216,7 +216,7 @@ export const Navbar = () => {
                                     </button>
                                 </Dropdown.Trigger>
 
-                                <Dropdown.Content align="end" className='Text'>
+                                <Dropdown.Content align="end" className='text-foreground'>
                                     <Dropdown.Item asChild>
                                         <Link to="/sessions">Sessions</Link>
                                     </Dropdown.Item>
@@ -239,7 +239,7 @@ export const Navbar = () => {
                     {(!token || (token && !meData)) && (
                         <a
                             href={login_here_url}
-                            className="Text flex h-full items-center border-t px-2 py-0.5 hover:bg-black/10 md:border-l"
+                            className="text-foreground flex h-full items-center border-t px-2 py-0.5 hover:bg-black/10 md:border-l"
                             data-testid="login-button"
                         >
                             Login

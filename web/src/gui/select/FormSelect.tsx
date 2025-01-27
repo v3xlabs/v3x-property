@@ -141,7 +141,7 @@ export const FieldSelect: FC<FieldSelectProperties> = ({
                                     setSearch(search);
                                 }}
                             />
-                            <Command.List className='Text'>
+                            <Command.List className='text-foreground'>
                                 {rowVirtualizer.getVirtualItems().length ===
                                     0 && (
                                     <Command.Empty>
