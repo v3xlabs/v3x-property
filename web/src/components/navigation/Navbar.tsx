@@ -17,10 +17,11 @@ import {
     FiUsers,
 } from 'react-icons/fi';
 
-import { BASE_URL , useAuth , useHasPolicy,useMe  } from '@/api';
-import { Button,Dropdown  } from '@/gui';
+import { BASE_URL, useAuth, useHasPolicy, useMe } from '@/api';
+import { Button, Dropdown } from '@/gui';
 
 import { AvatarHolder, getInitials } from '../user/UserProfile';
+import { ThemeSwitcher } from './ThemeSwitcher';
 
 const LOGIN_URL = BASE_URL + 'login';
 
@@ -197,6 +198,7 @@ export const Navbar = () => {
             </div>
             <div className="h-full">
                 <div className="hidden h-full items-center gap-2 md:flex">
+                    <ThemeSwitcher />
                     {token && meData && (
                         <div className="h-full md:border-l">
                             <Dropdown.Root>

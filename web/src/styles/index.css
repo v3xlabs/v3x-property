@@ -8,6 +8,7 @@
 @layer base {
     :root {
         --background: 0 0% 100%;
+        --background-secondary: 0 0% 95%;
         --foreground: 222.2 47.4% 11.2%;
         --muted: 210 40% 96.1%;
         --muted-foreground: 215.4 16.3% 46.9%;
@@ -28,22 +29,37 @@
         --ring: 215 20.2% 65.1%;
         --radius: 0.5rem;
     }
+}
 
-    @media (prefers-color-scheme: dark) {
-        :root {
-            --background: 240 8% 7%;
-            --background-secondary: 240 5% 15%;
-            --muted: 240 5% 15%;
-            --foreground: 0 0% 90%;
-            --primary: 210 40% 98%;
-            --primary-foreground: 210 40% 98%;
-            --accent-foreground: 210 40% 98%;
-            --border: 240 5% 15%;
-            --accent: 240 2% 15%;
-            --popover: 240 8% 7%;
-            --popover-foreground: 210 40% 9
-        }
+
+@media (prefers-color-scheme: dark) {
+    html:not(.light) {
+        --background: 240 8% 7%;
+        --background-secondary: 240 5% 15%;
+        --muted: 240 5% 15%;
+        --foreground: 0 0% 90%;
+        --primary: 210 40% 98%;
+        --primary-foreground: 210 40% 98%;
+        --accent-foreground: 210 40% 98%;
+        --border: 240 5% 15%;
+        --accent: 240 2% 15%;
+        --popover: 240 8% 7%;
+        --popover-foreground: 210 40% 9
     }
+}
+
+html.dark {
+    --background: 240 8% 7%;
+    --background-secondary: 240 5% 15%;
+    --muted: 240 5% 15%;
+    --foreground: 0 0% 90%;
+    --primary: 210 40% 98%;
+    --primary-foreground: 210 40% 98%;
+    --accent-foreground: 210 40% 98%;
+    --border: 240 5% 15%;
+    --accent: 240 2% 15%;
+    --popover: 240 8% 7%;
+    --popover-foreground: 210 40% 9
 }
 
 html, body {

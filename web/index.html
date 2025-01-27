@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <!--
     v3xlabs/v3x-property
 
@@ -10,12 +10,38 @@
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>v3x-property</title>
+        <script>
+            const theme = localStorage.getItem("theme");
+            if (theme) {
+                document.documentElement.classList.add(theme);
+            }
+        </script>
         <link rel="stylesheet" href="./src/index.css" />
         <script type="module" src="./src/index.tsx"></script>
-        <link rel="icon" type="image/png" sizes="64x64" href="./public/default_cube_64.png">
-        <link rel="icon" type="image/png" sizes="48x48" href="./public/default_cube_48.png">
-        <link rel="icon" type="image/png" sizes="32x32" href="./public/default_cube_32.png">
-        <link rel="icon" type="image/png" sizes="16x16" href="./public/default_cube_16.png">
+        <link
+            rel="icon"
+            type="image/png"
+            sizes="64x64"
+            href="./public/default_cube_64.png"
+        />
+        <link
+            rel="icon"
+            type="image/png"
+            sizes="48x48"
+            href="./public/default_cube_48.png"
+        />
+        <link
+            rel="icon"
+            type="image/png"
+            sizes="32x32"
+            href="./public/default_cube_32.png"
+        />
+        <link
+            rel="icon"
+            type="image/png"
+            sizes="16x16"
+            href="./public/default_cube_16.png"
+        />
     </head>
     <body>
         <div id="root"></div>
