@@ -35,15 +35,15 @@ const [buttonVariants, buttonVariantsConfig] = cvax(
                 ],
                 link: 'text-blue-500 hover:underline border-transparent bg-transparent',
                 success: [
-                    'bg-green-400 text-foreground hover:bg-green-400/80 border-transparent',
+                    'bg-green-400 text-neutral-900 hover:bg-green-400/80 border-transparent',
                     'disabled:bg-green-300 disabled:text-green-500 disabled:border-transparent disabled:hover:bg-green-300 disabled:hover:border-transparent disabled:cursor-not-allowed',
                 ],
                 warning: [
-                    'bg-yellow-400 text-foreground hover:bg-yellow-400/80 border-transparent',
+                    'bg-yellow-400 text-neutral-900 hover:bg-yellow-400/80 border-transparent',
                     'disabled:bg-yellow-300 disabled:text-yellow-500 disabled:border-transparent disabled:hover:bg-yellow-300 disabled:hover:border-transparent disabled:cursor-not-allowed',
                 ],
                 destructive: [
-                    'text-foreground border',
+                    'text-neutral-900 border',
                     'bg-red-400 hover:bg-red-400/80 border-transparent',
                     'disabled:bg-red-300 disabled:text-red-500 disabled:border-transparent disabled:hover:bg-red-300 disabled:hover:border-transparent disabled:cursor-not-allowed',
                 ],

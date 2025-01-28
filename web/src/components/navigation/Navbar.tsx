@@ -17,10 +17,11 @@ import {
     FiUsers,
 } from 'react-icons/fi';
 
-import { BASE_URL , useAuth , useHasPolicy,useMe  } from '@/api';
-import { Button,Dropdown  } from '@/gui';
+import { BASE_URL, useAuth, useHasPolicy, useMe } from '@/api';
+import { Button, Dropdown } from '@/gui';
 
 import { AvatarHolder, getInitials } from '../user/UserProfile';
+import { ThemeSwitcher } from './ThemeSwitcher';
 
 const LOGIN_URL = BASE_URL + 'login';
 
@@ -109,7 +110,7 @@ export const Navbar = () => {
         <nav
             role="navigation"
             aria-label="Main"
-            className="bg-background fixed bottom-0 z-20 flex h-16 w-full items-center justify-between border-t md:sticky md:top-0 md:h-9 md:border-b"
+            className="fixed bottom-0 z-20 flex h-16 w-full items-center justify-between border-t bg-background md:sticky md:top-0 md:h-9 md:border-b"
         >
             <Link
                 to="/"
@@ -157,7 +158,7 @@ export const Navbar = () => {
                                     <Link
                                         to={path}
                                         data-testid={slug}
-                                        className="flex cursor-pointer items-center justify-start rounded-md py-2.5 hover:bg-black/5"
+                                        className="flex cursor-pointer items-center justify-start rounded-md py-2.5 text-foreground hover:bg-black/5"
                                     >
                                         {icon}
                                         <span className="text-sm">{name}</span>
@@ -181,7 +182,7 @@ export const Navbar = () => {
                                     <Dropdown.Item asChild>
                                         <Link
                                             to={login_here_url}
-                                            className="flex items-center justify-center py-2 hover:bg-black/5"
+                                            className="flex items-center justify-center py-2 text-foreground hover:bg-black/5"
                                         >
                                             <FiLogIn />
                                             <span className="text-sm">
@@ -197,12 +198,13 @@ export const Navbar = () => {
             </div>
             <div className="h-full">
                 <div className="hidden h-full items-center gap-2 md:flex">
+                    <ThemeSwitcher />
                     {token && meData && (
                         <div className="h-full md:border-l">
                             <Dropdown.Root>
                                 <Dropdown.Trigger asChild>
                                     <button
-                                        className="flex h-full items-center gap-2 p-1 px-2 hover:bg-black/5"
+                                        className="flex h-full items-center gap-2 p-1 px-2 text-foreground hover:bg-black/5"
                                         data-testid="user-dropdown-trigger"
                                     >
                                         <AvatarHolder
@@ -216,7 +218,7 @@ export const Navbar = () => {
                                     </button>
                                 </Dropdown.Trigger>
 
-                                <Dropdown.Content align="end">
+                                <Dropdown.Content align="end" className='text-foreground'>
                                     <Dropdown.Item asChild>
                                         <Link to="/sessions">Sessions</Link>
                                     </Dropdown.Item>
@@ -239,7 +241,7 @@ export const Navbar = () => {
                     {(!token || (token && !meData)) && (
                         <a
                             href={login_here_url}
-                            className="flex h-full items-center border-t px-2 py-0.5 hover:bg-black/10 md:border-l"
+                            className="flex h-full items-center border-t px-2 py-0.5 text-foreground hover:bg-black/10 md:border-l"
                             data-testid="login-button"
                         >
                             Login

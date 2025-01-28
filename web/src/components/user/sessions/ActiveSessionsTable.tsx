@@ -22,7 +22,7 @@ const ActiveSession: FC<{ session: SessionResponse }> = ({ session }) => {
     return (
         <div
             key={session.session_id}
-            className="flex h-fit items-center justify-between gap-2 bg-blue-50 p-2"
+            className="flex h-fit items-center justify-between gap-2 bg-backgroundSecondary p-2"
         >
             {geoip?.latitude && (
                 <div className="h-full">
