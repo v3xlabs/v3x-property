@@ -51,6 +51,10 @@ export const Route = createFileRoute('/item/$itemId/')({
             getPolicy('item', params.itemId)
         );
 
+        if (!x) {
+            throw new Error('Unauthorized (Invalid Policy)');
+        }
+
         if (!x.includes('read')) {
             throw new Error('Unauthorized (Invalid Policy)');
         }
