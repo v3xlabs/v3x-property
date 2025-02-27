@@ -1,9 +1,10 @@
 import { queryOptions, useQuery } from '@tanstack/react-query';
 
 import { useAuth } from './auth';
-import { ApiRequest, apiRequest } from './core';
+import { apiRequest } from './core';
+import { components } from './schema.gen';
 
-export type ApiMeResponse = ApiRequest<'/me', 'get'>['response']['data'];
+export type ApiMeResponse = components['schemas']['User'];
 
 export const getMe = (authToken: string | undefined) =>
     queryOptions({
@@ -14,6 +15,7 @@ export const getMe = (authToken: string | undefined) =>
             return response.data;
         },
         enabled: !!authToken,
+        gcTime: 0,
     });
 
 export const useMe = () => {

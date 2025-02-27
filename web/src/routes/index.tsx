@@ -1,7 +1,8 @@
 import { createFileRoute, Link } from '@tanstack/react-router';
-import { FiArrowRight } from 'react-icons/fi';
+import { FiArrowRight, FiGithub } from 'react-icons/fi';
 
-import { useInstanceStatistics } from '@/api';
+import { useAuth, useInstanceStatistics, useMe, usePublicInstanceSettings } from '@/api';
+import { ItemPreview } from '@/components/item/ItemPreview';
 import { Button } from '@/gui';
 import { SCPage } from '@/layouts';
 
@@ -49,5 +50,56 @@ const Page = () => {
 };
 
 export const Route = createFileRoute('/')({
-    component: Page,
+    component: ({ context }) => {
+        console.log('context', context);
+
+        // const settings = await queryClient.ensureQueryData(getPublicInstanceSettings());
+        const { data: settings, isLoading } = usePublicInstanceSettings();
+        // const { token } = useAuth.getState();
+        const { token } = useAuth();
+        // const isAuthed = token ? await queryClient.ensureQueryData(getMe(token)) : undefined;
+        const { data: meData, isLoading: isAuthedLoading } = useMe();
+        const isAuthed = token && meData?.user_id;
+
+        if (isAuthedLoading || isLoading) {
+            return <div>Loading...</div>;
+        }
+
+        if (settings?.landing_mode && !isAuthed) {
+            console.log('Landing mode is enabled', isAuthed);
+
+            return <LandingPage />;
+        }
+
+        return <Page />;
+    },
 });
+
+export const LandingPage = () => {
+    return (
+        <SCPage title="V3X Property" width="2xl">
+            <div className="card space-y-2">
+                <p>
+                    Property aims to be a novel way to manage your personal assets. Wether these are physical items, digital assets, or things alike. Keep track of items, their location, history, with multi-user support.
+                </p>
+                <div>
+                    <ItemPreview item_id='20' />
+                </div>
+            </div>
+            <div className="flex justify-evenly gap-3">
+                <Button variant="secondary" asChild>
+                    <a href="https://github.com/v3xlabs/v3x-property" target="_blank" className="w-full">
+                        <FiGithub />
+                        <span>Github</span>
+                    </a>
+                </Button>
+                <Button variant="default" asChild>
+                    <a href="https://github.com/v3xlabs/v3x-property#run-your-own-instance" target="_blank" className="w-full">
+                        <FiArrowRight />
+                        <span>Try it out</span>
+                    </a>
+                </Button>
+            </div>
+        </SCPage>
+    );
+};

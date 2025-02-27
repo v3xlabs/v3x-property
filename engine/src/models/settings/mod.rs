@@ -1,3 +1,5 @@
+use std::env;
+
 use build_info::BuildInfo;
 use chrono::{DateTime, Utc};
 use modules::InstanceModulesStatus;
@@ -11,8 +13,8 @@ use sqlx::{
 use crate::{database::Database, state::AppState};
 
 mod modules;
-pub mod version;
 pub mod statistics;
+pub mod version;
 
 build_info::build_info!(fn build_info);
 
@@ -91,6 +93,12 @@ pub struct InstanceSettings {
     pub modules: InstanceModulesStatus,
 }
 
+#[derive(Serialize, Deserialize, Object)]
+pub struct PublicInstanceSettings {
+    /// Whether the landing page is enabled.
+    pub landing_mode: bool,
+}
+
 impl InstanceSettings {
     pub async fn load(state: &AppState) -> Self {
         let build_info = build_info();
@@ -159,5 +167,16 @@ impl InstanceSettings {
             .execute(&db.pool)
             .await
             .unwrap();
+    }
+}
+
+impl PublicInstanceSettings {
+    pub fn get_public_settings() -> Self {
+        let landing_mode = env::var("LANDING_MODE")
+            .unwrap_or("false".to_owned())
+            .parse::<bool>()
+            .unwrap();
+
+        Self { landing_mode }
     }
 }

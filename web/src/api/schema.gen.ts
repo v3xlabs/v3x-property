@@ -2356,6 +2356,44 @@ export type paths = {
         patch?: never;
         trace?: never;
     };
+    "/instance/public": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * /instance/public
+         * @description Get the public instance settings
+         */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json; charset=utf-8": components["schemas"]["PublicInstanceSettings"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/instance/statistics": {
         parameters: {
             query?: never;
@@ -2839,6 +2877,10 @@ export type components = {
             /** Format: int32 */
             location_id?: number;
             media?: components["schemas"]["ProductUpdateMediaPayload"][];
+        };
+        PublicInstanceSettings: {
+            /** @description Whether the landing page is enabled. */
+            landing_mode: boolean;
         };
         /** @description Describes a search task triggered by some user.
          *     This is used to track the progress of a search import task. */
